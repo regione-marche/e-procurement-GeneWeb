@@ -1,0 +1,78 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: e-procurement GT-SUAM
+categories:
+  - procurement
+dependsOn:
+  open:
+    - name: Java
+      optional: false
+      version: OpenJDK-11.0.12
+      versionMax: '11'
+      versionMin: '1.8'
+    - name: Postgresql
+      optional: false
+      version: ''
+      versionMax: '11'
+      versionMin: '9.6'
+    - name: Tomcat
+      optional: false
+      version: 9.0.54
+      versionMax: '9'
+      versionMin: '8'
+description:
+  it:
+    features:
+      - Struttura e componenti di base per lo sviluppo di applicazioni di backoffice
+      - Gestione degli archivi generali
+      - Gestione delle funzionalità di base
+      - Gestione delle funzionalità di accesso degli utenti
+      - Gestione report
+    genericName: e-procurement platform
+    longDescription: |
+      GeneWeb è la backbone su cui sono implementate le applicazioni "verticali" di backoffice.
+      Comprende una serie di strutture dati generali (archivio utenti, enti, imprese, ecc.) e di interfacce (trova, lista, scheda, operazioni CRUD, ecc.) comuni a tutte le applicazioni di backoffice.
+      Mette a disposizione le funzionalità generali di configurazione del software (menu di amministrazione).
+      Comprende le funzioanlità denominate "Generatore report" e "Report predefiniti" per la costruzione interattiva di query e report.
+      Comprende le funzioanlità denominate "Generatore modelli" e "Modelli predefiniti" per la gestione dei modelli mediante l'aggancio al WSCompositore.
+    shortDescription: Struttura e componenti di base per lo sviluppo di applicazioni di backoffice
+usedBy:
+  - Regione Marche
+developmentStatus: stable
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: true
+    pagopa: false
+    spid: true
+  riuso:
+    codiceIPA: r_marche
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Maggioli S.p.A.
+  repoOwner: Regione Marche
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contractors:
+    - name: MAGGIOLI SPA
+      until: '2021-12-31'
+      website: 'https://www.maggioli.com'
+  type: contract
+name: GeneWeb
+platforms:
+  - web
+releaseDate: '2021-10-15'
+softwareType: standalone/web
+url: 'https://github.com/regione-marche/e-procurement-GeneWeb.git'
