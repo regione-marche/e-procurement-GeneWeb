@@ -1,0 +1,6 @@
+<processor>
+	<add>
+		<inside>/struts-config/global-forwards</inside>
+		<file>target/war/work/xml-struts/gene-forward.xml</file>
+	</add>
+</processor>

@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ModelliGruppo">
+
+	<resultMap id="resultModelloGruppo" class="it.eldasoft.gene.db.domain.admin.ModelloGruppo">
+		<result property="idModello" column="id_modello" columnIndex="1" />
+		<result property="tipoModello" column="tab2d2" columnIndex="2" />
+		<result property="nomeModello" column="nome" columnIndex="3" />
+		<result property="descrModello" column="descr" columnIndex="4" />
+		<result property="nomeFile" column="nomefile" columnIndex="5" />
+		<result property="disponibile" column="disp" columnIndex="6" />
+	</resultMap>
+	<resultMap id="resultListaModelli" class="it.eldasoft.gene.db.domain.genmod.DatiModello">
+		<result property="idModello" column="id_modello" columnIndex="1" />
+		<result property="tipoModello" column="tab2d2" columnIndex="2" />
+		<result property="nomeModello" column="nome" columnIndex="3" />
+		<result property="descrModello" column="descr" columnIndex="4" />
+		<result property="nomeFile" column="nomefile" columnIndex="5" />
+		<result property="codiceApplicativo" column="codapp" columnIndex="6" />
+		<result property="disponibile" column="disp" columnIndex="7" />
+		<result property="owner" column="owner" columnIndex="8" />
+		<result property="entPrinc" column="entprinc" columnIndex="9" />
+		<result property="prospetto" column="prospetto" columnIndex="10" />
+		<result property="personale" column="personale" columnIndex="11" />
+		<result property="nomeOwner" column="sysute" columnIndex="12" />
+		<result property="riepilogativo" column="riepilogativo" columnIndex="13" />	
+		<result property="filtroEntPrinc" column="filtroEntPrinc" columnIndex="14" />
+	</resultMap>
+	
+	<resultMap id="resultModelloPredefinito" class="it.eldasoft.gene.db.domain.genmod.DatiModello">
+		<result property="idModello" column="id_modello" columnIndex="1" />
+		<result property="tipoModello" column="tab2d2" columnIndex="2" />
+		<result property="nomeModello" column="nome" columnIndex="3" />
+		<result property="descrModello" column="descr" columnIndex="4" />
+		<result property="nomeFile" column="nomefile" columnIndex="5" />
+		<result property="owner" column="owner" columnIndex="6" />
+		<result property="entPrinc" column="entprinc" columnIndex="7" />
+		<result property="prospetto" column="prospetto" columnIndex="8" />
+		<result property="personale" column="personale" columnIndex="9" />
+		<result property="riepilogativo" column="riepilogativo" columnIndex="10" />
+		<result property="filtroEntPrinc" column="filtroEntPrinc" columnIndex="11" />
+	</resultMap>
+
+	<resultMap id="resultDatiModello" class="it.eldasoft.gene.db.domain.genmod.DatiModello">
+		<result property="idModello" column="id_modello" columnIndex="1" />
+		<result property="tipoModello" column="tipo" columnIndex="2" />
+		<result property="nomeModello" column="nome" columnIndex="3" />
+		<result property="descrModello" column="descr" columnIndex="4" />
+		<result property="nomeFile" column="nomefile" columnIndex="5" />
+		<result property="disponibile" column="disp" columnIndex="6" />
+		<result property="codiceApplicativo" column="codapp" columnIndex="7" />
+		<result property="owner" column="owner" columnIndex="8" />
+		<result property="entPrinc" column="entprinc" columnIndex="9" />		
+		<result property="prospetto" column="prospetto" columnIndex="10" />
+		<result property="personale" column="personale" columnIndex="11" />
+		<result property="profiloOwner" column="profilo_owner" columnIndex="12" />
+		<result property="riepilogativo" column="riepilogativo" columnIndex="13" />
+		<result property="filtroEntPrinc" column="filtroEntPrinc" columnIndex="14" />
+		<result property="idRicercaSrc" column="id_ricerca_src" columnIndex="15" />
+	</resultMap>
+	<resultMap id="resultDatiGruppoModello"
+		class="it.eldasoft.gene.db.domain.genmod.DatiGruppoModello">
+		<result property="idGruppo" column="id_gruppo" columnIndex="1" />
+		<result property="idModello" column="id_modello" columnIndex="2" />
+		<result property="nomeGruppo" column="nome" columnIndex="3" />
+		<result property="descrGruppo" column="descr" columnIndex="4" />
+		<result property="associato" column="associato" columnIndex="5" />
+	</resultMap>
+	<resultMap id="resultParametroModello"
+		class="it.eldasoft.gene.db.domain.genmod.ParametroModello">
+		<result property="idModello" column="id_modello" columnIndex="1" />
+		<result property="progressivo" column="progr" columnIndex="2" />
+		<result property="codice" column="codice" columnIndex="3" />
+		<result property="nome" column="nome" columnIndex="4" />
+		<result property="descrizione" column="descr" columnIndex="5" />
+		<result property="tipo" column="tipo" columnIndex="6" />
+		<result property="menu" column="menu" columnIndex="7" />
+		<result property="obbligatorio" column="obbl" columnIndex="8" />
+		<result property="tabellato" column="tab" columnIndex="9" />
+	</resultMap>
+
+	<!-- Query tabelle W_MODELLI, W_GRPMOD e TAB2 -->
+	<select id="getModelliDiGruppo" resultMap="resultModelloGruppo"	parameterClass="java.util.HashMap">
+		SELECT W_MODELLI.ID_MODELLO, TAB2.TAB2D2, W_MODELLI.NOME, W_MODELLI.DESCR, W_MODELLI.NOMEFILE, W_MODELLI.DISP
+		FROM W_MODELLI, W_GRPMOD, TAB2
+		WHERE W_MODELLI.CODAPP = #codApp# 
+			AND W_MODELLI.PROFILO_OWNER = #codiceProfilo#		
+		  AND W_GRPMOD.ID_GRUPPO = #idGruppo#
+		  AND W_GRPMOD.ID_MODELLO =	W_MODELLI.ID_MODELLO
+		  AND TAB2.TAB2COD = #tabTipoModelli#
+		  AND W_MODELLI.TIPO = TAB2.TAB2TIP 
+		ORDER BY W_MODELLI.NOME
+	</select>
+
+	<!-- Query tabelle W_MODELLI, W_GRPMOD e TAB2 -->
+	<select id="getAllModelliByCodApp" resultMap="resultModelloGruppo" parameterClass="java.util.HashMap">
+		SELECT DISTINCT W_MODELLI.ID_MODELLO, TAB2.TAB2D2, W_MODELLI.NOME, W_MODELLI.DESCR, W_MODELLI.NOMEFILE, W_MODELLI.DISP
+		  FROM W_MODELLI, TAB2
+		 WHERE W_MODELLI.CODAPP = #codApp# 
+		   AND W_MODELLI.PROFILO_OWNER = #codiceProfilo#
+		   AND W_MODELLI.PERSONALE = 0
+		   AND TAB2.TAB2COD = #tabTipoModelli#
+		   AND W_MODELLI.TIPO = TAB2.TAB2TIP
+  ORDER BY W_MODELLI.NOME
+	</select>
+
+	<!-- Query tabelle W_GRPMOD -->
+	<delete id="deleteModelliNonAssociati" parameterClass="java.util.HashMap">
+		DELETE FROM W_GRPMOD WHERE ID_GRUPPO = #idGruppo#
+		<isNotEmpty prepend="AND" property="listaModelliAssociati">
+			ID_MODELLO NOT IN
+			<iterate property="listaModelliAssociati" open="(" close=")" conjunction=", ">
+				#listaModelliAssociati[]#
+			</iterate>
+		</isNotEmpty>
+	</delete>
+
+	<!-- Estrazione della lista dei modelli -->
+	<select id="getModelli" resultMap="resultListaModelli" parameterClass="java.util.HashMap">
+		SELECT DISTINCT W_MODELLI.ID_MODELLO, TAB2.TAB2D2, W_MODELLI.NOME, W_MODELLI.DESCR, W_MODELLI.NOMEFILE, W_MODELLI.CODAPP,
+		W_MODELLI.DISP, W_MODELLI.OWNER, W_MODELLI.ENTPRINC, W_MODELLI.PROSPETTO, W_MODELLI.PERSONALE, USRSYS.SYSUTE, W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC
+		FROM W_MODELLI
+			<isNotEmpty prepend="," property="idGruppo">
+				W_GRPMOD
+			</isNotEmpty>
+			, TAB2, USRSYS 
+		WHERE W_MODELLI.PROFILO_OWNER = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="codiceApplicazione">
+			W_MODELLI.CODAPP = #codiceApplicazione#
+		</isNotEmpty>
+		  AND TAB2.TAB2COD = #tabTipoModelli#
+		  AND W_MODELLI.TIPO = TAB2.TAB2TIP
+		<isNotEmpty prepend="AND" property="idGruppo">
+			W_GRPMOD.ID_MODELLO = W_MODELLI.ID_MODELLO AND W_GRPMOD.ID_GRUPPO = #idGruppo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="tipoDocumento">
+			W_MODELLI.TIPO = #tipoDocumento#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nomeModello">
+			<isEmpty property="operatoreUpper">
+				W_MODELLI.NOME $operatoreNome$ #nomeModello# $escapeNomeModello$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_MODELLI.NOME) $operatoreNome$ #nomeModello# $escapeNomeModello$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrModello">
+			<isEmpty property="operatoreUpper">
+				W_MODELLI.DESCR $operatoreDescrizione$ #descrModello# $escapeDescrModello$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_MODELLI.DESCR) $operatoreDescrizione$ #descrModello# $escapeDescrModello$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="fileModello">
+			<isEmpty property="operatoreUpper">
+				W_MODELLI.NOMEFILE $operatoreFile$ #fileModello# $escapeFileModello$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_MODELLI.NOMEFILE) $operatoreFile$ #fileModello# $escapeFileModello$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_MODELLI.DISP = #disponibile#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="prospetto">
+			W_MODELLI.PROSPETTO = #prospetto#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="personale">
+			W_MODELLI.PERSONALE = #personale#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="owner">
+			W_MODELLI.OWNER = #owner#
+		</isNotEmpty>
+		AND USRSYS.SYSCON = W_MODELLI.OWNER
+		
+		UNION
+		
+		SELECT DISTINCT W_MODELLI.ID_MODELLO, TAB2.TAB2D2, W_MODELLI.NOME, W_MODELLI.DESCR, W_MODELLI.NOMEFILE,W_MODELLI.CODAPP,
+		W_MODELLI.DISP, W_MODELLI.OWNER, W_MODELLI.ENTPRINC, W_MODELLI.PROSPETTO, W_MODELLI.PERSONALE, 
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			CAST(NULL AS VARCHAR(61)) AS SYSUTE, 
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			NULL AS SYSUTE, 
+		</isNotPropertyAvailable>
+		W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC
+		FROM W_MODELLI
+			<isNotEmpty prepend="," property="idGruppo">
+				W_GRPMOD
+			</isNotEmpty>
+			, TAB2
+		WHERE W_MODELLI.PROFILO_OWNER = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="codiceApplicazione">
+			W_MODELLI.CODAPP = #codiceApplicazione#
+		</isNotEmpty>
+		  AND TAB2.TAB2COD = #tabTipoModelli#
+		  AND	W_MODELLI.TIPO = TAB2.TAB2TIP
+		<isNotEmpty prepend="AND" property="idGruppo">
+			W_GRPMOD.ID_MODELLO = W_MODELLI.ID_MODELLO AND W_GRPMOD.ID_GRUPPO = #idGruppo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="tipoDocumento">
+			W_MODELLI.TIPO = #tipoDocumento#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nomeModello">
+			<isEmpty property="operatoreUpper">
+				W_MODELLI.NOME $operatoreNome$ #nomeModello# $escapeNomeModello$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_MODELLI.NOME) $operatoreNome$ #nomeModello# $escapeNomeModello$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrModello">
+			<isEmpty property="operatoreUpper">
+				W_MODELLI.DESCR $operatoreDescrizione$ #descrModello# $escapeDescrModello$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_MODELLI.DESCR) $operatoreDescrizione$ #descrModello# $escapeDescrModello$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="fileModello">
+			<isEmpty property="operatoreUpper">
+				W_MODELLI.NOMEFILE $operatoreFile$ #fileModello# $escapeFileModello$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_MODELLI.NOMEFILE) $operatoreFile$ #fileModello# $escapeFileModello$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_MODELLI.DISP = #disponibile#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="prospetto">
+			W_MODELLI.PROSPETTO = #prospetto#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="personale">
+			W_MODELLI.PERSONALE = #personale#
+		</isNotEmpty>
+		AND W_MODELLI.OWNER NOT IN (SELECT SYSCON FROM USRSYS)
+		ORDER BY NOME
+	</select>
+
+	<select id="getModelliPredefiniti" resultMap="resultModelloPredefinito" parameterClass="java.util.HashMap">
+    SELECT DISTINCT W_MODELLI.ID_MODELLO, TAB2.TAB2D2, W_MODELLI.NOME, W_MODELLI.DESCR,
+			     W_MODELLI.NOMEFILE, W_MODELLI.OWNER, W_MODELLI.ENTPRINC, W_MODELLI.PROSPETTO, W_MODELLI.PERSONALE, 
+			     W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC
+			     
+	    FROM W_MODELLI, TAB2
+	   WHERE W_MODELLI.TIPO = TAB2.TAB2TIP
+	     AND TAB2.TAB2COD = #tabTipoModelli#
+	  <isNotEmpty prepend="AND" property="entita">
+			W_MODELLI.ENTPRINC = #entita#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_MODELLI.PROSPETTO = #prospetto#
+		</isNotEmpty>	    
+	     AND (ID_MODELLO IN (
+	     		SELECT W_MODELLI.ID_MODELLO
+	          FROM W_GRPMOD, W_ACCGRP, W_MODELLI, TAB2
+	         WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+		         AND W_ACCGRP.ID_GRUPPO = W_GRPMOD.ID_GRUPPO
+		         AND W_GRPMOD.ID_MODELLO = W_MODELLI.ID_MODELLO
+             AND W_MODELLI.CODAPP = #codApp#
+   	         AND W_MODELLI.PROFILO_OWNER = #codiceProfilo#
+             AND W_MODELLI.DISP = #disponibile#
+             AND TAB2.TAB2COD = #tabTipoModelli#
+             AND W_MODELLI.TIPO = TAB2.TAB2TIP
+             <isNotEmpty prepend="AND" property="riepilogativo">
+             W_MODELLI.RIEPILOGATIVO = #riepilogativo#
+             </isNotEmpty>
+	         ) OR ID_MODELLO IN (
+	        SELECT W_MODELLI.ID_MODELLO
+	          FROM W_MODELLI, TAB2
+           WHERE W_MODELLI.CODAPP = #codApp#
+				   	 AND W_MODELLI.PROFILO_OWNER = #codiceProfilo#
+    	       AND W_MODELLI.PERSONALE = #personale#
+      	     AND W_MODELLI.OWNER = #idAccount#
+        	   AND W_MODELLI.DISP = #disponibile#
+          	 AND TAB2.TAB2COD = #tabTipoModelli#
+             AND W_MODELLI.TIPO = TAB2.TAB2TIP
+             <isNotEmpty prepend="AND" property="riepilogativo">
+             W_MODELLI.RIEPILOGATIVO = #riepilogativo#
+             </isNotEmpty>
+	        ))
+	    ORDER BY W_MODELLI.NOME ASC
+	</select>
+
+	<!-- Estrazione dei dati di un modello -->
+	<select id="getModelloById" resultMap="resultDatiModello"
+		parameterClass="java.lang.Integer">
+		SELECT W_MODELLI.ID_MODELLO, W_MODELLI.TIPO, W_MODELLI.NOME, W_MODELLI.DESCR,	W_MODELLI.NOMEFILE, W_MODELLI.DISP,
+		W_MODELLI.CODAPP, W_MODELLI.OWNER, W_MODELLI.ENTPRINC, W_MODELLI.PROSPETTO, W_MODELLI.PERSONALE, W_MODELLI.PROFILO_OWNER, 
+		W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC, W_MODELLI.ID_RICERCA_SRC
+		FROM W_MODELLI 
+		WHERE W_MODELLI.ID_MODELLO = #idModello#
+	</select>
+
+	<select id="getGruppiModello" resultMap="resultDatiGruppoModello"
+		parameterClass="java.lang.Integer">
+		SELECT W_GRPMOD.ID_GRUPPO, W_GRPMOD.ID_MODELLO, W_GRUPPI.NOME,
+			W_GRUPPI.DESCR, 1 AS ASSOCIATO 
+		FROM W_GRPMOD , W_GRUPPI 
+		WHERE W_GRPMOD.ID_GRUPPO = W_GRUPPI.ID_GRUPPO AND W_GRPMOD.ID_MODELLO = #idModello# 
+	</select>
+
+	<select id="getModificaGruppiModello" resultMap="resultDatiGruppoModello" parameterClass="java.util.HashMap">
+		SELECT ID_GRUPPO, #idModello# as ID_MODELLO, NOME, DESCR,
+			(SELECT COUNT(*)
+				FROM W_GRPMOD
+				WHERE W_GRPMOD.ID_MODELLO = #idModello# AND W_GRPMOD.ID_GRUPPO = W_GRUPPI.ID_GRUPPO)
+				AS ASSOCIATO
+		FROM W_GRUPPI
+	 WHERE W_GRUPPI.COD_PROFILO = #codiceProfilo#
+	</select>
+
+	<update id="updateModello" parameterClass="it.eldasoft.gene.db.domain.genmod.DatiModello">
+		UPDATE W_MODELLI SET TIPO = #tipoModello#, NOME = #nomeModello#, DESCR = #descrModello:VARCHAR#, 
+		       <isNotEmpty prepend="" property="nomeFile">NOMEFILE = #nomeFile#,</isNotEmpty> 
+					DISP = #disponibile#, CODAPP = #codiceApplicativo:VARCHAR# , ENTPRINC = #entPrinc:VARCHAR#,
+				PROSPETTO = #prospetto:NUMERIC#, PERSONALE = #personale#, RIEPILOGATIVO = #riepilogativo#, 
+				FILTROENTPRINC = #filtroEntPrinc:VARCHAR#, ID_RICERCA_SRC = #idRicercaSrc:NUMERIC#
+		WHERE ID_MODELLO = #idModello#
+	</update>
+
+	<insert id="insertModello" parameterClass="it.eldasoft.gene.db.domain.genmod.DatiModello">
+		INSERT INTO W_MODELLI (ID_MODELLO, TIPO, NOME, DESCR, NOMEFILE, DISP, CODAPP, OWNER, ENTPRINC, PROSPETTO, PERSONALE, PROFILO_OWNER, RIEPILOGATIVO, FILTROENTPRINC, ID_RICERCA_SRC)
+		VALUES (#idModello#, #tipoModello#, #nomeModello#,#descrModello:VARCHAR#, 
+				    #nomeFile#, #disponibile#, #codiceApplicativo:VARCHAR#, #owner:NUMERIC#,
+				    #entPrinc:VARCHAR#, #prospetto:NUMERIC#, #personale#, #profiloOwner:VARCHAR#,
+				    #riepilogativo:VARCHAR#, #filtroEntPrinc:VARCHAR#, #idRicercaSrc:NUMERIC#)
+	</insert>
+	
+	<!-- Query tabelle W_GRPMOD -->
+	<insert id="insertAssociazioneModelloGruppo">
+		INSERT INTO W_GRPMOD (ID_MODELLO, ID_GRUPPO ) VALUES ( #idModello#, #idGruppo#)
+	</insert>
+	
+	<delete id="deleteGruppiModelloNonAssociati" parameterClass="java.util.HashMap">
+		DELETE FROM W_GRPMOD
+		 WHERE ID_MODELLO = #idModello#
+				<isNotEmpty prepend="AND" property="gruppiAssociati">
+					ID_GRUPPO NOT IN
+					<iterate property="gruppiAssociati" open="(" close=")" conjunction=", ">
+						#gruppiAssociati[]#
+					</iterate>
+				</isNotEmpty>
+	</delete>
+	
+	<insert id="insertGruppiModelloAssociati" parameterClass="java.util.HashMap">
+		INSERT INTO W_GRPMOD (ID_MODELLO, ID_GRUPPO )
+			SELECT #idModello#, ID_GRUPPO 
+			FROM W_GRUPPI 
+			WHERE COD_PROFILO = #profiloOwner#
+			AND NOT EXISTS(
+			   SELECT 1
+			     FROM W_GRPMOD 
+					WHERE W_GRPMOD.ID_MODELLO = #idModello#
+						AND W_GRPMOD.ID_GRUPPO = W_GRUPPI.ID_GRUPPO) 
+			<isEmpty prepend="AND" property="gruppiAssociati">
+				ID_GRUPPO IS NULL
+			</isEmpty>
+			<isNotEmpty prepend="AND" property="gruppiAssociati">
+				ID_GRUPPO IN
+				<iterate property="gruppiAssociati" open="(" close=")" conjunction=", ">
+					#gruppiAssociati[]#
+				</iterate>
+			</isNotEmpty>
+	</insert>
+	<!--
+		<delete id="deleteModello" parameterClass="java.lang.Integer">
+			DELETE FROM W_MODELLI 
+			WHERE ID_MODELLO = #idModello#
+		</delete>
+		<delete id="deleteGruppiModello"
+			parameterClass="java.lang.Integer">
+			DELETE FROM W_GRPMOD WHERE ID_MODELLO = #idModello#
+		</delete>
+	-->
+	<!-- Mappa per l'eliminazione di un modello -->
+	
+	<delete id="deleteGruppiModello" parameterClass="java.lang.Integer">
+		DELETE FROM W_GRPMOD WHERE ID_MODELLO = #idModello#
+	</delete>
+	
+	<delete id="deleteModello" parameterClass="java.lang.Integer">
+		DELETE FROM W_MODELLI WHERE ID_MODELLO = #idModello#
+	</delete>  
+	
+	<select id="getIdModelloByNomeFileCodApp" resultClass="java.lang.Integer">
+		SELECT ID_MODELLO 
+		FROM W_MODELLI
+		WHERE NOMEFILE = #nomeFile#
+		AND CODAPP = #codApp#
+	</select>
+	
+	<select id="getParametriModello" resultMap="resultParametroModello"
+		parameterClass="java.lang.Integer">
+		SELECT ID_MODELLO, PROGR, CODICE, NOME, DESCR, TIPO, MENU, OBBL, TAB
+		FROM W_MODPARAM
+		WHERE ID_MODELLO = #idModello# 
+		ORDER BY PROGR ASC
+	</select>
+	
+	<select id="getParametroModello" resultMap="resultParametroModello"
+		parameterClass="java.util.HashMap">
+		SELECT ID_MODELLO, PROGR, CODICE, NOME, DESCR, TIPO, MENU, OBBL, TAB
+		FROM W_MODPARAM
+		WHERE ID_MODELLO = #idModello# 
+		AND PROGR = #progressivo#
+	</select>
+	
+	<select id="getMaxProgressivoParametroModello" resultClass="java.lang.Integer">
+		SELECT MAX(PROGR)
+		FROM W_MODPARAM
+		WHERE ID_MODELLO = #idModello#
+	</select>
+
+	<insert id="insertParametro" parameterClass="it.eldasoft.gene.db.domain.genmod.ParametroModello">
+		INSERT INTO W_MODPARAM (ID_MODELLO, PROGR, CODICE, NOME, DESCR, TIPO, MENU, OBBL, TAB ) 
+		VALUES ( #idModello#, #progressivo#, #codice#, #nome#, #descrizione:VARCHAR#, #tipo#, #menu:VARCHAR#, #obbligatorio#, #tabellato:VARCHAR#)
+	</insert>
+
+	<update id="updateParametro" parameterClass="it.eldasoft.gene.db.domain.genmod.ParametroModello">
+		UPDATE W_MODPARAM SET CODICE = #codice#, NOME = #nome#, DESCR = #descrizione:VARCHAR#, TIPO = #tipo#, MENU = #menu:VARCHAR#, OBBL = #obbligatorio#, TAB = #tabellato#
+		WHERE ID_MODELLO = #idModello# AND PROGR = #progressivo#
+	</update>
+
+	<delete id="deleteParametro" parameterClass="java.util.HashMap">
+		DELETE FROM W_MODPARAM WHERE ID_MODELLO = #idModello# AND PROGR = #progressivo#
+	</delete>
+
+	<delete id="deleteParametri" parameterClass="java.lang.Integer">
+		DELETE FROM W_MODPARAM WHERE ID_MODELLO = #idModello#
+	</delete>
+
+	<update id="updateProgressivoParametro" parameterClass="java.util.HashMap">
+		UPDATE W_MODPARAM SET PROGR = #progressivoNew# WHERE ID_MODELLO = #idModello# AND PROGR = #progressivoOld#
+	</update>
+	
+	<update id="updateDecrementaProgressivoParametri" parameterClass="java.util.HashMap">
+		UPDATE W_MODPARAM SET PROGR = PROGR - 1 WHERE ID_MODELLO = #idModello# AND <![CDATA[PROGR >= #progressivoInizio#]]>
+		<isNotEmpty prepend="AND" property="progressivoFine"> <![CDATA[PROGR <= #progressivoFine#]]> </isNotEmpty>
+	</update>
+	
+	<update id="updateIncrementaProgressivoParametri" parameterClass="java.util.HashMap">
+		UPDATE W_MODPARAM SET PROGR = PROGR + 1 WHERE ID_MODELLO = #idModello# AND <![CDATA[PROGR >= #progressivoInizio#]]>
+		<isNotEmpty prepend="AND" property="progressivoFine"> <![CDATA[PROGR <= #progressivoFine#]]> </isNotEmpty>
+	</update>
+	
+	<insert id="insertParametroComposizione" parameterClass="it.eldasoft.gene.db.domain.genmod.ParametroComposizione">
+		INSERT INTO W_COMPARAM (ID_SESSIONE, CODICE, DESCR, VALORE ) 
+		VALUES ( #idSessione#, #codice#, #descrizione:VARCHAR#, #valore:VARCHAR#)
+	</insert>
+	
+	<delete id="deleteParametriComposizione" parameterClass="java.lang.Integer">
+		DELETE FROM W_COMPARAM WHERE <![CDATA[ID_SESSIONE <= (#idSessione# - 100)]]> 
+	</delete>
+
+	<update id="updatePersonale" parameterClass="java.util.HashMap">
+		UPDATE W_MODELLI SET PERSONALE = #personale#
+		WHERE ID_MODELLO = #idModello#
+	</update>
+	
+	<delete id="deleteCacheParametriComposizione" parameterClass="java.util.HashMap">
+		DELETE FROM W_CACHEMODPAR WHERE ID_ACCOUNT = #idAccount# AND ID_MODELLO = #idModello#
+	</delete>
+	
+	<delete id="deleteCacheParametriComposizioneUtente" parameterClass="java.lang.Integer">
+		DELETE FROM W_CACHEMODPAR WHERE ID_ACCOUNT = #idAccount#
+	</delete>
+
+	<delete id="deleteCacheParametriComposizioneModello" parameterClass="java.lang.Integer">
+		DELETE FROM W_CACHEMODPAR WHERE ID_MODELLO = #idModello#
+	</delete>
+
+	<insert id="insertCacheParametroComposizione" parameterClass="it.eldasoft.gene.db.domain.genmod.CacheParametroComposizione">
+		INSERT INTO W_CACHEMODPAR (ID_ACCOUNT, ID_MODELLO, CODICE, VALORE ) 
+		VALUES ( #idAccount#, #idModello#, #codice:VARCHAR#, #valore:VARCHAR#)
+	</insert>
+	
+	<select id="getCacheParametroModello" resultClass="java.lang.String"
+		parameterClass="java.util.HashMap">
+		SELECT VALORE
+		FROM W_CACHEMODPAR
+		WHERE ID_MODELLO = #idModello# 
+		AND ID_ACCOUNT = #idAccount#
+		AND CODICE = #codice#
+	</select>
+	
+	<select id="getNumeroModelliCollegatiASorgenteReport" resultClass="java.lang.Integer"
+		parameterClass="java.lang.Integer">
+		SELECT COUNT(ID_MODELLO) FROM W_MODELLI WHERE ID_RICERCA_SRC = #idRicerca#
+	</select>	
+
+</sqlMap>

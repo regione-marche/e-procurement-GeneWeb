@@ -1,0 +1,4 @@
+<sqlMapConfig>
+	<!-- Template per File specifici dell'applicazione corrente -->
+	<!--<sqlMap resource="it/eldasoft/example/dao/ibatis/maps/Example.xml" />-->
+</sqlMapConfig>

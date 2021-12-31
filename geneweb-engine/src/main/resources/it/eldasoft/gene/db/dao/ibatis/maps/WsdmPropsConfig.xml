@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PropsConfig">
+  
+   <resultMap id="wsdmResult" class="it.eldasoft.gene.db.domain.WsdmPropsConfig">
+    <result property="idconfi" column="idconfi" columnIndex="1"/>
+    <result property="chiave" column="chiave" columnIndex="2"/>
+    <result property="valore" column="valore" columnIndex="3"/>
+  </resultMap>
+
+  <select id="getWsdmConfig" resultMap="wsdmResult" parameterClass="java.util.HashMap">
+    SELECT idconfi, chiave, valore
+      FROM wsdmconfipro 
+      WHERE idconfi = #idconfi# AND chiave = #chiave#
+  </select>
+  
+  <select id="getWsdmConfigsByPrefix" resultMap="wsdmResult" parameterClass="java.util.HashMap">
+    SELECT idconfi, chiave, valore
+      FROM wsdmconfipro 
+      WHERE idconfi = #idconfi# AND chiave LIKE #chiave#
+  </select>
+  
+  <select id="getWsdmConfigsByCodapp" resultMap="wsdmResult" parameterClass="java.util.HashMap">
+    SELECT wcp.idconfi, wcp.chiave, wcp.valore
+      FROM wsdmconfipro wcp, wsdmconfi wc
+      WHERE wc.codapp = #codApp# and wcp.idconfi = wc.id
+  </select>
+  
+  <delete id="deleteWsdmConfigs" parameterClass="java.util.HashMap">
+   DELETE FROM wsdmconfipro 
+      WHERE idconfi = #idconfi# AND chiave IN
+      <iterate property="chiave" open="(" close=")" conjunction=", " >
+		  #chiave[]#
+      </iterate>
+  </delete>
+  
+  <delete id="deleteWsdmConfigsByPrefix" parameterClass="java.util.HashMap">
+   DELETE FROM wsdmconfipro WHERE idconfi = #idconfi# AND chiave LIKE #chiave#
+  </delete>
+  
+  <insert id="insertWsdmConfig" parameterClass="it.eldasoft.gene.db.domain.WsdmPropsConfig">
+  	INSERT INTO wsdmconfipro (idconfi,chiave,valore) VALUES (#idconfi#, #chiave#, #valore:VARCHAR#)
+  </insert>
+  
+  <update id="updateWsdmConfig" parameterClass="it.eldasoft.gene.db.domain.WsdmPropsConfig">
+  	UPDATE wsdmconfipro SET VALORE=#valore# WHERE IDCONFI=#idconfi# and chiave=#chiave#
+  </update>
+  
+</sqlMap>

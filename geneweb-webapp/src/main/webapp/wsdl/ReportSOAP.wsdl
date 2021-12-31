@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.eldasoft.it/Report/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Report" targetNamespace="http://www.eldasoft.it/Report/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.eldasoft.it/Report/">
+      <xsd:element name="GetDefinizioneReport">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="codice" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetDefinizioneReportResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="risultato" type="xsd:string"/>
+           </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    
+      <xsd:element name="GetRisultatoReport">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element maxOccurs="1" minOccurs="1" name="codice" type="xsd:string">
+      			</xsd:element>
+      			<xsd:element maxOccurs="unbounded" minOccurs="0" name="parametro" type="tns:ValParametroType">
+      			</xsd:element>
+      			<xsd:element maxOccurs="1" minOccurs="0" name="pagina" nillable="true" type="xsd:int">
+      			</xsd:element>
+      			<xsd:element maxOccurs="1" minOccurs="0" name="maxDimensionePagina" nillable="true" type="xsd:int"/>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+
+      <xsd:complexType name="ValParametroType">
+      	<xsd:sequence>
+      		<xsd:element maxOccurs="1" minOccurs="1" name="codice" type="xsd:string"/>
+      		<xsd:element maxOccurs="1" minOccurs="0" name="valore" nillable="true" type="xsd:string"/>
+      	</xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:element name="GetRisultatoReportResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="risultato" type="xsd:string"/>
+           </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAllegato">
+      	<xsd:complexType>
+      	  <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="idProgramma" type="xsd:string"/>
+            <xsd:element maxOccurs="1" minOccurs="1" name="idDocumento" type="xsd:long"/>
+          </xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAllegatoResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element maxOccurs="1" minOccurs="1" name="risultato" type="xsd:string"/>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="GetDefinizioneReportRequest">
+    <wsdl:part element="tns:GetDefinizioneReport" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="GetDefinizioneReportResponse">
+    <wsdl:part element="tns:GetDefinizioneReportResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="GetRisultatoReportRequest">
+  	<wsdl:part element="tns:GetRisultatoReport" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="GetRisultatoReportResponse">
+  	<wsdl:part element="tns:GetRisultatoReportResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="GetAllegatoRequest">
+  	<wsdl:part element="tns:GetAllegato" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="GetAllegatoResponse">
+  	<wsdl:part element="tns:GetAllegatoResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="Report">
+    <wsdl:operation name="GetDefinizioneReport">
+      <wsdl:input message="tns:GetDefinizioneReportRequest"/>
+      <wsdl:output message="tns:GetDefinizioneReportResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetRisultatoReport">
+    	<wsdl:input message="tns:GetRisultatoReportRequest"/>
+    	<wsdl:output message="tns:GetRisultatoReportResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllegato">
+    	<wsdl:input message="tns:GetAllegatoRequest"/>
+    	<wsdl:output message="tns:GetAllegatoResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ReportSOAP" type="tns:Report">
+  	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  	<wsdl:operation name="GetDefinizioneReport">
+  		<soap:operation soapAction="http://www.eldasoft.it/Report/GetDefinizioneReport"/>
+  		<wsdl:input>
+  			<soap:body use="literal"/>
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="literal"/>
+  		</wsdl:output>
+  	</wsdl:operation>
+  	<wsdl:operation name="GetRisultatoReport">
+  		<soap:operation soapAction="http://www.eldasoft.it/Report/GetRisultatoReport"/>
+  		<wsdl:input>
+  			<soap:body use="literal"/>
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="literal"/>
+  		</wsdl:output>
+  	</wsdl:operation>
+  	<wsdl:operation name="GetAllegato">
+  		<soap:operation soapAction="http://www.eldasoft.it/Report/GetAllegato"/>
+  		<wsdl:input>
+  			<soap:body use="literal"/>
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="literal"/>
+  		</wsdl:output>
+  	</wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Report">
+    <wsdl:port binding="tns:ReportSOAP" name="ReportSOAP">
+      <soap:address location="http://localhost:8080/WSReport/services/ReportSOAP"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

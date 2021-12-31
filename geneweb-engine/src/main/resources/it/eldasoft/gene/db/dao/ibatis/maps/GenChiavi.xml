@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="GenChiavi">
+
+  <select id="getNextId" resultClass="java.lang.Integer">
+    SELECT CHIAVE FROM W_GENCHIAVI WHERE TABELLA = #tabella#
+  </select>
+
+  <update id="updateId">
+    UPDATE W_GENCHIAVI SET CHIAVE = CHIAVE + #incremento# WHERE TABELLA = #tabella#
+  </update>
+  
+  
+  <select id="getMaxId" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+    SELECT MAX($chiave$) AS CHIAVE FROM $tabella$ <isNotEmpty property="condizioniExtra">WHERE $condizioniExtra$</isNotEmpty>
+  </select>
+
+</sqlMap>

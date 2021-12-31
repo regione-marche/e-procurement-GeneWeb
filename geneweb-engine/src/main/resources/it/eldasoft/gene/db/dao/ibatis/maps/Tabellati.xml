@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Tabellati">
+
+	<resultMap id="resultTabellatoTab0"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="TAB0TIP"
+			columnIndex="1" />
+		<result property="datoSupplementare" column="TAB0VID"
+			columnIndex="2" />
+		<result property="descTabellato" column="TAB0DESC"
+			columnIndex="3" />
+		<result property="arcTabellato" column="TAB0ARC"
+			columnIndex="4" />
+	</resultMap>
+	<resultMap id="resultTabellatoTab1"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="TAB1TIP"
+			columnIndex="1" />
+		<result property="descTabellato" column="TAB1DESC"
+			columnIndex="2" />
+		<result property="arcTabellato" column="TAB1ARC"
+			columnIndex="3" />			
+	</resultMap>
+	<resultMap id="resultTabellatoTab2"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="TAB2TIP"
+			columnIndex="1" />
+		<result property="datoSupplementare" column="TAB2D1"
+			columnIndex="2" />
+		<result property="descTabellato" column="TAB2D2"
+			columnIndex="3" />
+		<result property="arcTabellato" column="TAB2ARC"
+			columnIndex="4" />
+	</resultMap>
+	<resultMap id="resultTabellatoTab3"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="TAB3TIP"
+			columnIndex="1" />
+		<result property="descTabellato" column="TAB3DESC"
+			columnIndex="2" />
+		<result property="arcTabellato" column="TAB3ARC"
+			columnIndex="3" />			
+	</resultMap>
+	<resultMap id="resultTabellatoTab5"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="TAB5TIP"
+			columnIndex="1" />
+		<result property="descTabellato" column="TAB5DESC"
+			columnIndex="2" />
+		<result property="arcTabellato" column="TAB5ARC"
+			columnIndex="3" />
+	</resultMap>
+	
+	<resultMap id="resultTabellatoTab6"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="TAB6TIP"
+			columnIndex="1" />
+		<result property="descTabellato" column="TAB6DESC"
+			columnIndex="2" />
+	</resultMap>
+	
+	<resultMap id="resultCampiTabellati"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="C0C_MNE_BER"
+			columnIndex="1" />
+		<result property="datoSupplementare" column="C0C_TAB1"
+			columnIndex="2" />
+		<result property="descTabellato" column="COC_DES"
+			columnIndex="3" />
+	</resultMap>
+	
+	<resultMap id="resultTabellatoWsdm"
+		class="it.eldasoft.gene.db.domain.TabellatoWsdm">
+		<result property="id" column="ID"
+			columnIndex="1" />
+		<result property="idcftab" column="IDCFTAB"
+			columnIndex="2" />
+		<result property="idconfi" column="IDCONFI"
+			columnIndex="3" />
+		<result property="codice" column="CODICE"
+			columnIndex="4" />
+		<result property="sistema" column="SISTEMA"
+			columnIndex="5" />
+		<result property="descri" column="DESCRI"
+			columnIndex="6" />
+		<result property="valore" column="VALORE"
+			columnIndex="7" />
+		<result property="isarchi" column="ISARCHI"
+			columnIndex="8" />
+	</resultMap>
+	
+	<resultMap id="resultTabellatiCfWsdm"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="CODICE"
+			columnIndex="1" />
+		<result property="descTabellato" column="DESCRI"
+			columnIndex="2" />
+	</resultMap>
+	
+	<!-- Estrazione della lista del tabellato -->
+	
+	<select id="getTabellatoTab0" resultMap="resultTabellatoTab0"
+		parameterClass="java.lang.String">
+		SELECT TAB0TIP, TAB0VID, TAB0DESC, TAB0ARC FROM TAB0 WHERE TAB0COD =
+		#tabTipo# ORDER BY TAB0NORD, TAB0TIP, TAB0VID
+	</select>
+	<select id="getTabellatoTab1" resultMap="resultTabellatoTab1"
+		parameterClass="java.lang.String">
+		SELECT TAB1TIP, TAB1DESC, TAB1ARC FROM TAB1 WHERE TAB1COD = #tabTipo#
+		ORDER BY TAB1NORD, TAB1TIP
+	</select>
+	<select id="getTabellatoTab2" resultMap="resultTabellatoTab2"
+		parameterClass="java.lang.String">
+		SELECT TAB2TIP, TAB2D1, TAB2D2, TAB2ARC FROM TAB2 WHERE TAB2COD =
+		#tabTipo# ORDER BY TAB2NORD, TAB2TIP
+	</select>
+	<select id="getTabellatoTab3" resultMap="resultTabellatoTab3"
+		parameterClass="java.lang.String">
+		SELECT TAB3TIP, TAB3DESC, TAB3ARC FROM TAB3 WHERE TAB3COD = #tabTipo#
+		ORDER BY TAB3NORD, TAB3DESC
+	</select>
+	<select id="getTabellatoTab5" resultMap="resultTabellatoTab5"
+		parameterClass="java.lang.String">
+		SELECT TAB5TIP, TAB5DESC, TAB5ARC FROM TAB5 WHERE TAB5COD = #tabTipo#
+		ORDER BY TAB5NORD, TAB5TIP
+	</select>
+
+	<select id="getElencoTabellati" resultMap="resultTabellatoTab6"
+		parameterClass="java.util.HashMap">
+		SELECT TAB6TIP, TAB6DESC FROM TAB6
+		WHERE TAB6COD LIKE #codiceTabellato# $escapeCodiceTabellato$
+		ORDER BY TAB6DESC
+	</select>	
+	<!-- Estrazione dei dati di una riga dei tabellati -->
+	
+	<select id="getRigaTabellatoTab0" resultMap="resultTabellatoTab0"
+		parameterClass="java.util.HashMap">
+		SELECT TAB0TIP, TAB0VID, TAB0DESC, TAB0ARC FROM TAB0 WHERE TAB0COD =
+		#tabellatoCodice# and TAB1TIP = #valoreTabellato#
+	</select>
+	<select id="getRigaTabellatoTab1" resultMap="resultTabellatoTab1"
+		parameterClass="java.util.HashMap">
+		SELECT TAB1TIP, TAB1DESC, TAB1ARC FROM TAB1 WHERE TAB1COD =
+		#tabellatoCodice# and TAB1TIP = #valoreTabellato#
+	</select>
+	<select id="getRigaTabellatoTab2" resultMap="resultTabellatoTab2"
+		parameterClass="java.util.HashMap">
+		SELECT TAB2TIP, TAB2D1, TAB2D2, TAB2ARC FROM TAB2 WHERE TAB2COD =
+		#tabellatoCodice# and TAB2TIP = #valoreTabellato#
+	</select>
+	<select id="getRigaTabellatoTab3" resultMap="resultTabellatoTab3"
+		parameterClass="java.util.HashMap">
+		SELECT TAB3TIP, TAB3DESC, TAB3ARC FROM TAB3 WHERE TAB3COD =
+		#tabellatoCodice# and TAB3TIP = #valoreTabellato#
+	</select>
+	<select id="getRigaTabellatoTab5" resultMap="resultTabellatoTab5"
+		parameterClass="java.util.HashMap">
+		SELECT TAB5TIP, TAB5DESC, TAB5ARC FROM TAB5 WHERE TAB5COD =
+		#tabellatoCodice# and TAB5TIP = #valoreTabellato#
+	</select>
+	
+	<select id="getCampiTabellati" resultClass="java.lang.String" 
+		parameterClass="java.util.HashMap">
+		<![CDATA[
+			SELECT c0c_mne_ber FROM c0campi 
+			WHERE c0c_tab1 is not null AND c0c_tip = 'E' 
+			AND (c0c_fs <> #formato1# OR c0c_fs <> #formato2#)
+			AND coc_mne_uni not like #schemaViste# $escapeSchemaViste$
+			AND coc_mne_uni like #entita# $escapeEntita$
+			ORDER BY coc_des ASC
+		 ]]>
+	</select>
+	
+	<update id="updateDescTabellatoTab1" parameterClass="java.util.HashMap">
+    	UPDATE TAB1 SET TAB1DESC = #valoreCampo# WHERE TAB1COD = #valoreChiave1# AND TAB1TIP = #valoreChiave2#
+  	</update>
+  	
+	<select id="getTabellatiWsdm" resultMap="resultTabellatoWsdm" parameterClass="java.util.HashMap">
+		SELECT ID, IDCFTAB, IDCONFI, CODICE, SISTEMA, DESCRI, VALORE, ISARCHI
+		FROM WSDMTAB
+		WHERE IDCONFI = #idconfi# 
+		and SISTEMA = #sistema# 
+		and CODICE = #codice#
+		and (ISARCHI = '2' or ISARCHI is null)
+		ORDER BY numord, valore ASC
+	</select>
+	
+	<select id="getTabellatiFromIdconfiCftab" resultMap="resultTabellatoWsdm" parameterClass="java.util.HashMap">
+		SELECT ID, IDCFTAB, IDCONFI,CODICE, SISTEMA, DESCRI, VALORE, ISARCHI
+		FROM WSDMTAB
+		WHERE IDCONFI = #idconfi# 
+		and IDCFTAB = #idcftab#
+		and (ISARCHI = '2' or ISARCHI is null)
+		ORDER BY numord, valore ASC
+	</select>
+	
+	<select id="getElencoTabellatiWsdm" resultMap="resultTabellatiCfWsdm" parameterClass="java.util.HashMap">
+		SELECT CODICE, DESCRI
+		FROM WSDMCFTAB
+		WHERE CODAPP = #codapp# 
+		and SISTEMA = #sistema# 
+		and IDCONFI = #idconfi# 
+		and (ISARCHI = '2' or ISARCHI is null)
+		ORDER BY numord, valore ASC
+	</select>
+
+</sqlMap>

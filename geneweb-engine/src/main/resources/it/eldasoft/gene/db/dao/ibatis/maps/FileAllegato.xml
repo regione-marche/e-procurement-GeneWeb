@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="W_DOCDIG">
+
+	<resultMap id="resultBINARY" class="it.eldasoft.gene.db.domain.BlobFile">
+		<result property="stream" column="DIGOGG" columnIndex="1" jdbcType="BINARY"/>
+		<result property="nome" column="DIGNOMDOC" columnIndex="2"/>
+	</resultMap>
+ 	
+	<sql id="selectLista">
+		SELECT DIGOGG, DIGNOMDOC FROM W_DOCDIG WHERE IDPRG = #idprg# AND IDDOCDIG = #iddocdig#
+	</sql>
+	
+	<sql id="selectListaFromExternalReference">
+		SELECT DIGOGG, DIGNOMDOC FROM W_DOCDIG 
+			WHERE IDPRG = #idprg# 
+			AND DIGENT = #digent#
+			AND DIGKEY1 = #digkey1#
+			<isNotEmpty property="digkey2" prepend="AND">
+				DIGKEY2 = #digkey2#
+			</isNotEmpty>
+			<isNotEmpty property="digkey3" prepend="AND">
+				DIGKEY3 = #digkey3#
+			</isNotEmpty>
+			<isNotEmpty property="digkey4" prepend="AND">
+				DIGKEY4 = #digkey4#
+			</isNotEmpty>
+			<isNotEmpty property="digkey5" prepend="AND">
+				DIGKEY5 = #digkey5#
+			</isNotEmpty>
+	</sql>
+
+	<select id="getFileAllegato" parameterClass="java.util.HashMap" resultMap="resultBINARY">
+		<include refid="selectLista"/>
+	</select>
+	
+	<select id="getFileAllegatoFromExternalReference" parameterClass="java.util.HashMap" resultMap="resultBINARY">
+		<include refid="selectListaFromExternalReference"/>
+	</select>
+	
+	<insert id="insertFileAllegatoAssociaModello" parameterClass="java.util.HashMap">
+  		INSERT INTO W_DOCDIG (IDPRG, IDDOCDIG, DIGENT, DIGKEY1, DIGOGG) VALUES (#idprg:VARCHAR#, #iddocdig:NUMERIC#, #digent:VARCHAR#, #digkey1:VARCHAR#, #digogg:BINARY#)
+  	</insert>
+	
+</sqlMap>

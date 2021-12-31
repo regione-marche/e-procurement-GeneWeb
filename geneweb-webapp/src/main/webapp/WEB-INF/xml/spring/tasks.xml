@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ============ TASK SCHEDULING ============ -->
+	
+	<bean class="it.eldasoft.gene.commons.web.spring.SchedulerFactoryBeanWithWait" id="quartzFactory">
+		<property name="triggers">
+			<list>
+				<ref bean="reportSchedulerTrigger"/>
+				<ref bean="inviaComunicazioneSchedulerTrigger" />
+				<ref bean="ricalcoloScadenzariSchedulerTrigger" />
+				<ref bean="notificaPromemoriaScadenzariSchedulerTrigger" />
+				<ref bean="art80GetStatusAllTrigger" />
+				<ref bean="impostaStatoVerificheSchedulerTrigger" />
+			</list>
+		</property>
+		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+	</bean>
+
+</beans>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+<!--
+     This is a blank Tiles definition file with a commented example.
+-->
+
+<tiles-definitions>
+
+    <!-- sample tiles definitions
+    <definition name=".mainLayout" path="/common/layouts/classicLayout.jsp">
+        <put name="title"  value="Sample Page Title" />
+        <put name="header" value="/common/header.jsp" />
+        <put name="menu"   value=".mainMenu" />
+        <put name="footer" value="/common/footer.jsp" />
+        <put name="body"   value=".portal.body" />
+    </definition>
+
+    <definition name=".mainMenu" path="/common/layouts/vboxLayout.jsp" >
+        <putList name="list" >
+            <add value=".menu.links" />
+            <add value=".menu.taglib.references" />
+            <add value=".menu.printer.friendly" />
+            <add value=".menu.old.documents" />
+      </putList>
+    </definition>
+
+    <definition name="aPage" extends=".mainLayout">
+        <put name="title"  value="Another Title" />
+        <put name="body"   value=".aPage.body" />
+    </definition>
+
+    end samples -->
+
+<!--  Gen Modeli: pagina di ricerca dei modelli esistenti  -->
+	<definition name="trovaModelliDef" extends=".trovaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headTrovaModelli.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniTrovaModelli.jsp"/>
+		<put name="titoloMaschera" value="Ricerca modelli" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/formTrovaModelli.jsp"/>
+	</definition>	
+
+<!--  Gen Modelli: pagina di lista dei modelli esistenti  -->
+
+	<definition name="listaModelliDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headListaModelli.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniListaModelli.jsp"/>
+		<put name="titoloMaschera" value="Lista modelli" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/listaModelli.jsp"/>
+	</definition>	
+
+	<definition name="dettaglioModelloDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headDettaglioModello.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniDettaglioModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/titoloDettaglioModello.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genmod/tabDettaglioModello.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genmod/dettaglioModello.jsp"/>
+	</definition>  
+
+	<definition name="dettaglioModificaModelloDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headDettaglioModello.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initComboTabella();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniDettaglioModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/titoloDettaglioModello.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genmod/tabDettaglioModello.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genmod/dettaglioModificaModello.jsp"/>
+	</definition>  
+
+	<definition name="creaFiltroEntitaDef" extends=".popupDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headFiltroEntitaPrincipale.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();findTableDatiLista();initPagina();'"/>
+		<put name="titoloMaschera" value="Imposta filtro sull'entita'" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/formFiltroEntitaPrincipale.jsp"/>
+	</definition>
+
+	<definition name="dettaglioGruppiModelloDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headDettaglioModello.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniDettaglioModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/titoloDettaglioModello.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genmod/tabDettaglioModello.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genmod/listaGruppiModello.jsp"/>
+	</definition>
+
+	<definition name="dettaglioModificaGruppiModelloDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headDettaglioModello.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniDettaglioModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/titoloDettaglioModello.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genmod/tabDettaglioModello.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genmod/listaModificaGruppiModello.jsp"/>
+	</definition>
+
+	<definition name="listaParametriModelloDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headParametroModello.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniParametroModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/titoloDettaglioModello.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genmod/tabDettaglioModello.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genmod/listaParametriModello.jsp"/>
+	</definition>
+
+	<definition name="editParametroModelloDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/headParametroModello.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();attivaMenu();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genmod/azioniParametroModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/titoloDettaglioModello.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genmod/tabDettaglioModello.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genmod/editParametroModello.jsp"/>
+	</definition>
+
+	<!--  Definizione delle pagine per import / export -->
+
+	<definition name="sceltaImportExportModelliDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headSceltaImportExport.jsp"/>
+    <put name="titoloMaschera" value="Scelta operazione" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/sceltaImportExport.jsp"/>
+	</definition>
+
+	<!--  Pagina copiata da trovaRicercheDef, cambiando solo il file
+				headTrovaRicerche.jsp con headTrovaRicercheExport.jsp  -->
+	<definition name="trovaModelliExportDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headTrovaModelliExport.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardExportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/formTrovaModelliExport.jsp"/>
+	</definition>
+
+	<definition name="listaModelliExportDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headListaModelliExport.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardExportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/listaModelliExport.jsp"/>
+	</definition>
+	
+	<!--  Definizione delle pagine per il wizard di import report  -->
+
+<!-- Pagina definizione dell'upload del file XML contenente la ricerca da importare -->
+	<definition name="uploadDefinizioneImportModelloDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headUploadDefinizioneModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardImportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/uploadDefinizioneModello.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei dati generali della Modello da importare-->
+	<definition name="datiGeneraliImportModelloDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headDatiGeneraliModello.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();mostraNuovoTitolo(0);'"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardImportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/datiGeneraliModello.jsp"/>
+	</definition>
+
+<!-- Pagina definizione della pubblicazione della Modello -->
+	<definition name="pubblicaImportModelloDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headPubblicaModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardImportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/pubblicaModello.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei gruppi della Modello -->
+	<definition name="gruppiImportModelloDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headGruppiModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardImportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/gruppiModello.jsp"/>
+	</definition>
+
+	<definition name="errorImportModelloDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headErrorImportModello.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genmod/impexp/titoloWizardImportModelli.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/gene/commons/vuoto.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genmod/base/wizard/errorImportModello.jsp"/>
+	</definition>
+
+	<definition name="successImportModelloDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genmod/impexp/headSuccessImportModello.jsp"/>
+    <put name="titoloMaschera" value="Import/Export definizione modello" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genmod/impexp/successImportModello.jsp"/>
+	</definition>
+</tiles-definitions>

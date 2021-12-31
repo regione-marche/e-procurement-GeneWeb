@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="InvioComunicazioni">
+
+	<resultMap id="modelloComunicazione" class="it.eldasoft.gene.db.domain.invcom.ModelloComunicazione">
+		<result property="pk" column="NUMPRO"/>
+		<result property="genere" column="GENERE"/>
+		<result property="titolo" column="MODTIT"/>
+		<result property="descrizione" column="MODDESC"/>
+		<result property="numeroOrdine" column="NUMORD"/>
+		<result property="abilitaIntestazioneVariabile" column="COMINTEST"/>
+		<result property="oggetto" column="COMMSGOGG"/>
+		<result property="testo" column="COMMSGTES"/>
+		<result property="filtroSoggetti" column="FILTROSOG"/>
+		<result property="criterioComposizione" column="CRITTES"/>
+	</resultMap>
+
+	<insert id="insertComunicazione" parameterClass="it.eldasoft.gene.db.domain.invcom.InvioComunicazione">
+	INSERT INTO W_INVCOM (IDPRG,IDCOM,COMENT,COMKEY1,COMKEY2,COMKEY3,COMKEY4,COMKEY5,COMCODOPE,COMDATINS,COMMITT,COMSTATO,COMINTEST,COMMSGOGG,COMMSGTES,COMMSGTIP,COMMODELLO,COMTIPO,COMPUB,COMDATAPUB,COMDATASTATO,COMNUMPROT,COMDATPROT,IDCFG) 
+	VALUES (#pk.idProgramma#, #pk.idComunicazione#, #entita#, #chiave1:VARCHAR#, #chiave2:VARCHAR#, #chiave3:VARCHAR#, #chiave4:VARCHAR#, #chiave5:VARCHAR#, #codiceOperatore:NUMERIC#, #dataInserimento:TIMESTAMP#, #nomeMittente:VARCHAR#, #stato#, #abilitaIntestazioneVariabile:VARCHAR#, #oggetto#, #testo#, #testoHtml:VARCHAR#, #idModello:NUMERIC#, #tipoRichiesta:VARCHAR#, #comunicazionePubblica:NUMERIC#, #dataPubblicazione:TIMESTAMP#, #dataAggiornamentoStato:TIMESTAMP#, #numeroProtocollo:VARCHAR#, #dataProtocollo:TIMESTAMP#, #idcfg:VARCHAR#)
+	</insert>
+	
+	<insert id="insertDestinatarioComunicazione" parameterClass="it.eldasoft.gene.db.domain.invcom.DestinatarioComunicazione">
+	INSERT INTO W_INVCOMDES (IDPRG,IDCOM,IDCOMDES,DESCODENT,DESCODSOG,DESMAIL,COMTIPMA,DESDATINV,DESDATINV_S,DESSTATO,DESERRORE,DESINTEST) 
+	VALUES (#pk.idProgramma#, #pk.idComunicazione#, #pk.idDestinatario#, #entitaArchivioDestinatario:VARCHAR#, #codiceSoggettoArchivio:VARCHAR#, #indirizzo#, #tipoIndirizzo:INTEGER#, #dataOraInvio:TIMESTAMP#, #dataOraInvioStringa:VARCHAR#,#statoComunicazione:VARCHAR#, #errore:VARCHAR#, #intestazione:VARCHAR#)
+	</insert>
+
+	<update id="updateStatoComunicazione" parameterClass="java.util.HashMap">
+	UPDATE W_INVCOM SET COMSTATO = #stato:VARCHAR# WHERE IDPRG = #idProgramma# AND IDCOM = #idComunicazione#
+	</update>
+	
+	<update id="deleteDestinatariComunicazione" parameterClass="it.eldasoft.gene.db.domain.invcom.PKInvioComunicazione">
+	DELETE FROM W_INVCOMDES WHERE IDPRG = #idProgramma# AND IDCOM = #idComunicazione#
+	</update>
+	
+	<select id="getModelloComunicazioneByGenere" resultMap="modelloComunicazione">
+	SELECT NUMPRO,GENERE,MODTIT,MODDESC,NUMORD,COMINTEST,COMMSGOGG,COMMSGTES,FILTROSOG,CRITTES FROM W_CONFCOM WHERE GENERE = #genere#
+	</select>
+	
+</sqlMap>

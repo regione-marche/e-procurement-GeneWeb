@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SchedRic">
+
+	<resultMap id="resultPermessoEntita" class="it.eldasoft.gene.db.domain.permessi.PermessoEntita">
+    <result property="idPermesso" column="numper" columnIndex="1"/>
+    <result property="idAccount" column="syscon" columnIndex="2"/>
+    <result property="login" column="syslogin" columnIndex="3"/>
+    <result property="nome"	column="sysute" columnIndex="4"/>
+	<result property="autorizzazione" column="autori" columnIndex="5" />
+	<result property="proprietario" column="propri" columnIndex="6" />
+	<result property="valoreChiave" column="valorechiave" columnIndex="7" />
+	<result property="ruolo" column="meruolo" columnIndex="8" />
+	<result property="ruoloUsrsys" column="ruolousrsys" columnIndex="9" />
+	<result property="utenteDisabilitato" column="sysdisab" columnIndex="10" />
+	</resultMap>
+
+	<select id="getPermessoEntitaByIdAccount" resultMap="resultPermessoEntita" parameterClass="java.util.HashMap" >
+  	SELECT G_PERMESSI.NUMPER, USRSYS.SYSCON, USRSYS.syslogin, USRSYS.SYSUTE, G_PERMESSI.AUTORI, G_PERMESSI.PROPRI, G_PERMESSI.$campoChiave$ as VALORECHIAVE,
+  		G_PERMESSI.MERUOLO, USRSYS.MERUOLO as RUOLOUSRSYS, USRSYS.SYSDISAB   
+  	  FROM USRSYS, G_PERMESSI
+  	 WHERE USRSYS.SYSCON = G_PERMESSI.SYSCON
+  	 	 AND USRSYS.SYSCON = #idAccount#
+  	   AND G_PERMESSI.$campoChiave$	= #valoreChiave#
+  ORDER BY USRSYS.SYSUTE
+  </select>
+
+	<select id="getPermessiEntita" resultMap="resultPermessoEntita" parameterClass="java.util.HashMap" >
+  	SELECT G_PERMESSI.NUMPER, USRSYS.SYSCON, USRSYS.syslogin, USRSYS.SYSUTE, G_PERMESSI.AUTORI, G_PERMESSI.PROPRI, G_PERMESSI.$campoChiave$ as VALORECHIAVE,
+  		G_PERMESSI.MERUOLO, USRSYS.MERUOLO as RUOLOUSRSYS, USRSYS.SYSDISAB
+  	  FROM USRSYS, G_PERMESSI
+  	 WHERE USRSYS.SYSCON = G_PERMESSI.SYSCON
+  	   AND G_PERMESSI.$campoChiave$	= #valoreChiave#
+  ORDER BY USRSYS.SYSUTE
+  </select>
+
+	<select id="getPermessiEntitaUtenti" resultMap="resultPermessoEntita" parameterClass="java.util.HashMap" >
+ 	  SELECT G_PERMESSI.NUMPER, USRSYS.SYSCON as SYSCON, USRSYS.syslogin, USRSYS.SYSUTE, G_PERMESSI.AUTORI, G_PERMESSI.PROPRI, 
+	    <isPropertyAvailable property="adattaQueryPerDB2">
+		 	  CAST(G_PERMESSI.$campoChiave$ AS VARCHAR(30)) as VALORECHIAVE
+	    </isPropertyAvailable>
+	    <isNotPropertyAvailable property="adattaQueryPerDB2">
+	    	NULL as VALORECHIAVE
+	    </isNotPropertyAvailable>
+	    ,G_PERMESSI.MERUOLO, USRSYS.MERUOLO as RUOLOUSRSYS, USRSYS.SYSDISAB 
+	    FROM USRSYS, G_PERMESSI
+	    <isPropertyAvailable property="codein">
+		 	  , USR_EIN
+	    </isPropertyAvailable>
+	 WHERE USRSYS.SYSCON = G_PERMESSI.SYSCON
+  	   AND G_PERMESSI.$campoChiave$	= #valoreChiave#
+  	   <isPropertyAvailable property="codein">
+		 	  AND USR_EIN.SYSCON = USRSYS.SYSCON AND CODEIN=#codein#
+	    </isPropertyAvailable>
+  	   AND (USRSYS.SYSUFFAPP IS NULL OR USRSYS.SYSUFFAPP=(SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#)
+  	   OR (USRSYS.SYSUFFAPP IS NOT NULL AND (SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#) IS NULL))
+     UNION
+    SELECT 
+    <isPropertyAvailable property="adattaQueryPerDB2">
+    	CAST(NULL AS DECIMAL(12)),
+    </isPropertyAvailable>
+    <isNotPropertyAvailable property="adattaQueryPerDB2">
+    	NULL,
+    </isNotPropertyAvailable>
+    USRSYS.SYSCON as SYSCON, USRSYS.syslogin, USRSYS.SYSUTE,
+    
+    <isPropertyAvailable property="adattaQueryPerDB2">
+    	CAST(NULL AS DECIMAL(7)), CAST(NULL AS VARCHAR(1)), CAST(NULL AS VARCHAR(30)),CAST(NULL AS DECIMAL(7)), 
+    </isPropertyAvailable>
+    <isNotPropertyAvailable property="adattaQueryPerDB2">
+    	NULL, NULL, NULL, NULL,
+    </isNotPropertyAvailable>
+     USRSYS.MERUOLO as RUOLOUSRSYS, USRSYS.SYSDISAB 
+      FROM USRSYS
+    <isPropertyAvailable property="codein">
+	 	  , USR_EIN
+    </isPropertyAvailable>
+     WHERE
+      <isPropertyAvailable property="codein">
+		 	  USR_EIN.SYSCON = USRSYS.SYSCON AND CODEIN=#codein# and (
+	    </isPropertyAvailable>
+      (USRSYS.SYSUFFAPP IS NULL OR USRSYS.SYSUFFAPP=(SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#)
+      OR (USRSYS.SYSUFFAPP IS NOT NULL AND (SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#) IS NULL))
+      AND USRSYS.SYSCON NOT IN (
+           SELECT USRSYS.SYSCON
+             FROM USRSYS, G_PERMESSI
+            WHERE USRSYS.SYSCON = G_PERMESSI.SYSCON
+            AND G_PERMESSI.$campoChiave$	= #valoreChiave#)
+      <isPropertyAvailable property="codein">
+	 	  )
+    </isPropertyAvailable>
+    AND (USRSYS.SYSDISAB is null or USRSYS.SYSDISAB !='1') 
+  ORDER BY SYSUTE
+ </select>
+
+	<delete id="deletePermessiByNumPer" parameterClass="java.util.HashMap">
+		DELETE FROM G_PERMESSI
+		 WHERE NUMPER IN
+ 		<iterate property="listaPermessiDaCancellare" open="(" close=")" conjunction=", " >
+	  	#listaPermessiDaCancellare[]#
+		</iterate>
+	</delete>
+
+	<update id="updatePermessoByNumPer">
+		UPDATE G_PERMESSI SET AUTORI=#autorizzazione#, PROPRI=#proprietario#, MERUOLO=#ruolo:NUMERIC#
+		WHERE NUMPER = #idPermesso#
+	</update>
+
+	<insert id="insertPermesso" parameterClass="java.util.HashMap">
+		INSERT INTO G_PERMESSI (NUMPER, SYSCON, AUTORI, PROPRI, $campoChiave$, MERUOLO) VALUES (#idPermesso#, #idAccount#, #autorizzazione#, #proprietario#, #valoreChiave#, #ruolo:NUMERIC#)
+	</insert>
+
+	<select id="getNumeroPermessiPredefiniti" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(NUMPER) FROM G_PERMESSI WHERE SYSRIF=#riferimento# AND PREDEF=#predefinito#
+	</select>
+
+	<insert id="insertPermessoPredefinito" parameterClass="java.util.HashMap">
+		INSERT INTO G_PERMESSI (NUMPER, SYSCON, AUTORI, PROPRI, SYSRIF, PREDEF) VALUES (#idPermesso#, #idAccount#, #autorizzazione#, #proprietario#, #riferimento#, #predefinito#)
+	</insert>
+
+	<delete id="deletePermessiPredefiniti" parameterClass="java.util.HashMap" >
+		DELETE FROM G_PERMESSI
+		 WHERE SYSRIF=#riferimento#
+		   AND PREDEF=#predefinito#
+	</delete>
+
+</sqlMap>

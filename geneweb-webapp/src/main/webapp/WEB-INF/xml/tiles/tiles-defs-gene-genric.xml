@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+<!--
+     This is a blank Tiles definition file with a commented example.
+-->
+
+<tiles-definitions>
+
+    <!-- sample tiles definitions
+    <definition name=".mainLayout" path="/common/layouts/classicLayout.jsp">
+        <put name="title"  value="Sample Page Title" />
+        <put name="header" value="/common/header.jsp" />
+        <put name="menu"   value=".mainMenu" />
+        <put name="footer" value="/common/footer.jsp" />
+        <put name="body"   value=".portal.body" />
+    </definition>
+
+    <definition name=".mainMenu" path="/common/layouts/vboxLayout.jsp" >
+        <putList name="list" >
+            <add value=".menu.links" />
+            <add value=".menu.taglib.references" />
+            <add value=".menu.printer.friendly" />
+            <add value=".menu.old.documents" />
+      </putList>
+    </definition>
+
+    <definition name="aPage" extends=".mainLayout">
+        <put name="title"  value="Another Title" />
+        <put name="body"   value=".aPage.body" />
+    </definition>
+
+    end samples -->
+
+<!--  Gen Ricerche: pagina di ricerca delle ricerche esistenti  -->
+	<definition name="trovaRicercheDef" extends=".trovaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/headTrovaRicerche.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/azioniTrovaRicerche.jsp"/>
+		<put name="titoloMaschera" value="Ricerca report" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/formTrovaRicerche.jsp"/>
+	</definition>	
+
+<!--  Gen Ricerche: pagina di lista delle ricerche esistenti  -->
+	<definition name="listaRicercheDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/headListaRicerche.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/azioniListaRicerche.jsp"/>
+		<put name="titoloMaschera" value="Lista report" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/listaRicerche.jsp"/>
+	</definition>	
+	
+<!-- Gen Ricerche: pagina per la scelta del tipo di report da creare -->
+	<definition name="creaNuovaRicercaDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/headCreaNuovaRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/azioniCreaNuovaRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloCreaNuovaRicerca.jsp" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/creaNuovaRicerca.jsp"/>
+	</definition>
+
+<!-- ****************************************************************** -->
+<!-- ****************** Pagine per Ricerca avanzata ******************* -->
+<!-- ****************************************************************** -->
+
+<!--  Dettaglio Ricerca: Dati Generali  -->
+	<definition name="dettaglioDatiGenRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/datigen/headDettaglioDatiGenRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/datigen/azioniDettaglioDatiGenRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/datigen/dettaglioDatiGenRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Dati Generali -->
+	<definition name="editDatiGenRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/datigen/headEditDatiGenRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/datigen/azioniEditDatiGenRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/datigen/formEditDatiGenRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Lista Gruppi associati alla ricerca -->
+	<definition name="listaGruppiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/gruppi/headListaGruppiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniListaGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/listaGruppiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: edit dell'associazione dei gruppi con la ricerca in analisi -->
+	<definition name="associazioneGruppiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/gruppi/headGruppiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/formGruppiRicerca.jsp"/>
+	</definition>
+
+<!-- Dettaglio di un gruppo associato ad una ricerca -->
+	<definition name="dettaglioGruppoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/gruppi/headDettaglioGruppoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniDettaglioGruppoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/dettaglioGruppoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Lista Argomenti associati alla ricerca -->
+	<definition name="listaArgomentiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/argomenti/headListaArgomentiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/argomenti/azioniListaArgomentiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/argomenti/listaArgomentiRicerca.jsp"/>
+	</definition>
+	
+<!--  Dettaglio Ricerca: creazione di un Argomento ed associazione dello stesso ad una ricerca  -->
+	<definition name="addArgomentoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/argomenti/headAddArgomentoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/argomenti/azioniAddArgomentoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/argomenti/addArgomentoRicerca.jsp"/>
+	</definition>
+		
+<!--  Dettaglio Ricerca: Edit di un Argomento di una ricerca  -->
+	<definition name="editArgomentoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/argomenti/headEditArgomentoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/argomenti/azioniEditArgomentoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/argomenti/formEditArgomentoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Campi  -->
+	<definition name="listaCampiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headListaCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/campi/azioniListaCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/campi/listaCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: creazione di un Campo ed associazione dello stesso ad una ricerca  -->
+	<definition name="addCampoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headAddCampoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/campi/azioniAddCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/campi/addCampoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Edit di un Campo di una ricerca  -->
+	<definition name="editCampoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headEditCampoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/campi/azioniEditCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/campi/formEditCampoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Inserimento multiplo di campi -->
+	<definition name="addElencoCampiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headAddElencoCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/campi/azioniAddElencoCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/campi/addElencoCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Trova campo -->
+	<definition name="trovaCampoRicercaDef" extends=".popupDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headTrovaCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="Trova campo" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/campi/formTrovaCampoRicerca.jsp"/>
+	</definition>
+	
+<!--  Dettaglio ricerca: Risultato trova campo -->	
+	<definition name="risultatoTrovaCampoRicercaDef" extends=".popupDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headRisultatoTrovaCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="Campi trovati" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/campi/formRisultatoTrovaCampoRicerca.jsp"/>
+	</definition>
+	
+<!--  Dettaglio Ricerca: Giunzioni  -->
+	<definition name="listaGiunzioniRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/giunzioni/headListaGiunzioniRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/giunzioni/azioniListaGiunzioniRicerca.jsp"/>
+    <put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+   	<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+    <put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/giunzioni/listaGiunzioniRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Giunzione -->
+	<definition name="editGiunzioneRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/giunzioni/headEditGiunzioneRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/giunzioni/azioniEditGiunzioneRicerca.jsp"/>
+	    <put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+	    <put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+	    <put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/giunzioni/formEditGiunzioneRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Parametri -->
+	<definition name="listaParametriRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/parametri/headListaParametriRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniListaParametriRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/parametri/listaParametriRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Aggiungi Parametro -->
+	<definition name="addParametroRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/parametri/headAddParametroRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageParametro();'" />
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniAddParametroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/parametri/addParametroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Parametro -->
+	<definition name="editParametroRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/parametri/headEditParametroRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniEditParametroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/parametri/formEditParametroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Filtri  -->
+	<definition name="listaFiltriRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/filtri/headListaFiltriRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/filtri/azioniListaFiltriRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/filtri/listaFiltriRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Aggiungi Filtro -->
+	<definition name="addFiltroRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/filtri/headAddFiltroRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageFiltro();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/filtri/azioniAddFiltroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/filtri/addFiltroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Filtri -->
+	<definition name="editFiltroRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/filtri/headEditFiltroRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageFiltro();selezionaCombo();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/filtri/azioniEditFiltroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/filtri/formEditFiltroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Ordinamenti -->
+	<definition name="listaOrdinamentiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/ordinamenti/headListaOrdinamentiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/ordinamenti/azioniListaOrdinamentiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/ordinamenti/listaOrdinamentiRicerca.jsp"/>
+	</definition>
+
+	<definition name="helpListaValoriFiltroRicercaDef" extends=".popupDef">
+		<put name="titoloMaschera" value="Guida" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/filtri/helpListaValoriFiltroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Aggiungi Ordinamento -->
+	<definition name="addOrdinamentoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/ordinamenti/headAddOrdinamentoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/ordinamenti/azioniAddOrdinamentoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/ordinamenti/addOrdinamentoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Ordinamento -->
+	<definition name="editOrdinamentoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/ordinamenti/headEditOrdinamentoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/ordinamenti/azioniEditOrdinamentoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/ordinamenti/formEditOrdinamentoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Layout -->
+	<definition name="listaTitoliCampiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/layout/headListaTitoliCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/layout/azioniListaTitoliCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/layout/listaTitoliCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit di tutti i titoli dei campi della ricerca -->
+	<definition name="editTitoliCampiRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/layout/headEditTitoliCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/layout/azioniEditTitoliCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/layout/formEditTitoliCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Titoli dei campi della ricerca -->
+	<definition name="editTitoloCampoRicercaDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/layout/headEditTitoloCampoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/layout/azioniEditTitoloCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/layout/formEditTitoloCampoRicerca.jsp"/>
+	</definition>
+
+<!-- *********************************************************************** -->
+<!-- ****************** Fine pagine per Ricerca avanzata ******************* -->
+<!-- *********************************************************************** -->
+
+<!-- *********************************************************************** -->
+<!-- ****************   Pagine per estrazione ricerche   ******************* -->
+<!-- *********************************************************************** -->
+<!--  Gen Ricerche: pagina di lista delle ricerche esistenti  -->
+	<definition name="listaRicerchePredefiniteDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/headListaRicerchePredefinite.jsp"/>
+    <put name="titoloMaschera" value="Report predefiniti" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/listaRicerchePredefinite.jsp"/>
+	</definition>	
+	
+	<definition name="setParametriRicercaPredefinitaDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/headSetParametriRicercaPredefinita.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/azioniSetParametriRicercaPredefinita.jsp"/>
+    <put name="titoloMaschera" value="Parametri report" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/formSetParametriRicercaPredefinita.jsp"/>
+	</definition>
+	
+	<definition name="setParametriRicercaDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/headSetParametriRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/azioniSetParametriRicerca.jsp"/>
+    <put name="titoloMaschera" value="Parametri report" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/formSetParametriRicerca.jsp"/>
+	</definition>
+	
+<!--  Gen Ricerche: Risultati della Ricerca -->
+	<definition name="risultatoRicercaDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/risultato/headRisultatoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/risultato/azioniRisultatoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/risultato/titoloRisultatoRicerca.jsp" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/risultato/risultatoRicerca.jsp"/>
+	</definition>	
+
+<!--  Gen Ricerche: Risultati della Ricerca Predefinita -->
+	<definition name="risultatoRicercaPredefinitaDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/risultato/headRisultatoRicercaPredefinita.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/risultato/azioniRisultatoRicercaPredefinita.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/risultato/titoloRisultatoRicerca.jsp" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/risultato/risultatoRicerca.jsp"/>
+	</definition>
+<!-- *********************************************************************** -->
+<!-- *************   Fine pagine per estrazione ricerche   ***************** -->
+<!-- *********************************************************************** -->
+
+<!-- *********************************************************************** -->
+<!-- ****************** Pagine per Ricerca con prospetto ******************* -->
+<!-- *********************************************************************** -->
+<!--  Dettaglio Ricerca: Dati Generali di una ricerca con prospetto -->
+	<definition name="dettaglioDatiGenProspettoDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headDettaglioDatiGenProspetto.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniDettaglioDatiGenProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDettaglioRicercaProspetto.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/prospetto/tabDettaglioProspetto.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/prospetto/dettaglioDatiGenProspetto.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Dati Generali di una ricerca con prospetto -->
+	<definition name="editDatiGenProspettoDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headEditDatiGenProspetto.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initComboTabella();initSorgenteDati();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniEditDatiGenProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDettaglioRicercaProspetto.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/prospetto/tabDettaglioProspetto.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/prospetto/formEditDatiGenProspetto.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Lista Gruppi associati alla ricerca con prospetto -->
+	<definition name="listaGruppiProspettoDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headListaGruppiProspetto.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniListaGruppiProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDettaglioRicercaProspetto.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/prospetto/tabDettaglioProspetto.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/prospetto/listaGruppiProspetto.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: edit dell'associazione dei gruppi con la ricerca con prospetto in analisi -->
+	<definition name="associazioneGruppiProspettoDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headGruppiProspetto.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniGruppiProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDettaglioRicercaProspetto.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/prospetto/tabDettaglioProspetto.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/prospetto/formGruppiProspetto.jsp"/>
+	</definition>
+
+	<definition name="listaParametriProspettoDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headListaParametriProspetto.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniListaParametriProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDettaglioRicercaProspetto.jsp" />
+	  <put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/prospetto/tabDettaglioProspetto.jsp"/>
+	  <put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/prospetto/listaParametriProspetto.jsp"/>
+	</definition>
+
+	<definition name="editParametroProspettoDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headEditParametroProspetto.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();attivaMenu();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniEditParametroProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDettaglioRicercaProspetto.jsp" />
+	  <put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/prospetto/tabDettaglioProspetto.jsp"/>
+	  <put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/prospetto/formEditParametroProspetto.jsp"/>
+	</definition>
+
+	<definition name="setParametriProspettoDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headSetParametriProspetto.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniSetParametriProspetto.jsp"/>
+    <put name="titoloMaschera" value="Parametri report" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/formSetParametriProspetto.jsp"/>
+	</definition>
+
+	<definition name="composizioneInCorsoDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headComposizioneInCorso.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();gestisciSubmit();'"/>
+    <put name="titoloMaschera" value="Esecuzione report con modello" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/composizioneInCorso.jsp"/>
+	</definition>
+
+	<definition name="downloadProspettoCompostoDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headDowloadRisultatoProspetto.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();downloadFile();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniDownloadRisultatoProspetto.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDownloadRisultatoProspetto.jsp" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/downloadRisultatoProspetto.jsp"/>
+	</definition>
+
+	<definition name="setParametriProspettoPredifinitoDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headSetParametriProspettoPredefinito.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniSetParametriProspettoPredefinito.jsp"/>
+    <put name="titoloMaschera" value="Parametri report" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/formSetParametriProspettoPredefinito.jsp"/>
+	</definition>
+
+	<definition name="composizioneInCorsoPredefinitoDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headComposizioneInCorso.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();gestisciSubmit();'"/>
+    <put name="titoloMaschera" value="Esecuzione report con modello" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/composizioneInCorsoPredefinito.jsp"/>
+	</definition>
+
+	<definition name="downloadProspettoCompostoPredefinitoDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headDowloadRisultatoProspettoPredefinito.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();downloadFile();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniDownloadRisultatoProspettoPredefinito.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/prospetto/titoloDownloadRisultatoProspetto.jsp" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/downloadRisultatoProspettoPredefinito.jsp"/>
+	</definition>
+
+	<definition name="errorComposizioneDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/prospetto/headErrorComposizioneProspetto.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/prospetto/azioniErrorComposizioneProspetto.jsp"/>
+		<put name="titoloMaschera" value="Errore durante l'esecuzione del report con modello" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/prospetto/errorComposizioneProspetto.jsp"/>
+	</definition>
+
+<!-- *********************************************************************** -->
+<!-- ******************     Pagine per Ricerca Base     ******************** -->
+<!-- *********************************************************************** -->
+
+<!-- Definizione delle pagine del wizard per la creazione di una ricerca base -->
+
+<!-- Pagina definizione dell'argomento -->
+	<definition name="argomentoRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headArgomentoRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp"/>
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    	<put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/argomentoRicercaBase.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei campi della ricerca -->
+	<definition name="campiRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headCampiRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/campiRicercaBase.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei filtri della ricerca -->
+
+	<definition name="domandaFiltroRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headDomandaFiltroRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/domandaFiltroRicercaBase.jsp"/>
+	</definition>
+	
+	<definition name="filtriRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headAddFiltroRicercaBase.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageFiltro();'"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/addFiltroRicercaBase.jsp"/>
+	</definition>
+	
+	<definition name="riepilogoFiltriRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headListaFiltriRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/listaFiltriRicercaBase.jsp"/>
+	</definition>
+	
+<!-- Pagina definizione degli ordinamenti della ricerca -->
+
+	<definition name="domandaOrdinamentoRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headDomandaOrdinamentoRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/domandaOrdinamentoRicercaBase.jsp"/>
+	</definition>
+
+	<definition name="ordinamentiRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headAddOrdinamentoRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/addOrdinamentoRicercaBase.jsp"/>
+	</definition>
+
+	<definition name="riepilogoOrdinamentiRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headListaOrdinamentiRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/listaOrdinamentiRicercaBase.jsp"/>
+	</definition>
+
+<!-- Pagina definizione del layout della ricerca -->
+	<definition name="layoutRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headLayoutRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/layoutRicercaBase.jsp"/>
+	</definition>
+
+<!-- Pagina definizione della pubblicazione della ricerca -->
+	<definition name="pubblicaRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headPubblicaRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/pubblicaRicercaBase.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei gruppi della ricerca -->
+	<definition name="gruppiRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headGruppiRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/gruppiRicercaBase.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei dati generali della ricerca -->
+	<definition name="datiGeneraliRicercaBaseDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/wizard/headDatiGeneraliRicercaBase.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/wizard/titoloRicercaBase.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/datiGeneraliRicercaBase.jsp"/>
+	</definition>
+<!-- Fine definizione delle pagine del wizard per creazione ricerche base -->
+
+<!--  Dettaglio Ricerca: Dati Generali della ricerca base -->
+	<definition name="dettaglioDatiGenRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headDettaglioDatiGenRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();avviaRicerca();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/datigen/azioniDettaglioDatiGenRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/datigen/dettaglioDatiGenRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Dati Generali della ricerca base -->
+	<definition name="editDatiGenRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headEditDatiGenRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/datigen/azioniEditDatiGenRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/datigen/formEditDatiGenRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Lista Gruppi associati alla ricerca base -->
+	<definition name="listaGruppiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headListaGruppiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniListaGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/listaGruppiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: edit dell'associazione dei gruppi con la ricerca base in analisi -->
+	<definition name="associazioneGruppiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headGruppiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/formGruppiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Campi di una ricerca base  -->
+	<definition name="listaCampiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headListaCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/base/azioniListaCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/listaCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: creazione di un Campo ed associazione dello stesso ad una ricerca base -->
+	<definition name="addCampoRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/campi/headAddCampoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/campi/azioniAddCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/campi/addCampoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Inserimento multiplo di campi della ricerca base -->
+	<definition name="addElencoCampiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headAddElencoCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/base/azioniAddElencoCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/addElencoCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca: Filtri della ricerca base -->
+	<definition name="listaFiltriRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headListaFiltriRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/filtri/azioniListaFiltriRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/listaFiltriRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Aggiungi Filtro della ricerca base -->
+	<definition name="addFiltroRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headAddFiltroRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageFiltro();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/filtri/azioniAddFiltroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/addFiltroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Filtri della ricerca base -->
+	<definition name="editFiltroRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headEditFiltroRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageFiltro();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/filtri/azioniEditFiltroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/formEditFiltroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Ordinamenti della ricerca base -->
+	<definition name="listaOrdinamentiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headListaOrdinamentiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/ordinamenti/azioniListaOrdinamentiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/listaOrdinamentiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Aggiungi Ordinamento della ricerca base -->
+	<definition name="addOrdinamentoRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headAddOrdinamentoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/ordinamenti/azioniAddOrdinamentoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/addOrdinamentoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit  della ricerca base  -->
+	<definition name="editOrdinamentoRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headEditOrdinamentoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/ordinamenti/azioniEditOrdinamentoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/formEditOrdinamentoRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Layout della ricerca base -->
+	<definition name="listaTitoliCampiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headListaTitoliCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/layout/azioniListaTitoliCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/listaTitoliCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit di tutti i titoli dei campi della ricerca -->
+	<definition name="editTitoliCampiRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headEditTitoliCampiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/layout/azioniEditTitoliCampiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/formEditTitoliCampiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca: Edit Titoli dei campi della ricerca base -->
+	<definition name="editTitoloCampoRicercaBaseDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/base/headEditTitoloCampoRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/layout/azioniEditTitoloCampoRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/base/titoloDettaglioRicercaBase.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/base/tabDettaglioRicercaBase.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/base/formEditTitoloCampoRicerca.jsp"/>
+	</definition>
+	
+<!--  Definizione delle pagine per import / export -->
+
+	<definition name="sceltaImportExportDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headSceltaImportExport.jsp"/>
+    <put name="titoloMaschera" value="Scelta operazione" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/sceltaImportExport.jsp"/>
+	</definition>
+
+	<!--  Pagina copiata da trovaRicercheDef, cambiando solo il file
+				headTrovaRicerche.jsp con headTrovaRicercheExport.jsp  -->
+	<definition name="trovaRicercheExportDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headTrovaRicercheExport.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardExportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/formTrovaRicercheExport.jsp"/>
+	</definition>
+
+	<definition name="listaRicercheExportDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headListaRicercheExport.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardExportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/listaRicercheExport.jsp"/>
+	</definition>
+
+<!--  Definizione delle pagine per il wizard di import report  -->
+
+<!-- Pagina definizione dell'upload del file XML contenente la ricerca da importare -->
+	<definition name="uploadDefinizioneImportRicercaDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headUploadDefinizioneRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardImportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/uploadDefinizioneRicerca.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei dati generali della ricerca da importare-->
+	<definition name="datiGeneraliImportRicercaDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headDatiGeneraliRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardImportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/datiGeneraliRicerca.jsp"/>
+	</definition>
+
+<!-- Pagina definizione della pubblicazione della ricerca -->
+	<definition name="pubblicaImportRicercaDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headPubblicaRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardImportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/pubblicaRicerca.jsp"/>
+	</definition>
+
+<!-- Pagina definizione dei gruppi della ricerca -->
+	<definition name="gruppiImportRicercaDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardImportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/avanzamentoWizard.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/gruppiRicerca.jsp"/>
+	</definition>
+
+	<definition name="errorImportRicercaDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headErrorImportRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/impexp/titoloWizardImportRicerca.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/commons/vuoto.jsp"/>
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/base/wizard/errorImportRicerca.jsp"/>
+	</definition>
+
+	<definition name="successImportRicercaDef" extends=".listaNoAzioniDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/impexp/headSuccessImportRicerca.jsp"/>
+    <put name="titoloMaschera" value="Import/Export definizione report" />
+    <put name="dettaglio" value="/WEB-INF/pages/gene/genric/impexp/successImportRicerca.jsp"/>
+	</definition>
+
+<!-- ********************************************************************** -->
+<!-- ******************     Pagine per Ricerca SQL     ******************** -->
+<!-- ********************************************************************** -->
+
+<!--  Dettaglio Ricerca SQL: Dati Generali  -->
+	<definition name="dettaglioDatiGenRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headDettaglioDatiGenRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/datigen/azioniDettaglioDatiGenRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/datigen/dettaglioDatiGenRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca SQL: Edit Dati Generali -->
+	<definition name="editDatiGenRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headEditDatiGenRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/datigen/azioniEditDatiGenRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/datigen/formEditDatiGenRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio Ricerca SQL: Lista Gruppi associati alla ricerca -->
+	<definition name="listaGruppiRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headListaGruppiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniListaGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/listaGruppiRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca SQL: edit dell'associazione dei gruppi con la ricerca -->
+	<definition name="associazioneGruppiRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headGruppiRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/gruppi/azioniGruppiRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/gruppi/formGruppiRicerca.jsp"/>
+	</definition>
+
+	<definition name="dettaglioSqlRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headDettaglioSqlRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/reportSql/azioniDettaglioSqlRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/reportSql/dettaglioSqlRicerca.jsp"/>
+	</definition>
+	
+	<definition name="formEditSqlRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headEditSqlRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/reportSql/azioniEditSqlRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/reportSql/formEditSqlRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca SQL: lista Parametri -->
+	<definition name="listaParametriRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headListaParametriRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniListaParametriRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/parametri/listaParametriRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca SQL: dettaglio di un parametro -->
+	<definition name="dettaglioParametroRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headDettaglioSqlRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniDettaglioSqlRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/reportSql/dettaglioSqlRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca SQL: Aggiungi Parametro -->
+	<definition name="addParametroRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headEditParametroRicerca.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();initPageParametro();'" />
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniEditParametroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/reportSql/formEditParametroRicerca.jsp"/>
+	</definition>
+
+<!--  Dettaglio ricerca SQL: Aggiungi/Edit Parametro -->
+	<definition name="editParametroRicercaSqlDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/genric/reportSql/headEditParametroRicerca.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/genric/parametri/azioniEditParametroRicerca.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/genric/reportSql/titoloDettaglioRicerca.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/genric/reportSql/tabDettaglioRicerca.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/genric/reportSql/formEditParametroRicerca.jsp"/>
+	</definition>
+
+</tiles-definitions>

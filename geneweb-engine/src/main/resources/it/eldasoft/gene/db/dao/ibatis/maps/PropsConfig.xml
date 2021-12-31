@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PropsConfig">
+
+  <resultMap id="result" class="it.eldasoft.gene.db.domain.PropsConfig">
+    <result property="codApp" column="codApp" columnIndex="1"/>
+    <result property="chiave" column="chiave" columnIndex="2"/>
+    <result property="valore" column="valore" columnIndex="3"/>
+  </resultMap>
+  
+  
+  <select id="getConfig" resultMap="result" parameterClass="java.util.HashMap">
+    SELECT codapp, chiave, valore
+      FROM w_config 
+      WHERE codapp = #codApp# AND chiave = #chiave#
+  </select>
+  
+  <select id="getConfigsByPrefix" resultMap="result" parameterClass="java.util.HashMap">
+    SELECT codapp, chiave, valore
+      FROM w_config 
+      WHERE codapp = #codApp# AND chiave LIKE #chiave#
+  </select>
+  
+  <select id="getConfigsByCodapp" resultMap="result" parameterClass="java.util.HashMap">
+    SELECT codapp, chiave, valore
+      FROM w_config 
+      WHERE codapp = #codApp#
+  </select>
+
+  <delete id="deleteConfigs" parameterClass="java.util.HashMap">
+   DELETE FROM w_config 
+      WHERE codapp = #codApp# AND chiave IN
+      <iterate property="chiave" open="(" close=")" conjunction=", " >
+		  #chiave[]#
+      </iterate>
+  </delete>
+  
+  <delete id="deleteConfigsByPrefix" parameterClass="java.util.HashMap">
+   DELETE FROM w_config WHERE codapp = #codApp# AND chiave LIKE #chiave#
+  </delete>
+  
+  <insert id="insertConfig" parameterClass="it.eldasoft.gene.db.domain.PropsConfig">
+  	INSERT INTO W_CONFIG (codapp,chiave,valore) VALUES (#codApp#, #chiave#, #valore:VARCHAR#)
+  </insert>
+  
+  <update id="updateConfig" parameterClass="it.eldasoft.gene.db.domain.PropsConfig">
+  	UPDATE W_CONFIG SET VALORE=#valore# WHERE CODAPP=#codApp# and chiave=#chiave#
+  </update>
+  
+</sqlMap>

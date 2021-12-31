@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context path="/${nomeWebapp}" useHttpOnly="true">
+
+	<Resource name="jdbc/${nomeWebapp}" 
+		auth="Container" 
+		type="javax.sql.DataSource" 
+		driverClassName=""
+		url="" 
+		username="" 
+		password="" 
+		autocommit="false"
+		maxActive="20" 
+		maxIdle="10" 
+		maxWait="-1" />
+
+	<!-- Connessione ORACLE -->
+	<!--
+	<Resource name="jdbc/${nomeWebapp}" 
+		auth="Container" 
+		type="javax.sql.DataSource" 
+		driverClassName="oracle.jdbc.driver.OracleDriver" 
+		url="jdbc:oracle:thin:@localhost:1521:XE" 
+		username="${nomeDB}" 
+		password="${nomeDB}" 
+		autocommit="false"
+		maxActive="20" 
+		maxIdle="10" 
+		maxWait="-1" />
+	-->
+
+	<!-- Connessione SQL SERVER -->
+	<!--
+	<Resource name="jdbc/${nomeWebapp}" 
+		auth="Container" 
+		type="javax.sql.DataSource" 
+		driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver" 
+		url="jdbc:sqlserver://localhost:1433;databaseName=${nomeDB}" 
+		username="${nomeDB}" 
+		password="${nomeDB}" 
+		autocommit="false"
+		maxActive="20" 
+		maxIdle="10" 
+		maxWait="-1"/>
+	-->
+
+	<!-- Connessione POSTGRESQL -->
+	<!--
+	<Resource name="jdbc/${nomeWebapp}" 
+		auth="Container" 
+		type="javax.sql.DataSource" 
+		driverClassName="org.postgresql.Driver" 
+		url="jdbc:postgresql://localhost:5432/${nomeDB}" 
+		username="${nomeDB}" 
+		password="${nomeDB}" 
+		autocommit="false"
+		maxActive="20" 
+		maxIdle="10" 
+		maxWait="-1"/>
+	-->
+
+	<!-- Connessione DB2 -->
+	<!--
+	<Resource name="jdbc/${nomeWebapp}" 
+		auth="Container" 
+		type="javax.sql.DataSource" 
+		driverClassName="com.ibm.db2.jcc.DB2Driver" 
+		url="jdbc:db2://localhost:50000/${nomeDB}" 
+		username="${nomeDB}" 
+		password="${nomeDB}" 
+		autocommit="false"
+		maxActive="20" 
+		maxIdle="10" 
+		maxWait="-1"/>
+	-->
+	
+</Context>

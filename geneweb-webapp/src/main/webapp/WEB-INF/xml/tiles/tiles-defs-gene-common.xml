@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+<!--
+     This is a blank Tiles definition file with a commented example.
+-->
+
+<tiles-definitions>
+
+    <!-- sample tiles definitions
+    <definition name=".mainLayout" path="/common/layouts/classicLayout.jsp">
+        <put name="title"  value="Sample Page Title" />
+        <put name="header" value="/common/header.jsp" />
+        <put name="menu"   value=".mainMenu" />
+        <put name="footer" value="/common/footer.jsp" />
+        <put name="body"   value=".portal.body" />
+    </definition>
+
+    <definition name=".mainMenu" path="/common/layouts/vboxLayout.jsp" >
+        <putList name="list" >
+            <add value=".menu.links" />
+            <add value=".menu.taglib.references" />
+            <add value=".menu.printer.friendly" />
+            <add value=".menu.old.documents" />
+      </putList>
+    </definition>
+
+    <definition name="aPage" extends=".mainLayout">
+        <put name="title"  value="Another Title" />
+        <put name="body"   value=".aPage.body" />
+    </definition>
+
+    end samples -->
+
+	<!-- definizione standard di una pagina di ricerca/trova -->
+	<definition name=".trovaDef" path="/WEB-INF/pages/templates/ricerca.jsp">
+		<put name="linkJSSubMenuSpecifico" value="/WEB-INF/pages/commons/jsSubMenuSpecifico.jsp"/>
+		<put name="linkJSSubMenuComune" value="/WEB-INF/pages/commons/jsSubMenuComune.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>	  
+	</definition>	
+
+	<!-- definizione standard di una pagina di lista -->
+	<definition name=".listaDef" path="/WEB-INF/pages/templates/lista.jsp">
+		<put name="linkJSSubMenuSpecifico" value="/WEB-INF/pages/commons/jsSubMenuSpecifico.jsp"/>
+		<put name="linkJSSubMenuComune" value="/WEB-INF/pages/commons/jsSubMenuComune.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();findTableDatiLista();'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>	  
+	</definition>
+
+	<!-- definizione standard di una pagina di lista senza azioni laterali-->
+	<definition name=".listaNoAzioniDef" path="/WEB-INF/pages/templates/listaNoAzioni.jsp">
+		<put name="linkJSSubMenuSpecifico" value="/WEB-INF/pages/commons/jsSubMenuSpecifico.jsp"/>
+		<put name="linkJSSubMenuComune" value="/WEB-INF/pages/commons/jsSubMenuComune.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();findTableDatiLista();'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>
+	</definition>
+
+	<!-- definizione standard di una pagina di dettaglio a tab -->
+	<definition name=".dettaglioConTabDef" path="/WEB-INF/pages/templates/dettaglioConTab.jsp">
+		<put name="linkJSSubMenuSpecifico" value="/WEB-INF/pages/commons/jsSubMenuSpecifico.jsp"/>
+		<put name="linkJSSubMenuComune" value="/WEB-INF/pages/commons/jsSubMenuComune.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();findTableDatiLista();'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>	  
+	</definition>
+		
+	<!-- definizione standard di una pagina di dettaglio senza tab -->
+	<definition name=".dettaglioNoTabDef" path="/WEB-INF/pages/templates/dettaglioNoTab.jsp">
+		<put name="linkJSSubMenuSpecifico" value="/WEB-INF/pages/commons/jsSubMenuSpecifico.jsp"/>
+		<put name="linkJSSubMenuComune" value="/WEB-INF/pages/commons/jsSubMenuComune.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();findTableDatiLista();'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>
+	</definition>
+		
+	<!-- definizione standard di una pagina di wizard -->
+	<definition name=".wizardDef" path="/WEB-INF/pages/templates/wizard.jsp">
+		<put name="linkJSSubMenuSpecifico" value="/WEB-INF/pages/commons/jsSubMenuSpecifico.jsp"/>
+		<put name="linkJSSubMenuComune" value="/WEB-INF/pages/commons/jsSubMenuComune.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();findTableDatiLista();'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>
+	</definition>
+
+	<!-- definizione standard di una pagina di popup -->
+	<definition name=".popupDef" path="/WEB-INF/pages/templates/popup.jsp">
+		<put name="head" value="/WEB-INF/pages/commons/vuoto.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();findTableDatiLista();'"/>
+	</definition>
+	
+			
+    <definition name="loginDef" path="/WEB-INF/pages/templates/login.jsp">
+        <put name="head" value="/WEB-INF/pages/gene/login/headControlliJS.jsp"/>
+   		<put name="eventiDiPagina" value=""/>
+        <put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+        <put name="areaDestra" value="/WEB-INF/pages/gene/login/formLogin.jsp"/>
+    </definition>
+
+    <definition name="errorDef" path="/WEB-INF/pages/templates/error.jsp">
+        <put name="head" value="/WEB-INF/pages/commons/vuoto.jsp"/>
+   		<put name="eventiDiPagina" value=""/>
+        <put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+    </definition>
+
+<!--  Lista Documenti associati  -->
+	<definition name="listaDocumentiAssociatiDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/gene/docass/headListaDocumentiAssociati.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/docass/azioniListaDocumentiAssociati.jsp"/>
+		<put name="titoloMaschera" value="Lista documenti associati" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/docass/listaDocumentiAssociati.jsp"/>
+	</definition>
+	
+	<definition name="popupCancellaDocAssDef" extends=".popupDef">
+		<put name="titoloMaschera" value="Eliminazione documenti associati" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/docass/popUpCancellaDocAss.jsp"/>
+	</definition>
+	
+<!--  Dettaglio documento associato  -->
+	<definition name="dettaglioDocumentoAssociatoDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/docass/headDettaglioDocumentoAssociato.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/docass/azioniDettaglioDocumentoAssociato.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/docass/titoloDocumentoAssociato.jsp" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/docass/dettaglioDocumentoAssociato.jsp"/>
+	</definition>
+
+<!--  Edit documento associato  -->
+	<definition name="editDocumentoAssociatoDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/docass/headEditDocumentoAssociato.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/docass/azioniEditDocumentoAssociato.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/docass/titoloDocumentoAssociato.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/docass/formEditDocumentoAssociato.jsp"/>
+	</definition>
+	
+	<definition name="listaPermessiEntitaDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/permessi/headListaPermessiEntita.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/permessi/azioniListaPermessiEntita.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/permessi/titoloListaPermessiEntita.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/permessi/listaPermessiEntita.jsp"/>
+	</definition>
+
+	<definition name="editListaPermessiEntitaDef" extends=".dettaglioNoTabDef">
+		<put name="head" value="/WEB-INF/pages/gene/permessi/headEditListaPermessiEntita.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/permessi/azioniEditListaPermessiEntita.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/gene/permessi/titoloListaPermessiEntita.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/gene/permessi/editListaPermessiEntita.jsp"/>
+	</definition>
+
+	<definition name="listaValoriTabellatoDef" extends=".popupDef">
+		<put name="head" value="/WEB-INF/pages/gene/tabellati/headListaValoriTabellato.jsp"/>
+		<put name="titoloMaschera" value="Lista valori" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/tabellati/formListaValoriTabellato.jsp"/>
+	</definition>
+</tiles-definitions>

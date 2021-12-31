@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+<!--
+     This is a blank Tiles definition file with a commented example.
+-->
+
+<tiles-definitions>
+
+    <!-- sample tiles definitions
+    <definition name=".mainLayout" path="/common/layouts/classicLayout.jsp">
+        <put name="title"  value="Sample Page Title" />
+        <put name="header" value="/common/header.jsp" />
+        <put name="menu"   value=".mainMenu" />
+        <put name="footer" value="/common/footer.jsp" />
+        <put name="body"   value=".portal.body" />
+    </definition>
+
+    <definition name=".mainMenu" path="/common/layouts/vboxLayout.jsp" >
+        <putList name="list" >
+            <add value=".menu.links" />
+            <add value=".menu.taglib.references" />
+            <add value=".menu.printer.friendly" />
+            <add value=".menu.old.documents" />
+      </putList>
+    </definition>
+
+    <definition name="aPage" extends=".mainLayout">
+        <put name="title"  value="Another Title" />
+        <put name="body"   value=".aPage.body" />
+    </definition>
+
+    end samples -->
+
+    <definition name="cambiaPswDef" extends=".dettaglioNoTabDef">
+        <put name="head" value="/WEB-INF/pages/gene/admin/headCambiaPsw.jsp"/>
+        <put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniCambiaPsw.jsp"/>
+        <put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloCambiaPassword.jsp" />
+        <put name="dettaglio" value="/WEB-INF/pages/gene/admin/formCambiaPsw.jsp"/>
+    </definition>
+
+<!--  Lista Gruppi  -->
+		<definition name="listaGruppiDef" extends=".listaDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaGruppi.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaGruppi.jsp"/>
+			<put name="titoloMaschera" value="Lista gruppi del profilo in uso" />
+			<put name="dettaglio" value="/WEB-INF/pages/gene/admin/listaGruppi.jsp"/>
+		</definition>
+
+<!--  Dettaglio Gruppo  -->
+		<definition name="dettaglioGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headDettaglioGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniDettaglioGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/dettaglioGruppo.jsp"/>
+		</definition>  
+	
+<!--  Dettaglio gruppo: edit del dettaglio gruppo  -->	
+		<definition name="editGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headEditGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniEditGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formEditGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: crea nuovo gruppo  -->
+		<definition name="creaGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headCreaGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniCreaGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formCreaGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: lista degli utenti associati ad un gruppo  -->
+		<definition name="listaUtentiGruppoDef"  extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaUtentiGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaUtentiGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaUtentiGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: edit dell'associazione degli utenti con un gruppo  -->
+		<definition name="associazioneUtentiGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headUtentiGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniUtentiGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formUtentiGruppo.jsp"/>
+		</definition>
+		
+<!--  Dettaglio gruppo: lista delle ricerche associate ad un gruppo  -->
+		<definition name="listaRicercheGruppoDef"  extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaRicercheGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaRicercheGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaRicercheGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: edit dell'associazione delle ricerche con un gruppo  -->
+		<definition name="associazioneRicercheGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headRicercheGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniRicercheGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formRicercheGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: lista dei modelli associati ad un gruppo  -->
+		<definition name="listaModelliGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaModelliGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaModelliGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaModelliGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: edit dell'associazione dei modelli con un gruppo  -->
+		<definition name="associazioneModelliGruppoDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headModelliGruppo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniModelliGruppo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioGruppo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabDettaglioGruppo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formModelliGruppo.jsp"/>
+		</definition>
+
+<!--  Dettaglio Account: trova account  -->
+	<definition name="trovaAccountDef" extends=".trovaDef">
+		<put name="head" value="/WEB-INF/pages/gene/admin/headTrovaAccount.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniTrovaAccount.jsp"/>
+		<put name="titoloMaschera" value="Ricerca utenti" />
+		<put name="dettaglio" value="/WEB-INF/pages/gene/admin/formTrovaAccount.jsp"/>
+	</definition>	
+
+<!--  Dettaglio Account: lista degli account -->
+		<definition name="listaAccountDef" extends=".listaDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaAccount.jsp"/>
+			<put name="titoloMaschera" value="Lista utenti" />
+			<put name="dettaglio" value="/WEB-INF/pages/gene/admin/listaAccount.jsp"/>
+		</definition>
+
+<!--  Dettaglio Account  -->
+		<definition name="dettaglioAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headDettaglioAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniDettaglioAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/dettaglioAccount.jsp"/>
+		</definition>  
+	
+<!--  Dettaglio Account: edit del dettaglio account  -->	
+		<definition name="editAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headEditAccount.jsp"/>
+			<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();findTableDatiLista();nascondiModelliReport();gestioneCampoDataScadenza();'"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniEditAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formAccount.jsp"/>
+		</definition>
+
+		<!--  Mio Account: edit dei miei dati account  -->	
+		<definition name="editMioAccountDef" extends=".dettaglioNoTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headMioAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniEditAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloMioAccount.jsp" />
+			<put name="dettaglio" value="/WEB-INF/pages/gene/admin/formMioAccount.jsp"/>
+		</definition>
+		
+		<!--  Dettaglio Account: lista dei profili associati ad un account -->
+		<definition name="listaProfiliAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaProfiliAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaProfiliAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaProfiliAccount.jsp"/>
+		</definition>
+		
+		<!--  Dettaglio gruppo: edit dell'associazione dei profili con un account  -->
+		<definition name="associazioneProfiliAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headFormProfiliAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniProfiliAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formProfiliAccount.jsp"/>
+		</definition>
+		
+		<!--  Dettaglio gruppo: lista degli utenti associati ad un gruppo  -->
+		<definition name="listaGruppiAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaGruppiAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaGruppiAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaGruppiAccount.jsp"/>
+		</definition>
+
+<!--  Dettaglio gruppo: edit dell'associazione degli utenti con un gruppo  -->
+		<definition name="associazioneGruppiAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headFormGruppiAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniGruppiAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formGruppiAccount.jsp"/>
+		</definition>
+		
+		<definition name="cambiaPswAdminDef" extends=".dettaglioNoTabDef">
+        <put name="head" value="/WEB-INF/pages/gene/admin/headCambiaPswAdmin.jsp"/>
+        <put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniCambiaPsw.jsp"/>
+				<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloCambiaPassword.jsp" />
+        <put name="dettaglio" value="/WEB-INF/pages/gene/admin/formCambiaPswAdmin.jsp"/>
+		</definition>
+		
+		<definition name="sceltaTipoAccountDef" extends=".dettaglioNoTabDef">
+	        <put name="head" value="/WEB-INF/pages/gene/admin/headSceltaTipoAccount.jsp"/>
+	        <put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniSceltaTipoAccount.jsp"/>
+	        <put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloSceltaTipoAccount.jsp" />
+	        <put name="dettaglio" value="/WEB-INF/pages/gene/admin/sceltaTipoAccount.jsp"/>
+		</definition>
+		
+		<definition name="filtroAccountLdapDef" extends=".dettaglioNoTabDef">
+	        <put name="head" value="/WEB-INF/pages/gene/admin/headFiltroAccountLdap.jsp"/>
+	        <put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniFiltroAccountLdap.jsp"/>
+	        <put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloFiltroAccountLdap.jsp" />
+	        <put name="dettaglio" value="/WEB-INF/pages/gene/admin/filtroAccountLdap.jsp"/>
+		</definition>
+	    
+    <definition name="listaAccountLdapDef" extends=".listaDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaAccountLdap.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaAccountLdap.jsp"/>
+			<put name="titoloMaschera" value="Lista utenti della intranet aziendale" />
+			<put name="dettaglio" value="/WEB-INF/pages/gene/admin/listaAccountLdap.jsp"/>
+		</definition>
+
+		<!--  Profili: lista dei profili -->
+		<definition name="listaProfiliDef" extends=".listaNoAzioniDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaProfili.jsp"/>
+			<put name="titoloMaschera" value="Lista profili applicativo" />
+			<put name="dettaglio" value="/WEB-INF/pages/gene/admin/listaProfili.jsp"/>
+		</definition>
+		
+		<!--  Dettaglio Profilo  -->
+		<definition name="dettaglioProfiloDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headDettaglioProfilo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniDettaglioProfilo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioProfilo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabProfilo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/dettaglioProfilo.jsp"/>
+		</definition>
+
+		<!--  Dettaglio Profilo: lista degli utenti associati ad un profilo  -->
+		<definition name="listaUtentiProfiloDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaUtentiProfilo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaUtentiProfilo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioProfilo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabProfilo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaUtentiProfilo.jsp"/>
+		</definition>
+
+		<!--  Dettaglio Profilo: edit dell'associazione degli utenti con un profilo  -->
+		<definition name="associazioneUtentiProfiloDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headFormUtentiProfilo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniUtentiProfilo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioProfilo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabProfilo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formUtentiProfilo.jsp"/>
+		</definition>
+
+		<!--  Dettaglio Profilo: lista dei gruppi associati ad un profilo  -->
+		<definition name="listaGruppiProfiloDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaGruppiProfilo.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaGruppiProfilo.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioProfilo.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabProfilo.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaGruppiProfilo.jsp"/>
+		</definition>
+		
+		<!--  Dettaglio Account: lista degli uffici intestatari associati ad un account -->
+		<definition name="listaUfficiIntestatariAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headListaUffintAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniListaUffintAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/listaUffintAccount.jsp"/>
+		</definition>
+	
+		<!--  Dettaglio gruppo: lista degli utenti associati ad un gruppo  -->
+		<definition name="associazioneUfficiIntestatariAccountDef" extends=".dettaglioConTabDef">
+			<put name="head" value="/WEB-INF/pages/gene/admin/headFormUffintAccount.jsp"/>
+			<put name="azioniContesto" value="/WEB-INF/pages/gene/admin/azioniUffintAccount.jsp"/>
+			<put name="titoloMaschera" value="/WEB-INF/pages/gene/admin/titoloDettaglioAccount.jsp" />
+			<put name="dettaglioAreaTab" value="/WEB-INF/pages/gene/admin/tabAccount.jsp"/>
+			<put name="dettaglioAreaDati" value="/WEB-INF/pages/gene/admin/formUffintAccount.jsp"/>
+		</definition>
+
+	    
+</tiles-definitions>		

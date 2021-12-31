@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ========================= DAO DEFINITIONS: IBATIS IMPLEMENTATIONS ========================= -->
+
+	<bean id="modelliDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapModelliDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<!-- ========================= DAO DEFINITIONS: JDBC IMPLEMENTATIONS ========================= -->
+
+	<!-- ========================= BEAN DEFINITIONS ========================= -->
+
+	<bean id="modelliManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="import*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="modelliManager" parent="modelliManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.genmod.ModelliManager">
+				<property name="modelliDao" ref="modelliDao" />
+				<property name="genChiaviManager"
+					ref="genChiaviManager" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- ========================= STRUTS ACTION DEFINITIONS ========================= -->
+
+	<bean name="/geneGenmod/InitTrovaModelli"
+		class="it.eldasoft.gene.web.struts.genmod.InitTrovaModelliAction">
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="gruppiManager" ref="gruppiManager" />
+		<property name="accountManager" ref="accountManager" />
+	</bean>
+
+	<bean name="/geneGenmod/TrovaModelli"
+		class="it.eldasoft.gene.web.struts.genmod.TrovaModelliAction">
+		<property name="modelliManager" ref="modelliManager" />
+	</bean>
+
+	<bean name="/geneGenmod/ListaModelli"
+		class="it.eldasoft.gene.web.struts.genmod.ListaModelliAction">
+		<property name="modelliManager" ref="modelliManager" />
+	</bean>
+
+	<bean name="/geneGenmod/Modello"
+		class="it.eldasoft.gene.web.struts.genmod.ModelliAction">
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="gruppiManager" ref="gruppiManager" />
+		<property name="geneManager" ref="geneManager" />
+	</bean>
+
+	<bean name="/geneGenmod/GruppiModello"
+		class="it.eldasoft.gene.web.struts.genmod.GruppiModelliAction">
+		<property name="modelliManager" ref="modelliManager" />
+	</bean>
+
+	<bean name="/geneGenmod/ParametriModello"
+		class="it.eldasoft.gene.web.struts.genmod.ParametriModelliAction">
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="modelliManager" ref="modelliManager" />
+	</bean>
+
+	<bean name="/geneGenmod/SalvaParametroModello"
+		class="it.eldasoft.gene.web.struts.genmod.SalvaParametroModelloAction">
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+
+	<!-- Calcolo delle lista modelli per la composizione -->
+	<bean name="/geneGenmod/ApriElencoModelli"
+		class="it.eldasoft.gene.web.struts.genmod.ApriElencoModelliAction">
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+
+	<bean name="/geneGenmod/CheckParametriModello"
+		class="it.eldasoft.gene.web.struts.genmod.CheckParametriModelloAction">
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="geneManager" ref="geneManager" />
+	</bean>
+
+	<bean name="/geneGenmod/SalvaParametriModello"
+		class="it.eldasoft.gene.web.struts.genmod.SalvaParametriModelloAction">
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+
+	<bean name="/geneGenmod/ComponiModello"
+		class="it.eldasoft.gene.web.struts.genmod.ComponiModelloAction">
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="documentiAssociatiManager" ref="documentiAssociatiManager" />
+		<property name="geneManager" ref="geneManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+		<property name="pdfManager" ref="pdfManager" />
+	</bean>
+
+	<bean name="/geneGenmod/InitTrovaModelliExport"
+			class="it.eldasoft.gene.web.struts.genmod.impexp.InitTrovaModelliExportAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+
+	<bean name="/geneGenmod/TrovaModelliExport" class="it.eldasoft.gene.web.struts.genmod.impexp.TrovaModelliExportAction">
+		<property name="modelliManager" ref="modelliManager"/>
+	</bean>
+	
+	<bean name="/geneGenmod/EsportaModello" class="it.eldasoft.gene.web.struts.genmod.impexp.EsportaModelloAction">
+		<property name="modelliManager" ref="modelliManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+	
+	<!--    Bean per il wizard di importazione definizione report   -->
+
+  <bean name="/geneGenmod/WizardImportModello"
+    class="it.eldasoft.gene.web.struts.genmod.impexp.WizardImportaModelloAction">
+    <property name="gruppiManager" ref="gruppiManager"/>
+    <property name="modelliManager" ref="modelliManager"/>
+    <property name="tabellatiManager" ref="tabellatiManager"/>
+  </bean>
+  
+  <bean name="/geneGenmod/UploadDefinizioneModello"
+    class="it.eldasoft.gene.web.struts.genmod.impexp.UploadDefinizioneModelloAction">
+    <property name="geneManager" ref="geneManager"/>
+  </bean>
+  
+  <bean name="/geneGenmod/SetOpzioniImportModello"
+  	class="it.eldasoft.gene.web.struts.genmod.impexp.SetOpzioniImportAction">
+    <property name="modelliManager" ref="modelliManager"/>
+  </bean>
+
+  <bean name="/geneGenmod/EseguiImportModello"
+		class="it.eldasoft.gene.web.struts.genmod.impexp.EseguiImportModelloAction">
+    <property name="gruppiManager" ref="gruppiManager"/>
+    <property name="modelliManager" ref="modelliManager"/>
+  </bean>
+
+<!--    Fine bean per il wizard di importazione definizione report   -->
+
+</beans>

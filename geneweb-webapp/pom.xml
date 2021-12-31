@@ -1,0 +1,218 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>it.maggioli.eldasoft.commons</groupId>
+		<artifactId>geneweb-pom</artifactId>
+		<version>2.20.0-regmarche</version>
+	</parent>
+	<artifactId>geneweb-webapp</artifactId>
+	<packaging>war</packaging>
+	<organization>
+		<name>Maggioli S.p.A.</name>
+	</organization>
+
+	<name>Webapp framework GeneWeb</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>it.maggioli.eldasoft.commons</groupId>
+			<artifactId>geneweb-engine</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>it.maggioli.eldasoft.commons</groupId>
+			<artifactId>wscompositore-engine</artifactId>
+			<version>2.1.6</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>displaytag</groupId>
+			<artifactId>displaytag</artifactId>
+			<version>1.1.1-eldasoft</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts-core</artifactId>
+			<version>1.3.11-SNAPSHOT</version>
+			<!--version>1.3.11-20081217.033118-1</version-->
+		</dependency>
+		<dependency>
+			<groupId>sun</groupId>
+			<artifactId>rssutils</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+	
+		<resources>
+			<resource>
+				<!-- si escludono i file di resources in quanto vengono concatenati e presi da un'altra cartella -->
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>*Resources.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<!-- espande in una cartella di appoggio alcuni file presenti nelle dipendenze per le successive elaborazioni -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>unpack-utils-dependencies</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/dependencies-unpacked/eldautils</outputDirectory>
+							<verbose>true</verbose>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<appendOutput>true</appendOutput>
+							<includeGroupIds>it.maggioli.eldasoft.commons</includeGroupIds>
+							<includeArtifactIds>eldasoft-utils</includeArtifactIds>
+							<includes>*Resources.properties</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-wscomp-dependencies</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/dependencies-unpacked/eldawscomp</outputDirectory>
+							<verbose>true</verbose>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<appendOutput>true</appendOutput>
+							<includeGroupIds>it.maggioli.eldasoft.commons</includeGroupIds>
+							<includeArtifactIds>wscompositore-engine</includeArtifactIds>
+							<includes>*Resources.properties</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- task di fusione dei file di resources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>                   	   
+					<execution>
+						<id>process-sources-antrun</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>                        
+						<configuration>
+							<target>
+								<echo>Copying sources</echo>
+								<copy file="src/main/webapp/WEB-INF/xml/struts/gene-forward.xml" tofile="target/war/work/xml-struts/gene-forward.xml"/>
+							</target>
+						</configuration>
+					</execution>                    
+					<execution>
+						<id>process-resources-antrun</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>                        
+						<configuration>
+							<target>
+								<echo>Merging resources</echo>
+								<concat destfile="target/war/work/resources/AliceResources.properties" append="true">
+									<fileset dir="target/dependencies-unpacked/eldautils" includes="*Resources.properties" />
+									<fileset dir="target/dependencies-unpacked/eldawscomp" includes="*Resources.properties" />
+									<fileset dir="src/main/resources" includes="*Resources.properties" />
+								</concat>
+							</target>
+						</configuration>
+					</execution>                    
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<!-- effettua l'iniezione dei global forward nei file di struts -->
+				<groupId>com.google.code.maven-config-processor-plugin</groupId>
+				<artifactId>maven-config-processor-plugin</artifactId>
+				<version>2.0</version>			
+				<executions>
+					<execution>
+						<id>xml-struts-task</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>target/war/work/xml-struts</outputDirectory>
+							<transformations>
+								<transformation>
+									<input>src/main/webapp/WEB-INF/xml/struts/struts-config-gene-common.xml</input>
+									<output>struts-config-gene-common.xml</output>
+									<config>src/main/webapp/configuration/struts-transformation.xml</config>
+								</transformation>
+								<transformation>
+									<input>src/main/webapp/WEB-INF/xml/struts/struts-config-gene-admin.xml</input>
+									<output>struts-config-gene-admin.xml</output>
+									<config>src/main/webapp/configuration/struts-transformation.xml</config>
+								</transformation>
+								<transformation>
+									<input>src/main/webapp/WEB-INF/xml/struts/struts-config-gene-genmod.xml</input>
+									<output>struts-config-gene-genmod.xml</output>
+									<config>src/main/webapp/configuration/struts-transformation.xml</config>
+								</transformation>
+								<transformation>
+									<input>src/main/webapp/WEB-INF/xml/struts/struts-config-gene-genric.xml</input>
+									<output>struts-config-gene-genric.xml</output>
+									<config>src/main/webapp/configuration/struts-transformation.xml</config>
+								</transformation>
+								<transformation>
+									<input>src/main/webapp/WEB-INF/xml/struts/struts-config-gene-schedric.xml</input>
+									<output>struts-config-gene-schedric.xml</output>
+									<config>src/main/webapp/configuration/struts-transformation.xml</config>
+								</transformation>
+							</transformations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- build con i file di struts corretti ed un unico file di resources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<warSourceExcludes>WEB-INF/xml/struts/struts-*.xml</warSourceExcludes>
+					<webResources>
+						<resource>
+							<directory>target/war/work/xml-struts</directory>
+							<targetPath>WEB-INF/xml/struts</targetPath>
+							<includes>
+								<include>*</include>
+							</includes>
+						</resource>
+						<resource>
+							<directory>target/war/work/resources</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>*</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+				
+		</plugins>
+	</build>
+</project>

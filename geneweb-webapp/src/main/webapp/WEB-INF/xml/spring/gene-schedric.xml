@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ========================= DAO DEFINITIONS: IBATIS IMPLEMENTATIONS ========================= -->
+
+	<bean id="schedRicDao"
+		class="it.eldasoft.console.db.dao.ibatis.SqlMapSchedRicDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	
+	<!-- ========================= DAO DEFINITIONS: JDBC IMPLEMENTATIONS ========================= -->
+
+	<!-- ========================= BEAN DEFINITIONS ========================= -->
+
+	<bean id="schedRicManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="schedRicManager" parent="schedRicManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.console.bl.schedric.SchedRicManager">
+				<property name="schedRicDao" ref="schedRicDao" />
+				<property name="genChiaviManager" ref="genChiaviManager"/>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="reportScheduler" class="it.eldasoft.console.bl.tasks.ReportScheduler">
+		<property name="schedRicManager" ref="schedRicManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="ricManager" ref="ricercheManager" />
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="accountManager" ref="accountManager" />
+		<property name="loginManager" ref="loginManager" />
+		<property name="geneManager" ref="geneManager" />
+		<property name="mailManager" ref="mailManager" />
+	</bean>
+
+	<bean id="reportSchedulerJob"
+		class="it.eldasoft.gene.commons.web.spring.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="reportScheduler" />
+		<property name="targetMethod" value="schedule" />
+		<property name="concurrent" value="false"/>
+	</bean>
+
+	<bean id="reportSchedulerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="reportSchedulerJob" />
+		<property name="cronExpression">
+			<value>0 0 0 1 1 ? 2099</value>
+		</property>
+	</bean>
+
+	<!-- ========================= STRUTS ACTION DEFINITIONS ========================= -->
+
+	<bean name="/schedric/InitTrovaSchedRic" class="it.eldasoft.console.web.struts.schedric.InitTrovaSchedRicAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="accountManager" ref="accountManager"/>
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+	
+	<bean name="/schedric/TrovaSchedRic" class="it.eldasoft.console.web.struts.schedric.TrovaSchedRicAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+	
+	<bean name="/schedric/ListaSchedRic" class="it.eldasoft.console.web.struts.schedric.ListaSchedRicAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+	
+	<bean name="/schedric/InitTrovaCodaSched" class="it.eldasoft.console.web.struts.schedric.InitTrovaCodaSchedAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="accountManager" ref="accountManager"/>
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+	
+	<bean name="/schedric/TrovaCodaSched" class="it.eldasoft.console.web.struts.schedric.TrovaCodaSchedAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+	
+	<bean name="/schedric/DettaglioCodaSched" class="it.eldasoft.console.web.struts.schedric.DettaglioCodaSchedAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+		<property name="fileManager" ref="fileManager"/>
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="logEventiManager" ref="logEventiManager"/>
+	</bean>
+	
+	<!-- Classi per la gestione del Wizard di composizione delle schedulazioni -->
+	<bean name="/schedric/WizardSchedRic" class="it.eldasoft.console.web.struts.schedric.wizard.WizardSchedRicAction">
+    <property name="tabellatiManager" ref="tabellatiManager"/>
+    <property name="ricercheManager" ref="ricercheManager"/>
+		<property name="accountManager" ref="accountManager"/>
+ </bean>
+  
+	<bean name="/schedric/SalvaWizardSchedRic" class="it.eldasoft.console.web.struts.schedric.SalvaSchedRicAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+
+	<bean name="/schedric/DettaglioSchedRic" class="it.eldasoft.console.web.struts.schedric.DettaglioSchedRicAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+    <property name="ricercheManager" ref="ricercheManager"/>
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/schedric/SalvaSchedRic" class="it.eldasoft.console.web.struts.schedric.SalvaSchedRicAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+	
+	<bean name="/schedric/SalvaSchedulazioneSchedRic" class="it.eldasoft.console.web.struts.schedric.SalvaSchedRicAction">
+		<property name="schedRicManager" ref="schedRicManager"/>
+	</bean>
+</beans>
+

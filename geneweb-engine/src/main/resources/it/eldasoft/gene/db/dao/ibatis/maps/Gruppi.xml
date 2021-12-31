@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Gruppi">
+
+  <resultMap id="resultGruppo" class="it.eldasoft.gene.db.domain.admin.Gruppo">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+    <result property="nomeGruppo" column="nome" columnIndex="2"/>
+    <result property="descrGruppo" column="descr" columnIndex="3"/>
+  </resultMap>
+ 
+  <resultMap id="resultFunzionalitaGruppo" class="it.eldasoft.gene.db.domain.admin.FunzionalitaGruppo">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+    <result property="funzionalita" column="funz" columnIndex="2"/>
+  </resultMap>
+  
+  <resultMap id="resultGruppoConNumeroAssociazioni" class="it.eldasoft.gene.db.domain.admin.GruppoConNumeroAssociazioni">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+    <result property="nomeGruppo" column="nome" columnIndex="2"/>
+    <result property="descrGruppo" column="descr" columnIndex="3"/>
+    <result property="numeroUtenti" column="numero_utenti" columnIndex="4"/>
+    <result property="numeroRicerche" column="numero_ricerche" columnIndex="5"/>
+    <result property="numeroModelli" column="numero_modelli" columnIndex="6"/>
+  </resultMap>
+  
+  <select id="getGruppiOrderByNome" resultMap="resultGruppo" parameterClass="java.lang.String">
+		SELECT W_GRUPPI.ID_GRUPPO, W_GRUPPI.NOME, W_GRUPPI.DESCR
+		FROM W_GRUPPI, W_PROFILI
+		 WHERE W_GRUPPI.COD_PROFILO = W_PROFILI.COD_PROFILO
+		   AND W_PROFILI.COD_PROFILO = #codiceProfilo#
+		ORDER BY W_GRUPPI.NOME ASC
+  </select>
+
+  <select id="getGruppoById" resultMap="resultGruppo">
+		SELECT ID_GRUPPO, NOME, DESCR
+		FROM W_GRUPPI
+		WHERE ID_GRUPPO= #idGruppo#
+	</select>
+
+  <update id="updateGruppo" parameterClass="it.eldasoft.gene.db.domain.admin.Gruppo">
+  	UPDATE W_GRUPPI
+  	SET NOME = #nomeGruppo#, DESCR = #descrGruppo#
+  	WHERE ID_GRUPPO = #idGruppo#
+  </update>
+
+<!-- Query tabella W_GRUPPI -->
+  <delete id="deleteGruppo" parameterClass="java.lang.Integer">
+  	DELETE FROM W_GRUPPI 
+  	WHERE ID_GRUPPO = #idGruppo#
+  </delete>
+
+<!-- Query tabella W_GRUPPI -->
+  <insert id="insertGruppo" parameterClass="java.util.HashMap" >
+  	INSERT INTO W_GRUPPI (ID_GRUPPO, NOME, DESCR, COD_PROFILO ) VALUES ( #idGruppo:NUMERIC#, #nomeGruppo:VARCHAR#, #descrGruppo:VARCHAR#, #codiceProfilo:VARCHAR# )
+  </insert>
+
+<!-- Per l'uso che viene fatto di queste ultime tre query a livello di manager, e' possibile usare query 
+		 che estraggano lo stesso dato (assieme ad altri) con dei criteri da attivare dinamicamente. -->
+
+<!-- Query tabella W_ACCGRP: query usata per verificare l'associazione tra il gruppo in analisi e un qualsiasi modello. -->
+	<select id="getIdAccountByIdGruppo" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT W_ACCGRP.ID_ACCOUNT
+		FROM W_ACCGRP, USRSYS
+		WHERE W_ACCGRP.ID_GRUPPO = #idGruppo#
+		AND W_ACCGRP.ID_ACCOUNT = USRSYS.SYSCON
+	</select>
+
+<!-- Query tabella W_GRPRIC: query usata per verificare l'associazione tra il gruppo in analisi e una qualsiasi ricerca. -->	
+	<select id="getNumeroRicercheByIdGruppoCodApp" parameterClass="java.util.HashMap"  resultClass="java.lang.Integer">
+		SELECT COUNT(W_GRPRIC.ID_RICERCA)
+		FROM W_GRUPPI, W_GRPRIC, W_RICERCHE
+		WHERE W_GRPRIC.ID_GRUPPO = #idGruppo#
+		AND W_GRPRIC.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+		<isNotEmpty prepend="AND" property="codApp">
+		W_RICERCHE.CODAPP = #codApp#
+		</isNotEmpty>
+		AND W_RICERCHE.ID_RICERCA = W_GRPRIC.ID_RICERCA
+	</select>
+
+<!-- Query tabella W_GRPRIC: query usata per verificare l'associazione tra il gruppo in analisi e una qualsiasi ricerca. -->	
+	<select id="getNumeroRicercheByIdGruppoAltriCodApp" parameterClass="java.util.HashMap"  resultClass="java.lang.Integer">
+		SELECT COUNT(W_GRPRIC.ID_RICERCA)
+		FROM W_GRUPPI, W_GRPRIC, W_RICERCHE
+		WHERE W_GRPRIC.ID_GRUPPO = #idGruppo#
+		AND W_GRPRIC.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+		<isNotEmpty prepend="AND" property="codApp">
+	<![CDATA[
+		W_RICERCHE.CODAPP <> #codApp#
+	]]>
+		</isNotEmpty>
+		AND W_RICERCHE.ID_RICERCA = W_GRPRIC.ID_RICERCA
+	</select>
+
+<!-- Query tabella W_GRPMOD: query usata per verificare l'associazione tra il gruppo in analisi e un qualsiasi modello. -->
+	<select id="getNumeroModelliByIdGruppoCodApp" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(W_GRPMOD.ID_MODELLO)
+		FROM W_GRUPPI, W_GRPMOD, W_MODELLI
+		WHERE W_GRPMOD.ID_GRUPPO = #idGruppo#
+		AND W_GRPMOD.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+		<isNotEmpty prepend="AND" property="codApp">
+		W_MODELLI.CODAPP = #codApp#
+		</isNotEmpty>
+		AND W_MODELLI.ID_MODELLO = W_GRPMOD.ID_MODELLO
+	</select>
+	
+<!-- Query tabella W_GRPMOD: query usata per verificare l'associazione tra il gruppo in analisi e un qualsiasi modello. -->
+	<select id="getNumeroModelliByIdGruppoAltriCodApp" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(W_GRPMOD.ID_MODELLO)
+		FROM W_GRUPPI, W_GRPMOD, W_MODELLI
+		WHERE W_GRPMOD.ID_GRUPPO = #idGruppo#
+		AND W_GRPMOD.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+		<isNotEmpty prepend="AND" property="codApp">
+	<![CDATA[
+		W_MODELLI.CODAPP <> #codApp#
+	]]>
+		</isNotEmpty>
+		AND W_MODELLI.ID_MODELLO = W_GRPMOD.ID_MODELLO
+	</select>
+	
+	<select id="getGruppiByIdRicerca" parameterClass="java.lang.Integer" resultMap="resultGruppo">
+		SELECT W_GRUPPI.ID_GRUPPO, W_GRUPPI.NOME, W_GRUPPI.DESCR
+		  FROM W_GRUPPI, W_GRPRIC, W_RICERCHE
+		 WHERE W_GRPRIC.ID_RICERCA = #idRicerca#
+		   AND W_GRPRIC.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+		   AND W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+	ORDER BY W_GRUPPI.NOME
+	</select>
+	
+	<select id="getGruppiConNumeroAssociazioniByCodApp" parameterClass="java.lang.String" resultMap="resultGruppoConNumeroAssociazioni">
+		SELECT G.ID_GRUPPO, G.NOME, G.DESCR,
+		   (SELECT COUNT(AG.ID_ACCOUNT)
+		      FROM W_ACCGRP AG, W_ACCPRO AC
+		     WHERE AG.ID_GRUPPO = G.ID_GRUPPO
+			     AND AG.ID_ACCOUNT = AC.ID_ACCOUNT
+			     AND AC.COD_PROFILO = G.COD_PROFILO
+		       AND G.COD_PROFILO = #codiceProfilo#) AS NUMERO_UTENTI,
+		   (SELECT COUNT(R.ID_RICERCA)
+		      FROM W_GRPRIC GR, W_RICERCHE R
+		     WHERE GR.ID_GRUPPO = G.ID_GRUPPO
+		       AND GR.ID_RICERCA = R.ID_RICERCA
+		       AND R.PROFILO_OWNER = #codiceProfilo#) AS NUMERO_RICERCHE,
+		    (SELECT COUNT(M.ID_MODELLO) FROM W_GRPMOD GM, W_MODELLI M
+		     WHERE GM.ID_GRUPPO = G.ID_GRUPPO
+		       AND GM.ID_MODELLO = M.ID_MODELLO
+		       AND M.PROFILO_OWNER = #codiceProfilo#) AS NUMERO_MODELLI
+		  FROM W_GRUPPI G
+		 WHERE G.COD_PROFILO = #codiceProfilo#
+	ORDER BY G.NOME
+	</select>
+
+	<select id="getGruppiByIdModello" parameterClass="java.lang.Integer" resultMap="resultGruppo">
+		SELECT W_GRUPPI.ID_GRUPPO, W_GRUPPI.NOME, W_GRUPPI.DESCR
+		  FROM W_GRUPPI, W_GRPMOD, W_MODELLI
+		 WHERE W_GRPMOD.ID_MODELLO = #idModello#
+		   AND W_GRPMOD.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+		   AND W_GRPMOD.ID_MODELLO = W_MODELLI.ID_MODELLO
+	ORDER BY W_GRUPPI.NOME
+	</select>
+</sqlMap>

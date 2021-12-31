@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SchedRic">
+
+  <resultMap id="resultSched" class="it.eldasoft.console.db.domain.schedric.SchedRic">
+    <result property="idSchedRic" column="ID_SCHEDRIC" columnIndex="1"/>
+    <result property="idRicerca" column="ID_RICERCA" columnIndex="2"/>
+    <result property="tipo" column="TIPO" columnIndex="3"/>
+    <result property="descTipo" column="DESCTIPO" columnIndex="4"/>
+    <result property="attivo" column="ATTIVO" columnIndex="5"/>
+    <result property="nome" column="NOME" columnIndex="6"/>
+    <result property="oraAvvio" column="ORA_AVVIO" columnIndex="7"/>
+    <result property="minutoAvvio" column="MINUTO_AVVIO" columnIndex="8"/>
+    <result property="dataPrimaEsec" column="DATA_PRIMA_ESEC" columnIndex="9"/>
+    <result property="giorno" column="GIORNO" columnIndex="10"/>
+    <result property="settimana" column="SETTIMANA" columnIndex="11"/>
+    <result property="giorniSettimana" column="GIORNI_SETTIMANA" columnIndex="12"/>
+    <result property="mese" column="MESE" columnIndex="13"/>
+    <result property="giorniMese" column="GIORNI_MESE" columnIndex="14"/>
+    <result property="formato" column="FORMATO" columnIndex="15"/>
+    <result property="email" column="EMAIL" columnIndex="16"/>
+    <result property="dataUltEsec" column="DATA_ULT_ESEC" columnIndex="17"/>
+    <result property="dataProxEsec" column="DATA_PROX_ESEC" columnIndex="18"/>
+    <result property="owner" column="OWNER" columnIndex="19"/>
+    <result property="esecutore" column="ESECUTORE" columnIndex="20"/>
+    <result property="profiloOwner" column="PROFILO_OWNER" columnIndex="21"/>
+    <result property="noOutputVuoto" column="NO_OUTPUT_VUOTO" columnIndex="22"/>
+    <result property="codiceApplicazione" column="CODAPP" columnIndex="23"/>
+    <result property="ripetiDopoMinuti" column="RIPETI_DOPO_MINUTI" columnIndex="24"/>
+  </resultMap>
+
+  <resultMap id="resultListaSched" class="it.eldasoft.console.db.domain.schedric.SchedRic">
+    <result property="idSchedRic" column="ID_SCHEDRIC" columnIndex="1"/>
+    <result property="idRicerca" column="ID_RICERCA" columnIndex="2"/>
+    <result property="nomeRicerca" column="NOME_RICERCA" columnIndex="3"/>
+    <result property="tipo" column="TIPO" columnIndex="4"/>
+    <result property="descTipo" column="DESCTIPO" columnIndex="5"/>
+    <result property="attivo" column="ATTIVO" columnIndex="6"/>
+    <result property="nome" column="NOME" columnIndex="7"/>
+    <result property="owner" column="OWNER" columnIndex="8"/>
+    <result property="nomeOwner" column="NOME_OWNER" columnIndex="9"/>
+    <result property="nomeEsecutore" column="NOME_ESECUTORE" columnIndex="10"/>
+    <result property="codiceApplicazione" column="CODAPP" columnIndex="11"/>
+  </resultMap> 
+
+  <resultMap id="resultListaCoda" class="it.eldasoft.console.db.domain.schedric.CodaSched">
+    <result property="idCodaSched" column="ID_CODASCHED" columnIndex="1"/>
+    <result property="dataEsec" column="DATA_ESEC" columnIndex="2"/>
+    <result property="idSchedRic" column="ID_SCHEDRIC" columnIndex="3"/>
+    <result property="nomeSchedRic" column="NOME" columnIndex="4"/>
+    <result property="idRicerca" column="ID_RICERCA" columnIndex="5"/>
+    <result property="nomeRicerca" column="NOME_RICERCA" columnIndex="6"/>
+    <result property="stato" column="STATO" columnIndex="7"/>
+    <result property="descStato" column="DESCSTATO" columnIndex="8"/>
+    <result property="msg" column="MSG" columnIndex="9"/>
+    <result property="nomeFile" column="NOMEFILE" columnIndex="10"/>
+    <result property="codiceApplicazione" column="CODAPP" columnIndex="11"/>
+  </resultMap>
+
+  <resultMap id="resultCoda" class="it.eldasoft.console.db.domain.schedric.CodaSched">
+    <result property="idCodaSched" column="ID_CODASCHED" columnIndex="1"/>
+    <result property="idSchedRic" column="ID_SCHEDRIC" columnIndex="2"/>
+    <result property="stato" column="STATO" columnIndex="3"/>
+    <result property="msg" column="MSG" columnIndex="4"/>
+    <result property="nomeFile" column="NOMEFILE" columnIndex="5"/>
+    <result property="dataEsec" column="DATA_ESEC" columnIndex="6"/>
+    <result property="codiceApplicazione" column="CODAPP" columnIndex="7"/>
+    <result property="idRicerca" column="ID_RICERCA" columnIndex="8"/>
+  </resultMap>
+ 
+  <select id="getSchedRic" resultMap="resultListaSched" parameterClass="java.util.HashMap">
+		SELECT W_SCHEDRIC.ID_SCHEDRIC AS ID_SCHEDRIC, W_SCHEDRIC.ID_RICERCA AS ID_RICERCA, W_RICERCHE.NOME AS NOME_RICERCA, 
+			   W_SCHEDRIC.TIPO AS TIPO, TAB3.TAB3DESC AS DESCTIPO, W_SCHEDRIC.ATTIVO AS ATTIVO, W_SCHEDRIC.NOME AS NOME,
+			   W_SCHEDRIC.OWNER AS OWNER, (SELECT SYSUTE FROM USRSYS WHERE USRSYS.SYSCON = W_SCHEDRIC.OWNER) AS NOME_OWNER,
+	       (SELECT SYSUTE FROM USRSYS WHERE USRSYS.SYSCON = W_SCHEDRIC.ESECUTORE) AS NOME_ESECUTORE, W_SCHEDRIC.CODAPP
+		FROM W_SCHEDRIC, W_RICERCHE, TAB3
+        WHERE W_RICERCHE.ID_RICERCA = W_SCHEDRIC.ID_RICERCA
+          AND TAB3.TAB3COD = #tabTipo:VARCHAR# 
+		  AND TAB3.TAB3TIP = W_SCHEDRIC.TIPO
+		  AND W_SCHEDRIC.CODAPP = #codiceApplicazione#
+		<isNotEmpty prepend="AND" property="tipo">
+		   W_SCHEDRIC.TIPO = #tipo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+		   W_SCHEDRIC.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="attivo">
+		   W_SCHEDRIC.ATTIVO = #attivo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nome">
+			<isEmpty property="operatoreUpper">
+				W_SCHEDRIC.NOME $operatoreNome$ #nome# $escapeNome$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_SCHEDRIC.NOME) $operatoreNome$ #nome# $escapeNome$ 
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="owner">
+		   W_SCHEDRIC.OWNER = #owner#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="esecutore">
+		   W_SCHEDRIC.ESECUTORE = #esecutore#
+		</isNotEmpty>
+		  AND W_SCHEDRIC.PROFILO_OWNER = #codiceProfilo#
+		UNION
+		SELECT W_SCHEDRIC.ID_SCHEDRIC AS ID_SCHEDRIC, W_SCHEDRIC.ID_RICERCA AS ID_RICERCA,
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			CAST(NULL AS VARCHAR(50)) AS NOME_RICERCA,
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			NULL AS NOME_RICERCA,
+		</isNotPropertyAvailable>
+			   W_SCHEDRIC.TIPO AS TIPO, TAB3.TAB3DESC AS DESCTIPO, W_SCHEDRIC.ATTIVO AS ATTIVO, W_SCHEDRIC.NOME AS NOME,
+			   W_SCHEDRIC.OWNER AS OWNER, (SELECT SYSUTE FROM USRSYS WHERE USRSYS.SYSCON = W_SCHEDRIC.OWNER) AS NOME_OWNER,
+	       (SELECT SYSUTE FROM USRSYS WHERE USRSYS.SYSCON = W_SCHEDRIC.ESECUTORE) AS NOME_ESECUTORE, W_SCHEDRIC.CODAPP
+		FROM W_SCHEDRIC, TAB3
+        WHERE TAB3.TAB3COD = #tabTipo:VARCHAR#
+		  AND TAB3.TAB3TIP = W_SCHEDRIC.TIPO
+		  AND W_SCHEDRIC.CODAPP = #codiceApplicazione#
+		<isNotEmpty prepend="AND" property="tipo">
+		   W_SCHEDRIC.TIPO = #tipo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+		   W_SCHEDRIC.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		AND W_SCHEDRIC.ID_RICERCA NOT IN (SELECT ID_RICERCA FROM W_RICERCHE WHERE W_RICERCHE.PROFILO_OWNER = #codiceProfilo#)
+		<isNotEmpty prepend="AND" property="attivo">
+		   W_SCHEDRIC.ATTIVO = #attivo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nome">
+			<isEmpty property="operatoreUpper">
+				W_SCHEDRIC.NOME $operatoreNome$ #nome# $escapeNome$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_SCHEDRIC.NOME) $operatoreNome$ #nome# $escapeNome$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="owner">
+		   W_SCHEDRIC.OWNER = #owner#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="esecutore">
+		   W_SCHEDRIC.ESECUTORE = #esecutore#
+		</isNotEmpty>
+		  AND W_SCHEDRIC.PROFILO_OWNER = #codiceProfilo#
+		  
+		ORDER BY NOME
+	</select>
+	
+	<select id="getSchedRicById" resultMap="resultSched" parameterClass="java.util.HashMap">
+		SELECT W_SCHEDRIC.ID_SCHEDRIC, W_SCHEDRIC.ID_RICERCA,W_SCHEDRIC.TIPO,TAB3.TAB3DESC AS DESCTIPO,
+			   	 W_SCHEDRIC.ATTIVO, W_SCHEDRIC.NOME, W_SCHEDRIC.ORA_AVVIO, W_SCHEDRIC.MINUTO_AVVIO, W_SCHEDRIC.DATA_PRIMA_ESEC,
+			     W_SCHEDRIC.GIORNO, W_SCHEDRIC.SETTIMANA, W_SCHEDRIC.GIORNI_SETTIMANA, W_SCHEDRIC.MESE, W_SCHEDRIC.GIORNI_MESE,
+			     W_SCHEDRIC.FORMATO, W_SCHEDRIC.EMAIL,W_SCHEDRIC.DATA_ULT_ESEC, W_SCHEDRIC.DATA_PROX_ESEC,W_SCHEDRIC.OWNER,
+			     W_SCHEDRIC.ESECUTORE, W_SCHEDRIC.PROFILO_OWNER, W_SCHEDRIC.NO_OUTPUT_VUOTO, W_SCHEDRIC.CODAPP, W_SCHEDRIC.RIPETI_DOPO_MINUTI 
+		  FROM W_SCHEDRIC, TAB3, TAB1
+		 WHERE W_SCHEDRIC.ID_SCHEDRIC = #idSchedRic# 
+	     AND TAB3.TAB3COD = #tabTipo:VARCHAR#
+	     AND TAB3.TAB3TIP = W_SCHEDRIC.TIPO
+		   AND TAB1.TAB1COD = #tabFormato:VARCHAR# 
+		   AND TAB1.TAB1TIP = W_SCHEDRIC.FORMATO
+		 UNION
+		SELECT W_SCHEDRIC.ID_SCHEDRIC, W_SCHEDRIC.ID_RICERCA, W_SCHEDRIC.TIPO,TAB3.TAB3DESC AS DESCTIPO,
+	 		     W_SCHEDRIC.ATTIVO, W_SCHEDRIC.NOME, W_SCHEDRIC.ORA_AVVIO,W_SCHEDRIC.MINUTO_AVVIO,W_SCHEDRIC.DATA_PRIMA_ESEC,
+       		 W_SCHEDRIC.GIORNO, W_SCHEDRIC.SETTIMANA, W_SCHEDRIC.GIORNI_SETTIMANA, W_SCHEDRIC.MESE, W_SCHEDRIC.GIORNI_MESE,
+	     		 W_SCHEDRIC.FORMATO, W_SCHEDRIC.EMAIL, W_SCHEDRIC.DATA_ULT_ESEC, W_SCHEDRIC.DATA_PROX_ESEC, W_SCHEDRIC.OWNER,
+	     		 W_SCHEDRIC.ESECUTORE, W_SCHEDRIC.PROFILO_OWNER, W_SCHEDRIC.NO_OUTPUT_VUOTO, W_SCHEDRIC.CODAPP, W_SCHEDRIC.RIPETI_DOPO_MINUTI 
+	  	FROM W_SCHEDRIC, TAB3
+	 	 WHERE W_SCHEDRIC.ID_SCHEDRIC = #idSchedRic#
+	     AND TAB3.TAB3COD = #tabTipo:VARCHAR#
+	     AND TAB3.TAB3TIP = W_SCHEDRIC.TIPO
+	     AND W_SCHEDRIC.FORMATO is null
+	</select>
+
+
+	<insert id="insertSchedRic" parameterClass="it.eldasoft.console.db.domain.schedric.SchedRic">
+	    INSERT INTO W_SCHEDRIC (ID_SCHEDRIC,ID_RICERCA,TIPO, ATTIVO, NOME, 
+			   ORA_AVVIO,MINUTO_AVVIO,DATA_PRIMA_ESEC,GIORNO,SETTIMANA,
+			   GIORNI_SETTIMANA,MESE,GIORNI_MESE,FORMATO,EMAIL,DATA_ULT_ESEC,
+			   DATA_PROX_ESEC,OWNER,ESECUTORE, PROFILO_OWNER, NO_OUTPUT_VUOTO, CODAPP, RIPETI_DOPO_MINUTI)
+		VALUES (#idSchedRic#, #idRicerca#, #tipo#, #attivo#, #nome#,
+			   #oraAvvio#, #minutoAvvio#, #dataPrimaEsec:DATE#,#giorno:NUMERIC#,#settimana:NUMERIC#,
+			   #giorniSettimana:VARCHAR#,#mese:VARCHAR#,#giorniMese:VARCHAR#,#formato:NUMERIC#,#email#,#dataUltEsec:TIMESTAMP#,
+			   #dataProxEsec:DATE#,#owner#,#esecutore#,#profiloOwner:VARCHAR#, #noOutputVuoto#, #codiceApplicazione#, #ripetiDopoMinuti:NUMERIC# )
+	</insert>
+	
+	<update id="updateAttivaDisattiva" parameterClass="java.util.HashMap">
+		UPDATE W_SCHEDRIC SET ATTIVO=#attivo#, DATA_PROX_ESEC=#dataProxEsec:DATE#
+		<isEqual property="attivo" compareValue="1">
+		, ORA_AVVIO=#ora#, MINUTO_AVVIO=#minuti#
+		</isEqual>
+		WHERE ID_SCHEDRIC = #idSchedRic#
+	</update>
+	
+	<update id="updateSchedRic" parameterClass="it.eldasoft.console.db.domain.schedric.SchedRic">
+		UPDATE W_SCHEDRIC SET ID_RICERCA=#idRicerca#, TIPO=#tipo#, ATTIVO=#attivo#, NOME=#nome#, 
+			   ORA_AVVIO=#oraAvvio#, MINUTO_AVVIO=#minutoAvvio#, DATA_PRIMA_ESEC=#dataPrimaEsec:DATE#, GIORNO=#giorno:NUMERIC#,
+			   SETTIMANA=#settimana:NUMERIC#, GIORNI_SETTIMANA=#giorniSettimana:VARCHAR#, MESE=#mese:VARCHAR#,
+			   GIORNI_MESE=#giorniMese:VARCHAR#, FORMATO=#formato:NUMERIC#, EMAIL=#email#, DATA_ULT_ESEC=#dataUltEsec:TIMESTAMP#,
+			   DATA_PROX_ESEC=#dataProxEsec:DATE#, ESECUTORE = #esecutore#, NO_OUTPUT_VUOTO = #noOutputVuoto#, 
+			   CODAPP=#codiceApplicazione#, RIPETI_DOPO_MINUTI=#ripetiDopoMinuti:NUMERIC#
+		WHERE ID_SCHEDRIC = #idSchedRic#
+	</update>
+	
+	<delete id="deleteSchedRic" parameterClass="java.util.HashMap">  
+	  	DELETE FROM W_SCHEDRIC WHERE ID_SCHEDRIC IN
+	  		<iterate property="id" open="(" close=")" conjunction=", " >
+	    		#id[]#
+			  </iterate>
+	</delete>
+
+	<!-- Gestione Coda di schedulazione -->
+  	<select id="getCodaSched" resultMap="resultListaCoda" parameterClass="java.util.HashMap">
+		SELECT DISTINCT W_CODASCHED.ID_CODASCHED, W_CODASCHED.DATA_ESEC,
+           W_CODASCHED.ID_SCHEDRIC, (SELECT NOME FROM W_SCHEDRIC SCH WHERE SCH.ID_SCHEDRIC = W_CODASCHED.ID_SCHEDRIC) AS NOME,
+           W_CODASCHED.ID_RICERCA, (SELECT NOME FROM W_RICERCHE RIC WHERE RIC.ID_RICERCA = W_CODASCHED.ID_RICERCA) AS NOME_RICERCA,
+           W_CODASCHED.STATO, TAB1.TAB1DESC AS DESCSTATO,
+           W_CODASCHED.MSG,
+           W_CODASCHED.NOMEFILE,
+           W_CODASCHED.CODAPP
+		FROM W_CODASCHED, TAB1, W_SCHEDRIC
+    WHERE TAB1.TAB1TIP = W_CODASCHED.STATO
+      AND TAB1.TAB1COD = #tabStato:VARCHAR#
+    <isNotEmpty prepend="" property="idSchedRic">
+      AND W_CODASCHED.ID_SCHEDRIC = #idSchedRic#
+    </isNotEmpty>
+		<isNotEmpty prepend="AND" property="stato">
+		  W_CODASCHED.STATO = #stato#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+		  W_CODASCHED.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="msg">
+			<isEmpty property="operatoreUpper">
+				W_CODASCHED.MSG $operatoreMsg$ #msg# $escapeMsg$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_CODASCHED.MSG) $operatoreMsg$ #msg# $escapeMsg$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="esecutore">
+			  W_CODASCHED.ESECUTORE = #esecutore#
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="dataEsecSuc">
+			<![CDATA[$campoCodaSchedDataEsec$ $operatoreDataEsecSuc$ #dataEsecSuc#]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="dataEsecPrec">
+			<![CDATA[$campoCodaSchedDataEsec$ $operatoreDataEsecPrec$ #dataEsecPrec#]]>
+		</isNotEmpty>
+		  AND W_CODASCHED.PROFILO_OWNER = #profiloOwner#
+		  AND W_CODASCHED.CODAPP = #codiceApplicazione#		
+		ORDER BY ID_CODASCHED DESC
+	</select>
+	
+	<select id="getCodaSchedById" resultMap="resultCoda" parameterClass="java.lang.Integer">
+		SELECT W_CODASCHED.ID_CODASCHED, W_CODASCHED.ID_SCHEDRIC,W_CODASCHED.STATO,W_CODASCHED.MSG, W_CODASCHED.NOMEFILE, W_CODASCHED.DATA_ESEC, W_CODASCHED.CODAPP, W_CODASCHED.ID_RICERCA
+		FROM W_CODASCHED
+		WHERE W_CODASCHED.ID_CODASCHED = #idCodaSched#
+	</select>
+	
+	<delete id="deleteCodaSched" parameterClass="java.lang.Integer">  
+	  	DELETE FROM W_CODASCHED WHERE ID_CODASCHED = #id#
+	</delete>
+	
+	<select id="getSchedulazioneReportSenzaParametri" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT COUNT(ID_SCHEDRIC)
+		  FROM W_SCHEDRIC, W_RICERCHE
+		 WHERE ID_SCHEDRIC = #idSchedRic#
+		   AND W_SCHEDRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		   AND ((
+				     ID_PROSPETTO IS NULL
+				     AND NOT EXISTS(
+				       SELECT ID_RICERCA 
+		             FROM W_RICPARAM
+		            WHERE W_RICPARAM.ID_RICERCA = W_RICERCHE.ID_RICERCA)
+				    ) OR (
+				     ID_PROSPETTO IS NOT NULL
+				     AND NOT EXISTS(
+				     	 SELECT ID_MODELLO
+						     FROM W_MODPARAM
+						    WHERE W_MODPARAM.ID_MODELLO = W_RICERCHE.ID_PROSPETTO
+						    <isNotEmpty prepend="AND" property="tipoParametro">
+			      		  <![CDATA[ W_MODPARAM.TIPO <> #tipoParametro#) ]]>
+							  </isNotEmpty>
+				   ))
+	</select>
+	
+	<select id="getSchedPerOra" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select id_schedric
+		from w_schedric
+		where attivo = 1
+		and codapp = #codiceApplicazione#
+		and (
+					(     data_prox_esec = #dataProxEsec#
+          	and (ora_avvio*60 + minuto_avvio) = #oraInMinuti#
+          ) or (
+               	 (    <![CDATA[data_prox_esec < #dataProxEsec#]]>
+	          		  or (<![CDATA[data_prox_esec = #dataProxEsec# and (ora_avvio*60 + minuto_avvio) < #oraInMinuti#]]>)
+	               )
+               )
+         )
+	</select>
+	
+	<insert id="insertCodaSched" parameterClass="it.eldasoft.console.db.domain.schedric.CodaSched">
+    INSERT INTO W_CODASCHED (ID_CODASCHED,ID_SCHEDRIC,ID_RICERCA, ESECUTORE, STATO, MSG,NOMEFILE,DATA_ESEC, PROFILO_OWNER, CODAPP) 
+		VALUES (#idCodaSched#,#idSchedRic:NUMERIC#, #idRicerca:NUMERIC#, #esecutore#, #stato#, #msg:VARCHAR#, #nomeFile:VARCHAR#,#dataEsec:TIMESTAMP#, #profiloOwner:VARCHAR#, #codiceApplicazione#)
+	</insert>
+	
+	<update id="updateDataProxEsecSchedRic" parameterClass="java.util.HashMap">
+		UPDATE W_SCHEDRIC SET DATA_PROX_ESEC=#dataProxEsec:DATE# , DATA_ULT_ESEC=#dataUltEsec:TIMESTAMP#, ORA_AVVIO=#ora#, MINUTO_AVVIO=#minuti#
+		WHERE ID_SCHEDRIC = #idSchedRic#
+	</update>
+	
+	<update id="updateStatoCodaSched" parameterClass="java.util.HashMap">
+		UPDATE W_CODASCHED SET STATO=#stato#, MSG=#msg:VARCHAR#, NOMEFILE=#nomeFile:VARCHAR#
+		WHERE ID_CODASCHED = #idCodaSched#
+	</update>
+	
+</sqlMap>

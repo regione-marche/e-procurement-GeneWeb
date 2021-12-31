@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="DocumentiAssociati">
+
+  <resultMap id="resultDocAss" class="it.eldasoft.gene.db.domain.docass.DocumentoAssociato">
+	<result property="id" column="C0ACOD" />
+    <result property="codApp" column="C0APRG" />
+    <result property="entita" column="C0AENT" />
+    <result property="campoChiave1" column="C0AKEY1" />
+    <result property="campoChiave2" column="C0AKEY2" />
+    <result property="campoChiave3" column="C0AKEY3" />
+    <result property="campoChiave4" column="C0AKEY4" />
+    <result property="campoChiave5" column="C0AKEY5" />
+	<result property="dataInserimento" column="C0ADAT" />
+    <result property="titolo" column="C0ATIT" />
+    <result property="pathDocAss" column="C0ADIROGG" />
+    <result property="nomeDocAss" column="C0ANOMOGG" />
+    <result property="tipoAccesso" column="C0ATIPACE" />
+    <result property="annotazioni" column="C0ANNOTE" />
+    <result property="pubblicare" column="C0APUBLI" />
+    <result property="tipoPubblicazione" column="C0ATPUB" />
+	<result property="subDirectoryDocAss" column="C0ASUBDIR" />
+    <result property="tipoVisibilita" column="C0AVISIB" />
+    <result property="dataScadenzaDocumento" column="C0ASCAD" />
+    <result property="tipoDocumento" column="C0ATIPO" />
+    <result property="numeroProtocollo" column="C0ANPROT" />
+    <result property="dataProtocollo" column="C0ADPROT" />
+    <result property="numeroAtto" column="C0ANATTO" />
+    <result property="dataAtto" column="C0ADATTO"/>
+  </resultMap>
+
+	<select id="getListaDocumentiAssociati" parameterClass="java.util.HashMap" resultMap="resultDocAss">
+		SELECT C0ACOD, C0APRG, C0AENT, C0AKEY1, C0AKEY2, C0AKEY3, C0AKEY4, C0AKEY5, C0ADAT, C0ATIT, C0ADIROGG, C0ANOMOGG, C0ATIPACE, C0ANNOTE, C0APUBLI, C0ATPUB, C0ASUBDIR, C0AVISIB, C0ASCAD, C0ATIPO, C0ANPROT, C0ADPROT, C0ANATTO, C0ADATTO
+		FROM C0OGGASS 
+		WHERE C0AENT = #c0aent#
+		 AND C0AKEY1 = #c0akey1#
+		 AND C0AKEY2 = #c0akey2#
+		 AND C0AKEY3 = #c0akey3#
+		 AND C0AKEY4 = #c0akey4#
+		 AND C0AKEY5 = #c0akey5#
+		ORDER BY C0ADAT DESC
+	</select>
+	
+	<select id="documentoAssociatoById" parameterClass="java.lang.Long" resultMap="resultDocAss">
+		SELECT C0ACOD, C0APRG, C0AENT, C0AKEY1, C0AKEY2, C0AKEY3, C0AKEY4, C0AKEY5, C0ADAT, C0ATIT, C0ADIROGG, C0ANOMOGG, C0ATIPACE, C0ANNOTE, C0APUBLI, C0ATPUB, C0ASUBDIR, C0AVISIB, C0ASCAD, C0ATIPO, C0ANPROT, C0ADPROT, C0ANATTO, C0ADATTO
+		FROM C0OGGASS 
+		WHERE C0ACOD = #c0acod#
+	</select>
+
+	<select id="documentoAssociatoByChiaviEntitaTitolo" parameterClass="java.util.HashMap" resultMap="resultDocAss" >
+		SELECT C0ACOD, C0APRG, C0AENT, C0AKEY1, C0AKEY2, C0AKEY3, C0AKEY4, C0AKEY5, C0ADAT, C0ATIT, C0ADIROGG, C0ANOMOGG, C0ATIPACE, C0ANNOTE, C0APUBLI, C0ATPUB, C0ASUBDIR, C0AVISIB, C0ASCAD, C0ATIPO, C0ANPROT, C0ADPROT, C0ANATTO, C0ADATTO
+		FROM C0OGGASS 
+		WHERE C0AENT  = #c0aent#
+		  AND C0AKEY1 = #c0akey1#
+		  AND C0AKEY2 = #c0akey2#
+		  AND C0AKEY3 = #c0akey3#
+		  AND C0AKEY4 = #c0akey4#
+		  AND C0AKEY5 = #c0akey5#
+		<isNotEmpty property="titolo" prepend="AND">
+			$operatoreUpper$ (C0ATIT) = #titolo#
+		</isNotEmpty>
+	</select>
+
+	<select id="getNumeroDocAssByPathNome" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+  	SELECT count(c0acod) 
+  	  FROM C0OGGASS
+  	 WHERE $operatoreUpper$ (C0ADIROGG) = #pathDocAss#
+			 AND $operatoreUpper$ (C0ANOMOGG) = #nomeDocAss#
+  </select>
+	
+	<delete id="deleteDocumentoAssociatoById" parameterClass="java.lang.Long">
+		DELETE FROM C0OGGASS WHERE C0ACOD = #c0acod#
+	</delete>
+
+	<delete id="deleteWSAllegatoById" parameterClass="java.lang.Long">
+		DELETE FROM WSALLEGATI WHERE ENTITA = 'C0OGGASS' AND KEY2 = CAST(#c0acod# AS VARCHAR(30)) 
+	</delete>
+
+	<insert id="insertDocAss" parameterClass="it.eldasoft.gene.db.domain.docass.DocumentoAssociato">
+		INSERT INTO C0OGGASS (C0ACOD, C0APRG, C0ADAT, C0AENT, C0AKEY1, C0AKEY2, C0AKEY3, C0AKEY4, C0AKEY5, C0ATIT, C0ADIROGG, C0ANOMOGG, C0ATIPACE, C0ANNOTE, C0APUBLI, C0ATPUB, C0ASUBDIR, C0AVISIB, C0ASCAD, C0ATIPO, C0ANPROT, C0ADPROT, C0ANATTO, C0ADATTO)
+		VALUES (#id#, #codApp#, #dataInserimento:TIMESTAMP#, #entita#, #campoChiave1# , #campoChiave2#, #campoChiave3#, #campoChiave4#, #campoChiave5#, #titolo#, #pathDocAss#, #nomeDocAss#, #tipoAccesso:NUMERIC#, #annotazioni:VARCHAR#, #pubblicare:VARCHAR#, #tipoPubblicazione:NUMERIC#, #subDirectoryDocAss:VARCHAR#, #tipoVisibilita:NUMERIC#, #dataScadenzaDocumento:DATE#, #tipoDocumento:VARCHAR#, #numeroProtocollo:VARCHAR#, #dataProtocollo:DATE#, #numeroAtto:VARCHAR#, #dataAtto:DATE#)
+	</insert>
+
+	<update id="updateDocAss" parameterClass="it.eldasoft.gene.db.domain.docass.DocumentoAssociato">
+		UPDATE C0OGGASS
+		SET    C0ATIT = #titolo#,
+		    C0ADIROGG = #pathDocAss#,
+		    C0ANOMOGG = #nomeDocAss#,
+		    C0ATIPACE = #tipoAccesso:NUMERIC#, 
+		     C0ANNOTE = #annotazioni:VARCHAR#, 
+		     C0APUBLI = #pubblicare:VARCHAR#,
+		      C0ATPUB = #tipoPubblicazione:NUMERIC#,
+		    C0ASUBDIR = #subDirectoryDocAss:VARCHAR#,
+		     C0AVISIB = #tipoVisibilita:NUMERIC#,
+		       C0ADAT = #dataInserimento:TIMESTAMP#,
+		      C0ASCAD = #dataScadenzaDocumento:DATE#, 
+		      C0ATIPO = #tipoDocumento:VARCHAR#,
+		     C0ANPROT = #numeroProtocollo:VARCHAR#,		      
+		     C0ADPROT = #dataProtocollo:DATE#,		      
+		     C0ANATTO = #numeroAtto:VARCHAR#,		      
+		     C0ADATTO = #dataAtto:DATE#		      
+		WHERE  C0ACOD = #id#
+	</update>
+
+	<select id="getNumUtentiByC0AKEY1" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(C0ACOD) FROM C0OGGASS
+		WHERE C0AKEY1 = #codiceUtente#
+		AND   C0AENT = 'UTENT'
+	</select>
+	
+	<update id="updateC0AKEY1" parameterClass="java.util.HashMap">
+		UPDATE C0OGGASS SET C0AKEY1 = #nuovoCodiceUtente#
+		WHERE C0AKEY1 = #codiceUtente#
+		AND   C0AENT = 'UTENT'
+	</update>
+	
+</sqlMap>

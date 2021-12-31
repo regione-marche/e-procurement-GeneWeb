@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+	<!-- Configurer that replaces ${...} placeholders with values from properties files -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>WEB-INF/classes/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+	<bean id="dataSource" class="it.eldasoft.gene.commons.web.spring.ContextAwareDataSourceProxy">
+		<property name="targetDataSource"><ref local="targetDataSource"/></property>
+	</bean>
+	
+	<!-- Main JNDI DataSource for J2EE environments -->
+	<!-- JBoss: mappare la connessione nei file xxx-ds.xml (es: oracle-ds.xml) in /deploy -->
+	<bean id="targetDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/${jndi.jndiName}"/>
+	</bean>
+
+	<!-- Transaction manager for a single JDBC DataSource -->
+	<bean id="transactionManager"
+		class="it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- SqlMap setup for iBATIS Database Layer -->
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation"
+			value="WEB-INF/xml/ibatis/${ibatis.dbalice.sqlMapConfigFile}" />
+	</bean>
+
+	<bean id="dbmsSpecs" class="it.eldasoft.utils.sql.DBMSSpecs">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="springAppContext" class="it.eldasoft.utils.spring.SpringAppContext" />
+
+</beans>

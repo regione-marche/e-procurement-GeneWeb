@@ -1,0 +1,577 @@
+<?xml version="1.0"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<form-beans>
+		<form-bean name="idForm"
+			type="it.eldasoft.gene.commons.web.struts.IdForm" />
+
+		<form-bean name="loginForm"
+			type="it.eldasoft.gene.web.struts.login.LoginForm" />
+			
+		<form-bean name="listaForm"
+			 type="it.eldasoft.gene.commons.web.struts.ListaForm" />			
+
+		<form-bean name="listaDocAssForm"
+			type="it.eldasoft.gene.web.struts.docass.ListaDocumentiAssociatiForm" />
+
+		<form-bean name="documentoAssociatoForm"
+			type="it.eldasoft.gene.web.struts.docass.DocumentoAssociatoForm" />				
+			
+		<form-bean name="cfgLdapForm"
+			type="it.eldasoft.gene.web.struts.system.ldap.ConfigurazioneLdapForm" />
+			
+		<form-bean name="cfgMailForm"
+			type="it.eldasoft.gene.web.struts.system.mail.ConfigurazioneMailForm" />
+		
+		<form-bean name="cfgRichiestaAssistenzaForm"
+			type="it.eldasoft.gene.web.struts.system.assistenza.ConfigurazioneRichiestaAssistenzaForm" />
+			
+		<form-bean name="permessiAccountEntitaForm"
+			type="it.eldasoft.gene.web.struts.permessi.PermessiAccountEntitaForm"/>
+
+		<form-bean name="creaGraficoForm"
+			type="it.eldasoft.gene.web.struts.grafici.CreaGraficoForm"/>
+
+		<form-bean name="uploadFileForm"
+			type="it.eldasoft.gene.commons.web.struts.UploadFileForm" />
+			
+		<form-bean name="assistenzaForm"
+			type="it.eldasoft.gene.web.struts.AssistenzaForm" />
+			
+		<form-bean name="recuperaPasswordForm"
+			type="it.eldasoft.gene.web.struts.RecuperaPasswordForm" />
+		
+        <form-bean name="adminAccessForm" 
+        	type="it.eldasoft.gene.web.struts.AdminAccessForm"/>
+	</form-beans>
+
+	<global-forwards>
+	</global-forwards>
+
+	<action-mappings>
+		<action path="/InitLogin" type="it.eldasoft.gene.web.struts.login.IsUserLoggedAction"
+			scope="request" validate="false">
+			<forward name="success" path="loginDef" />
+		</action>
+
+		<action path="/InfoAccessibilita" type="it.eldasoft.gene.commons.web.struts.ForwardAction" scope="request" parameter="/WEB-INF/pages/commons/accessibilita.jsp" />
+
+		<action path="/Login" name="loginForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+            <forward name="success" path="/CheckProfilo.do"/>
+            <forward name="successSkipProfili" path="/CheckVersione.do"/>
+            <forward name="successAdmin" path="/OpenAdminAccess.do"/>
+            <forward name="successCambiaPassword" path="/WEB-INF/pages/gene/admin/cambiaPswScaduta.jsp"/>
+        </action>
+
+		<action path="/ShibbolethLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+
+		<action path="/BartLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+
+		<action path="/OpenIDLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+
+		<action path="/CohesionLoginResponseAction" scope="request" type="org.springframework.web.struts.DelegatingActionProxy" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/login/fwLogin.jsp" module="/" />
+		</action>
+		
+		<action path="/SpidLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="successPrepareLogin" path="/WEB-INF/pages/commons/redirect.jsp"/>
+		</action>
+		
+		<action path="/SpidLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+
+		<action path="/AccessoDiretto" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+			<forward name="successCambiaPassword" path="/WEB-INF/pages/gene/admin/cambiaPswScaduta.jsp"/>
+		</action>
+
+		<action path="/LoginAnonimo" type="it.eldasoft.gene.web.struts.login.LoginAnonimoAction"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/login/fwLogin.jsp" />
+		</action>
+		
+		<action path="/ApriPaginaApplEsterno" type="it.eldasoft.gene.web.struts.login.LoginApplEsternoAction"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/login/fwLogin.jsp" />
+			<forward name="apriPagina" path="/ApriPagina.do" />
+		</action>
+
+		<action path="/ConfermaRegistrazione" forward="/confermaRegistrazione.jsp" />
+		
+		<action path="/Home" type="it.eldasoft.gene.web.struts.HomeAction"
+		  scope="request" validate="false">
+		</action>
+
+		<action path="/CheckProfilo"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/SetProfilo.do"/>
+			<forward name="successLista" path="/WEB-INF/pages/gene/sceltaProfili/sceltaProfili.jsp"/>
+		</action>
+
+		<action path="/SetProfilo"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckVersione.do"/>
+		</action>
+
+		<action path="/CheckVersione"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/OpenApplication.do"/>
+			<forward name="uffint" path="/CheckUfficioIntestatario.do"/>
+		</action>
+
+		<action path="/CheckUfficioIntestatario"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/OpenApplication.do"/>
+			<forward name="successLista" path="/WEB-INF/pages/gene/uffint/sceltaUfficioIntestatario.jsp"/>
+		</action>
+		
+		<action path="/SetUfficioIntestatario"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/OpenApplication.do"/>
+		</action>
+
+		<action path="/OpenApplication" name="idForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+
+		<action path="/ListaApplicativi"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/listaApplicativi/listaApplicativi.jsp"/>
+		</action>
+
+		<action path="/LoginAlice"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+
+		<action path="/Logout"
+			type="org.springframework.web.struts.DelegatingActionProxy" scope="request"
+			validate="false">
+			<forward name="logoutSSO" path="/WEB-INF/pages/commons/redirect.jsp"/>
+		</action>
+
+		<action path="/SessionTimeOut"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="logoutSSO" path="/WEB-INF/pages/commons/redirect.jsp"/>
+		</action>
+
+		<action path="/InformazioniSu"
+			type="it.eldasoft.gene.web.struts.InformazioniSuAction" scope="request"
+			validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/about.jsp" />
+		</action>
+		
+		<!-- Azione che esegue l'apertura di una pagina -->
+		<action path="/ApriPagina"
+			type="it.eldasoft.gene.web.struts.tags.OpenPageAction" scope="request" validate="false">
+		</action>
+		
+		<action path="/ApriPopup"
+			type="it.eldasoft.gene.web.struts.tags.OpenPopUpAction" scope="request"	validate="false">
+		</action>
+		
+		<!-- Azione del trova -->
+		<action path="/Trova"
+			type="it.eldasoft.gene.web.struts.tags.TrovaAction" scope="request"
+			validate="false" parameter="metodo">
+			<!-- Se si verificano errori ritorna alla trova -->
+			<forward name="errore" path="/ApriPagina.do" />
+		</action>
+		
+		<action path="/Lista"
+			type="it.eldasoft.gene.web.struts.tags.ListaAction" scope="request"
+			validate="false" parameter="metodo">
+			<!-- Se si verificano errori ritorna alla trova -->
+			<forward name="errore" path="/ApriPagina.do" />
+		</action>
+		
+		<action path="/Scheda" 
+			name="uploadFileForm"
+			type="it.eldasoft.gene.web.struts.tags.SchedaAction" scope="request"
+			validate="false" parameter="metodo">
+			<!-- Se si verificano errori ritorna alla trova -->
+			<forward name="errore" path="/ApriPagina.do" />
+		</action>
+		<action path="/SchedaNoSessione"
+			name="uploadFileForm"
+			type="it.eldasoft.gene.web.struts.tags.SchedaNoSessioneAction" scope="request"
+			validate="false" parameter="metodo">
+			<!-- Se si verificano errori ritorna alla trova -->
+			<forward name="errore" path="/ApriPagina.do" />
+		</action>
+		<action path="/History"
+			type="it.eldasoft.gene.web.struts.tags.HistoryAction" scope="request"
+			validate="false" parameter="metodo">
+			<forward name="success" path="/WEB-INF/pages/commons/historyRedirect.jsp" module="/"/>
+		</action>
+		<action path="/Archivio"
+			type="it.eldasoft.gene.web.struts.tags.ArchivioAction" scope="request"
+			validate="false" parameter="metodo">
+			<forward name="success" path="/WEB-INF/pages/commons/historyRedirect.jsp" module="/"/>
+		</action>
+			
+		<action path="/DocumentoAssociato" name="documentoAssociatoForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo" >
+			<forward name="successVisualizza" path="dettaglioDocumentoAssociatoDef" />
+			<forward name="successModifica" path="editDocumentoAssociatoDef"/>
+			<forward name="annullaModificaDettaglio" path="/DocumentoAssociato.do?metodo=visualizza" />
+			<forward name="successNuovo" path="editDocumentoAssociatoDef"/>
+			<forward name="errorDownloadLista" path="/ListaDocumentiAssociati.do?metodo=visualizza" />
+			<forward name="errorDownloadDettaglio" path="/DocumentoAssociato.do?metodo=visualizza" />
+			<forward name="successSalva" path="/DocumentoAssociato.do?metodo=visualizza" />
+			<forward name="successAnnulla" path="/ListaDocumentiAssociati.do?metodo=visualizza" />
+			<forward name="errorModifica" path="/DocumentoAssociato.do?metodo=modifica" />
+			<forward name="ritornaAInsertDoc" path="editDocumentoAssociatoDef"/>
+		</action>
+
+		<action path="/ListaDocumentiAssociati" name="listaDocAssForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo" >
+			<forward name="success" path="listaDocumentiAssociatiDef" />
+			<forward name="successDelete" path="/ListaDocumentiAssociati.do?metodo=visualizza" />
+			<forward name="listaDocumentiAssociatiDB" path="/ApriPagina.do?href=gene/c0oggass/c0oggass-lista.jsp" />
+		</action>
+
+		<action path="/EliminaDocAss" forward="popupCancellaDocAssDef" />
+
+		<action path="/Errore" type="it.eldasoft.gene.web.struts.ErroreGeneraleAction"
+			scope="request" validate="false">
+		</action>
+	
+		<action path="/ErrorOpenScheda" type="it.eldasoft.gene.web.struts.ErroreOpenSchedaAction"
+			scope="request" validate="false">
+		</action>
+
+		<action path="/AttivaApplicazione" type="it.eldasoft.gene.web.struts.attivazione.AttivaApplicazioneAction"
+			scope="request" validate="false" >
+			<forward name="success" path="/WEB-INF/pages/gene/attivazione/applicazioneAttivata.jsp"/>
+		</action>
+
+		<action path="/ConfigurazioneLdap" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successVisualizza" path="/WEB-INF/pages/gene/system/ldap/dettCfgLdap.jsp"/>
+			<forward name="successModifica" path="/WEB-INF/pages/gene/system/ldap/modCfgLdap.jsp"/>
+			<forward name="successModificaPassword" path="/WEB-INF/pages/gene/system/ldap/modPswCfgLDAP.jsp"/>
+		</action>
+		
+		<action path="/SalvaConfigurazioneLdap" name="cfgLdapForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneLdap.do?metodo=visualizza" />
+		</action>
+		
+		<action path="/ImpostaPasswordConfigurazioneLdap" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneLdap.do?metodo=visualizza" />
+			<forward name="errorModificaPassword" path="/ConfigurazioneLdap.do?metodo=modificaPassword" />
+		</action>
+		
+		<action path="/ListaConfigurazioniMail" name="listaForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successLista" path="/WEB-INF/pages/gene/system/mail/listaCfgMail.jsp"/>
+			<forward name="successElimina" path="/ListaConfigurazioniMail.do?metodo=lista"/>
+		</action>
+
+		<action path="/ConfigurazioneMail" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successVisualizza" path="/WEB-INF/pages/gene/system/mail/dettCfgMail.jsp"/>
+			<forward name="successModifica" path="/WEB-INF/pages/gene/system/mail/modCfgMail.jsp"/>
+			<forward name="successModificaPassword" path="/WEB-INF/pages/gene/system/mail/modPswCfgMail.jsp"/>
+			<forward name="successApriVerifica" path="/WEB-INF/pages/gene/system/mail/testCfgMail.jsp"/>
+		</action>
+		
+		<action path="/SalvaConfigurazioneMail" name="cfgMailForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneMail.do?metodo=visualizza" />
+		</action>
+		
+		<action path="/SincronizzaConfigurazioneMailPortale" name="cfgMailForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneMail.do?metodo=visualizza" />
+		</action>
+		
+		<action path="/ImpostaPasswordConfigurazioneMail" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneMail.do?metodo=visualizza" />
+			<forward name="errorModificaPassword" path="/ConfigurazioneMail.do?metodo=modificaPassword" />
+		</action>
+		
+		<action path="/ConfigurazioneRichiestaAssistenza" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successVisualizza" path="/WEB-INF/pages/gene/system/assistenza/dettCfgRichiestaAssistenza.jsp"/>
+			<forward name="successModifica" path="/WEB-INF/pages/gene/system/assistenza/modCfgRichiestaAssistenza.jsp"/>
+			<forward name="successModificaPassword" path="/WEB-INF/pages/gene/system/assistenza/modPswCfgRichiestaAssistenza.jsp"/>
+		</action>
+		
+		<action path="/SalvaConfigurazioneRichiestaAssistenza" name="cfgRichiestaAssistenzaForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneRichiestaAssistenza.do?metodo=visualizza" />
+		</action>
+		
+		<action path="/ImpostaPasswordConfigurazioneRichiestaAssistenza" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/ConfigurazioneRichiestaAssistenza.do?metodo=visualizza" />
+			<forward name="errorModificaPassword" path="/ConfigurazioneRichiestaAssistenza.do?metodo=modificaPassword" />
+		</action>
+		
+		<action path="/ListaPermessiEntita" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successVisualizza" path="listaPermessiEntitaDef" />
+			<forward name="successEdit" path="editListaPermessiEntitaDef" />
+			<forward name="successPredefiniti" path="/ListaPermessiEntita.do?metodo=visualizza" />
+		</action>
+		
+		<action path="/SalvaPermessiEntita" name="permessiAccountEntitaForm"
+		   type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" >
+			<forward name="success" path="/ListaPermessiEntita.do?metodo=visualizza" />
+			<forward name="erroreSalva" path="/ListaPermessiEntita.do?metodo=modifica" />
+		</action>
+
+		<action path="/GetTabellato" 
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="listaValoriTabellatoDef"/>
+		</action>
+		
+		<!-- E' stato associato il form UploadFile alla action Wizard per permettere di effettuare upload di file in un passo del Wizard.
+		     Questa modifica non influenza tutti gli altri passi standard.  -->
+		<action path="/Wizard"
+			name="uploadFileForm"
+			type="it.eldasoft.gene.web.struts.tags.WizardAction" scope="request"
+			validate="false" parameter="metodo">
+			<forward name="errore" path="/ApriPagina.do" />
+		</action>
+		
+		<action path="/ApriListaRegioni"
+			type="it.eldasoft.gene.web.struts.OpenListaRegioniAction" scope="request"
+			validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/impr/impr-lista-regioni-popup.jsp" />
+		</action>
+
+		<!-- <action path=""
+		type=""
+			scope="request" validate="false">
+			<forward name="success" path="" module="/" />
+		</action>
+		
+		<action path=""
+		type=""
+			scope="request" validate="false" parameter="metodo">
+			<forward name="success" path=".do" />
+			<forward name="refresh" path=".do" redirect="true" />
+		</action>
+		
+		<action path="" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="" module="/" />
+		</action>
+		
+		<action path="" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="" module="/" />
+		</action>
+		
+		--> <action path="/CreaGrafico" name="creaGraficoForm"
+		type="it.eldasoft.gene.web.struts.grafici.CreaGraficoAction"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/commons/viewGrafico.jsp" module="/" />
+		</action>
+		
+		<action path="/DownloadTempFile" type="it.eldasoft.gene.web.struts.DownloadTempFileAction" scope="request" validate="false" />
+		
+		<action path="/RichiestaAssistenza" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/commons/assistenza-richiedi.jsp" />
+		</action>
+		
+		<action path="/InviaRichiestaAssistenza" name="assistenzaForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/commons/assistenza-esito.jsp" />
+			<forward name="validateError" path="/RichiestaAssistenza.do" />
+		</action>
+
+		<action path="/CalScadenzario" type="it.eldasoft.gene.web.struts.scadenz.CalScadenzarioAction" scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/g_scadenz/calendario.jsp" />
+		</action>
+
+		<action path="/GetAttivitaCalendario" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false" parameter="metodo" />
+
+		<!-- per il cronoprogramma sfrutto la stessa action del calendario, tanto non fa nulla eccetto che controllare l'OP -->
+		<action path="/Cronoprogramma" type="it.eldasoft.gene.web.struts.scadenz.CalScadenzarioAction" scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/g_scadenz/cronoprogramma.jsp" />
+		</action>
+
+		<action path="/Timeline" type="it.eldasoft.gene.web.struts.scadenz.CalScadenzarioAction" scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/gene/g_scadenz/timeline.jsp" />
+		</action>
+
+		<action path="/GetAttivitaCronoprogramma" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false" parameter="metodo" />
+
+		<action path="/GetAttivitaTimeline" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false" parameter="metodo" />
+		
+		<action path="/GetProprieta" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false" />
+		
+        <action path="/GetWsdmProprieta" scope="request" type="org.springframework.web.struts.DelegatingActionProxy" validate="false"/>
+		
+		<action path="/SalvaConfigurazione" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false" >
+			<forward name="success" path="/ApriPagina.do?href=geneweb/w_config/dettConfig.jsp" />
+			<forward name="errorUpdate" path="/WEB-INF/pages/geneweb/w_config/modConfig.jsp" />
+		</action>
+		
+		<action path="/SalvaConfigurazioneWsdm" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false" >
+			<forward name="success" path="/ApriPagina.do?href=geneweb/wsdmconfi/wsdmconfi-pagine-scheda.jsp" />
+			<forward name="errorUpdate" path="/WEB-INF/pages/geneweb/wsdmconfi/wsdmconfi-pagine-scheda.jsp?modalita=modifica" />
+		</action>
+		
+		<action path="/GetListaW_MESSAGE" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+
+		<action path="/SetW_MESSAGE" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/GetContaNonLettiW_MESSAGE" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/GetRecipientList" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/GetDescrizioneEnte" type="org.springframework.web.struts.DelegatingActionProxy"
+            scope="request" validate="false">
+	    </action>
+	    
+		<action path="/IsCodiceControlloCorretto" type="org.springframework.web.struts.DelegatingActionProxy"
+            scope="request" validate="false">
+	    </action>
+
+		<action path="/IsLoginEsistente" type="org.springframework.web.struts.DelegatingActionProxy"
+            scope="request" validate="false">
+	    </action>
+
+	    <action path="/ModelloRegistrazione" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="errorDownloadModelloRegistrazione" path="/registrazione-account.jsp?modo=NUOVO" />
+		</action>
+		
+		<action path="/GetListaEnti" type="org.springframework.web.struts.DelegatingActionProxy" 
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/VisualizzaFileDIGOGG" type="org.springframework.web.struts.DelegatingActionProxy" 
+			scope="request" validate="false">
+		</action>
+
+		<action path="/DownloadDocumentoFirmato" type="org.springframework.web.struts.DelegatingActionProxy" 
+			scope="request" validate="false">
+		</action>
+
+		<action path="/RecuperaPassword" name="recuperaPasswordForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/recupera-password-esito.jsp" />
+			<forward name="captcha" path="/recupera-password.jsp" />
+		</action>
+		
+		<action path="/GetListaC0CAMPI" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+
+		<action path="/GetDescrizioneC0Entit" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/GetSchemaTabellaCampiChiaveAction" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo" />
+			
+		<action path="/Art80CreaOE"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" >
+			<forward name="art80creaoesuccess" path="/WEB-INF/pages/gene/impr/impr-art80-crea-oe-success.jsp" module="/" />
+			<forward name="art80creaoeerror" path="/WEB-INF/pages/gene/impr/impr-art80-crea-oe.jsp" module="/" />
+		</action>
+		
+		<action path="/Art80Download" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/FirmaRemota"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" >
+			<forward name="firmaremotasignsuccess" path="/WEB-INF/pages/gene/system/firmaremota/firmaremota.jsp" module="/" />
+			<forward name="firmaremotasignerror" path="/WEB-INF/pages/gene/system/firmaremota/firmaremota.jsp" module="/" />
+		</action>
+		
+		<action path="/SetFirmaDigitaleRemota" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo" />
+
+		<action path="/GetWTags" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/GetListaW_TAGSLIST" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/SetW_TAGSLIST" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/GetWTagsProfilo" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action parameter="/WEB-INF/pages/gene/admin/admin-access-form.jsp"
+            path="/OpenAdminAccess" scope="request" type="it.eldasoft.gene.commons.web.struts.ForwardAction"/>
+		
+        <action name="adminAccessForm" path="/AdminAccess" scope="request"
+            type="org.springframework.web.struts.DelegatingActionProxy" validate="false">
+            <forward name="success" path="/CheckProfilo.do"/>
+            <forward name="successSkipProfili" path="/CheckVersione.do"/>
+            <forward name="error" path="/WEB-INF/pages/gene/admin/admin-access-form.jsp"/>
+        </action>
+
+	</action-mappings>
+			
+	<controller processorClass="it.eldasoft.gene.commons.web.struts.GeneRequestProcessor" />
+
+	<message-resources parameter="AliceResources" />
+
+	<plug-in className="it.eldasoft.gene.commons.web.struts.GeneStartupPlugIn" />
+
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config"
+			value="/WEB-INF/xml/tiles/tiles-defs-gene-common.xml" />
+		<set-property property="moduleAware" value="true" />
+	</plug-in>
+
+</struts-config>

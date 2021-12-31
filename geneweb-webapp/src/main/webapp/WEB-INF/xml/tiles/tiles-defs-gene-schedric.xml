@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+<!--
+     This is a blank Tiles definition file with a commented example.
+-->
+
+<tiles-definitions>
+
+    <!-- sample tiles definitions
+    <definition name=".mainLayout" path="/common/layouts/classicLayout.jsp">
+        <put name="title"  value="Sample Page Title" />
+        <put name="header" value="/common/header.jsp" />
+        <put name="menu"   value=".mainMenu" />
+        <put name="footer" value="/common/footer.jsp" />
+        <put name="body"   value=".portal.body" />
+    </definition>
+
+    <definition name=".mainMenu" path="/common/layouts/vboxLayout.jsp" >
+        <putList name="list" >
+            <add value=".menu.links" />
+            <add value=".menu.taglib.references" />
+            <add value=".menu.printer.friendly" />
+            <add value=".menu.old.documents" />
+      </putList>
+    </definition>
+
+    <definition name="aPage" extends=".mainLayout">
+        <put name="title"  value="Another Title" />
+        <put name="body"   value=".aPage.body" />
+    </definition>
+
+    end samples -->
+
+    <definition name="trovaSchedRicDef" extends=".trovaDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headTrovaSchedRic.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniTrovaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="Ricerca report schedulati" />
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/formTrovaSchedRic.jsp"/>
+	</definition>	
+
+
+	<definition name="listaSchedRicDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headListaSchedRic.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniListaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="Lista report schedulati" />
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/listaSchedRic.jsp"/>
+	</definition>	
+	
+	<definition name="dettaglioDatiGenSchedRicDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headDettaglioDatiGenSchedRic.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniDettaglioDatiGenSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/titoloDettaglioSchedRic.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/console/schedric/tabDettaglioSchedRic.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/console/schedric/dettaglioDatiGenSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="editDatiGenSchedRicDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headEditDatiGenSchedRic.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniEditDatiGenSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/titoloDettaglioSchedRic.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/console/schedric/tabDettaglioSchedRic.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/console/schedric/formEditDatiGenSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="dettaglioSchedulaSchedRicDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headDettaglioSchedulaSchedRic.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniDettaglioSchedulaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/titoloDettaglioSchedRic.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/console/schedric/tabDettaglioSchedRic.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/console/schedric/dettaglioSchedulaSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="editSchedulaSchedRicDef" extends=".dettaglioConTabDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headEditSchedulaSchedRic.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();nascondiPerTipo();'"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniEditSchedulaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/titoloDettaglioSchedRic.jsp" />
+		<put name="dettaglioAreaTab" value="/WEB-INF/pages/console/schedric/tabDettaglioSchedRic.jsp"/>
+		<put name="dettaglioAreaDati" value="/WEB-INF/pages/console/schedric/formEditSchedulaSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="trovaCodaSchedDef" extends=".trovaDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headTrovaCodaSched.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();visualizzaDataEsecSuc(false);'"/>
+		<put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
+		<put name="menuSpecifico" value="/WEB-INF/pages/commons/menuSpecifico.jsp"/>
+		<put name="menuComune" value="/WEB-INF/pages/commons/menuComune.jsp"/>	  
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniTrovaCodaSched.jsp"/>
+		<put name="titoloMaschera" value="Ricerca risultati schedulazioni" />
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/formTrovaCodaSched.jsp"/>
+	</definition>	
+
+
+	<definition name="listaCodaSchedDef" extends=".listaDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/headListaCodaSched.jsp"/>
+		<put name="azioniContesto" value="/WEB-INF/pages/console/schedric/azioniListaCodaSched.jsp"/>
+		<put name="titoloMaschera" value="Lista risultati schedulazioni" />
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/listaCodaSched.jsp"/>
+	</definition>
+
+	<definition name="reportSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headReportSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/reportSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="frequenzaSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headFrequenzaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/frequenzaSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="giornoSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headGiornoSchedRic.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();gestioneGiorni();'"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/giornoSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="settimanaSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headSettimanaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+    	<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/settimanaSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="meseSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headMeseSchedRic.jsp"/>
+		<put name="eventiDiPagina" value="onload='setVariables();checkLocation();initPage();gestioneGiorniMese();'"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/meseSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="unicaSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headUnicaSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/unicaSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="risultatoSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headRisultatoSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/risultatoSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="nomeSchedRicDef" extends=".wizardDef">
+		<put name="head" value="/WEB-INF/pages/console/schedric/wizard/headNomeSchedRic.jsp"/>
+		<put name="titoloMaschera" value="/WEB-INF/pages/console/schedric/wizard/titoloSchedRic.jsp" />
+		<put name="avanzamentoWizard" value="/WEB-INF/pages/console/schedric/wizard/avanzamento.jsp"/>
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/wizard/nomeSchedRic.jsp"/>
+	</definition>
+	
+	<definition name="helpListaMailSchedRicDef" extends=".popupDef">
+		<put name="titoloMaschera" value="Guida" />
+		<put name="dettaglio" value="/WEB-INF/pages/console/schedric/helpListaMailSchedRic.jsp"/>
+	</definition>
+</tiles-definitions>

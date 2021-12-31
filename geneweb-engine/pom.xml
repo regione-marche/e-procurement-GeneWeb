@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>it.maggioli.eldasoft.commons</groupId>
+		<artifactId>geneweb-pom</artifactId>
+		<version>2.20.0-regmarche</version>
+	</parent>
+	<artifactId>geneweb-engine</artifactId>
+	<packaging>jar</packaging>
+	<organization>
+		<name>Maggioli S.p.A.</name>
+	</organization>
+
+	<name>Core engine framework GeneWeb</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>sun</groupId>
+			<artifactId>rssutils</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+
+    <reporting>
+        <plugins>
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.3</version>
+                <configuration>
+                    <configLocation>../../eldasoft_checkstyle.xml</configLocation>
+					<excludes>**/ws/*</excludes>
+                </configuration>
+            </plugin>
+			-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.4.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

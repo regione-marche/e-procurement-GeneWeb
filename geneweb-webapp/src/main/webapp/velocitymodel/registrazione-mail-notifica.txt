@@ -1,0 +1,12 @@
+Gent.le Amministratore,
+e' stata inoltrata una richiesta di registrazione per il soggetto #if ($NOME)$NOME#end,
+il nome utente definito e' #if ($LOGIN)$LOGIN#end.
+L'utente viene stato posto nello stato #if ($STATOAB)$STATOAB#end.
+
+Ulteriori informazioni (opzionali) inserite dall'utente:
+ - riferimento telefonico: #if ($TELEFONO)$TELEFONO#end
+ 
+ - note: #if ($MSGAMM)$MSGAMM#end
+ 
+ 
+ #if ($NOMEMITT)$NOMEMITT#end

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ========================= DAO DEFINITIONS: IBATIS IMPLEMENTATIONS ========================= -->
+
+  <bean id="gruppiDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapGruppiDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+  <bean id="utentiGruppoDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapAccountDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	
+	<bean id="profiliDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapProfiliDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<bean id="uffintDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapUffintDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<!-- ========================= DAO DEFINITIONS: JDBC IMPLEMENTATIONS ========================= -->
+
+	<!-- ========================= BEAN DEFINITIONS ========================= -->
+
+	<bean id="gruppiManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>	
+
+	<bean id="gruppiManager" parent="gruppiManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.admin.GruppiManager">
+				<property name="gruppiDao" ref="gruppiDao" />
+				<property name="genChiaviManager" ref="genChiaviManager"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="accountManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="is*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="accountManager" parent="accountManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.admin.AccountManager">
+				<property name="genChiaviManager" ref="genChiaviManager"/>
+				<property name="accountDao" ref="accountDao" />
+				<property name="profiliDao" ref="profiliDao" />
+				<property name="ricercheDao" ref="ricercheDao" />
+				<property name="modelliDao" ref="modelliDao" />
+				<property name="uffintDao" ref="uffintDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="profiliManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="profiliManager" parent="profiliManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.admin.ProfiliManager">
+				<property name="profiliDao" ref="profiliDao" />
+				<property name="accountDao" ref="accountDao" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="uffintManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="uffintManager" parent="uffintManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.admin.UffintManager">
+				<property name="sqlManager" ref="sqlManager" />
+				<property name="uffintDao" ref="uffintDao" />
+				<property name="accountManager" ref="accountManager" />
+				<property name="mailManager" ref="mailManager" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- ========================= STRUTS ACTION DEFINITIONS ========================= -->
+
+	<bean name="/geneAdmin/CambiaPassword"
+		class="it.eldasoft.gene.web.struts.admin.CambiaPasswordAction">
+		<property name="accountManager" ref="accountManager" />
+	</bean>
+
+	<bean name="/geneAdmin/CambiaPasswordScaduta"
+		class="it.eldasoft.gene.web.struts.admin.CambiaPasswordAction">
+		<property name="accountManager" ref="accountManager" />
+	</bean>
+
+	<bean name="/geneAdmin/ListaGruppi" class="it.eldasoft.gene.web.struts.admin.ListaGruppiAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/DettaglioGruppo" class="it.eldasoft.gene.web.struts.admin.DettaglioGruppoAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/EditGruppo" class="it.eldasoft.gene.web.struts.admin.InitEditGruppoAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/CreaGruppo" class="it.eldasoft.gene.web.struts.admin.InitCreaGruppoAction">
+	</bean>
+
+	<bean name="/geneAdmin/GruppoDispatch" class="it.eldasoft.gene.web.struts.admin.GruppoAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/ListaUtentiGruppo" class="it.eldasoft.gene.web.struts.admin.ListaUtentiGruppoAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/SalvaUtentiGruppo" class="it.eldasoft.gene.web.struts.admin.SalvaUtentiGruppoAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/ListaRicercheGruppo" class="it.eldasoft.gene.web.struts.admin.ListaRicercheGruppoAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/SalvaRicercheGruppo" class="it.eldasoft.gene.web.struts.admin.SalvaRicercheGruppoAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/ListaModelliGruppo" class="it.eldasoft.gene.web.struts.admin.ListaModelliGruppoAction">
+		<property name="modelliManager" ref="modelliManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/SalvaModelliGruppo" class="it.eldasoft.gene.web.struts.admin.SalvaModelliGruppoAction">
+		<property name="modelliManager" ref="modelliManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/InitTrovaAccount"
+		class="it.eldasoft.gene.web.struts.admin.InitTrovaAccountAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/TrovaAccount"
+		class="it.eldasoft.gene.web.struts.admin.TrovaAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/ListaAccount" 
+		class="it.eldasoft.gene.web.struts.admin.ListaAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+		<property name="messageManager" ref="messageManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/DettaglioAccount" 
+		class="it.eldasoft.gene.web.struts.admin.AccountAction">
+		<property name="accountManager" ref="accountManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="mailManager" ref="mailManager" />
+	</bean>
+
+	<bean name="/geneAdmin/SalvaAccount" 
+		class="it.eldasoft.gene.web.struts.admin.SalvaAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+		<property name="profiliManager" ref="profiliManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="messageManager" ref="messageManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/SalvaMioAccount" 
+		class="it.eldasoft.gene.web.struts.admin.SalvaMioAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/ListaGruppiAccount" class="it.eldasoft.gene.web.struts.admin.ListaGruppiAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/SalvaGruppiAccount" class="it.eldasoft.gene.web.struts.admin.SalvaGruppiAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/CambiaPasswordAdmin"
+		class="it.eldasoft.gene.web.struts.admin.CambiaPasswordAdminAction">
+		<property name="accountManager" ref="accountManager" />
+	</bean>
+	
+	<bean name="/geneAdmin/InitCambiaPasswordAdmin"
+		class="it.eldasoft.gene.web.struts.admin.InitCambiaPasswordAdminAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/FiltroAccountLdap"
+		class="it.eldasoft.gene.web.struts.admin.FiltroAccountLdapAction">
+		<property name="ldapManager" ref="ldapManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/ListaAccountLdap"
+		class="it.eldasoft.gene.web.struts.admin.ListaAccountLdapAction">
+		<property name="ldapManager" ref="ldapManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/CreaAccountLdap"
+		class="it.eldasoft.gene.web.struts.admin.CreaAccountLdapAction">
+		<property name="ldapManager" ref="ldapManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+
+	<!-- Gestione Profili -->
+	
+	<bean name="/geneAdmin/ListaProfili" 
+		class="it.eldasoft.gene.web.struts.admin.ListaProfiliAction">
+		<property name="profiliManager" ref="profiliManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/DettaglioProfilo" class="it.eldasoft.gene.web.struts.admin.ProfiloAction">
+		<property name="profiliManager" ref="profiliManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/ListaAccountProfilo" class="it.eldasoft.gene.web.struts.admin.ListaAccountProfiloAction">
+		<property name="profiliManager" ref="profiliManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/SalvaUtentiProfilo" class="it.eldasoft.gene.web.struts.admin.SalvaUtentiProfiloAction">
+		<property name="profiliManager" ref="profiliManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/ListaGruppiProfilo" class="it.eldasoft.gene.web.struts.admin.ListaGruppiProfiloAction">
+		<property name="profiliManager" ref="profiliManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/ListaProfiliAccount" class="it.eldasoft.gene.web.struts.admin.ListaProfiliAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+		<property name="profiliManager" ref="profiliManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/SalvaProfiliAccount" class="it.eldasoft.gene.web.struts.admin.SalvaProfiliAccountAction">
+		<property name="profiliManager" ref="profiliManager"/>
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/ClearProfili" class="it.eldasoft.gene.web.struts.admin.ClearProfiliAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+	
+	<!-- Gestione uffici intestatari -->
+		
+	<bean name="/geneAdmin/ListaUfficiIntestatariAccount" class="it.eldasoft.gene.web.struts.admin.ListaUfficiIntestatariAccountAction">
+		<property name="uffintManager" ref="uffintManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/SalvaUfficiIntestatariAccount" class="it.eldasoft.gene.web.struts.admin.SalvaUfficiIntestatariAccountAction">
+		<property name="uffintManager" ref="uffintManager"/>
+	</bean>
+
+	<bean name="/geneAdmin/InitEditMioAccount"
+		class="it.eldasoft.gene.web.struts.admin.InitEditMioAccountAction">
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneAdmin/GetAccountUfficioIntestatario" class="it.eldasoft.gene.web.struts.admin.GetAccountUfficioJSONAction">
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+</beans>

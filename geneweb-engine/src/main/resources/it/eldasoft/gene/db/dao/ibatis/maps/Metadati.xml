@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Metadati">
+
+  <resultMap id="result-schema" class="it.eldasoft.utils.metadata.domain.Schema">
+    <result property="codice" column="tab5tip" columnIndex="1"/>
+    <result property="descrizione" column="tab5desc" columnIndex="2"/>
+  </resultMap>
+
+  <resultMap id="result-nf-tabella" class="it.eldasoft.utils.metadata.domain.NomeFisicoTabella">
+    <result property="nomeFisico" column="c0e_nom" columnIndex="1"/>
+  </resultMap>
+
+  <resultMap id="result-tabella" class="it.eldasoft.utils.metadata.domain.Tabella">
+    <result property="codiceMnemonico" column="coe_arg" columnIndex="1"/>
+    <result property="descrizione" column="c0e_des" columnIndex="2"/>
+    <result property="nomeFisico" column="c0e_nom" columnIndex="3"/>
+    <result property="tipoEntita" column="c0e_tip" columnIndex="4"/>
+  </resultMap>
+
+  <resultMap id="result-legame-tabelle" class="it.eldasoft.utils.metadata.domain.LegameTabelle">
+    <result property="elencoCampiFisiciOrigine" column="c0e_key" columnIndex="1"/>
+    <result property="elencoCampiFisiciDestinazione" column="coe_key_ex" columnIndex="2"/>
+  </resultMap>
+
+  <select id="getElencoSchemi" resultMap="result-schema">
+    SELECT tab5tip, tab5desc
+      FROM tab5
+     WHERE tab5cod = #codiceTabellatoSchemi#
+  </select>
+
+  <select id="getElencoNomiFisiciTabelle" resultMap="result-nf-tabella" parameterClass="java.util.HashMap">
+    SELECT c0e_nom 
+      FROM c0entit 
+     WHERE c0e_nom not like #filtroJoinElda#
+     AND coe_arg IS NOT NULL
+     AND c0e_tip IN
+     <iterate property="listaFiltriTipo" open="(" close=")" conjunction=", " >
+       #listaFiltriTipo[]#
+     </iterate>
+     ORDER BY coe_arg
+
+  </select>
+
+  <select id="getTabella" resultMap="result-tabella" parameterClass="java.util.HashMap">
+    SELECT coe_arg, c0e_des, c0e_nom, c0e_tip
+      FROM c0entit
+     WHERE c0e_nom = #nomeFisicoTabella#
+     AND coe_arg IS NOT NULL
+     AND c0e_tip IN
+     <iterate property="listaFiltriTipo" open="(" close=")" conjunction=", " >
+       #listaFiltriTipo[]#
+     </iterate>
+  </select>
+
+  <select id="getElencoChiaviEsterneReferenti" resultMap="result-legame-tabelle" parameterClass="java.util.HashMap">
+      SELECT c0e_key, coe_key_ex
+        FROM c0entit
+       WHERE c0e_nom LIKE #nomeFisicoTabella# $escapeNomeFisicoTabella$
+         AND c0e_nom_ex IS NOT NULL 
+         AND coe_key_ex IS NOT NULL
+       ORDER BY c0e_nom
+  </select>
+
+  <select id="getElencoCampiTabella" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+  <![CDATA[
+      SELECT COC_MNE_UNI, C0C_MNE_BER, COC_DES, COC_DES_FRM, C0C_FS, COC_DOM, C0C_CHI, C0C_TAB1, C0C_TIP, COC_DES_WEB
+        FROM c0campi
+       WHERE coc_mne_uni LIKE #nomeFisico# $escapeNomeFisico$
+         AND (c0c_fs <> #formato1# OR c0c_fs <> #formato2#)
+         AND c0c_tip IN
+  ]]>
+		     <iterate property="listaFiltriTipo" open="(" close=")" conjunction=", " >
+    		   #listaFiltriTipo[]#
+		     </iterate>
+  <![CDATA[
+    ORDER BY coc_conta
+    ]]>
+  </select>
+
+  <select id="getElencoMnemoniciPerRicerche" resultClass="java.lang.String">
+    SELECT c0c_mne_ber
+      FROM c0campi
+  <![CDATA[
+     WHERE c0c_tip = #filtroTipo#  
+         AND (c0c_fs <> #formato1# OR c0c_fs <> #formato2#)
+    ]]>
+		<isNotEmpty prepend="AND" property="mnemonico">
+			c0c_mne_ber $operatoreMnemonico$ #mnemonico# $escapeMnemonico$
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrizione">
+			$operatoreUpper$(coc_des) $operatoreDescrizione$ #descrizione# $escapeDescrizione$
+		</isNotEmpty>
+	ORDER BY coc_des ASC
+  </select>
+
+  <select id="getC0ekeyById" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT C0E_KEY FROM C0ENTIT 
+		WHERE C0E_NOM = #idC0entit#
+	</select>
+</sqlMap>

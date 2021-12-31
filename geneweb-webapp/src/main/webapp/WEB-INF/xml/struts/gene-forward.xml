@@ -1,0 +1,32 @@
+	<global-forwards>
+		<forward name="appNotLoaded" path="errorDef"
+			redirect="true" module="/" />
+
+		<forward name="login" path="/InitLogin.do" module="/" />
+
+		<forward name="logged" path="/WEB-INF/pages/gene/login/alreadyLogged.jsp" module="/"/>
+
+		<forward name="sessionTimeOut" path="/SessionTimeOut.do"
+			redirect="true" module="/" />
+
+		<forward name="opzioneNonDisponibile" path="errorDef"
+			redirect="true" module="/" />
+
+		<forward name="opzioneNonAbilitata" path="errorDef"
+			redirect="true" module="/" />
+
+		<forward name="error" path="errorDef" redirect="true"
+			module="/" />
+
+		<forward name="closeAndRefresh"
+			path="/WEB-INF/pages/commons/closeAndRefresh.jsp" 
+			module="/" />
+			
+		<forward name="applicazioneDaAttivare"
+		  path="/WEB-INF/pages/gene/attivazione/formAttivazione.jsp" 
+		  module="/" />
+		  
+		<forward name="SpidLogin" path="/SpidLogin.do"
+			redirect="true" module="/" />
+			
+	</global-forwards>

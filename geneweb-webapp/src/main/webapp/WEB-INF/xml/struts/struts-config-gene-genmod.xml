@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+	<form-beans>
+		<form-bean name="listaForm"
+			type="it.eldasoft.gene.commons.web.struts.ListaForm" />
+
+		<form-bean name="trovaModelliForm"
+			type="it.eldasoft.gene.web.struts.genmod.TrovaModelliForm" />
+		<form-bean name="modelliForm"
+			type="it.eldasoft.gene.web.struts.genmod.ModelliForm" />
+		<form-bean name="gruppiModelliForm"
+			type="it.eldasoft.gene.web.struts.genmod.GruppiModelliForm" />
+		<form-bean name="parametroModelloForm"
+			type="it.eldasoft.gene.web.struts.genmod.ParametroModelloForm" />
+		<form-bean name="componiModelloForm"
+			type="it.eldasoft.gene.web.struts.genmod.ComponiModelloForm" />
+		<form-bean name="parametriModelloForm"
+			type="it.eldasoft.gene.web.struts.genmod.ParametriModelloForm" />
+		<form-bean name="trovaModelliExportForm"
+			type="it.eldasoft.gene.web.struts.genmod.impexp.TrovaModelliExportForm" />
+		<!-- form-bean per l'implementazione del wizard di import modelli -->
+		<form-bean name="gruppiModelliImportForm"
+			type="it.eldasoft.gene.web.struts.genmod.impexp.GruppiModelliImportForm" />
+		<form-bean name="uploadFileForm"
+		  type="it.eldasoft.gene.commons.web.struts.UploadFileForm"/>
+		<form-bean name="opzioniImportForm"
+		  type="it.eldasoft.gene.web.struts.genmod.impexp.OpzioniImportModelloForm"/>
+		<!-- form-bean per l'implementazione del wizard di import modelli -->
+	</form-beans>
+
+	<global-forwards>
+	</global-forwards>
+
+	<action-mappings>
+		<action path="/InitTrovaModelli" name="trovaModelliForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="trovaModelliDef" />
+		</action>
+
+		<action path="/TrovaModelli" name="trovaModelliForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="success" path="listaModelliDef" />
+			<forward name="successNuovaRicerca"
+				path="/InitTrovaModelli.do" />
+			<forward name="noRecordFound" path="/InitTrovaModelli.do" />
+		</action>
+
+		<action path="/ListaModelli" name="listaForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/TrovaModelli.do?metodo=trovaModelli" />
+			<forward name="errorDeleteModello" path="/TrovaModelli.do?metodo=trovaModelli" />
+		</action>
+
+		<action path="/Modello" name="modelliForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successDettaglio" path="dettaglioModelloDef" />
+			<forward name="successModifica"
+				path="dettaglioModificaModelloDef" />
+			<forward name="forwardTrovaModello"
+				path="/TrovaModelli.do?metodo=trovaModelli" />
+			<forward name="successUpdate"
+				path="/Modello.do?metodo=dettaglioModello" />
+			<forward name="errorInsertModello"
+				path="dettaglioModificaModelloDef" />
+			<forward name="errorUpdateModello"
+				path="dettaglioModificaModelloDef" />
+			<forward name="errorDownloadDaDettaglio"
+				path="/Modello.do?metodo=dettaglioModello" />
+			<forward name="errorDownloadDaModifica"
+				path="/Modello.do?metodo=modificaModello" />
+			<forward name="tornaATrovaModelli" path="/InitTrovaModelli.do" />
+			<forward name="tornaAListaModelli" path="/TrovaModelli.do?metodo=trovaModelli" />
+			<forward name="tornaAHomePage" path="/Home.do" module="/"/>
+		</action>
+
+		<action path="/CreaFiltroEntita" type="it.eldasoft.gene.web.struts.genmod.CreaFiltroEntitaAction"
+			scope="request" validate="false" >
+			<forward name="success" path="creaFiltroEntitaDef"/>
+		</action>
+
+		<action path="/GruppiModello" name="gruppiModelliForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successGruppiLista"
+				path="dettaglioGruppiModelloDef" />
+			<forward name="successModificaListaGruppiModello"
+				path="dettaglioModificaGruppiModelloDef" />
+			<forward name="successUpdateListaGruppiModello"
+				path="/GruppiModello.do?metodo=listaGruppiModello" />
+		</action>
+
+		<action path="/ParametriModello"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successParametriLista"
+				path="listaParametriModelloDef" />
+			<forward name="successEditParametroModello"
+				path="editParametroModelloDef" />
+			<forward name="successDeleteParametroModello"
+				path="/ParametriModello.do?metodo=listaParametriModello" />
+			<forward name="successSpostaParametroModello"
+				path="/ParametriModello.do?metodo=listaParametriModello" />
+		</action>
+
+		<action path="/SalvaParametroModello" name="parametroModelloForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="success" path="/ParametriModello.do?metodo=listaParametriModello" />
+			<forward name="errorUnique" path="editParametroModelloDef" />
+			<forward name="errorTabellato" path="editParametroModelloDef" />
+		</action>
+		
+		<action path="/FwLeggiValoriChiavi" 
+		 type="it.eldasoft.gene.commons.web.struts.ForwardAction" parameter="/WEB-INF/pages/gene/genmod/leggiValoriChiaviPerCompositore.jsp"  />
+
+		<!-- Azione per l'apertura delle lista dei modelli per la composizione -->
+		<action path="/ApriElencoModelli" name="componiModelloForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" >
+			<forward name="success" path="/WEB-INF/pages/gene/genmod/listaModelliPerComposizione.jsp" module="/"/>
+		</action>
+
+		<action path="/CheckParametriModello" name="componiModelloForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="setParametri" path="/WEB-INF/pages/gene/genmod/setParametriModello.jsp" module="/"/>
+			<forward name="componi" path="/WEB-INF/pages/gene/genmod/composizioneInCorso.jsp" module="/"/>
+			<forward name="salvaEComponi" path="/SalvaParametriModello.do?metodo=salvaEComponiModello" />
+			<forward name="errorListaModelli" path="/FwLeggiValoriChiavi.do" />
+		</action>
+		
+		<action path="/SalvaParametriModello" name="parametriModelloForm" 
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="success" path="/WEB-INF/pages/gene/genmod/composizioneInCorso.jsp" module="/"/>
+			<forward name="listaModelli" path="/FwLeggiValoriChiavi.do" />
+		</action>
+
+		<action path="/ComponiModello" name="componiModelloForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="errorComposizione" path="/FwLeggiValoriChiavi.do" />
+			<forward name="error" path="/FwLeggiValoriChiavi.do" />
+			<forward name="success" path="/WEB-INF/pages/gene/genmod/downloadModelloComposto.jsp"	module="/" />
+			<forward name="successBackDownload" path="/FwLeggiValoriChiavi.do" />
+			<forward name="successAssociaModello" path="/WEB-INF/pages/gene/genmod/popUpModelloComposto.jsp" module="/"/>
+		</action>
+		
+		<!-- Action per funzionalita' avanzate di import/export -->
+		
+		<action path="/InitFunzAvanzateModelli"
+			type="it.eldasoft.gene.web.struts.genmod.impexp.InitFunzAvanzate"
+			scope="request" validate="false" >
+			<forward name="success" path="sceltaImportExportModelliDef"/>
+		</action>
+
+		<action path="/AnnullaImportExportModelli"
+			type="it.eldasoft.gene.web.struts.genmod.impexp.AnnullaImportExportAction"
+			scope="request" validate="false" >
+			<forward name="success" path="/Home.do" module="/" />
+		</action>
+		
+		<action path="/InitTrovaModelliExport"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" >
+			<forward name="success" path="trovaModelliExportDef" />
+		</action>
+
+		<action path="/TrovaModelliExport" name="trovaModelliExportForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="success" path="trovaModelliExportDef" />
+			<forward name="successListaModelli" path="listaModelliExportDef" />
+			<forward name="successTrovaModelli" path="/InitTrovaModelliExport.do" />
+			<forward name="noRecordFound" path="/InitTrovaModelliExport.do" />
+		</action>
+
+		<action path="/EsportaModello"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="errorExport" path="/TrovaModelliExport.do?metodo=trovaModelli"/>
+			<forward name="forwardTrovaModelloExport"
+				path="/TrovaModelliExport.do?metodo=trovaModelli" />
+		</action>
+
+		<action path="/WizardImportModello"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="successUpload" path="uploadDefinizioneImportModelloDef" />
+			<forward name="successDatiGenerali" path="datiGeneraliImportModelloDef" />
+			<forward name="successDomandaPub" path="pubblicaImportModelloDef" />
+			<forward name="successEditGrp" path="gruppiImportModelloDef" />
+			<forward name="successFine" path="/EseguiImportModello.do"/>
+		</action>
+
+		<action path="/UploadDefinizioneModello" name="uploadFileForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/WizardImportModello.do?pageTo=DG"/>
+			<forward name="errorImport" path="/WizardImportModello.do?pageTo=UPL" />
+		</action>
+
+		<action path="/SetOpzioniImportModello" name="opzioniImportForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="successDomandaPub" path="/WizardImportModello.do?pageTo=PUB"/>
+			<forward name="successEditGrp" path="/WizardImportModello.do?pageTo=GRP"/>
+			<forward name="successFine" path="/EseguiImportModello.do"/>
+			<forward name="errorImport" path="/WizardImportModello.do?pageTo=DG"/>
+		</action>
+
+		<action path="/PubblicaImportModello" name="opzioniImportForm"
+			type="it.eldasoft.gene.web.struts.genmod.impexp.PubblicaImportAction"
+			scope="request" validate="false">
+			<forward name="successFine" path="/EseguiImportModello.do"/>
+			<forward name="successEditGrp" path="/WizardImportModello.do?pageTo=GRP"/>
+		</action>
+
+		<action path="/GruppiModelloImport" name="gruppiModelliImportForm"
+			type="it.eldasoft.gene.web.struts.genmod.impexp.GruppiImportAction"
+			scope="request" validate="false">
+			<forward name="success" path="/EseguiImportModello.do"/>
+		</action>
+
+		<action path="/EseguiImportModello"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="successImportModelloDef" />
+			<forward name="errorImport" path="/WizardImportModello.do"/>
+			<forward name="successUpdate" path="/Modello.do?metodo=dettaglioModello" />
+			
+		</action>
+	</action-mappings>
+
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config"
+			value="/WEB-INF/xml/tiles/tiles-defs-gene-common.xml, /WEB-INF/xml/tiles/tiles-defs-gene-genmod.xml" />
+		<set-property property="moduleAware" value="true" />
+	</plug-in>
+
+</struts-config>

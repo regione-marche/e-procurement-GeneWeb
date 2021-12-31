@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ConfigurazioneMail">
+
+  <resultMap id="resultDettaglio" class="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
+    <result property="codapp" column="codapp"/>
+    <result property="idcfg" column="idcfg"/>
+    <result property="nomein" column="nomein"/>
+    <result property="server" column="server"/>
+    <result property="porta" column="porta"/>
+    <result property="protocollo" column="protocollo"/>
+    <result property="timeout" column="timeout"/>
+    <result property="debug" column="tracciatura_messaggi"/>
+    <result property="mailMitt" column="mail_mittente"/>
+    <result property="password" column="password"/>
+    <result property="userId" column="id_user"/>
+    <result property="dimTotAll" column="dim_tot_allegati"/>
+    <result property="delay" column="delay"/>
+  </resultMap>
+  
+  <resultMap id="resultLista" class="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
+    <result property="codapp" column="codapp"/>
+    <result property="idcfg" column="idcfg"/>
+    <result property="nomein" column="nomein"/>
+    <result property="server" column="server"/>
+    <result property="mailMitt" column="mail_mittente"/>
+  </resultMap>
+
+  <select id="getConfigurazioneMailByCodappIdcfg" resultMap="resultDettaglio" parameterClass="java.util.HashMap">
+  	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,'Default') as nomein, w_mail.server,
+    	 w_mail.porta, w_mail.protocollo, w_mail.timeout, w_mail.tracciatura_messaggi, w_mail.mail_mittente,
+    	 w_mail.password, w_mail.id_user, w_mail.dim_tot_allegati, w_mail.delay
+       	FROM W_MAIL left join UFFINT on w_mail.idcfg = uffint.codein
+      WHERE w_mail.codapp = #codapp# AND w_mail.idcfg = #idcfg# 
+  </select>
+  
+  <select id="getListaConfigurazioneMailByCodapp" resultMap="resultLista" parameterClass="java.util.HashMap">
+	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,'Default') as nomein, w_mail.server, w_mail.mail_mittente 
+      	FROM W_MAIL left join UFFINT on w_mail.idcfg = uffint.codein
+      where w_mail.codapp=#codapp#
+  </select>
+
+  <delete id="deleteConfigurazioneMail" parameterClass="java.util.HashMap">
+   DELETE FROM W_MAIL WHERE codapp = #codapp# AND idcfg = #idcfg#
+  </delete>
+  
+  <insert id="insertConfigurazioneMail" parameterClass="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
+  	INSERT INTO W_MAIL (codapp, idcfg, server, porta, protocollo, timeout, tracciatura_messaggi,
+  	 mail_mittente, password, id_user, dim_tot_allegati, delay) VALUES (#codapp#, #idcfg#, #server#, 
+  	 #porta:VARCHAR#, #protocollo:VARCHAR#, #timeout:VARCHAR#, #debug:VARCHAR#, #mailMitt#,
+  	 #password:VARCHAR#, #userId:VARCHAR#, #dimTotAll:VARCHAR#, #delay:VARCHAR#)
+  </insert>
+ 
+  <update id="updateConfigurazioneMail" parameterClass="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
+  	UPDATE W_MAIL SET SERVER = #server#, PORTA = #porta:VARCHAR#, PROTOCOLLO = #protocollo:VARCHAR#,
+  	 TIMEOUT = #timeout:VARCHAR#, TRACCIATURA_MESSAGGI = #debug:VARCHAR#, MAIL_MITTENTE = #mailMitt#,
+  	 PASSWORD = #password:VARCHAR#, ID_USER = #userId:VARCHAR#, DIM_TOT_ALLEGATI = #dimTotAll:VARCHAR#, 
+  	 DELAY = #delay:VARCHAR#
+  	WHERE CODAPP=#codapp# AND idcfg=#idcfg#
+  </update>
+  
+</sqlMap>

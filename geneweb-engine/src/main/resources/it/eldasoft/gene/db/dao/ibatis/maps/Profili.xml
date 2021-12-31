@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Profili">
+
+	<resultMap id="resultProfilo" class="it.eldasoft.gene.db.domain.admin.Profilo">
+	  <result property="codiceProfilo" column="cod_profilo" columnIndex="1"/>
+	  <result property="codApp" column="codapp" columnIndex="2"/>
+	  <result property="nome" column="nome" columnIndex="3"/>
+	  <result property="descrizione" column="descrizione" columnIndex="4"/>
+	  <result property="profiloInterno" column="flag_interno" columnIndex="5"/>
+	  <result property="discriminante" column="discriminante" columnIndex="6"/>
+	  <result property="codiceCliente" column="cod_cliente" columnIndex="7"/>
+	</resultMap>
+
+	<!-- Oggetto account in versione ridotta rispetto allo stesso  -->
+	<!-- oggetto definito nel file Account.xml -->
+  <resultMap id="resultUtenteDiProfilo" class="it.eldasoft.gene.db.domain.admin.AccountProfilo">
+    <result property="idAccount" column="syscon" columnIndex="1"/>
+    <result property="nome" column="sysute" columnIndex="2"/>
+    <result property="login" column="syslogin" columnIndex="3"/>
+  </resultMap>
+
+  <select id="getProfiliByCodAppOrderByNome" resultMap="resultProfilo" parameterClass="java.util.HashMap">
+		SELECT COD_PROFILO, CODAPP, NOME, DESCRIZIONE, FLAG_INTERNO, DISCRIMINANTE, COD_CLIENTE
+		FROM W_PROFILI
+		WHERE W_PROFILI.CODAPP IN 
+ 			 <iterate property="listaCodApp" open="(" close=")" conjunction=", " >
+	    		 #listaCodApp[]#
+			 </iterate>
+		ORDER BY NOME ASC
+  </select>
+  
+  <select id="getProfiloByPK" resultMap="resultProfilo">
+		SELECT COD_PROFILO, CODAPP, NOME, DESCRIZIONE, FLAG_INTERNO, DISCRIMINANTE, COD_CLIENTE
+		FROM W_PROFILI
+		WHERE W_PROFILI.COD_PROFILO = #codiceProfilo#
+  </select>
+
+	<select id="getAccountProfiloByCodApp" resultMap="resultUtenteDiProfilo" parameterClass="java.util.HashMap">
+		SELECT USRSYS.SYSCON, USRSYS.syslogin, USRSYS.SYSUTE
+		  FROM USRSYS, W_ACCPRO, W_PROFILI
+		 WHERE W_ACCPRO.ID_ACCOUNT = USRSYS.SYSCON
+		   AND W_ACCPRO.COD_PROFILO = #codiceProfilo#
+		   AND W_PROFILI.COD_PROFILO = W_ACCPRO.COD_PROFILO
+ 			 AND W_PROFILI.CODAPP IN 
+ 			 <iterate property="listaCodApp" open="(" close=")" conjunction=", " >
+	    		 #listaCodApp[]#
+			   </iterate>
+ 	ORDER BY USRSYS.SYSCON ASC
+	</select>
+	
+	<delete id="deleteAccountNonAssociatiProfilo" parameterClass="java.util.HashMap">
+		DELETE FROM W_ACCPRO
+		 WHERE COD_PROFILO = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="listaAccountAssociati">
+			ID_ACCOUNT NOT IN
+	  		<iterate property="listaAccountAssociati" open="(" close=")" conjunction=", " >
+	    		#listaAccountAssociati[]#
+			  </iterate>
+		</isNotEmpty>
+  </delete>
+  
+  <insert id="insertAssociazioneAccountProfilo" parameterClass="java.util.HashMap">
+  	INSERT INTO W_ACCPRO (ID_ACCOUNT, COD_PROFILO) VALUES (#idAccount#, #codiceProfilo#)
+  </insert>
+
+	<select id="getProfiliUtenteByCodApp" resultMap="resultProfilo" parameterClass="java.util.HashMap">
+		SELECT W_PROFILI.COD_PROFILO, W_PROFILI.CODAPP, W_PROFILI.NOME, W_PROFILI.DESCRIZIONE, W_PROFILI.FLAG_INTERNO, W_PROFILI.DISCRIMINANTE, W_PROFILI.COD_CLIENTE
+		  FROM W_PROFILI, W_ACCPRO
+		 WHERE W_ACCPRO.ID_ACCOUNT = #idAccount#
+		   AND W_PROFILI.COD_PROFILO = W_ACCPRO.COD_PROFILO 
+		   AND W_PROFILI.CODAPP  IN
+				 <iterate property="listaCodApp" open="(" close=")" conjunction=", " >
+	    		 #listaCodApp[]#
+			   </iterate>
+	ORDER BY W_PROFILI.NOME ASC
+	</select>
+  
+  <select id="getAccountDiProfilo" resultMap="resultUtenteDiProfilo" parameterClass="java.lang.String">
+    SELECT USRSYS.SYSCON, USRSYS.syslogin, USRSYS.SYSUTE
+		  FROM USRSYS, W_ACCPRO
+		 WHERE USRSYS.SYSCON = W_ACCPRO.ID_ACCOUNT
+	     AND W_ACCPRO.COD_PROFILO = #codiceProfilo#
+	   ORDER BY USRSYS.SYSUTE
+  </select>
+	
+	<delete id="deleteProfiliNonAssociatiAccount" parameterClass="java.util.HashMap">
+		DELETE FROM W_ACCPRO
+		 WHERE ID_ACCOUNT = #idAccount#
+	     AND COD_PROFILO IN (
+           SELECT W_PROFILI.COD_PROFILO
+			 FROM W_PROFILI
+			WHERE W_PROFILI.CODAPP IN 
+				<iterate property="listaCodApp" open="(" close=")" conjunction=", " >
+	    		#listaCodApp[]#
+			 	</iterate>
+		<isNotEmpty prepend="AND" property="listaProfiliAssociati">
+			W_PROFILI.COD_PROFILO NOT IN
+	  		<iterate property="listaProfiliAssociati" open="(" close=")" conjunction=", " >
+	    		#listaProfiliAssociati[]#
+			  </iterate>
+		</isNotEmpty>)
+  </delete>
+
+  <delete id="deleteAccountConAssociazioneProfili" parameterClass="java.lang.Integer">
+  	DELETE FROM W_ACCPRO 
+  	 WHERE ID_ACCOUNT = #id#
+  </delete>
+
+  <resultMap id="resultGruppoProfilo" class="it.eldasoft.gene.db.domain.admin.Gruppo">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+    <result property="nomeGruppo" column="nome" columnIndex="2"/>
+    <result property="descrGruppo" column="descr" columnIndex="3"/>
+  </resultMap>
+
+	<select id="getGruppiProfiloByCodApp" resultMap="resultGruppoProfilo" parameterClass="java.util.HashMap">
+		SELECT W_GRUPPI.ID_GRUPPO, W_GRUPPI.NOME, W_GRUPPI.DESCR
+	   	FROM W_GRUPPI, W_PROFILI
+   	 WHERE W_GRUPPI.COD_PROFILO = W_PROFILI.COD_PROFILO
+	   	 AND W_PROFILI.COD_PROFILO = #codiceProfilo#
+	   	 AND W_PROFILI.CODAPP IN 
+	   	 	<iterate property="listaCodApp" open="(" close=")" conjunction=", " >
+	    		 #listaCodApp[]#
+			   </iterate>
+	ORDER BY W_GRUPPI.NOME
+	</select>
+
+</sqlMap>

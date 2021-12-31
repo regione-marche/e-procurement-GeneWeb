@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="AttConfig">
+
+	<resultMap id="result" class="it.eldasoft.gene.db.domain.admin.AttConfig">
+		<result property="codapp" column="codapp" columnIndex="1" />
+		<result property="chiave" column="chiave" columnIndex="2" />
+		<result property="valore" column="valore" columnIndex="3" />
+	</resultMap>
+
+	<select id="getAttConfigByCodapp" resultMap="result" parameterClass="java.util.HashMap">
+		select codapp, chiave, valore from w_att where codapp = #codapp#
+	</select>
+
+	<select id="getAttConfig" resultMap="result" parameterClass="java.util.HashMap">
+		select codapp, chiave, valore from w_att where codapp = #codapp# and chiave = #chiave#
+	</select>
+
+	<insert id="insertAttConfig" parameterClass="java.util.HashMap">
+		insert into w_att (codapp, chiave, valore) values (#codapp#, #chiave#, #valore#)
+	</insert>
+
+	<update id="updateAttConfig" parameterClass="java.util.HashMap">
+		update w_att set valore = #valore# where codapp = #codapp# and chiave =	#chiave#	
+	</update>
+
+	<select id="countAttConfig" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+		select count(*) from w_att where codapp = #codapp# and chiave = #chiave#
+	</select>
+
+
+</sqlMap>

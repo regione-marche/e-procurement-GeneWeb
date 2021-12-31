@@ -1,0 +1,6 @@
+<processor>
+	<add>
+		<inside>/sqlMapConfig</inside>
+		<file>src/main/webapp/WEB-INF/xml/ibatis/add.xml</file>
+	</add>
+</processor>

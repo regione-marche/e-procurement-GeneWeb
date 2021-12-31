@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="QuartzConfig">
+
+  <resultMap id="result" class="it.eldasoft.gene.db.domain.admin.QuartzConfig">
+    <result property="codapp" column="codapp" columnIndex="1"/>
+    <result property="bean_id" column="bean_id" columnIndex="2"/>
+    <result property="cron_expression" column="cron_expression" columnIndex="3"/>
+  </resultMap>
+  
+  <select id="getQuartzConfigByCodapp" resultMap="result" parameterClass="java.util.HashMap">
+    select codapp, bean_id, cron_expression from w_quartz where codapp = #codapp#
+  </select>
+  
+  <!-- http://www-01.ibm.com/support/docview.wss?uid=swg21207965 -->
+  <!-- le statement sql per sql server funzionano, le prepared statement creano dei deadlock in caso di esecuzione concorrente pertanto si creano gli sql esatti -->
+
+  <update id="isQuartzLock" parameterClass="java.util.HashMap">
+  update w_quartzlock set lock_date = lock_date where codapp = '$codapp$' and job = '$job$'
+  </update>
+
+  <insert id="insertQuartzLock" parameterClass="java.util.HashMap">
+  insert into w_quartzlock (codapp, job, lock_date, server_name, node_name) values (#codapp#, #job#, #lockDate#, #server:VARCHAR#, #node:VARCHAR#)
+  </insert>
+  
+  <delete id="deleteQuartzLock" parameterClass="java.util.HashMap">
+  delete from w_quartzlock where codapp = '$codapp$' and job = '$job$'
+  </delete>
+
+  <delete id="deleteQuartzLockByDate" parameterClass="java.util.HashMap">
+  delete from w_quartzlock where codapp = '$codapp$' and job = '$job$' and <![CDATA[lock_date <= $maxLockDate$]]>
+  </delete>
+
+</sqlMap>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Tabella">
+
+	<insert id="copiaRecord" parameterClass="java.util.HashMap">
+  	INSERT INTO $tabellaDestinazione$
+  		(
+  		<iterate property="listaNomiCampiChiave" conjunction=",">
+  			$listaNomiCampiChiave[]$
+  		</iterate>,
+  		<iterate property="listaNomiCampi" conjunction=",">
+  			$listaNomiCampi[]$
+  		</iterate>
+  		)
+  	SELECT 
+  		<iterate property="listaValoriCampiChiaveDestinazione" conjunction=",">
+  			#listaValoriCampiChiaveDestinazione[]#
+  		</iterate>,
+  		<iterate property="listaNomiCampi" conjunction=",">
+  			$listaNomiCampi[]$
+  		</iterate>
+  		FROM $tabellaSorgente$
+  		WHERE $campoChiave1$ = #valoreChiave1#
+    <isNotEmpty property="campoChiave2">
+    	AND $campoChiave2$ = #valoreChiave2#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave3">
+    	AND $campoChiave3$ = #valoreChiave3#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave4">
+    	AND $campoChiave4$ = #valoreChiave4#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave5">
+    	AND $campoChiave5$ = #valoreChiave5#
+    </isNotEmpty>
+	</insert>
+
+	<select id="getCountNprat" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+    SELECT count(NPRAT)
+      FROM $tabella$
+     WHERE $campoChiave$ = #valoreChiave# 
+  </select>  
+  
+  <!-- Query per l'update di un campo di una tabella la cui chiave e' costituita
+  		 da piÃ¹ campi. Numero minimo di campi = 1, numero massimo di campi = 5 -->
+  <update id="updateCampo">
+    UPDATE $tabella$ SET $nomeCampo$ = #valoreCampo# 
+    WHERE $campoChiave1$ = #valoreChiave1#
+    <isNotEmpty property="campoChiave2">
+    	AND $campoChiave2$ = #valoreChiave2#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave3">
+    	AND $campoChiave3$ = #valoreChiave3#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave4">
+    	AND $campoChiave4$ = #valoreChiave4#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave5">
+    	AND $campoChiave5$ = #valoreChiave5#
+    </isNotEmpty>
+  </update>
+  
+  <delete id="deleteTabella" parameterClass="java.util.HashMap">  
+  	DELETE FROM $tabella$
+  	 WHERE $campoChiave1$ = #valoreChiave1#
+    <isNotEmpty property="campoChiave2">
+    	AND $campoChiave2$ = #valoreChiave2#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave3">
+    	AND $campoChiave3$ = #valoreChiave3#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave4">
+    	AND $campoChiave4$ = #valoreChiave4#
+    </isNotEmpty>
+    <isNotEmpty property="campoChiave5">
+    	AND $campoChiave5$ = #valoreChiave5#
+    </isNotEmpty>
+  	<isNotEmpty prepend="AND" property="condizione">
+  		$condizione$
+  	</isNotEmpty>
+  </delete>
+  
+</sqlMap>

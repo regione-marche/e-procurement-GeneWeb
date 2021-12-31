@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Versione.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Metadati.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Livelli.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Tabellati.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/GenChiavi.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Tabella.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/LogEventi.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Message.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Account.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Profili.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Gruppi.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Uffint.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Ricerche.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Modelli.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/PropsConfig.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/WsdmPropsConfig.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/DocumentiAssociati.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Permessi.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/InvioComunicazioni.xml" />
+
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Kronos.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/FileAllegato.xml" />
+
+	<sqlMap resource="it/eldasoft/console/db/dao/ibatis/maps/SchedRic.xml" />
+	
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/QuartzConfig.xml" />
+	
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/AttConfig.xml" />
+	
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/ConfigurazioneMail.xml" />
+</sqlMapConfig>

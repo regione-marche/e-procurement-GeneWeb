@@ -1,0 +1,171 @@
+CONTRATTO DI LICENZA D'USO DI PRODOTTI SOFTWARE
+Il presente Contratto di Licenza d'uso è stipulato tra Maggioli S.p.A., (di seguito "Maggioli"), C.F. 0618830150 e P.IVA 02066400405, con sede legale in Via del Carpino 8, 47822 Santarcangelo di Romagna (RN), in persona del Legale rappresentante pro tempore e il Cliente (congiuntamente le "Parti"), identificato con i dati forniti compilando la scheda anagrafica, il quale per il tramite del suo Rappresentante Legale o comunque di un procuratore autorizzato alla stipula del presente Contratto in nome e per conto del soggetto che rappresenta, aderisce al presente Contratto (di seguito, il "Cliente").
+
+1. PROGRAMMI SOFTWARE
+Formuliamo con la presente nostra proposta ferma per la concessione a nostro favore di una licenza d'uso, non esclusiva e non trasferibile, del programma software di Maggioli S.p.A. oggetto di installazione, alle condizioni nello stesso specificate e nei termini di cui appresso.
+
+2. DEFINIZIONI
+Nella presente, i termini appresso indicati sono impiegati col significato che si precisa, salvo diverse specificazioni caso per caso:
+Maggioli:
+La Maggioli S.p.A.
+Cliente:
+Il soggetto che accetta la presente proposta marcando "Dichiaro di aver preso visione e di accettare le condizioni sopra descritte" 
+Utente autorizzato: 
+Il Cliente stesso o chi sia stato da questi e da Maggioli autorizzato all'uso dei programmi.
+Software:
+Per software si intende l'informazione o le informazioni utilizzate da uno o più sistemi informatici e memorizzate su uno o più supporti informatici. Tali informazioni possono essere quindi rappresentate da uno o più programmi, da uno o più dati, oppure da una combinazione delle due.
+Uso dei programmi:
+Il trasferimento d'una qualsiasi porzione delle strutture e/o dei dati contenuti nei programmi, da questi ultimi all'elaboratore, a scopo d'elaborazione dei dati del Cliente.
+Cluster:
+Si intende un insieme di computer (almeno 2 server) connessi tra loro tramite una rete telematica allo scopo di distribuire l'elaborazione tra i vari computer componenti il cluster garantendo alta disponibilità di servizio.
+
+3. OGGETTO DELLA LICENZA
+La licenza è non esclusiva e non trasferibile; essa ha per oggetto unicamente l'uso da parte del Cliente dei programmi elencati nel prospetto che precede al punto 1. Nei punti che seguono, il richiamo ai "programmi di cui al n. 3" fa riferimento appunto ai programmi oggetto della presente proposta di licenza e al prospetto nel quale gli stessi sono elencati.  I programmi vengono ceduti in uso da Maggioli nella loro versione originale. Eventuali proposte di modifica degli stessi, se approvate da Maggioli, saranno accettate solo dietro specifica richiesta del Cliente e saranno oggetto di separato contratto.
+
+4. MODALITÀ E LIMITI DELLA LICENZA
+4.1 I programmi di cui al n. 3 sono e restano di esclusiva proprietà di Maggioli. Ove taluno di essi fosse di produzione di terzi (diversi da Maggioli) questi ultimi ne conservano l'esclusiva proprietà. II cliente pertanto si impegna a notificare immediatamente a Maggioli ogni iniziativa e/o pretesa di terzi concernente detti programmi.
+4.2 Il Cliente è consapevole ed accetta espressamente che i programmi di cui al n. 3 sono strumenti riservato agli utenti professionali, con la conseguenza che il presente Contratto non è soggetto alla disciplina dei contratti dei consumatori.
+4.3 I programmi di cui al n. 3 possono essere utilizzati solo su macchine (computer o elaboratori) aventi una configurazione sistemistica adeguata: il conseguimento della quale è onere e responsabilità esclusiva del Cliente.
+4.4 Il Cliente non può trarre alcuna copia integrale o parziale dei programmi   in formato leggibile dall'elaboratore od in forma stampata   concessigli in licenza, né dalla documentazione d'uso a stampa, senza esplicita autorizzazione di Maggioli.    
+È peraltro consentito al Cliente mantenere copia di sicurezza dei programmi in formato leggibile dall'elaboratore al solo limitato fine di garantire la ripartenza del sistema, qualora malfunzionamenti tecnici rendano impossibile l'utilizzo della versione originale.
+È altresì possibile disporre di una duplice copia in caso di installazione in cluster al fine di garantire l'alta affidabilità del sistema. 
+Tali copie rimangono di proprietà di Maggioli e per esse restano fermi tutti gli obblighi derivati al Cliente in forza della presente.
+4.5 Nella licenza d'uso dei programmi di cui al n. 3 non è compreso in alcun caso il diritto o la facoltà del Cliente di ottenerli da Maggioli in formato sorgente né di disporre della relativa documentazione logica o di progetto.
+4.6 Il progetto, l'organizzazione e la struttura degli archivi dei programmi di cui al n. 3  sono di proprietà di Maggioli; gli archivi possono essere utilizzati unicamente con tali programmi. Gli archivi, o parte di essi, non dovranno in alcun modo essere riportati e utilizzati in altre procedure senza preventiva autorizzazione scritta di Maggioli.
+4.7 Qualora Maggioli fornisca al Cliente programmi addizionali (propri o di terze parti) e materiali aggiuntivi che siano integrativi, correttivi, di aggiornamento o sostitutivi di uno o più dei programmi di cui al n. 3, senza che per essi si provveda alla stipulazione di un contratto ad hoc, la licenza d'uso di tali programmi addizionali e materiali aggiuntivi sarà del pari disciplinata integralmente dalla presente. Nel caso di programmi addizionali di tipo "open source", il Cliente è tenuto all'accettazione del contratto di licenza open source abbinato a detti programmi (in genere GPL http://www.gnu.org).
+
+5. OBBLIGHI E RESPONSABILITÀ DEL CLIENTE E DELL'UTENTE AUTORIZZATO
+5.1 E' obbligo del Cliente prendere tutte le misure opportune e necessarie per impedire la diffusione non autorizzata e garantire la segretezza dei programmi concessigli in licenza, in qualunque formato si presentino (leggibile dall'elaboratore, in forma stampata, documentazione d'uso, altro eventuale materiale aggiuntivo, ecc.): egli pertanto, ferma la non trasferibilità della licenza, si impegna a non consentire a terzi l'uso di essi programmi, l'estrazione di copie anche parziale, la consultazione e così via. Gli obblighi del Cliente di cui al presente punto si intendono confermati anche nel caso di cessione a terzi della proprietà della macchina.
+5.2 Il Cliente si impegna a conservare inalterato qualsiasi segno distintivo apposto da Maggioli sui programmi e/o loro supporti; ed a riprodurre tali informazioni sulle copie che fosse autorizzato a trarne.
+5.3 Rientrano nella esclusiva responsabilità del Cliente la predisposizione degli archivi dei dati da elaborare; la supervisione, la direzione e il controllo dell'uso dei programmi di cui al n. 3; ed in genere tutte le operazioni connesse e/o strumentali a tale uso.
+5.4 In particolare appartiene alla esclusiva responsabilità del Cliente di: (a) predisporre una configurazione delle macchine adeguata ai programmi relativi; (b) curare l'installazione dei programmi e applicare adeguati controlli e procedure operative così da soddisfare tutti i requisiti di sicurezza e precisione di ingresso e di uscita; (c) apprestare procedure e strumenti alternativi e/o d'emergenza che valgano a sopperire ad eventuale cattivo funzionamento d'uno o più programma/i, e che assicurino il recupero dei dati e una pronta ripartenza in caso di guasti.
+5.5 L'Utente autorizzato è ad ogni effetto soggetto a tutti gli obblighi e responsabilità, nessuno escluso, che sono attribuiti al Cliente nel testo del presente Contratto.
+
+6. CORRISPETTIVI
+6.1 I corrispettivi pattuiti per i programmi di cui al n. 3  non comprendono: 
+a) nastri, dischi e in genere i supporti di memorizzazione dei programmi;
+b) supporti, materiali e quant'altro necessario per l'esecuzione dei programmi e l'elaborazione dei dati;
+c) le spese di trasporto e consegna dei programmi con mezzi diversi da quelli scelti da Maggioli;
+d) le prestazioni per i servizi di cui al successivo n. 15, ove non siano esplicitamente inclusi
+e) gli oneri fiscali, comunque denominati e configurati, che dovessero gravare o essere commisurati sui corrispettivi; che si aggiungeranno a questi ultimi, ad esclusivo carico del Cliente.
+6.2 I pagamenti di tutto quanto dovuto dal Cliente in forza della presente saranno effettuati a Maggioli e per nessuna ragione potranno essere ritardati o sospesi, rimossa qualsiasi eccezione, da farsi valere eventualmente in separata sede.
+
+7. DURATA
+La licenza d'uso ha carattere definitivo.
+
+8. CONSEGNA
+La consegna al Cliente dei programmi di cui al n. 3, avverrà in relazione alle disponibilità di Maggioli, alla natura del/dei programma/i, riservandosi comunque Maggioli di effettuare consegne frazionate. Qualsiasi termine di consegna ha valore meramente indicativo.
+
+9. SOSTITUZIONE
+Qualora nel corso del trasporto, i programmi andassero perduti, Maggioli provvederà a sostituirli senza ulteriore addebito al Cliente. Analogamente sarà provveduto qualora i programmi subissero avaria nella medesima occasione: purché peraltro il Cliente provveda a segnalare l'avaria entro 8 giorni dalla consegna, rientrando nella sua esclusiva responsabilità ogni opportuno controllo.
+
+10. CONSERVAZIONE
+10.1 II Cliente è tenuto a conservare in perfetto stato e in condizioni di buona utilizzazione tutto il materiale concesso in licenza di cui al n. 3 e a provvedere alla tempestiva sostituzione, a proprie spese, dei supporti usurati.  II Cliente dovrà assicurarsi, prima di eliminare o destinare ad altro uso i supporti di memorizzazione dei programmi concessigli in licenza, che il contenuto di tali supporti sia stato cancellato o comunque reso in nessun modo leggibile.
+10.2 Maggioli non assicura la disponibilità in futuro di altri esemplari dei programmi di cui al n. 3 nello stesso stato attuale, bensì solo nella versione ultima che gli stessi avranno raggiunta al momento della richiesta del Cliente. Eventuali modifiche necessarie per riportare tale ultima versione allo stato attuale potranno essere effettuate solo a spese del Cliente.
+
+11. NUOVE VERSIONI - MODIFICHE ED ESTENSIONI
+11.1 Qualora Maggioli dovesse produrre e/o immettere sul mercato nuove versioni  dei programmi di cui al n. 3, sarà in sua facoltà esigere dal Cliente che questi le installi a sue spese, in via sostitutiva dei programmi già a sua disposizione. Ove il Cliente non ottemperi alla richiesta in tal senso di Maggioli, quest'ultima sarà esonerata dal prestare qualsiasi manutenzione e/o intervento in garanzia, relativamente al/i programma/i in questione. Sempre a proprie spese e sotto propria responsabilità il Cliente provvederà all'installazione delle nuove versioni che egli avesse richiesto e che Maggioli acconsenta a concedergli in licenza.
+11.2 Anche alle nuove versioni di cui al n. 11.1 si applicherà per quanto di ragione, il disposto dei nn. 4.7.
+11.3 Qualsiasi modificazione introdotta dal Cliente nei programmi di cui al n. 3 comporterà l'immediata decadenza di qualsiasi responsabilità o garanzia di Maggioli. In particolare ogni tipo di intervento o servizio (di cui ai nn. 14 e 15 che seguono) che fosse richiesto a Maggioli relativamente ad un programma come sopra modificato sarà addebitato al Cliente, che dovrà compiutamente informare il personale tecnico di Maggioli delle modificazioni apportate.
+11.4 Qualsiasi modificazione apportata da Maggioli o dal Cliente ai programmi di cui al n. 3 nulla muta al regime della loro utilizzabilità (di cui al n. 4) ed alla soggezione della relativa licenza d'uso alle condizioni tutte della presente. I programmi comunque modificati restano di esclusiva proprietà di Maggioli.
+11.5 Qualora alla configurazione di macchina il Cliente apporti estensioni con apparecchiature non espressamente approvate da Maggioli, la responsabilità della Maggioli sarà limitata al funzionamento e all'assistenza dei programmi allo stato originario della configurazione di macchina.
+11.6 Il Cliente è tenuto ad utilizzare i programmi di cui al n. 3 su macchine con caratteristiche uguali o superiori a quelle dichiarate da Maggioli, in particolare è a suo carico l'allineamento ai requisiti hardware e software di base qualora questi vengano modificati in seguito a nuove versioni dei programmi, fermo restando quanto ali nn. 4.3 e 5.4.
+
+12. RESPONSABILITÀ DELLA MAGGIOLI
+12.1 Maggioli si adopererà con ogni diligenza per il raggiungimento degli obiettivi di progetto dei programmi di cui al n. 3 (fermo, peraltro, in particolare quanto ai nn. 5.3 e 5.4). Tale raggiungimento non viene tuttavia garantito da Maggioli qualora si manifestassero effettive difficoltà tecniche o cause di forza maggiore.
+12.2 Le prestazioni di Maggioli ai fini del funzionamento dei programmi di cui al n. 3 sono indicate ai nn. 14, ove ne vengono altresì convenute le condizioni e i termini. Nessuna prestazione ulteriore o diversa rispetto a quelle ivi precisate potrà essere richiesta a Maggioli.
+12.3 Qualora venga da terzi sollevata contestazione e/o intentata azione giudiziaria nei confronti del Cliente, affermando che l'utilizzazione d'uno o più dei programmi di cui al n. 3 costituisce violazione di diritto di brevetti e/o d'autore, il Cliente dovrà darne avviso a Maggioli per iscritto entro 10 giorni dalla notizia della contestazione e/o dalla notificazione dell'atto introduttivo dell'azione giudiziaria. Tale termine è stato stabilito a pena di decadenza del Cliente dai diritti derivanti dal successivo paragrafo.
+12.4 Sempre che il termine da cui al n. 12.3 sia stato osservato, Maggioli assumerà a sue spese la difesa contro tale azione e terrà a suo carico gli oneri eventualmente conseguitine nei confronti del terzo attore, a condizione che le siano state conferite dal Cliente le più ampie facoltà di gestire la lite a suo esclusivo giudizio, e di definirla anche stragiudizialmente.
+12.5 Qualora in un giudizio o in una vertenza gestiti da Maggioli nei sensi di cui al n. 12.4 sia pronunziata sentenza definitiva (o sia intervenuta transazione o accordo) che accerti la violazione da parte d'uno o più programmi di cui al n. 3 di diritti di brevetto e/o d'autore di terzi, Maggioli provvederà agli interventi necessari ad eliminare l'accertata violazione.
+12.6 Quanto ai nn. 12.4 e 12.5 non si applicherà, restando Maggioli pertanto esente da responsabilità o garanzia qualsivoglia, qualora la violazione o pretesa violazione di diritto di brevetto e/o d'autore dipenda dall'uso dei programmi di cui al n. 3 in combinazione con programmi e/o dati non forniti da Maggioli.
+12.7 Fermo quanto al n. 12.6, gli impegni di cui al n. 12.4 limitano ed esauriscono le responsabilità di Maggioli in conseguenza di violazioni di diritti di brevetto e/o d'autore da parte di qualsiasi dei programmi di cui al n. 3 o loro parti e/o della loro utilizzazione; nel senso che in tale ipotesi Maggioli sarà tenuta esclusivamente alle prestazioni sopra individuate (e sempre che ne ricorrano i presupposti e le condizioni indicate), ma a nessuna prestazione ulteriore e diversa (e così in particolare, a nessun indennizzo o risarcimento nei confronti del Cliente per mancato o menomato uso dei programmi, per spese, ecc.).
+12.8 Fermo quanto ai cinque capoversi precedenti, resta espressamente convenuto che la responsabilità di Maggioli per qualsiasi danno emergente e lucro cessante a qualunque titolo conseguenti e comunque connessi alla presente (ivi compresi quelli derivanti dall'uso e/o dalla mancata utilizzabilità dei programmi, e da pretese di terzi diverse da quelle di cui al n. 12.3) non potrà in alcun caso eccedere un terzo dell'importo pagato dal Cliente per il/i programma/i cui il danno e/o la pretesa fosse riferibile.
+12.9 II Cliente è responsabile di verificare la correttezza dei risultati forniti dai programmi: Maggioli non potrà in nessun caso essere chiamata a rispondere di eventuali danni a qualunque titolo derivanti dall'uso dei programmi stessi.
+12.10 Maggioli non è comunque responsabile di eventuali malfunzionamenti dovuti a malfunzionamenti dell'hardware e/o del software di base.
+
+13. CLASSIFICAZIONE DEI PROGRAMMI
+Maggioli potrà identificare i programmi di sua produzione con un codice: in questo caso eventuali comunicazioni con il Cliente dovranno sempre fare riferimento a detto codice che sarà evidenziato nel prospetto richiamato al n. 3.
+
+14. GARANZIA
+14.1 I prodotti di cui al n. 3 sono soggetti a garanzia contro eventuali difetti di fabbricazione per un periodo di 12 mesi, a partire dalla data di consegna dei programmi medesimi.
+14.2 La garanzia implica esclusivamente che Maggioli si impegna a rimuovere gli eventuali difetti di fabbricazione che fossero riscontrati a carico dei programmi di cui al n. 3, durante il periodo di garanzia, intendendosi per "difetti" riferiti ai programmi solo i malfunzionamenti di cui al n. 14.3.
+14.3 Si intendono per malfunzionamenti errori di funzionamento:
+- tali da non consentire il normale utilizzo dei programmi,
+- che siano riproducibili,
+- che non dipendano da malfunzionamenti dell'hardware, del software di base o comunque da problemi esterni al software applicativo,
+- che non dipendano da un funzionamento od un uso non conforme a quanto esplicitamente descritto nella documentazione d'uso fornita con i programmi di cui al n. 3.
+Eventuali limitazioni o casi non previsti dai programmi non sono malfunzionamenti.
+14.4 Nel caso in cui il cliente dovesse rilevare difetti di produzione relativi ai programmi di cui al n. 3 dovrà darne immediatamente comunicazione scritta a Maggioli, fornendo tutti gli elementi utili alla individuazione della situazione operativa verificatasi al fine di agevolare la rimozione dell'errore.  Maggioli potrà:
+- suggerire una azione alternativa per aggirare l'errore;
+- presso la propria sede e nei tempi tecnici necessari, correggere l'errore ed inviare al Cliente, in una delle forme previste, la correzione.
+14.5 È facoltà di Maggioli, per la correzione del malfunzionamento, fornire nuove versioni e/o modifiche ed estensioni ai programmi di cui al n. 3, fermo restando quanto al n. 11.
+14.6 La garanzia decade irrevocabilmente nei seguenti casi:
+- qualora il Cliente venga meno ad uno qualsiasi degli obblighi previsti a suo carico dal presente contratto;
+- qualora non vengano osservate dal cliente le norme operative e le istruzioni fornitegli da Maggioli o descritte dalla documentazione fornita con i programmi di cui al n. 3;
+- qualora, per opera del Cliente o di terze parti, i programmi di cui al n. 3 vengano modificati e/o incorporati in tutto o in parte in altri programmi;
+- qualora i programmi di cui al n. 3 siano sottoposti a manomissioni effettuate a qualsiasi titolo (ivi inclusi i tentativi di riparazione) dal Cliente o da terzi;
+- qualora si riscontrino guasti causati ai programmi di cui al n. 3 dovuti a negligenza, incuria, dolo del Cliente o del suo personale, da cause di forza maggiore o da altre cause imputabili a terzi.
+
+15. DEFINIZIONE DEI SERVIZI E LORO CONDIZIONI
+I servizi che possono essere richiesti a Maggioli dal Cliente in relazione ai programmi sono:
+15.1 Manutenzione
+II servizio di manutenzione ordinaria si esplicherà nelle seguenti prestazioni:
+a) distribuzione di eventuali nuove versioni (releases) dei programmi in manutenzione, in sostituzione di quelle già rilasciate, a seguito dell'aggiornamento del software di base o di possibili malfunzionamenti;
+b) distribuzioni di eventuali nuove versioni (releases) dei programmi in manutenzione, in sostituzione di quelle già rilasciate, comprendenti quelle innovazioni o miglioramenti alle funzioni del prodotto che, classificati come interventi di manutenzione straordinaria sono inclusi, a giudizio insindacabile della Maggioli, nella manutenzione ordinaria;
+c) fermo quanto a 11.1, istruzioni per il temporaneo superamento di eventuali difetti e/o malfunzionamenti che siano stati opportunamente documentati dal Cliente. Per malfunzionamenti si intendono gli errori di funzionamento di cui al n. 14.3.
+d) informazioni sulla disponibilità di documentazione e di eventuali aggiornamenti relativi ai programmi in manutenzione;
+15.2 Assistenza
+Il servizio di assistenza telefonica, ovvero svolto mediante mail o connessione remota, sarà erogato durante l'ufficiale orario di lavoro di Maggioli, in supporto agli utenti dei programmi. Maggioli si riserva di sospendere l'assistenza nel momento in cui ravvisi che viene erogata in luogo di un normale percorso formativo che l'utente non ha compiuto.
+15.3 Condizioni di erogazione del servizio di Manutenzione e Assistenza
+Maggioli si impegna a eseguire con ogni diligenza e con la massima cura gli interventi di manutenzione, ma non garantisce che ogni difetto del/i programma/i sarà eliminato, pur impegnandosi a mettere in atto tutte quelle azioni necessarie a mantenere funzionale ed operativo il prodotto software oggetto del presente contratto.
+Nessuna altra prestazione e/o operazione è inclusa nella manutenzione ordinaria e se data dovrà essere compensata a parte dal Cliente in ogni caso. Sono escluse esplicitamente dal servizio di cui a 15.1 (e, se richieste, saranno pertanto addebitate al Cliente) le seguenti prestazioni:
+a) modifiche che si rendessero necessarie a seguito di mutamento di norme legislative e fiscali, se non quelle espressamente comprese a giudizio insindacabile di Maggioli;
+b) interventi per sopperire a malfunzionamenti dei programmi ascrivibili a: (1) inosservanza da parte del Cliente delle norme operative, (2) modificazione dei programmi ad opera del Cliente o loro incorporazione in altri programmi, (3) negligenza   incuria e/o dolo del Cliente e del suo personale, fatti di terzi o forza maggiore, (4) errore del Cliente che denunci un malfunzionamento non riscontrato in concreto;
+c) ripristino degli archivi danneggiati da un malfunzionamento dei programmi, indipendentemente dalle cause che abbiano determinato detto malfunzionamento;
+d) installazioni di nuove releases di programma.
+Nel caso in cui al cliente sia stata concessa licenza d'uso di uno o più programmi uguali da installare su più di una macchina le attività di cui a 15.1 saranno da Maggioli prestate relativamente a una sola macchina, restando a carico del Cliente la responsabilità di provvedere alla eventuale duplicazione di supporti, divulgazione delle informazioni, ecc.
+Eventuali interventi di Maggioli non dovuti per quanto esposto ai punti a) b) c) d) sopra elencati, saranno addebitati al Cliente ai prezzi di listino in vigore al momento della effettuazione degli stessi.
+I servizi di manutenzione di cui ai precedenti nn. 15.1 e 15.2 sono forniti per tutti i programmi in licenza d'uso consegnati; qualora il cliente non intendesse manutenere tutti i programmi acquisiti si assume la responsabilità di eventuali danni e/o malfunzionamenti che potrebbero essere causati da conflitti o incompatibilità tra i programmi stessi e/o dell'hardware e software di base.
+I servizi di manutenzione di cui ai precedenti nn. 15.1 e 15.2 sono forniti per tutte le copie dei programmi indicati nella Lettera di Consegna; non è consentita la manutenzione di un numero di copie inferiore alle copie in possesso del cliente.
+I servizi di manutenzione di cui ai precedenti nn. 15.1 e 15.2 sono forniti a fronte del pagamento dei corrispettivi che saranno di volta in volta concordati.  II canone di manutenzione avrà decorrenza, in ogni caso, dalla consegna dei programmi cui inerisce. Con periodicità annuale Maggioli potrà procedere ad una revisione dei canoni di manutenzione, la variazione d'importo verrà notificata ai Cliente. La durata del contratto di manutenzione è fissata in dodici mesi. II canone per il periodo successivo al primo (e così via) sarà pari a quello portato dal listino di Maggioli in vigore al momento dell'inizio del nuovo periodo contrattuale.
+15.4 Servizi accessori
+Formazione: insieme delle attività inerenti l'organizzazione e la tenuta di corsi per istruzione del personale del Cliente (operatore, ecc.).
+Installazione: insieme delle attività necessarie per l'effettiva messa in funzione del programma presso il Cliente. 
+Trascodifica: per trascodifica si intende il servizio di recupero di eventuali archivi esistenti, che è compito e responsabilità del Cliente fornire, e la relativa trascodifica nella struttura degli archivi utilizzata dai programmi di cui al n. 3.
+Manutenzione straordinaria: insieme delle attività svolte su richiesta del Cliente, per intervento sui programmi (e non sui dati) per adeguarli a nuove e/o diverse esigenze e finalità comunque originate. Nella manutenzione straordinaria sono compresi, fra gli altri aspetti:
+a) la realizzazione di modifiche o ampliamenti personalizzati ad uso di un singolo Cliente,
+b) l'adattamento dei programmi alle eventuali variazioni della legislazione vigente, quando non compresi nella Manutenzione ordinaria di cui al n. 15.1 (ad esempio porting tecnologico, adeguamento per normative o regolamenti locali, oppure adeguamenti normativi che richiedono aggiunta di nuovi programmi o la riscrittura degli stessi ovvero modifiche che impattano per buona parte delle funzionalità dei programmi)
+c) ogni altra attività tecnica, organizzativa o di supporto che non sia riconducibile al concetto di manutenzione ordinaria.
+15.5 Condizioni di erogazione dei Servizi accessori
+Tutti i servizi di cui al n. 15.4 saranno effettuati da personale di Maggioli o scelto da quest'ultima durante l'orario in vigore per il personale di Maggioli (ciò vale anche per i viaggi), e compatibilmente con la sua disponibilità di personale e di risorse.
+Il Cliente metterà gratuitamente a disposizione dei tecnici incaricati dei servizi di cui al n. 15.4 che si svolgeranno presso di lui le macchine e/o apparecchiature e in genere gli strumenti e gli eventuali materiali di consumo necessari per la regolare effettuazione dei servizi stessi. Tutti i servizi di cui al n. 15.4 saranno forniti al Cliente ai prezzi di cui alle tariffe e ai listini di Maggioli in vigore all'atto della loro prestazione. Le relative fatture saranno pagate dal Cliente per contanti alla loro presentazione. Anche ai pagamenti qui considerati si applica quanto al n. 6.2.
+
+16. IRREVOCABILITÀ DELLA PRESENTE E SUA ACCETTAZIONE
+16.1 La presente proposta è ferma ed irrevocabile da parte del Cliente.
+16.2 Ove la Ditta ritenga di accettarla, essa potrà, a sua scelta, o comunicare tale accettazione al Cliente, ovvero dare per parte sua diretta esecuzione alla presente. in tale secondo caso, tanto la consegna al vettore o allo spedizioniere di uno qualsiasi dei programmi di cui al n. 3 o d'una sua parte, quanto la presentazione della presente per la registrazione nonché l'installazione stessa dei programmi di cui al n. 2 si convengono ciascuna rappresentare "inizio d'esecuzione" ai sensi e per gli effetti dell'art. 1327 Cod. Civ.; sicché il contratto s'avrà per concluso fra le parti alle condizioni tutte di cui alla presente al momento del verificarsi di uno degli eventi predetti (secondo quale si verifica per primo).
+
+17. FORO CONVENZIONALE A LEGGE APPLICABILE
+17.1 La presente è soggetta alla Legge italiana.
+17.2 La competenza a decidere qualsiasi controversia tra il Cliente e Maggioli relative all'interpretazione, esecuzione e risoluzione della presente, e a qualsiasi inerente ragione di dare ed avere spetterà in via esclusiva al Foro di competenza per la sede di Maggioli, ferma la facoltà della sola Maggioli di adire ogni altro Foro competente ai sensi di legge.
+
+18. CLAUSOLE FINALI
+18.1 La presente esaurisce la disciplina dei diritti ed obblighi del Cliente e di Maggioli per quanto riguarda la concessione di licenze d'uso dei programmi di cui al n. 3, degli eventuali programmi addizionali aggiuntivi di cui al n. 4.7, e delle nuove versioni di cui al n. 11.1, la prestazione dei servizi di cui al n. 15 intendendosi pertanto annullata e privata di effetto ogni eventuale precedente diversa intesa scritta e/o orale tra le parti relative all'oggetto.
+18.2 Eventuali tolleranze, anche reiterate e prolungate, di Maggioli di violazioni e inottemperanze del Cliente a clausole della presente non costituiranno precedente, e non potranno menomare le validità sia delle clausole non osservate sia di tutte le restanti.
+18.3 Ogni modificazione delle condizioni e dei termini della presente richiede la forma scritta a pena di nullità.
+
+ACCETTAZIONE DEL CONTRATTO DI LICENZA D'USO
+Ai sensi e per gli effetti degli artt. 1341 e 1342 Cod. Civ. con l'accettazione della presente il Cliente dichiara di approvare espressamente le condizioni di cui alle clausole sopra scritte, di seguito richiamate e riassunte:
+3. Oggetto della licenza
+4. Limiti della licenza d'uso
+5.1. Segretezza
+5.2. Segni distintivi sui programmi
+5.5. Obblighi e responsabilità dell'Utente autorizzato
+6.1. Variabilità dei corrispettivi
+9. Denunzia di avaria
+11.1 Facoltà di Maggioli di disporre l'installazione di nuove versioni di programma Conseguenze del rifiuto del Cliente
+11.3. Modificazioni dei programmi e decadenza delle garanzie
+12.1, 12.3, 12.6, 12.7, 12.8, 12.9 e 15. Limiti di responsabilità della Maggioli
+16.1. Irrevocabilità della proposta
+16.2. Modalità dell'accettazione della Ditta 
+17.2. Foro convenzionale
+18.3. Necessità dello scritto

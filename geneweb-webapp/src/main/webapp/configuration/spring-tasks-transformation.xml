@@ -1,0 +1,6 @@
+<processor>
+	<add>
+		<inside>/beans/bean[@id='quartzFactory']/property/list</inside>
+		<file>src/main/webapp/WEB-INF/xml/spring/tasks-add.xml</file>
+	</add>
+</processor>

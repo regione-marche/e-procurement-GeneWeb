@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="LogEventi">
+
+  <insert id="insertLog" parameterClass="it.eldasoft.gene.db.domain.LogEvento">
+  	INSERT INTO W_LOGEVENTI (IDEVENTO, CODAPP, COD_PROFILO, SYSCON, IPEVENTO, DATAORA, OGGEVENTO, LIVEVENTO, CODEVENTO, DESCR, ERRMSG ) 
+  	VALUES (#id#, #codApplicazione:VARCHAR#, #codProfilo:VARCHAR#, #idUtente:NUMERIC#, #ip:VARCHAR#, #data:TIMESTAMP#, #oggEvento:VARCHAR#, #livEvento:NUMERIC#, #codEvento:VARCHAR#, #descr:VARCHAR#, #errmsg:VARCHAR#)
+  </insert>
+  
+  <delete id="deleteLogBeforeDate" parameterClass="java.util.Date">
+  		DELETE FROM W_LOGEVENTI WHERE <![CDATA[DATAORA < #data#]]>
+  </delete>
+  
+  <select id="searchLogFromCodOggetto" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	  	SELECT W_LOGEVENTI.ERRMSG FROM W_LOGEVENTI WHERE W_LOGEVENTI.CODEVENTO = #codice# AND W_LOGEVENTI.OGGEVENTO = #oggetto#
+  </select>
+
+</sqlMap>

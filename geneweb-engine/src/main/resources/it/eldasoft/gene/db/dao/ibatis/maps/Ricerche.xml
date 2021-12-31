@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Ricerche">
+
+	<resultMap id="resultRicercaDiGruppo" class="it.eldasoft.gene.db.domain.admin.RicercaGruppo">
+		<result property="idRicerca"    column="id_ricerca" columnIndex="1"/>
+    <result property="tipoRicerca"  column="ttdesc" 	  columnIndex="2"/>
+    <result property="nomeRicerca"  column="nome" 		  columnIndex="3"/>
+    <result property="descrRicerca" column="descr" 		  columnIndex="4"/>
+    <result property="disponibile"  column="disp" 		  columnIndex="5"/>
+    <result property="famiglia"     column="tfdescr"     columnIndex="6"/>
+    <result property="personale"    column="personale"  columnIndex="7"/>
+    <result property="owner"        column="sysute"     columnIndex="8"/>
+  </resultMap>
+
+	<resultMap id="resultRicercaPredefinita" class="it.eldasoft.gene.db.domain.admin.RicercaGruppo">
+		<result property="idRicerca" column="id_ricerca" columnIndex="1"/>
+    <result property="tipoRicerca"  column="tab1desc" columnIndex="2"/>
+    <result property="nomeRicerca"  column="nome" columnIndex="3"/>
+    <result property="descrRicerca" column="descr" columnIndex="4"/>
+    <result property="famiglia" column="tfdescr" columnIndex="5"/>
+    <result property="personale" column="personale" columnIndex="6"/>
+  </resultMap>
+
+	<resultMap id="resultTestataRicerca" class="it.eldasoft.gene.db.domain.genric.DatiGenRicerca">
+		<result property="idRicerca" column="id_ricerca" columnIndex="1"/>
+    <result property="tipo" column="tipo" columnIndex="2"/>
+    <result property="nome" column="nome" columnIndex="3"/>
+    <result property="descrizione" column="descr" columnIndex="4"/>
+    <result property="disp" column="disp" columnIndex="5"/>
+    <result property="valDistinti" column="valdistinti" columnIndex="6"/>
+    <result property="risPerPag" column="risPerPag" columnIndex="7"/>
+    <result property="visModelli" column="vismodelli" columnIndex="8"/>
+    <result property="entPrinc" column="entprinc" columnIndex="9"/>
+    <result property="codApp" column="codapp" columnIndex="10"/>
+    <result property="owner" column="owner" columnIndex="11"/>
+    <result property="famiglia" column="famiglia" columnIndex="12"/>
+    <result property="idProspetto" column="id_prospetto" columnIndex="13"/>
+    <result property="personale" column="personale" columnIndex="14"/>
+    <result property="filtroUtente" column="filtroUtente" columnIndex="15"/>
+    <result property="profiloOwner" column="profilo_owner" columnIndex="16"/>
+    <result property="visParametri" column="visparam" columnIndex="17"/>
+    <result property="linkScheda" column="linkscheda" columnIndex="18"/>
+    <result property="codReportWS" column="codreportws" columnIndex="19"/>
+    <result property="filtroUfficioIntestatario" column="filtrouffint" columnIndex="20"/>
+    <result property="defSql" column="defSql" columnIndex="21"/>
+  </resultMap>
+
+	<resultMap id="resultTabellaRicerca" class="it.eldasoft.gene.db.domain.genric.TabellaRicerca">
+		<result property="id" column="id_ricerca" columnIndex="1"/>
+    <result property="progressivo" column="progr" columnIndex="2"/>
+    <result property="mneTabella" column="mne_tab" columnIndex="3"/>
+    <result property="aliasTabella" column="aliastab" columnIndex="4"/>
+    <result property="visibile" column="visibile" columnIndex="5"/>
+	</resultMap>
+
+	<resultMap id="resultCampoRicerca" class="it.eldasoft.gene.db.domain.genric.CampoRicerca">
+		<result property="id" column="id_ricerca" columnIndex="1"/>
+    <result property="progressivo" column="progr" columnIndex="2"/>
+    <result property="mneTabella" column="mne_tab" columnIndex="3"/>
+    <result property="aliasTabella" column="tab" columnIndex="4"/>
+    <result property="mneCampo" column="mne_campo" columnIndex="5"/>
+    <result property="funzione" column="funz" columnIndex="6"/>
+    <result property="titoloColonna" column="titcolonna" columnIndex="7"/>
+	</resultMap>
+
+	<resultMap id="resultGiunzioneRicerca" class="it.eldasoft.gene.db.domain.genric.GiunzioneRicerca">
+		<result property="id" column="id_ricerca" columnIndex="1"/>
+    <result property="progressivo" column="progr" columnIndex="2"/>
+    <result property="mnemonicoTabella1" column="mne_tab1" columnIndex="3"/>
+    <result property="aliasTabella1" column="tab1" columnIndex="4"/>
+    <result property="campiTabella1" column="campi_tab1" columnIndex="5"/>
+    <result property="mnemonicoTabella2" column="mne_tab2" columnIndex="6"/>
+    <result property="aliasTabella2" column="tab2" columnIndex="7"/>
+    <result property="campiTabella2" column="campi_tab2" columnIndex="8"/>
+    <result property="tipoGiunzione" column="tipo" columnIndex="9"/>
+    <result property="giunzioneAttiva" column="attiva" columnIndex="10"/>
+	</resultMap>
+
+	<resultMap id="resultFiltroRicerca" class="it.eldasoft.gene.db.domain.genric.FiltroRicerca">
+		<result property="id" column="id_ricerca" columnIndex="1"/>
+    <result property="progressivo" column="progr" columnIndex="2"/>
+    <result property="operatore" column="op" columnIndex="3"/>
+    <result property="mnemonicoTabella" column="mne_tab" columnIndex="4"/>
+    <result property="aliasTabella" column="tab" columnIndex="5"/>
+    <result property="mnemonicoCampo" column="mne_campo" columnIndex="6"/>
+    <result property="tipoConfronto" column="confronto" columnIndex="7" />
+    <result property="mnemonicoTabellaConfronto" column="mne_tab_confr" columnIndex="8"/>
+    <result property="aliasTabellaConfronto" column="tab_confr" columnIndex="9"/>
+    <result property="mnemonicoCampoConfronto" column="mne_campo_confr" columnIndex="10"/>
+    <result property="valoreConfronto" column="val_confr" columnIndex="11"/>
+    <result property="parametroConfronto" column="param_confr" columnIndex="12"/>
+    <result property="notCaseSensitive" column="not_case_sensitive" columnIndex="13"/>
+	</resultMap>
+
+	<resultMap id="resultOrdinamentoRicerca" class="it.eldasoft.gene.db.domain.genric.OrdinamentoRicerca">
+		<result property="id" column="id_ricerca" columnIndex="1"/>
+    <result property="progressivo" column="progr" columnIndex="2"/>
+    <result property="mnemonicoTabella" column="mne_tab" columnIndex="3"/>
+    <result property="aliasTabella" column="tab" columnIndex="4"/>
+    <result property="mnemonicoCampo" column="mne_campo" columnIndex="5"/>
+    <result property="ordinamento" column="ord" columnIndex="6"/>
+	</resultMap>
+
+	<resultMap id="resultParametroRicerca" class="it.eldasoft.gene.db.domain.genric.ParametroRicerca">
+		<result property="id" column="id_ricerca" columnIndex="1"/>
+    <result property="progressivo" column="progr" columnIndex="2"/>
+    <result property="codice" column="codice" columnIndex="3"/>
+    <result property="nome" column="nome" columnIndex="4"/>
+    <result property="descrizione" column="descr" columnIndex="5"/>
+    <result property="tipo" column="tipo" columnIndex="6"/>
+    <result property="tabCod" column="tabcod" columnIndex="7"/>
+	</resultMap>
+	
+<!-- Query tabelle W_RICERCHE, W_GRPRIC e TAB1 -->
+  <select id="getRicercheDiGruppo" resultMap="resultRicercaDiGruppo" parameterClass="java.util.HashMap">
+		SELECT DISTINCT W_RICERCHE.ID_RICERCA, TAB1.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR, W_RICERCHE.DISP, W_RICERCHE.FAMIGLIA AS TFDESCR, W_RICERCHE.PERSONALE, W_RICERCHE.OWNER AS SYSUTE
+		FROM W_GRPRIC, W_RICERCHE, TAB1
+		WHERE W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		AND W_GRPRIC.ID_GRUPPO = #idGruppo#
+		AND TAB1.TAB1COD = #tabTipoRicerche#
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+		</isNotPropertyAvailable>
+
+		AND W_RICERCHE.CODAPP = #codApp#
+		AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+		ORDER BY W_RICERCHE.NOME
+  </select>
+
+<!-- Query tabelle W_RICERCHE, W_GRPRIC e TAB1 -->  
+  <select id="getAllRicercheByCodApp" resultMap="resultRicercaDiGruppo" parameterClass="java.util.HashMap">
+		SELECT DISTINCT W_RICERCHE.ID_RICERCA, TAB1.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR, W_RICERCHE.DISP, W_RICERCHE.FAMIGLIA AS TFDESCR, W_RICERCHE.PERSONALE, W_RICERCHE.OWNER AS SYSUTE
+		FROM W_GRPRIC, W_RICERCHE, TAB1
+		WHERE W_RICERCHE.CODAPP = #codApp#
+		AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+		AND W_RICERCHE.PERSONALE = 0
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+		</isNotPropertyAvailable>
+
+		AND TAB1.TAB1COD = #tabTipoRicerche#
+		ORDER BY W_RICERCHE.NOME
+  </select>
+
+	<select id="getRicerchePredefinite" resultMap="resultRicercaPredefinita" parameterClass="java.util.HashMap">
+	  SELECT DISTINCT W_RICERCHE.ID_RICERCA, TAB1.TAB1DESC, W_RICERCHE.NOME, W_RICERCHE.DESCR, W_RICERCHE.FAMIGLIA AS TFDESCR, W_RICERCHE.PERSONALE
+  	  FROM W_RICERCHE, TAB1
+ 	   WHERE TAB1.TAB1COD = #tabTipoRicerche#
+				<isPropertyAvailable property="adattaQueryPerDB2">
+					AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+				</isPropertyAvailable>
+				<isNotPropertyAvailable property="adattaQueryPerDB2">
+					AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+				</isNotPropertyAvailable>
+  	   AND (ID_RICERCA IN (
+				SELECT W_RICERCHE.ID_RICERCA
+			  	FROM W_GRPRIC, W_ACCGRP, W_RICERCHE, TAB1
+				 WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+			  	 AND W_ACCGRP.ID_GRUPPO = W_GRPRIC.ID_GRUPPO
+				   AND W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+			   	 AND W_RICERCHE.CODAPP = #codApp#
+			  	 AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+			   	 AND W_RICERCHE.DISP = #disponibile#
+			  	 AND TAB1.TAB1COD = #tabTipoRicerche#
+						<isPropertyAvailable property="adattaQueryPerDB2">
+							AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+						</isPropertyAvailable>
+						<isNotPropertyAvailable property="adattaQueryPerDB2">
+							AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+						</isNotPropertyAvailable>
+				 	 <isNotEmpty prepend="AND" property="mostraReportBase">
+			 	     <![CDATA[  W_RICERCHE.FAMIGLIA <> #mostraReportBase# ]]>
+				   </isNotEmpty>
+				   <isNotEmpty prepend="AND" property="mostraReportSql">
+			 	     <![CDATA[  W_RICERCHE.FAMIGLIA <> #mostraReportSql# ]]>
+				   </isNotEmpty>
+     ) OR ID_RICERCA IN (
+				SELECT W_RICERCHE.ID_RICERCA
+			  	FROM W_RICERCHE, TAB1
+				 WHERE W_RICERCHE.CODAPP = #codApp#
+			  	 AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+			  	 AND W_RICERCHE.PERSONALE = #personale#
+			  	 AND W_RICERCHE.OWNER = #idAccount#
+			   	 AND W_RICERCHE.DISP = #disponibile#
+			  	 AND TAB1.TAB1COD = #tabTipoRicerche#
+						<isPropertyAvailable property="adattaQueryPerDB2">
+							AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+						</isPropertyAvailable>
+						<isNotPropertyAvailable property="adattaQueryPerDB2">
+							AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+						</isNotPropertyAvailable>
+			 	 	<isNotEmpty prepend="AND" property="mostraReportBase">
+			 	     <![CDATA[ W_RICERCHE.FAMIGLIA <> #mostraReportBase# ]]>
+			   	</isNotEmpty>
+			   	<isNotEmpty prepend="AND" property="mostraReportSql">
+			 	     <![CDATA[  W_RICERCHE.FAMIGLIA <> #mostraReportSql# ]]>
+				   </isNotEmpty>
+		 ))
+		ORDER BY W_RICERCHE.NOME ASC
+	</select>
+
+	<select id="getRicerchePredefiniteSenzaParametri" resultMap="resultRicercaPredefinita" parameterClass="java.util.HashMap">
+	  SELECT DISTINCT W_RICERCHE.ID_RICERCA, TAB1.TAB1DESC, W_RICERCHE.NOME, W_RICERCHE.DESCR, W_RICERCHE.FAMIGLIA AS TFDESCR, W_RICERCHE.PERSONALE
+  	FROM W_RICERCHE, TAB1
+ 	  WHERE TAB1.TAB1COD = #tabTipoRicerche#
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+		</isNotPropertyAvailable>
+			AND ((
+		      ID_PROSPETTO IS NULL
+		      AND NOT EXISTS(
+		      		SELECT ID_RICERCA
+		      		  FROM W_RICPARAM
+		      		 WHERE W_RICPARAM.ID_RICERCA = W_RICERCHE.ID_RICERCA)
+		     ) OR (
+		          ID_PROSPETTO IS NOT NULL
+		      AND NOT EXISTS(
+		      		SELECT ID_MODELLO
+		      		  FROM W_MODPARAM
+		      		 WHERE W_MODPARAM.ID_MODELLO = W_RICERCHE.ID_PROSPETTO
+		      		<isNotEmpty prepend="AND" property="tipoParametro">
+			      		<![CDATA[ W_MODPARAM.TIPO <> #tipoParametro# ]]>)
+		      		</isNotEmpty>
+		     ))
+			AND (ID_RICERCA IN (
+					SELECT W_RICERCHE.ID_RICERCA
+				  	FROM W_GRPRIC, W_ACCGRP, W_RICERCHE, TAB1
+					 WHERE W_RICERCHE.FILTROUFFINT = 0
+					   AND W_ACCGRP.ID_ACCOUNT = #idAccount#
+				  	 AND W_ACCGRP.ID_GRUPPO = W_GRPRIC.ID_GRUPPO
+						 AND W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+				   	 AND W_RICERCHE.CODAPP = #codApp#
+				   	 AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+						 AND W_RICERCHE.DISP = #disponibile#
+				  	 AND TAB1.TAB1COD = #tabTipoRicerche#
+							<isPropertyAvailable property="adattaQueryPerDB2">
+								AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+							</isPropertyAvailable>
+							<isNotPropertyAvailable property="adattaQueryPerDB2">
+								AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+							</isNotPropertyAvailable>
+			 	 		 <isNotEmpty prepend="AND" property="mostraReportBase">
+ 	    			 	 <![CDATA[ W_RICERCHE.FAMIGLIA <> #mostraReportBase# ]]>
+					   </isNotEmpty>
+	        ) OR ID_RICERCA IN (
+					 SELECT W_RICERCHE.ID_RICERCA
+				  	 FROM W_RICERCHE, TAB1
+				 	  WHERE W_RICERCHE.FILTROUFFINT = 0
+					    AND W_RICERCHE.CODAPP = #codApp#
+				   	  AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+					  	AND W_RICERCHE.PERSONALE = #personale#
+			  		  AND W_RICERCHE.OWNER = #idAccount#
+				  		AND W_RICERCHE.DISP = #disponibile#
+   		  	  	AND TAB1.TAB1COD = #tabTipoRicerche#
+							<isPropertyAvailable property="adattaQueryPerDB2">
+								AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+							</isPropertyAvailable>
+							<isNotPropertyAvailable property="adattaQueryPerDB2">
+								AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+							</isNotPropertyAvailable>
+					 	 <isNotEmpty prepend="AND" property="mostraReportBase">
+  		     			<![CDATA[ W_RICERCHE.FAMIGLIA <> #mostraReportBase# ]]>
+					   </isNotEmpty>
+		 ))
+		ORDER BY W_RICERCHE.NOME ASC
+	</select>
+	
+<!-- Query tabelle W_GRPRIC -->
+  <select id="getRicercheAssociateGruppo">
+		SELECT W_GRPRIC.ID_RICERCA, W_GRPRIC.ID_GRUPPO
+		FROM W_GRPRIC, W_RICERCHE
+		WHERE W_GRPRIC.ID_GRUPPO = #idGruppo#
+		AND W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		AND W_RICERCHE = #codApp#
+  </select>
+
+<!-- Query tabelle W_GRPRIC -->
+	<delete id="deleteRicercheNonAssociate" parameterClass="java.util.HashMap">
+		DELETE FROM W_GRPRIC WHERE ID_GRUPPO = #idGruppo#
+			<isNotEmpty prepend="AND" property="listaRicercheAssociate">
+		 		ID_RICERCA NOT IN 
+  			<iterate property="listaRicercheAssociate" open="(" close=")" conjunction=", " >
+  	  		#listaRicercheAssociate[]#
+			  </iterate>
+			</isNotEmpty> 
+  </delete>	
+  
+	<insert id="insertAssociazioneRicercaGruppo" parameterClass="java.util.HashMap">
+	    INSERT INTO W_GRPRIC (ID_RICERCA, ID_GRUPPO) VALUES (#idRicerca#, #idGruppo#)
+	</insert>
+
+  <select id="getRicerche" resultMap="resultRicercaDiGruppo" parameterClass="java.util.HashMap">
+		SELECT W_RICERCHE.ID_RICERCA, TT.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR,W_RICERCHE.DISP, TF.TAB1DESC AS TFDESCR, W_RICERCHE.PERSONALE, USRSYS.SYSUTE
+		FROM W_RICERCHE, TAB1 TT, TAB1 TF, USRSYS<isNotEmpty prepend=", " property="idGruppo">W_GRPRIC</isNotEmpty>
+		WHERE W_RICERCHE.CODAPP = #codApp#
+		  AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="idGruppo">
+		   W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		AND W_GRPRIC.ID_GRUPPO = #idGruppo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+			W_RICERCHE.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nomeRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.NOME $operatoreNome$ #nomeRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.NOME) $operatoreNome$ #nomeRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrizioneRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.DESCR $operatoreDescrizione$ #descrizioneRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.DESCR) $operatoreDescrizione$ #descrizioneRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idTipoRicerca">
+			W_RICERCHE.TIPO = #idTipoRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_RICERCHE.DISP = #disponibile#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="famiglia">
+		 		W_RICERCHE.FAMIGLIA IN 
+  			<iterate property="famiglia" open="(" close=")" conjunction=", " >
+  	  			#famiglia[]#
+		    </iterate>
+		</isNotEmpty>
+		<isEmpty property="famiglia">
+			<isNotEmpty prepend="AND" property="mostraReportBase">
+  	  	W_RICERCHE.FAMIGLIA != #mostraReportBase#
+		  </isNotEmpty>
+		</isEmpty>
+		<isNotEmpty prepend="AND" property="personale">
+			W_RICERCHE.PERSONALE = #personale#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="owner">
+			W_RICERCHE.OWNER = #owner#
+		</isNotEmpty>
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP
+		</isNotPropertyAvailable>
+		AND TT.TAB1COD = #tabTipoRicerche#
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
+		</isNotPropertyAvailable>
+
+		AND TF.TAB1COD = #tabFamigliaRicerca#		
+		AND USRSYS.SYSCON = W_RICERCHE.OWNER
+		UNION
+		SELECT W_RICERCHE.ID_RICERCA, TT.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR,W_RICERCHE.DISP, TF.TAB1DESC AS TFDESCR, W_RICERCHE.PERSONALE, 
+		<isPropertyAvailable property="adattaQueryPerDB2">
+  		CAST(NULL AS VARCHAR(61)) AS SYSUTE
+    </isPropertyAvailable>
+    <isNotPropertyAvailable property="adattaQueryPerDB2">
+			NULL AS SYSUTE
+    </isNotPropertyAvailable>
+		FROM W_RICERCHE, TAB1 TT, TAB1 TF<isNotEmpty prepend=", " property="idGruppo">W_GRPRIC</isNotEmpty>
+		WHERE W_RICERCHE.CODAPP = #codApp#
+		  AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="idGruppo">
+		   W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		AND W_GRPRIC.ID_GRUPPO = #idGruppo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+			W_RICERCHE.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nomeRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.NOME $operatoreNome$ #nomeRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.NOME) $operatoreNome$ #nomeRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrizioneRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.DESCR $operatoreDescrizione$ #descrizioneRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.DESCR) $operatoreDescrizione$ #descrizioneRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idTipoRicerca">
+			W_RICERCHE.TIPO = #idTipoRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_RICERCHE.DISP = #disponibile#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="famiglia">
+		 		W_RICERCHE.FAMIGLIA IN 
+  			<iterate property="famiglia" open="(" close=")" conjunction=", " >
+  	  			#famiglia[]#
+		    </iterate>
+		</isNotEmpty>
+		<isEmpty property="famiglia">
+			<isNotEmpty prepend="AND" property="mostraReportBase">
+  	  	W_RICERCHE.FAMIGLIA != #mostraReportBase#
+		  </isNotEmpty>
+		</isEmpty>
+		<isNotEmpty prepend="AND" property="personale">
+			W_RICERCHE.PERSONALE = #personale#
+		</isNotEmpty>
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP
+		</isNotPropertyAvailable>
+			AND TT.TAB1COD = #tabTipoRicerche#
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
+		</isNotPropertyAvailable>
+		AND TF.TAB1COD = #tabFamigliaRicerca#		
+		AND W_RICERCHE.OWNER NOT IN (SELECT SYSCON FROM USRSYS)
+		
+		ORDER BY NOME
+	</select>
+	
+	<select id="getRicercheSenzaParametri" resultMap="resultRicercaDiGruppo" parameterClass="java.util.HashMap">
+		SELECT W_RICERCHE.ID_RICERCA, TT.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR,W_RICERCHE.DISP, TF.TAB1DESC AS TFDESCR, W_RICERCHE.PERSONALE, USRSYS.SYSUTE
+		FROM W_RICERCHE, TAB1 TT, TAB1 TF, USRSYS<isNotEmpty prepend=", " property="idGruppo">W_GRPRIC</isNotEmpty>
+		WHERE W_RICERCHE.CODAPP = #codApp#
+		  AND W_RICERCHE.FILTROUFFINT = 0
+			AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="idGruppo">
+		   W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		AND W_GRPRIC.ID_GRUPPO = #idGruppo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+			W_RICERCHE.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nomeRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.NOME $operatoreNome$ #nomeRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.NOME) $operatoreNome$ #nomeRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrizioneRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.DESCR $operatoreDescrizione$ #descrizioneRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.DESCR) $operatoreDescrizione$ #descrizioneRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idTipoRicerca">
+			W_RICERCHE.TIPO = #idTipoRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_RICERCHE.DISP = #disponibile#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="famiglia">
+		 		W_RICERCHE.FAMIGLIA IN 
+  			<iterate property="famiglia" open="(" close=")" conjunction=", " >
+  	  			#famiglia[]#
+		    </iterate>
+		</isNotEmpty>
+		<isEmpty property="famiglia">
+			<isNotEmpty prepend="AND" property="mostraReportBase">
+  	  	W_RICERCHE.FAMIGLIA != #mostraReportBase#
+		  </isNotEmpty>
+		</isEmpty>
+		<isNotEmpty prepend="AND" property="personale">
+			W_RICERCHE.PERSONALE = #personale#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="owner">
+			W_RICERCHE.OWNER = #owner#
+		</isNotEmpty>
+		
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP
+		</isNotPropertyAvailable>
+		AND TT.TAB1COD = #tabTipoRicerche#
+		
+		AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
+		</isNotPropertyAvailable>		
+		AND TF.TAB1COD = #tabFamigliaRicerca#		
+		
+		AND USRSYS.SYSCON = W_RICERCHE.OWNER
+		AND ((
+		      ID_PROSPETTO IS NULL
+		      AND NOT EXISTS(
+		      		SELECT ID_RICERCA
+		      		FROM W_RICPARAM
+		      		WHERE	W_RICPARAM.ID_RICERCA = W_RICERCHE.ID_RICERCA)
+		    ) OR (
+		      ID_PROSPETTO IS NOT NULL
+		      AND NOT EXISTS(
+		      		SELECT ID_MODELLO
+		      		FROM W_MODPARAM
+		      		WHERE W_MODPARAM.ID_MODELLO = W_RICERCHE.ID_PROSPETTO
+		      		<isNotEmpty prepend="AND" property="tipoParametro">
+			      		<![CDATA[ W_MODPARAM.TIPO <> #tipoParametro# ]]>)
+		      		</isNotEmpty>
+		    ))
+		UNION
+		SELECT W_RICERCHE.ID_RICERCA, TT.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR,W_RICERCHE.DISP, TF.TAB1DESC AS TFDESCR, W_RICERCHE.PERSONALE,
+		<isPropertyAvailable property="adattaQueryPerDB2">
+  		CAST(NULL AS VARCHAR(61)) AS SYSUTE
+    </isPropertyAvailable>
+    <isNotPropertyAvailable property="adattaQueryPerDB2">
+			NULL AS SYSUTE
+    </isNotPropertyAvailable>
+		FROM W_RICERCHE, TAB1 TT, TAB1 TF<isNotEmpty prepend=", " property="idGruppo">W_GRPRIC</isNotEmpty>
+		WHERE W_RICERCHE.CODAPP = #codApp#
+			AND W_RICERCHE.FILTROUFFINT = 0
+			AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
+		<isNotEmpty prepend="AND" property="idGruppo">
+		   W_GRPRIC.ID_RICERCA = W_RICERCHE.ID_RICERCA
+		AND W_GRPRIC.ID_GRUPPO = #idGruppo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idRicerca">
+			W_RICERCHE.ID_RICERCA = #idRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nomeRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.NOME $operatoreNome$ #nomeRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.NOME) $operatoreNome$ #nomeRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="descrizioneRicerca">
+			<isEmpty property="operatoreUpper">
+				W_RICERCHE.DESCR $operatoreDescrizione$ #descrizioneRicerca#
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper">
+				$operatoreUpper$ (W_RICERCHE.DESCR) $operatoreDescrizione$ #descrizioneRicerca#
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="idTipoRicerca">
+			W_RICERCHE.TIPO = #idTipoRicerca#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="disponibile">
+			W_RICERCHE.DISP = #disponibile#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="famiglia">
+		 		W_RICERCHE.FAMIGLIA IN 
+  			<iterate property="famiglia" open="(" close=")" conjunction=", " >
+  	  			#famiglia[]#
+		    </iterate>
+		</isNotEmpty>
+		<isEmpty property="famiglia">
+			<isNotEmpty prepend="AND" property="mostraReportBase">
+  	  	W_RICERCHE.FAMIGLIA != #mostraReportBase#
+		  </isNotEmpty>
+		</isEmpty>
+		<isNotEmpty prepend="AND" property="personale">
+			W_RICERCHE.PERSONALE = #personale#
+		</isNotEmpty>
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP
+		</isNotPropertyAvailable>
+		AND TT.TAB1COD = #tabTipoRicerche#
+
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
+		</isNotPropertyAvailable>
+		AND TF.TAB1COD = #tabFamigliaRicerca#		
+
+    AND W_RICERCHE.OWNER NOT IN (SELECT SYSCON FROM USRSYS)
+		AND ((
+		      ID_PROSPETTO IS NULL
+		      AND NOT EXISTS(
+		      		SELECT ID_RICERCA
+		      		FROM W_RICPARAM
+		      		WHERE W_RICPARAM.ID_RICERCA = W_RICERCHE.ID_RICERCA)
+		     ) OR (
+		      ID_PROSPETTO IS NOT NULL
+		      AND NOT EXISTS(
+		      		SELECT ID_MODELLO
+		      		FROM W_MODPARAM
+		      		WHERE	W_MODPARAM.ID_MODELLO = W_RICERCHE.ID_PROSPETTO
+		      		<isNotEmpty prepend="AND" property="tipoParametro">
+			      		<![CDATA[ W_MODPARAM.TIPO <> #tipoParametro# ]]>)
+		      		</isNotEmpty>
+		    ))
+		ORDER BY NOME
+	</select>
+
+	<select id="getParametriRicercaByIdRicerca" resultMap="resultParametroRicerca" parameterClass="java.lang.Integer">
+		SELECT ID_RICERCA, PROGR, CODICE, NOME, DESCR, TIPO, TABCOD
+		FROM W_RICPARAM
+		WHERE ID_RICERCA = #idRicerca#
+		ORDER BY PROGR ASC
+	</select>
+		
+<!--   Query per Dettaglio Dati Generali: caricamento dati   -->
+	<select id="getTestataRicercaByIdRicerca" resultMap="resultTestataRicerca" parameterClass="java.util.HashMap">
+		SELECT ID_RICERCA, TIPO, NOME, DESCR, DISP, VALDISTINTI, RISPERPAG, VISMODELLI, ENTPRINC, CODAPP, OWNER, FAMIGLIA, ID_PROSPETTO, PERSONALE, FILTROUTENTE, PROFILO_OWNER, VISPARAM, LINKSCHEDA, CODREPORTWS, FILTROUFFINT, DEFSQL
+		FROM W_RICERCHE, TAB1 
+		WHERE ID_RICERCA = #idRicerca#
+		<isPropertyAvailable property="adattaQueryPerDB2">
+			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="adattaQueryPerDB2">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
+		</isNotPropertyAvailable>
+		AND TAB1.TAB1COD = #tabTipoRicerche#
+	</select>
+
+	<select id="getTabelleRicercaByIdRicerca" resultMap="resultTabellaRicerca" parameterClass="java.lang.Integer">
+		SELECT ID_RICERCA, PROGR, MNE_TAB, ALIASTAB, VISIBILE
+		FROM W_RICTAB 
+		WHERE ID_RICERCA = #idRicerca# 
+		ORDER BY PROGR ASC
+	</select>
+
+	<select id="getCampiRicercaByIdRicerca" resultMap="resultCampoRicerca" parameterClass="java.lang.Integer">
+		SELECT ID_RICERCA, PROGR, MNE_TAB, TAB, MNE_CAMPO, FUNZ, TITCOLONNA
+		FROM W_RICCAMPI
+		WHERE ID_RICERCA = #idRicerca#
+		ORDER BY PROGR ASC
+	</select>
+	
+	<select id="getGiunzioniRicercaByIdRicerca" resultMap="resultGiunzioneRicerca" parameterClass="java.lang.Integer">
+		SELECT ID_RICERCA, PROGR, MNE_TAB1, TAB1, CAMPI_TAB1, MNE_TAB2, TAB2, CAMPI_TAB2, TIPO, ATTIVA
+		FROM W_RICJOIN
+		WHERE ID_RICERCA = #idRicerca#
+		ORDER BY PROGR ASC
+	</select>
+
+	<select id="getFiltriRicercaByIdRicerca" resultMap="resultFiltroRicerca" parameterClass="java.lang.Integer">
+		SELECT ID_RICERCA, PROGR, OP, MNE_TAB, TAB, MNE_CAMPO, CONFRONTO, MNE_TAB_CONFR, TAB_CONFR, MNE_CAMPO_CONFR, VAL_CONFR, PARAM_CONFR, NOT_CASE_SENSITIVE
+		FROM W_RICFILTRI
+		WHERE ID_RICERCA = #idRicerca#
+		ORDER BY PROGR ASC
+	</select>
+
+	<select id="getOrdinamentiRicercaByIdRicerca" resultMap="resultOrdinamentoRicerca" parameterClass="java.lang.Integer">
+		SELECT ID_RICERCA, PROGR, MNE_TAB, TAB, MNE_CAMPO, ORD
+		FROM W_RICORD
+		WHERE ID_RICERCA = #idRicerca#
+		ORDER BY PROGR ASC
+	</select>
+
+	<select id="getNumeroParametriRicercaByIdRicerca" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT COUNT(ID_RICERCA) FROM W_RICPARAM WHERE
+		W_RICPARAM.ID_RICERCA = #idRicerca#
+	</select>
+	
+	<select id="getNumeroParametriProspettoByIdRicerca" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT COUNT(ID_MODELLO)
+		  FROM W_MODPARAM, W_RICERCHE
+		 WHERE W_RICERCHE.ID_RICERCA = #idRicerca#
+    	 AND W_RICERCHE.ID_PROSPETTO = W_MODPARAM.ID_MODELLO
+    	 AND <![CDATA[W_MODPARAM.TIPO <> #tipoParametro#]]>
+	</select>
+	
+	<select id="getNumeroParametriReportSorgenteProspettoByIdRicerca" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT COUNT(W_RICPARAM.ID_RICERCA)
+		  FROM W_RICERCHE, W_MODELLI, W_RICPARAM
+		 WHERE W_RICERCHE.ID_RICERCA = #idRicerca#
+    	 AND W_RICERCHE.ID_PROSPETTO = W_MODELLI.ID_MODELLO
+    	 AND W_MODELLI.ID_RICERCA_SRC = W_RICPARAM.ID_RICERCA
+	</select>
+	
+	<select id="getFamigliaRicercaById" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT FAMIGLIA FROM W_RICERCHE WHERE ID_RICERCA = #idRicerca#
+	</select>
+
+	<delete id="deleteRicercheById" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICERCHE WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+
+	<delete id="deleteGruppiByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_GRPRIC WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+	
+	<delete id="deleteTabelleByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICTAB WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+	
+	<delete id="deleteCampiByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICCAMPI WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+
+	<delete id="deleteJoinByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICJOIN WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+	
+	<delete id="deleteFiltriByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICFILTRI WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+	
+	<delete id="deleteOrdinamentiByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICORD WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+
+	<delete id="deleteParametriByIdRicerca" parameterClass="java.util.HashMap">
+		DELETE FROM W_RICPARAM WHERE ID_RICERCA IN
+		<iterate property="listaRicerche" open="(" close=")" conjunction=", " >
+  	  		#listaRicerche[]#
+		</iterate>
+	</delete>
+	
+	
+	<insert id="insertTabellaRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.TabellaRicerca">
+		INSERT INTO W_RICTAB (ID_RICERCA, PROGR, MNE_TAB, ALIASTAB, VISIBILE) 
+		VALUES (#id#, #progressivo#, #mneTabella#, #aliasTabella#, #visibile#)
+	</insert>
+	
+	<insert id="insertCampoRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.CampoRicerca">
+		INSERT INTO W_RICCAMPI (ID_RICERCA, PROGR, MNE_TAB, TAB, MNE_CAMPO, FUNZ, TITCOLONNA) 
+		VALUES(#id#, #progressivo#, #mneTabella#, #aliasTabella#, #mneCampo#, #funzione:VARCHAR#, #titoloColonna:VARCHAR#)
+	</insert>
+
+	<insert id="insertGiunzioneRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.GiunzioneRicerca">
+		INSERT INTO W_RICJOIN (ID_RICERCA, PROGR, MNE_TAB1, TAB1, CAMPI_TAB1, MNE_TAB2, TAB2, TIPO, ATTIVA, CAMPI_TAB2) 
+		VALUES(#id#, #progressivo#, #mnemonicoTabella1#, #aliasTabella1#, #campiTabella1#, #mnemonicoTabella2#, #aliasTabella2#, #tipoGiunzione#, #giunzioneAttiva#, #campiTabella2#)
+	</insert>
+
+  	<insert id="insertFiltroRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.FiltroRicerca">
+		INSERT INTO W_RICFILTRI (ID_RICERCA, PROGR, OP, MNE_TAB, TAB, MNE_CAMPO, CONFRONTO, MNE_TAB_CONFR, TAB_CONFR, MNE_CAMPO_CONFR, VAL_CONFR, PARAM_CONFR, NOT_CASE_SENSITIVE) 
+		VALUES(#id#, #progressivo#, #operatore#, #mnemonicoTabella:VARCHAR#, #aliasTabella:VARCHAR#, #mnemonicoCampo:VARCHAR#, #tipoConfronto:NUMERIC#, #mnemonicoTabellaConfronto:VARCHAR#, #aliasTabellaConfronto:VARCHAR#, #mnemonicoCampoConfronto:VARCHAR#, #valoreConfronto:VARCHAR#, #parametroConfronto:VARCHAR#, #notCaseSensitive:NUMERIC#)
+	</insert>
+	
+	<insert id="insertOrdinamentoRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.OrdinamentoRicerca">
+		INSERT INTO W_RICORD (ID_RICERCA, PROGR, MNE_TAB, TAB, MNE_CAMPO, ORD)
+		VALUES(#id#, #progressivo#, #mnemonicoTabella#, #aliasTabella#, #mnemonicoCampo#, #ordinamento#)
+	</insert>
+	
+	<insert id="insertParametroRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.ParametroRicerca">
+		INSERT INTO W_RICPARAM (ID_RICERCA, PROGR, CODICE, NOME, DESCR, TIPO, TABCOD)
+		VALUES(#id#, #progressivo#, #codice#, #nome#, #descrizione:VARCHAR#, #tipo#, #tabCod:VARCHAR#)
+	</insert>
+	
+	<insert id="insertTestataRicerca" parameterClass="it.eldasoft.gene.db.domain.genric.DatiGenRicerca">
+		INSERT INTO W_RICERCHE (ID_RICERCA, TIPO, NOME, DESCR, DISP, VALDISTINTI, RISPERPAG, VISMODELLI, ENTPRINC, CODAPP, OWNER, FAMIGLIA, ID_PROSPETTO, PERSONALE, FILTROUTENTE, PROFILO_OWNER, VISPARAM, LINKSCHEDA, CODREPORTWS, FILTROUFFINT, DEFSQL )
+		VALUES(#idRicerca#, #tipo#, #nome#, #descrizione:VARCHAR#, #disp#, #valDistinti#, #risPerPag:NUMERIC#, #visModelli#, #entPrinc:VARCHAR#, #codApp#, #owner:NUMERIC#, #famiglia#, #idProspetto:NUMERIC#, #personale#, #filtroUtente#, #profiloOwner:VARCHAR#, #visParametri:NUMERIC#, #linkScheda:NUMERIC#, #codReportWS:VARCHAR#, #filtroUfficioIntestatario:NUMERIC#, #defSql:VARCHAR# )
+	</insert>
+	
+	<update id="updateProspettoPersonale" parameterClass="java.util.HashMap">
+		UPDATE W_RICERCHE SET PERSONALE = #personale#
+		WHERE ID_RICERCA = #idRicerca#
+	</update>
+	
+		<delete id="deleteCacheParametriEsecuzione" parameterClass="java.util.HashMap">
+		DELETE FROM W_CACHERICPAR WHERE ID_ACCOUNT = #idAccount# AND ID_RICERCA = #idRicerca#
+	</delete>
+	
+	<delete id="deleteCacheParametriEsecuzioneUtente" parameterClass="java.lang.Integer">
+		DELETE FROM W_CACHERICPAR WHERE ID_ACCOUNT = #idAccount#
+	</delete>
+
+	<delete id="deleteCacheParametriEsecuzioneRicerca" parameterClass="java.lang.Integer">
+		DELETE FROM W_CACHERICPAR WHERE ID_RICERCA = #idRicerca#
+	</delete>
+
+	<insert id="insertCacheParametroEsecuzione" parameterClass="it.eldasoft.gene.db.domain.genric.CacheParametroEsecuzione">
+		INSERT INTO W_CACHERICPAR (ID_ACCOUNT, ID_RICERCA, CODICE, VALORE ) 
+		VALUES ( #idAccount#, #idRicerca#, #codice:VARCHAR#, #valore:VARCHAR#)
+	</insert>
+	
+	<select id="getCacheParametroEsecuzione" resultClass="java.lang.String"
+		parameterClass="java.util.HashMap">
+		SELECT VALORE
+		FROM W_CACHERICPAR
+		WHERE ID_RICERCA = #idRicerca# 
+		AND ID_ACCOUNT = #idAccount#
+		AND CODICE = #codice#
+	</select>
+	
+	<select id="getIdRicercaByCodReportWS" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		SELECT ID_RICERCA FROM W_RICERCHE WHERE CODREPORTWS = #codReportWS# 
+	</select>
+	
+	<select id="getNumReportByCodReportWS" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		SELECT COUNT(ID_RICERCA) FROM W_RICERCHE WHERE CODREPORTWS = #codReportWS# 
+	</select>
+
+</sqlMap>

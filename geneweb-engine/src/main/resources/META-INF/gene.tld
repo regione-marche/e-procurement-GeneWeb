@@ -1,0 +1,2686 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/
+   web-jsptaglibrary_2_0.xsd" version="2.0">
+
+	<tlib-version>1.0.0</tlib-version>
+
+	<jsp-version>1.2</jsp-version>
+
+	<short-name>genetags</short-name>
+
+	<uri>http://www.eldasoft.it/genetags</uri>
+
+	<description>Tag Library per le funzionalita' generali</description>
+	
+
+	<tag>
+		<name>voceMenu</name>
+		<tag-class>it.eldasoft.gene.tags.decorators.VoceMenuTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+		  Creazione di una voce in alto sul menu a tendina
+			Parametri di input:
+			id			Eventuale identificativo
+			value		Valore della voce di menu
+			title		Titolo
+			index		indice
+			abilitato flag se alilitare o meno il menu
+		</description>
+
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>etichetta</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>abilitato</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+	</tag>
+	
+	<tag>
+		<name>formSelect</name>
+		<tag-class>it.eldasoft.gene.tags.decorators.lista.FormSelectTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+		  Select diretta sul database. (utilizzata nella lista).
+		</description>
+	</tag>
+	
+	<tag>
+		<name>voceSubMenu</name>
+		<tag-class>it.eldasoft.gene.tags.js.VoceSubMenuTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+		  Creazione della voce nel menu a tendina per il richiamo di una pagina partendo dal nome di un archivio
+			tutti i dati vengono estratti dai metadati
+			Parametri:
+				etichetta
+					Obblig. Etichetta del menu
+				index
+					tabindex
+				title
+					Titolo
+				href
+					Pagina da chiamare. Al posto dell'espressione $CONTEXT$ mette il page Context
+				abilitato
+					Abilitazione del menu
+		</description>
+
+		<attribute>
+			<name>etichetta</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>href</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>abilitato</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		
+		<attribute>
+			<name>idProtezioni</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Identificativo delle protezioni
+      </description>
+		</attribute>
+		
+	</tag>
+	
+	<tag>
+		<name>voceSubMenuArchivio</name>
+		<tag-class>it.eldasoft.gene.tags.js.VoceSubMenuArchivioTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+			Creazione di una voce di sottomenu partendo da un archivio nello schema concettuale
+		  Parametri:
+				tabella
+					Obblig. Nome fisico della tabella
+
+		</description>
+
+		<attribute>
+			<name>tabella</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>abilitato</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		
+		<attribute>
+			<name>idProtezioni</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Identificativo delle protezioni
+      </description>
+		</attribute>
+		
+	</tag>
+	
+	<tag>
+		<name>template</name>
+		<tag-class>it.eldasoft.gene.tags.templates.JspTemplateTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Gestore dei template da utilizzare
+			Parametri:
+				file
+					Obblig. Nome del template che si trova in /WEB-INF/pages/templates
+				
+		</description>
+
+		<attribute>
+			<name>file</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>schema</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Schema concettuale d'appartenenza della pagina
+			</description>
+		</attribute>
+		
+		<attribute>
+			<name>idMaschera</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Identificativo della maschera
+			</description>
+		</attribute>
+		
+		<attribute>
+			<name>gestisciProtezioni</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+			</description>
+		</attribute>
+		
+		
+		
+		
+	</tag>
+	
+	<tag>
+		<name>redefineInsert</name>
+		<tag-class>it.eldasoft.gene.tags.templates.JspTemplateBlockTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Ridefinizione di un blocco del template
+			Parametri:
+				name
+					Obblig. Nome definito nel template da riscrivere
+				
+		</description>
+
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>insert</name>
+		<tag-class>it.eldasoft.gene.tags.templates.JspTemplateInsertTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Inclusione di un testo all'interno di un template
+			Parametri:
+				name
+					Obblig. Nome dell'oggetto che si puo' ridefinire
+				src
+					Nome dell'eventuale pagina da includere. Se omesso allora include solo
+					il corpo allinterno se non gia' definito.
+		</description>
+
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>src</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>setString</name>
+		<tag-class>it.eldasoft.gene.tags.templates.JspTemplateSetStringTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Settaggio di una stringa
+			Parametri:
+				name
+					Obblig. Nome della stringa
+				value
+					Obblig. Valore da impostare nella stringa
+		</description>
+
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+	</tag>
+	
+	<tag>
+		<name>getString</name>
+		<tag-class>it.eldasoft.gene.tags.templates.JspTemplateGetStringTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+			Estrazione di una stringa
+			Parametri:
+				name
+					Obblig. Nome della stringa
+				defaultVal
+					Obblig. Valore di default se non definito
+		</description>
+
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>defaultVal</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+	</tag>
+	
+	
+	<tag>
+		<name>formTrova</name>
+		<tag-class>it.eldasoft.gene.tags.decorators.trova.FormTrovaTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Tag per la creazione di un form di ricerca
+			Parametri:
+				entita
+					Obblig. Nome dell'entita in cui eseguire il filtro
+				filtro
+					Eventuale filtro da aggiungere alla maschera di trova
+				where 
+					Eventuale filtro da aggiungere (se si tratta di un'altra tabella)
+				from
+					Eventuale from da aggiungere se percorso in piu' tabelle
+				lista
+					Eventuale lista di apertura. Se non settata apre la lista di default con nomeEntita-lista.jsp
+		</description>
+
+		<attribute>
+			<name>entita</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>filtro</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>lista</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>scheda</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Nome della scheda per l'inserimento</description>
+		</attribute>
+		
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		
+		<attribute>
+			<name>gestore</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Gestore utilizzato per personalizzare le procedura di creazione delle where sui campi
+				Questo gestore deve estendere la classe: it.eldasoft.gene.tags.decorators.trova.AbstractGestoreTrova
+      </description>
+		</attribute>
+		
+	</tag>
+	
+	
+	<tag>
+		<name>campoTrova</name>
+		<tag-class>it.eldasoft.gene.tags.decorators.trova.CampoTrovaTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+			Campo delle form di trova
+		</description>
+		
+		<attribute>
+			<name>entita</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Nome dell'entita in cui eseguire il filtro. Se non inerita prende quella della form
+      </description>
+		</attribute>
+		
+		<attribute>
+			<name>campo</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Obb. Nome del campo sul database
+      </description>
+		</attribute>
+		
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale titolo per l'overrite
+      </description>
+		</attribute>
+		
+		<attribute>
+	      <name>tooltip</name>
+	      <required>false</required>
+	      <rtexprvalue>true</rtexprvalue>
+	      <type>java.lang.String</type>
+	      <description>
+					Tooltip da attribuire al campo
+	      </description>
+	    </attribute>
+		
+		<attribute>
+			<name>where</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Eventuale filtro di collegamento con l'entita' principale</description>
+		</attribute>
+		<attribute>
+			<name>from</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>From da aggiungere se vi sono tabelle intermedie</description>
+		</attribute>
+				<attribute>
+      <name>computed</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per indicare che si tratta di un campo fittizio con calcolo sul database.
+      </description>
+    </attribute>
+		<attribute>
+			<name>gestore</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Eventuale gestore di campo
+			</description>
+		</attribute>
+		<attribute>
+			<name>definizione</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Definizione del campo se non esiste nei metadati. La definizione deve essere cosi' impostata: 
+				[TipoCampo];[IsKey];[TAB];[Dominio];[Mnemonico]
+				Dove:
+					- [TipoCampo] Tipo del campo che assume i valori (default T100): 
+							D (data) 
+							Fnn.dd (Decimale) 
+							Nnn (Numerico) 
+							Tnn (Testo) 
+					- [Iskey] 1 se chiave; 0 (default) se non e' chiave 
+					- [TAB] Tabellato (default nessuno). 
+					- [Dominio] Eventuale dominio sul campo; 
+							SN Campo Si/No 
+							NOTE Campo note 
+							MONEY Campo money 
+							DATA_ELDA campo data. (facoltativo)
+					- [Mnemonico] Eventuale mnemonico del campo. (facoltativo)
+			</description>
+		</attribute>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		<attribute>
+      <name>defaultValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Valore di default del campo trova
+      </description>
+    </attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Base-Id eventuale da attribuire al campo ed alla riga, in alternativa a quello generato in automatico</description>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>outJavaScript</name>
+		<tag-class>it.eldasoft.gene.tags.js.JavascriptSupportTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+			Output del javascript
+		</description>
+	</tag>
+	<tag>
+		<name>javaScript</name>
+		<tag-class>it.eldasoft.gene.tags.js.AddJavascriptSupportTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Aggiunta di una parte nel javascript
+		</description>
+		<attribute>
+      <name>check</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice di verificare le interazioni prima di aggiungeri il javascript.
+				Serve per poter aggiungere javascript anche all'interno di campi che altrimenti non verrebbe aggiunto !
+				Default a true (significa che si aggiunge solo alla prima interazione quella di definizione campi con 
+				datiRiga empty).
+      </description>
+    </attribute>
+	</tag>
+	
+	<tag>
+		<name>PopUp</name>
+		<tag-class>it.eldasoft.gene.tags.link.PopUpGenericoSupportTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			PopUp di campo o di qualsiasi cosa
+		</description>
+		<attribute>
+      <name>variableJs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Nome dell'eventuale variabile Javascript
+      </description>
+    </attribute>
+		<attribute>
+      <name>onClick</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Aggiunta dello javascript interpretato prima della visualizzazione del menu
+      </description>
+    </attribute>
+    <attribute>
+      <name>speciale</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire se ci sono funzionalita' speciali nel menu popup (icona speciale)
+      </description>
+    </attribute>
+	</tag>
+	
+	<tag>
+		<name>PopUpItem</name>
+		<tag-class>it.eldasoft.gene.tags.link.PopUpItemSupportTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+			Riga delle riga di PopUp
+		</description>
+		<attribute>
+      <name>title</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Descrizione dell'item
+      </description>
+    </attribute>
+		<attribute>
+      <name>variableJs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Nome dell'eventuale variabile Javascript
+      </description>
+    </attribute>
+		<attribute>
+      <name>href</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Riferimento alla funzione javascript
+      </description>
+    </attribute>
+	</tag>
+	
+	<tag>
+		<name>PopUpItemResource</name>
+		<tag-class>it.eldasoft.gene.tags.link.PopUpItemSupportTag</tag-class>
+		<body-content>empty</body-content>
+		<description>
+			Riga delle riga di PopUp estratta dal resource.
+			nel resource deve essere messo del tipo:
+			
+				menu.tags.campo.trova.iniziaPer=Inizia per...;modificaParametroRicercaIniziaPer('{0}');
+				
+		</description>
+		<attribute>
+      <name>resource</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Resource in cui si trova la definizione del menu
+      </description>
+    </attribute>
+		<attribute>
+      <name>variableJs</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Nome dell'eventuale variabile Javascript
+      </description>
+    </attribute>
+		<attribute>
+      <name>parametri</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Parametri da passare al resource
+      </description>
+    </attribute>
+		<attribute>
+      <name>title</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Descrizione dell'item. Se settato lo sostituisce al valore del resource
+      </description>
+    </attribute>
+		<attribute>
+      <name>href</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Riferimento alla funzione javascript. Se impostato viene sostituito al valore del resource
+      </description>
+    </attribute>
+	</tag>
+	
+	
+	<!-- Lista di tabella -->
+	<tag>
+    <name>formLista</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.lista.FormListaTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>formLista</display-name>
+    <description>
+      Lista di un'entita'. Durante le interazioni vengono settati i seguenti campi nel response
+			chiaveRiga 
+				Stringa con definita la chiave della riga corrente
+			currentRow
+				Numero delle riga corrente
+    </description>
+		<attribute>
+      <name>entita</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Entita principale della lista. Es. PERI
+      </description>
+    </attribute>
+		<attribute>
+      <name>varName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Nome della variabile che contiene i dati della lista
+      </description>
+    </attribute>
+		<attribute>
+			<name>sql</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Eventuale Sql da eseguire per l'estrazione dei dati. (preferibilmente utilizzare formSelect all'interno della lista)
+      </description>
+		</attribute>
+		
+		<attribute>
+      <name>pagesize</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Dimensione delle pagina a righe.
+      </description>
+    </attribute>
+		<attribute>
+      <name>tableclass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Classe da utilizzare nella tabella
+      </description>
+    </attribute>
+		<attribute>
+      <name>where</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+        Where da aggiungere alla lista per eventuali filtri aggiuntivi sulla lista
+      </description>
+    </attribute>
+		<attribute>
+			<name>gestore</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Gestore utilizzato per personalizzare le procedura di insert ed update e delete.
+				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.gestori.AbstractGestoreEntita
+      </description>
+		</attribute>
+		<attribute>
+			<name>pathScheda</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Path della scheda di default di apertura.
+      </description>
+		</attribute>
+		<attribute>
+			<name>pathSchedaPopUp</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Path della scheda di default in apertura durante un popUp.
+      </description>
+		</attribute>
+		<attribute>
+			<name>distinct</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Indica se alla select fatta per ottenere gli oggetti in lista si aggiunge l'attributo DISTINCT o meno
+      </description>
+		</attribute>
+		<attribute>
+			<name>sortColumn</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Integer</type>
+			<description>
+        Riga su cui eseguire l'ordinamento (se omessa viene ordinato per campi chiave)
+				Il numero del campo inizia da 1 e se negativo -1 -2 ecc signiofica che l'ordinamento e discendente
+				anziche ascendente. P.S. La colonna deve essere una colonna collegata a campo di database
+				Esempi
+				1		Ordinameno ascendente sulla prima colonna 
+				-1	Ordinameno discendente sulla prima colonna 
+				3		Ordinameno ascendente sulla terza colonna 
+				-2	Ordinameno discendente sulla seconda colonna 
+      </description>
+		</attribute>
+		<attribute>
+			<name>inserisciDaArchivio</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che serve per eliminare la possibilita' d'inserimento da archivio.
+				Di default e' true quindi segue la modalita' dell'archivio chiamato
+      </description>
+		</attribute>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>gestisciProtezioniRighe</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice che si devono gestire i filtri sulle proprieta' delle righe
+      </description>
+    </attribute>
+  </tag>
+	
+	<!-- Campo della lista -->
+	<tag>
+    <name>campoLista</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.lista.CampoListaTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>column</display-name>
+    <description>
+      Visualizzazione del campo della lista
+    </description>
+		
+		<attribute>
+      <name>title</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Titolo da mettere sul'header
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>campo</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Nome del campo da mettere nella lista. Se vuoto mette quello che si trova all'interno del campo.
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>entita</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Nome dell'entita' d'appartenenza del campo. Se omesso prende il valore dell'entita' principale
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>alias</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Alias dell'entita' d'appartenenza del campo nel caso di utilizzo piu' volte della stessa entita ma relativa a record correlati distinti
+      </description>
+    </attribute>
+
+		<attribute>
+      <name>headerClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Classe dell'header da utilizzare.
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>from</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Eventuale from se il campo ha una join esterna
+      </description>
+    </attribute> 
+		
+		<attribute>
+      <name>where</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Eventuale filtro su la tabella esterna
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>href</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+        Eventuale link
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>gestore</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>visibile</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+      </description>
+    </attribute>
+		
+		<attribute>
+      <name>ordinabile</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>Abilita o disabilita l'ordinamento sulla colonna. Di default vale true
+      </description>
+    </attribute>
+		
+		<attribute>
+			<name>definizione</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Definizione del campo se non esiste nei metadati. La definizione deve essere cosi' impostata: 
+				[TipoCampo];[IsKey];[TAB];[Dominio];[Mnemonico]
+				Dove:
+					- [TipoCampo] Tipo del campo che assume i valori (default T100): 
+							D (data) 
+							Fnn.dd (Decimale) 
+							Nnn (Numerico) 
+							Tnn (Testo) 
+					- [Iskey] 1 se chiave; 0 (default) se non e' chiave 
+					- [TAB] Tabellato (default nessuno). 
+					- [Dominio] Eventuale dominio sul campo; 
+							SN Campo Si/No 
+							NOTE Campo note 
+							MONEY Campo money 
+							DATA_ELDA campo data. (facoltativo)
+					- [Mnemonico] Eventuale mnemonico del campo. (facoltativo)
+			</description>
+		</attribute>
+		<attribute>
+      <name>width</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Integer</type>
+      <description>
+				Eventuale dimensione della colonna
+      </description>
+    </attribute>
+		<attribute>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Valore da impostare sul campo. (Per i campi di tipo fittizio)
+      </description>
+    </attribute>
+		<attribute>
+      <name>campoFittizio</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per indicare che si tratta di un campo fittizio.
+      </description>
+    </attribute>
+		<attribute>
+      <name>computed</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per indicare che si tratta di un campo fittizio con calcolo sul database.
+      </description>
+    </attribute>
+		<attribute>
+      <name>edit</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire di visualizzare il campo in edit. (default e' false)
+      </description>
+    </attribute>
+		
+	<attribute>
+      <name>tooltip</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Tooltip da attribuire al campo
+      </description>
+    </attribute>
+    
+    		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+	</tag>
+	
+	<tag>
+		<name>set</name>
+		<tag-class>it.eldasoft.gene.tags.utils.SetParameterSupportTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>
+			Settaggio di una stringa
+			Parametri:
+				name
+					Obblig. Nome della stringa
+				value
+					Valore da impostare nel parametro. Se omesso imposta il body nel parametro
+				scope
+					Scope del settaggio della variabile che puo' assumere i valori: pageScope, requestScope (default), sessionScope, applicationScope
+		</description>
+
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Object</type>
+		</attribute>
+		
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+	</tag>
+	
+	<tag>
+    <name>formPagine</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.FormPagineTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>formPagine</display-name>
+    <description>
+      Tag che gestisce una maschera delle pagine
+    </description>
+		<attribute>
+			<name>activePage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Pagina attiva
+      </description>
+		</attribute>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+  </tag>
+	
+	<tag>
+    <name>pagina</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.PaginaPagineTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>pagina</display-name>
+    <description>
+      Pagina di una form a pagine
+    </description>
+		<attribute>
+			<name>title</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Titolo delle pagina
+      </description>
+		</attribute>
+		<attribute>
+			<name>tooltip</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Tooltip da mettere nel Tag
+      </description>
+		</attribute>
+		<attribute>
+			<name>selezionabile</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Flag per settare la pagina come selezionabile
+      </description>
+		</attribute>
+		<attribute>
+			<name>visibile</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che la pagina e' visibile (default true)
+      </description>
+		</attribute>
+		<attribute>
+			<name>idProtezioni</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Identificativo delle protezioni
+      </description>
+		</attribute>
+		
+  </tag>
+	
+	<!-- Gestione delle schede -->
+	<tag>
+    <name>formScheda</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.FormSchedaTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>formScheda</display-name>
+    <description>
+      Tag che gestisce una scheda di dati
+    </description>
+		<attribute>
+			<name>entita</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Entita principale della scheda.
+      </description>
+		</attribute>
+		<attribute>
+			<name>where</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale filtro sui dati. Se messo non esegue il filtro impostato si default sulla maschera a pagine
+				ma mette solo il filtro settato.
+      </description>
+		</attribute>
+		<attribute>
+			<name>plugin</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Gestore utilizzato per personalizzare il caricamento della pagina introducendo attributi negli oggetti impliciti ed eseguendo query
+				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload
+      </description>
+		</attribute>
+		<attribute>
+			<name>gestore</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Gestore utilizzato per personalizzare le procedura di insert ed update e delete
+				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.gestori.AbstractGestoreEntita
+      </description>
+		</attribute>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		<attribute>
+      <name>tableClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale classe di visualizzazione del tab. (default e' dettaglio-tab)
+      </description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>gruppoCampi</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.GruppoCampiSchedaTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>gruppoCampi</display-name>
+    <description>
+      Tag che definisce un gruppo logico di campi in una scheda
+    </description>
+		<attribute>
+			<name>idProtezioni</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Identificativo delle protezioni.
+      </description>
+		</attribute>
+		<attribute>
+      <name>visibile</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire se e' visibile o meno il gruppo sulla pagina
+      </description>
+	    </attribute>
+	    <attribute>
+			<name>modifica</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+					Flag per dire che i campi interni sono modificabili o meno
+			</description>
+	    </attribute>
+	</tag>
+	
+	<tag>
+    <name>campoScheda</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.CampoSchedaTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>campoScheda</display-name>
+    <description>
+      Tag che gestisce una scheda di dati
+    </description>
+		<attribute>
+			<name>campo</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Campo della delle tebella. Se omesso si intende una riga senza campo gestita manualmente dall'utente
+      </description>
+		</attribute>
+		
+		<attribute>
+			<name>entita</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Tabella d'appartenenza del campo. Se omesso si intende la tabelle principale delle maschera
+      </description>
+		</attribute>
+		<attribute>
+			<name>nome</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale nome da assegnare al campo
+      </description>
+		</attribute>
+		<attribute>
+			<name>from</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuali tabelle aggiuntive per la join con l'entita' principale
+      </description>
+		</attribute>
+		<attribute>
+			<name>where</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale where per eseguire la join con l'entita' principale.
+				Si intende che la tabella collegata e' 1 a 1.
+      </description>
+		</attribute>
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Descrizione del campo. Se omesso viene ricavato dal campo.
+      </description>
+		</attribute>
+		<attribute>
+	      <name>tooltip</name>
+	      <required>false</required>
+	      <rtexprvalue>true</rtexprvalue>
+	      <type>java.lang.String</type>
+	      <description>
+					Tooltip da attribuire al campo
+	      </description>
+	    </attribute>
+		<attribute>
+      <name>gestore</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Eventuale gestore di campo
+      </description>
+    </attribute>
+		<attribute>
+      <name>visibile</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire se e' visibile o meno
+      </description>
+    </attribute>
+		<attribute>
+      <name>obbligatorio</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per settare il campo come obbligatorio
+      </description>
+    </attribute>
+		<attribute>
+      <name>modificabile</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire se il campo puo' essere modificabile
+      </description>
+    </attribute>
+		<attribute>
+      <name>href</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Link personalizzabile
+      </description>
+    </attribute>
+		<attribute>
+      <name>defaultValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Valore di default del campo
+      </description>
+    </attribute>
+		<attribute>
+			<name>definizione</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Definizione del campo se non esiste nei metadati. La definizione deve essere cosi' impostata: 
+				[TipoCampo];[IsKey];[TAB];[Dominio];[Mnemonico]
+				Dove:
+					- [TipoCampo] Tipo del campo che assume i valori (default T100): 
+							D (data) 
+							Fnn.dd (Decimale) 
+							Nnn (Numerico) 
+							Tnn (Testo) 
+					- [Iskey] 1 se chiave; 0 (default) se non e' chiave 
+					- [TAB] Tabellato (default nessuno). 
+					- [Dominio] Eventuale dominio sul campo; 
+							SN Campo Si/No 
+							NOTE Campo note 
+							MONEY Campo money 
+							DATA_ELDA campo data. (facoltativo)
+					- [Mnemonico] Eventuale mnemonico del campo. (facoltativo)
+			</description>
+		</attribute>
+		<attribute>
+      <name>campoFittizio</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per indicare che si tratta di un campo fittizio.
+      </description>
+    </attribute>
+		<attribute>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+				Valore da impostare sul campo. (Per i campi di tipo fittizio)
+      </description>
+    </attribute>
+		<attribute>
+      <name>computed</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per indicare che si tratta di un campo fittizio con calcolo sul database.
+      </description>
+    </attribute>
+		<attribute>
+      <name>keyCheck</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che indica che deve essere eseguito il check come si fosse chiave
+      </description>
+    </attribute>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		<attribute>
+      <name>addTr</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire se aggiungere o meno il TR
+      </description>
+    </attribute>
+    <attribute>
+      <name>speciale</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag per dire se ci sono funzionalita' speciali nel menu popup (icona speciale)
+      </description>
+    </attribute>
+		<attribute>
+			<name>hideTitle</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Nasconde il td del titolo estendendo il td del valore a 2 colonne. (false di default)
+      </description>
+		</attribute>
+  		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Base-Id eventuale da attribuire al campo ed alla riga, in alternativa a quello generato in automatico</description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>popupCampo</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.campi.PopUpCampoTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>popupCampo</display-name>
+    <description>
+      Tag che aggiunge un menu di popup al campo scheda
+    </description>
+		<attribute>
+			<name>titolo</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Titolo da visualizzare nel menu popup
+      </description>
+		</attribute>
+		<attribute>
+			<name>href</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Funzione da richiamare. "" se non deve essere richiamato niente.
+      </description>
+		</attribute>
+  </tag>
+	<tag>
+    <name>popupCampoResource</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.campi.PopUpCampoTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>popupCampo</display-name>
+    <description>
+      Tag che aggiunge un menu popup al campo prendendolo dal resource.
+			Deve essere definito come: TITOLO;FUNZIONEJS
+    </description>
+		<attribute>
+			<name>resource</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Respurce in cui c'e' la definizione del campo.
+      </description>
+		</attribute>
+		<attribute>
+			<name>parametri</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Elenco dei parametri da passare al resource divisi da ;
+      </description>
+		</attribute>
+  </tag>
+	
+	
+	<!-- Aggiunta dei calcolo e dei check sulla scheda  {MF231006} -->
+	<tag>
+    <name>checkCampoScheda</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.CheckCampoSchedaTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>checkCampoScheda</display-name>
+    <description>
+      Tag che imposta un check sul campo della scheda
+    </description>
+		<attribute>
+			<name>funzione</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Funzione che deve essere verificata per il controllo sul campo.
+				P.S. 
+				## e' il valore del campo.
+				#nome_campo# Viene fatto il replace con il valore del campo
+      </description>
+		</attribute>
+		<attribute>
+			<name>messaggio</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Messaggio da stampare a video allutente
+				P.S. 
+				## e' il valore del campo.
+				#nome_campo# Viene fatto il replace con il valore del campo
+      </description>
+		</attribute>
+		<attribute>
+			<name>obbligatorio</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice se il controllo e' bloccante o meno
+      </description>
+		</attribute>
+		<attribute>
+			<name>onsubmit</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag opzionale che dice se il controllo deve essere eseguito subito
+        prima del submit del form oppure all'onchange del campo stesso
+        (valore di default: true)
+      </description>
+		</attribute>
+  </tag>
+
+	
+	<tag>
+    <name>calcoloCampoScheda</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.CalcoloCampoSchedaTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>calcoloCampoScheda</display-name>
+    <description>
+      Tag che gestisce un calcolo su un campo della scheda
+    </description>
+		<attribute>
+			<name>funzione</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Funzione che esegue il calcolo sulla scheda
+				P.S. 
+				## e' il valore del campo.
+				#nome_campo# Viene fatto il replace con il valore del campo
+      </description>
+		</attribute>
+		<attribute>
+			<name>elencocampi</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Elenco dei campi che fanno scatenare il ricalcolo sulla scheda
+				P.S. 
+				L'elenco dei campi deve essere diviso da ; e il nome e' il nome dell'oggetto nella scheda
+      </description>
+		</attribute>
+  </tag>
+
+	<tag>
+    <name>fnJavaScriptScheda</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.scheda.CalcoloJavascriptSchedaTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>funzionaHtmlScheda</display-name>
+    <description>
+      Funzione che gestisce le funzioni JavaScript che devono essere richiamate alla modifica di un campo delle scheda.
+    </description>
+		<attribute>
+			<name>funzione</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Funzione JavascriptChe viene richiamata alla modifica di uno dei campi
+				P.S. 
+				#nome_campo# Viene fatto il replace con il valore del campo della scheda
+      </description>
+		</attribute>
+		<attribute>
+			<name>elencocampi</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Elenco dei campi che fanno scatenare il ricalcolo sulla scheda
+				P.S. 
+				L'elenco dei campi deve essere diviso da ;
+      </description>
+		</attribute>
+		<attribute>
+			<name>esegui</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che tale funzione deve essere lanciata subito successivamente alla 
+				creazione della formula.
+      </description>
+		</attribute>
+  </tag>
+	
+	<tag>
+		<name>fnJavaScriptTrova</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.trova.CalcoloJavascriptTrovaTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>funzionaHtmlScheda</display-name>
+    <description>
+      Funzione che gestisce le funzioni JavaScript che devono essere richiamate alla modifica di di un campo delle scheda.
+    </description>
+		<attribute>
+			<name>funzione</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Funzione JavascriptChe viene richiamata alla modifica di uno dei campi
+				P.S. 
+				#nome_campo# Viene fatto il replace con il valore del campo della scheda
+      </description>
+		</attribute>
+		<attribute>
+			<name>elencocampi</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Elenco dei campi che fanno scatenare il ricalcolo sulla scheda
+				P.S. 
+				L'elenco dei campi deve essere diviso da ;
+      </description>
+		</attribute>
+		<attribute>
+			<name>esegui</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che tale funzione deve essere lanciata subito successivamente alla 
+				creazione della formula.
+      </description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>callFunction</name>
+    <tag-class>it.eldasoft.gene.tags.utils.FunctionTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>callFunction</display-name>
+    <description>
+      Tag che esegue il richiamo di una funzione di un oggetto
+    </description>
+		<attribute>
+			<name>obj</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Nome dell'oggetto ereditato da AbstractFunctionTag.
+      </description>
+		</attribute>
+		<attribute>
+			<name>parametro</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale parametro di passaggio
+      </description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>sqlSelect</name>
+    <tag-class>it.eldasoft.gene.tags.utils.SqlSelectTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>sqlSelect</display-name>
+    <description>
+      Tag che esegue una selezione sul database. Solo per estrazione dei dati
+    </description>
+		<attribute>
+			<name>nome</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Nome della HashMap che conterra i valori della select
+      </description>
+		</attribute>
+		<attribute>
+			<name>parametri</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale elenco di parametri divisi da ;.
+				P.S. il carattere eliminatore e \
+      </description>
+		</attribute>
+		<attribute>
+			<name>tipoOut</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale tipo d'uscita che assume i seguenti tipi:
+				HasMapString 	(default) Hash map di stringhe.
+				VectorString	Vattore di oggetti di tipo stringa
+				HasMap				HaskMap di oggetti di tipo JdbcParametro
+				Vector				Vattore di oggetti di tipo JdbcParametro
+      </description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>sqlSelectList</name>
+    <tag-class>it.eldasoft.gene.tags.utils.SqlSelectListTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>sqlSelect</display-name>
+    <description>
+      Tag che esegue una selezione sul database. Solo per estrazione dei dati.
+			Questa select restituisce un vettore
+    </description>
+		<attribute>
+			<name>nome</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Nome della HashMap che conterra i valori della select
+      </description>
+		</attribute>
+		<attribute>
+			<name>parametri</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale elenco di parametri divisi da ;.
+				P.S. il carattere eliminatore e \
+      </description>
+		</attribute>
+		<attribute>
+			<name>tipoOut</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale tipo d'uscita che assume i seguenti tipi (e' sempre una lista contenente i seguenti tipi):
+				HasMapString 	(default) Hash map di stringhe.
+				VectorString	Vattore di oggetti di tipo stringa
+				HasMap				HaskMap di oggetti di tipo JdbcParametro
+				Vector				Vattore di oggetti di tipo JdbcParametro
+      </description>
+		</attribute>
+		<attribute>
+			<name>sql</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale SQL per la selezione. Se settato viene interpretato l'interno del corpo tante volte quante le 
+				righe ritrovate.
+      </description>
+		</attribute>
+		<attribute>
+			<name>status</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale variabile che contiene lo stato ovvero i campi: 
+					vals Set completo dei valori
+					row Riga corrente
+					rowCount Conteggio delle righe
+      </description>
+		</attribute>
+  </tag>
+	<!-- Tag utilizzati per l'history -->
+	<tag>
+    <name>history</name>
+    <tag-class>it.eldasoft.gene.tags.history.HistoryTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>history</display-name>
+    <description>
+      tag che si incarica di inserire l'histori in un azione di contesto
+    </description>
+  </tag>
+	<tag>
+    <name>historyAdd</name>
+    <tag-class>it.eldasoft.gene.tags.history.HistoryAddTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>historyAdd</display-name>
+    <description>
+      Tag che aggiunge un elemento nell'history
+    </description>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Identificativo univoco della pagina
+      </description>
+		</attribute>
+		<attribute>
+			<name>titolo</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Titolo da mettere nell'history
+      </description>
+		</attribute>
+		<attribute>
+			<name>replaceParam</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuali parametri da sostituire o eseguire il replace
+      </description>
+		</attribute>
+  </tag>
+	<tag>
+    <name>historyClear</name>
+    <tag-class>it.eldasoft.gene.tags.history.HistoryClearTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>historyClear</display-name>
+    <description>
+      Tag che esegue lo sbianco della storia
+    </description>
+  </tag>
+	
+	<!-- Tag generale per l'implementazione di un archivio -->
+	<tag>
+    <name>archivio</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.archivi.ArchivioTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>archivio</display-name>
+    <description>
+      Tag che gestisce in archivio collegato.
+    </description>
+		<attribute>
+			<name>titolo</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Titolo dell'archivio
+      </description>
+		</attribute>
+		<attribute>
+			<name>obbligatorio</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che i campi dell'archivio devono essere obbligatoriamente valorizzati
+      </description>
+		</attribute>
+		
+		<attribute>
+			<name>lista</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Path della pagina chiamata per la visualizzazione delle lista
+      </description>
+		</attribute>
+		<attribute>
+			<name>scheda</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Path della pagina di visualizzazione delle scheda
+      </description>
+		</attribute>
+		<attribute>
+			<name>schedaPopUp</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Path della pagina che contiene la visualizazione della scheda in modo PopUp.
+				Questo campo serve se la scheda e' in modifica la visualizzazione delle scheda viene aperta in modalita' PopUp
+      </description>
+		</attribute>
+		<attribute>
+			<name>campi</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Elenco dei campi divisi da ; che sono dell'archivio e collegati ai campi interni. 
+				Es. UFFINT.CODPRO, UFFFINT.CNT 
+				P.S. I nomi dei cami sono i nomi fisici
+      </description>
+		</attribute>
+		<attribute>
+			<name>campiNoSet</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Elenco dei campi nella fromScheda che non devono essere settati ne dalla lista ne dallo sbianco dei campi.
+				(sono campi fissi)
+      </description>
+		</attribute>
+		<attribute>
+			<name>chiave</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Elenco dei campi chiave dell'archivio. (si intende il campo nella maschera)
+				P.S. I nomi dei campi si intende come nomi degli input nella pagina.
+      </description>
+		</attribute>
+		<attribute>
+			<name>where</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Eventuale where da aggiungere alla lista dell'archivio.
+      </description>
+		</attribute>
+		<attribute>
+			<name>formName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Nome da assegnare al form associata.
+      </description>
+		</attribute>
+		<attribute>
+			<name>inseribile</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che si ha la possibilita' di inserire nell'archivio.
+				Default e' true (impostare a false se non si puo' inserire nell'archivio)
+      </description>
+		</attribute>
+		<attribute>
+			<name>scollegabile</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che le informazioni nella pagina possono essere scollegate dall'archivio, 
+        e quindi possono risultare descrizioni libere senza collegamento reale all'archivio
+      </description>
+		</attribute>
+  </tag>
+  <!-- {MF121007} Aggiunta del tag per inserire un messaggio -->
+  <tag>
+    <name>addMessage</name>
+    <tag-class>it.eldasoft.gene.tags.utils.MessageTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>addMessage</display-name>
+    <description>
+      Tag per aggiungere un messaggio sulla pagina
+    </description>
+		<attribute>
+			<name>idMsg</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Identificativo del messaggio
+			</description>
+		</attribute>
+		<attribute>
+			<name>tipo</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				valore della variabile che puo' assumere i seguenti valori:
+				error	Per errore
+				warning Per warning
+				info	Per informazioni
+			</description>
+		</attribute>
+		<attribute>
+			<name>params</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Parametri del messaggio divisi da ;
+			</description>
+		</attribute>
+  </tag>
+	
+	<!-- {MF261007} Aggiunta del tag per il settaggio dell'identificativo della pagina -->
+	<tag>
+    <name>setIdPagina</name>
+    <tag-class>it.eldasoft.gene.tags.utils.SetIdPaginaTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>setIdPagina</display-name>
+    <description>
+      Tag per il settaggio dell'identificativo della pagina
+    </description>
+		<attribute>
+			<name>schema</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Identificativo dello schema (deve esistere nei metadati)
+			</description>
+		</attribute>
+		<attribute>
+			<name>maschera</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Identificativo della maschera
+			</description>
+		</attribute>
+		<attribute>
+			<name>pagina</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Eventuale identificativo della pagina
+			</description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>addObj</name>
+    <tag-class>it.eldasoft.gene.tags.utils.AddObjTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>addObj</display-name>
+    <description>
+      Tag per aggingere un oggetto a un HashMap o a un List
+    </description>
+		<attribute>
+			<name>map</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Object</type>
+			<description>
+				HashMap o List in cui aggiungere l'oggetto
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Object</type>
+			<description>
+				Valore da aggiungere
+			</description>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Identificativo dell'oggetto (solo se si tratta di un HashMap)
+			</description>
+		</attribute>
+  </tag>
+	
+	<tag>
+    <name>addValue</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.campi.AddValueToCampoTag</tag-class>
+    <body-content>empty</body-content>
+    <display-name>addValue</display-name>
+    <description>
+      Tag per aggiungere un valore su un campo enumerato
+    </description>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Valore del campo
+			</description>
+		</attribute>
+		<attribute>
+			<name>descr</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+				Sescrizione del valore enumerato
+			</description>
+		</attribute>
+		<attribute>
+			<name>first</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+				Flag per dire che si tratta del primo valore (se a true sbianca tutti i valori prima di aggiungere il valore)
+			</description>
+		</attribute>
+  </tag>
+	
+	
+	<!-- DEFINIZIONE DELLE FUNZIONI DEL TAG GENERALE -->
+	<function>
+		<name>resource</name>
+		<description>
+			Funzione che estrae un resource
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.ResourceFunction</function-class>
+		<function-signature>
+			java.lang.String get(java.lang.String)
+		</function-signature>
+	</function>
+	<function>
+		<name>resourceParam</name>
+		<description>
+			Funzione che estrae un resource. Con n parametri.
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.ResourceFunction</function-class>
+		<function-signature>
+			java.lang.String get(java.lang.String,java.lang.Object[])
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>getString</name>
+		<description>
+			Funzione che estrae una stringa da un template Tag
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.TemplateStringFunction</function-class>
+		<function-signature>
+			java.lang.String getString(javax.servlet.jsp.PageContext,java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>getValCampo</name>
+		<description>
+			Funzione che estrae da una stringa formattata del tipo: NomeCampo=ValoreCampo[;NomeCampo=ValoreCampo]+
+			Il valore di un campo.
+			In:
+				String getString(stringaFormattata,nomeCampo)
+					il nome campo puo' avere o non avere il nome dellla tabella
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String getValCampo(java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>callFunction</name>
+		<description>
+			Funzione che esegue il richiamo di una funzione di un oggetto. (Ereditato da AbstractFunzioneTag)
+			In:
+				String callFunction(className,parametri)
+					className
+						Nome completo della classe
+					parametri
+						Eventuale parametro di passaggio
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String callFunction(java.lang.String,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>callFunction2</name>
+		<description>
+			Funzione che esegue il richiamo di una funzione di un oggetto. (Ereditato da AbstractFunzioneTag)
+			In:
+				String callFunction(className,parametro1, parametro2)
+					className
+						Nome completo della classe
+					parametri
+						Eventuale parametri di passaggio
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String callFunction2(java.lang.String,java.lang.Object,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>callFunction3</name>
+		<description>
+			Funzione che esegue il richiamo di una funzione di un oggetto. (Ereditato da AbstractFunzioneTag)
+			In:
+				String callFunction(className,parametro1, parametro2, parametro3)
+					className
+						Nome completo della classe
+					parametri
+						Eventuale parametri di passaggio
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String callFunction3(java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>callFunction4</name>
+		<description>
+			Funzione che esegue il richiamo di una funzione di un oggetto. (Ereditato da AbstractFunzioneTag)
+			In:
+				String callFunction(className,parametro1, parametro2, parametro3)
+					className
+						Nome completo della classe
+					parametri
+						Eventuale parametri di passaggio
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String callFunction4(java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>callFunction5</name>
+		<description>
+			Funzione che esegue il richiamo di una funzione di un oggetto. (Ereditato da AbstractFunzioneTag)
+			In:
+				String callFunction(className,parametro1, parametro2, parametro3)
+					className
+						Nome completo della classe
+					parametri
+						Eventuale parametri di passaggio
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String callFunction5(java.lang.String,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>if</name>
+		<description>
+			Funzione di condizione
+			In:
+				Object if(condizione,OggettoTrue, OggettoFalse)
+					condizione
+						Condizione di verifica
+					OggettoTrue
+						Oggetto restituito se la condizione e' verificata (o se il parametro d'ingresso e' null)
+					OggettoFalse
+						Oggetto restituito se la condizione non e' verificata
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.Object iif(java.lang.Boolean,java.lang.Object,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>checkProt</name>
+		<description>
+			Funzione che verifica lo stato di una protezione per l'utente di una determinata protezioni
+			la chiave di protezione e' creata come:
+			TIPO.AZIONE.OGGETTO (dove oggetto puo' essere diviso da .)
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.CheckProtFunction</function-class>
+		<function-signature>
+			java.lang.Boolean check(javax.servlet.jsp.PageContext,java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>checkProtObj</name>
+		<description>
+			Funzione che verifica lo stato di una protezione per l'utente di una determinata protezioni
+			la chiave di protezione e' creata come:
+			TIPO.AZIONE.OGGETTO (dove oggetto puo' essere diviso da .)
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.CheckProtFunction</function-class>
+		<function-signature>
+			java.lang.Boolean check(javax.servlet.jsp.PageContext,java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>checkProtObjGene</name>
+		<description>
+			Funzione che verifica se si puo' eseguire un azione su un tipo aggiungento l'identificativo standard prima del nome dell'oggetto.
+			L'identificativo standard e' creato come SCHEMA.MASCHERA[.PAGINA]
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.CheckProtFunction</function-class>
+		<function-signature>
+			java.lang.Boolean checkGene(javax.servlet.jsp.PageContext,java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>checkProtFunz</name>
+		<description>
+			Funzione che verifica la protezione su una funzione. I parametri sono
+			pageContext
+				Context della pagina
+			tipoFunz
+				Tipo di funzione che possono essere: 
+				INS per inserimento/creazione,
+				MOD per modifica,
+				DEL per cancellazione,
+				VIS per visualizzazione,
+				ALT per altra tipologia.
+			idFunzione
+				Identificativo della funzione
+			P.S. Il nome della protezione viene creato come:
+			FUNZ.VIS.tipoFunz.SCHEMA.MASCHERA.idFunzione
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.CheckProtFunction</function-class>
+		<function-signature>
+			java.lang.Boolean checkProtFunz(javax.servlet.jsp.PageContext,java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+	
+	
+	
+	<function>
+		<name>string4Js</name>
+		<description>
+			Funzione che converte una stringa per essere messa all'interno di un javascript.
+			Nella stringa vengono messi prima e dopo i caratteri " (apice doppio)
+			In:
+				String convertJsString(strings)
+					stringa
+						Stringa da convertire per essere messa all'interno di un javascript
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String convertJsString(java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>toString</name>
+		<description>
+			Funzione che converte un oggetto in una stringa
+			In:
+				String toString(object)
+					object
+						Oggetto da convertire in stringa
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String toString(java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>getObj</name>
+		<description>
+			Funzione che estrae un oggetto da una HashMap o una List
+			Object getObj(Object map,Object idObj)
+			- map HashMap o Vettore da cui estrarre un determinato valore
+			- idObj Identificativo dell'oggetto
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.Object getObj(java.lang.Object,java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>getIdPagina</name>
+		<description>
+			Funzione che estrae l'identificativo della pagina
+			Ovvero SCHEMA.MASCHERA[.PAGINA] se settato mentre da stringa nulla se non trovato.
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String getIdPagina(javax.servlet.jsp.PageContext)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>getInfoPagina</name>
+		<description>
+			Funzione che costruisce l'identificativo della pagina e recupera l'eventuale nota nella W_NOTE correlata.
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String getInfoPagina(javax.servlet.jsp.PageContext,java.lang.String)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>getDBFunction</name>
+		<description>
+			Funzione che estrae una funzione del database
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String getDBFunction(javax.servlet.jsp.PageContext,java.lang.String,java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<name>isTable</name>
+		<description>
+			Verifica l'esistenza di una tabella nel database
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.Boolean isTable(javax.servlet.jsp.PageContext,java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<name>concat</name>
+		<description>
+			Funzione che esegue la concatenazione di due oggetti trasformandoli in stringa
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String concat(java.lang.Object, java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>cast</name>
+		<description>
+			Funzione che esegue il cast di un oggetto:
+			Object gene:cast(String tipo, Object obj)
+				tipo
+					Tipo di oggetto in output che puo' essere:
+						double
+						string
+						long
+				obj
+					Oggetto d'ingresso
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.Object cast(java.lang.String, java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<!-- gestione dei wizard -->
+	<tag>
+    <name>wizard</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.wizard.WizardTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>wizard</display-name>
+    <description>
+      Tag che gestisce una maschera di una creazione guidata costituita da piu' passi
+    </description>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		<attribute>
+      <name>entitaPrincipale</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+				Entita' principale associata al wizard
+      </description>
+    </attribute>
+		<attribute>
+      <name>gestoreSalvataggio</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+				Nome della classe, comprensiva del package, del gestore da richiamare al
+   				salvataggio dei dati nel wizard
+   				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.gestori.AbstractGestoreEntita
+      </description>
+    </attribute>
+		<attribute>
+      <name>hrefFineWizard</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>
+				Pagina da richiamare al termine del wizard. Di default, se non specificato, si carica la scheda in visualizzazione  
+      </description>
+    </attribute>
+  </tag>
+	
+	<tag>
+    <name>paginaWizard</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.wizard.PaginaWizardTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>paginaWizard</display-name>
+    <description>
+      Pagina di una creazione guidata
+    </description>
+		<attribute>
+			<name>title</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Titolo delle pagina
+      </description>
+		</attribute>
+		<attribute>
+			<name>visibile</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Boolean</type>
+			<description>
+        Flag che dice che la pagina e' visibile (default true)
+      </description>
+		</attribute>
+		<attribute>
+			<name>idProtezioni</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Identificativo delle protezioni
+      </description>
+		</attribute>		
+  </tag>	
+
+	<tag>
+    <name>formSchedaWizard</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.wizard.FormSchedaWizardTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>formSchedaWizard</display-name>
+    <description>
+      Tag che gestisce una scheda di dati in un wizard
+    </description>
+		<attribute>
+			<name>entita</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Entita principale della scheda.
+      </description>
+		</attribute>
+		<attribute>
+			<name>plugin</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Gestore utilizzato per personalizzare il caricamento della pagina introducendo attributi negli oggetti impliciti ed eseguendo query
+				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload
+      </description>
+		</attribute>
+		<attribute>
+			<name>gestoreNavigazione</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Gestore utilizzato per personalizzare i comandi nella pagina (Avanti, Indietro, Fine, Salva)
+				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.AbstractCustomWizardAction
+      </description>
+		</attribute>
+		<attribute>
+      <name>gestisciProtezioni</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Boolean</type>
+      <description>
+				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
+      </description>
+    </attribute>
+		<attribute>
+      <name>tableClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Eventuale classe di visualizzazione del tab. (default e' dettaglio-tab)
+      </description>
+		</attribute>
+		<attribute>
+      <name>tipoPagina</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Codice che identifica la tipologia della pagina. I valori standard sono
+        - DETTAGLIO
+        - LISTA_DOMANDA
+        - LISTA_NUOVO
+      </description>
+		</attribute>
+  </tag>
+  
+	<tag>
+    <name>getDatoWizard</name>
+    <tag-class>it.eldasoft.gene.tags.decorators.wizard.GetDatoWizardTag</tag-class>
+    <body-content>JSP</body-content>
+    <display-name>getDatoWizard</display-name>
+    <description>
+      Estrae, dall'oggetto presente in sessione e rappresentante la collezione di dati 
+      utilizzati ed impostati dal wizard, un'informazione.
+    </description>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Identificativo della variabile di scripting da definire
+      </description>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Nome dell'attributo da leggere in sessione
+      </description>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+        Visibilita' della variabile creata. I valori possibili sono:
+        - page (DEFAULT)
+        - request
+        - session
+        - application
+      </description>
+		</attribute>		
+  </tag>	
+  
+  	
+</taglib>

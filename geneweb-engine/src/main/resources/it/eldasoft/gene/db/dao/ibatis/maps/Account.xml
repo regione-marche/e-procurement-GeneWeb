@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Account">
+
+  <resultMap id="result" class="it.eldasoft.gene.db.domain.admin.Account">
+    <result property="idAccount" column="syscon" columnIndex="1"/>
+    <result property="loginCriptata" column="sysnom" columnIndex="2"/>
+    <result property="password" column="syspwd" columnIndex="3"/>
+    <result property="nome"	column="sysute" columnIndex="4"/>
+    <result property="opzioniUtente" column="syspwbou" columnIndex="5"/>
+    <result property="opzioniApplicazione" column="abilap" columnIndex="6"/>
+    <result property="dataInserimento" column="sysdat" columnIndex="7"/>
+    <result property="opzioniPrivilegi" column="syspri" columnIndex="8"/>
+    <result property="siglaProvincia" column="sysabu" columnIndex="9"/>
+    <result property="abilitazioneStd" column="sysab3" columnIndex="10"/>
+    <result property="abilitazioneGare" column="sysabg" columnIndex="11"/>
+    <result property="abilitazioneContratti" column="sysabc" columnIndex="12"/>
+    <result property="livelloStd" column="sysliv" columnIndex="13"/>
+    <result property="livelloGare" column="syslig" columnIndex="14"/>
+    <result property="livelloContratti" column="syslic" columnIndex="15"/>
+    <result property="flagLdap" column="flag_ldap" columnIndex="16"/>
+    <result property="dn" column="dn" columnIndex="17"/>
+    <result property="utenteDisabilitato" column="sysdisab" columnIndex="18"/>
+    <result property="email" column="email" columnIndex="19"/>    
+    <result property="scadenzaAccount" column="sysscad" columnIndex="20"/>
+    <result property="ufficioAppartenenza" column="sysuffapp" columnIndex="21"/>
+    <result property="ruoloUtenteMercatoElettronico" column="meruolo" columnIndex="22"/>
+    <result property="categoria" column="syscateg" columnIndex="23"/>
+    <result property="codfisc" column="syscf" columnIndex="24"/>
+    <result property="login" column="syslogin" columnIndex="25"/>
+    <result property="abilitazioneAP" column="sysabap" columnIndex="26"/>
+    <result property="ultimoAccesso" column="sysultacc" columnIndex="27"/>
+  </resultMap>
+  
+  <resultMap id="resultStoricoPassword" class="it.eldasoft.gene.db.domain.admin.Account">
+    <result property="loginCriptata" column="sysnom" />
+    <result property="login" column="syslogin" />
+    <result property="password" column="syspwd" />
+    <result property="idAccount" column="syscon"/>
+  </resultMap>
+  
+  <resultMap id="resultProt" class="it.eldasoft.gene.db.domain.admin.ProtezioneAccount">
+    <result property="tipo" column="tipo" columnIndex="1"/>
+    <result property="azione" column="azione" columnIndex="2"/>
+    <result property="oggetto" column="oggetto" columnIndex="3"/>
+    <result property="valore" column="valore" columnIndex="4"/>
+  </resultMap>
+  
+  <resultMap id="resultUtenteDiGruppo" class="it.eldasoft.gene.db.domain.admin.AccountGruppo">
+	<result property="idAccount" column="syscon" columnIndex="1"/>
+    <result property="nome" column="sysute" columnIndex="2"/>
+    <result property="login" column="syslogin" columnIndex="3"/>
+    <result property="flagLdap" column="flag_ldap" columnIndex="4"/>
+  </resultMap>
+  
+  <!-- F.D. 06/03/2007 gestione gruppi di appartenenza degli account -->
+  <resultMap id="resultGruppo" class="it.eldasoft.gene.db.domain.admin.GruppoAccount">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+    <result property="nomeGruppo" column="nome" columnIndex="2"/>
+    <result property="descrGruppo" column="descr" columnIndex="3"/>
+		<result property="priorita" column="priorita" columnIndex="4"/>
+  </resultMap>
+	
+	<resultMap id="resultGruppoConProfilo" class="it.eldasoft.gene.db.domain.admin.GruppoConProfiloAccount">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+    <result property="nomeGruppo" column="nome_gruppo" columnIndex="2"/>
+    <result property="descrGruppo" column="descr" columnIndex="3"/>
+		<result property="nomeProfilo" column="nome_profilo" columnIndex="4"/>
+  </resultMap>
+	
+	
+	<!-- M.F. 12/03/2007 Estrazione delle lista dei gruppi con la priorita per ogni elemento  -->
+	<resultMap id="resultGruppo1" class="it.eldasoft.gene.db.domain.admin.GruppoAccount">
+    <result property="idGruppo" column="id_gruppo" columnIndex="1"/>
+		<result property="priorita" column="priorita" columnIndex="2"/>
+  </resultMap>
+  
+  <resultMap id="resultCodFiscDuplicati" class="it.eldasoft.gene.db.domain.admin.AccountCodFiscDuplicati">
+    <result property="syscon" column="syscon" columnIndex="1"/>
+    <result property="sysute" column="sysute" columnIndex="2"/>
+  </resultMap>
+  
+  <sql id="selectAccount">
+    SELECT syscon, 
+           sysnom, 
+           syspwd, 
+           sysute,
+           sysdat,
+           syspwbou,
+           sysabu,
+           abilap,
+           syspri,
+           sysab3,
+           sysabg,
+           sysabc,
+           sysliv,
+           syslig,
+           syslic,
+           flag_ldap,
+           dn,
+           sysdisab,
+           email,
+           sysscad,
+           sysuffapp,
+           meruolo,
+           syscateg,
+           syscf,
+           syslogin,
+           sysabap,
+           sysultacc
+      FROM usrsys
+  </sql>
+  
+  <select id="getAccountByLogin" resultMap="result">
+    <include refid="selectAccount"/>
+     WHERE $operatoreUpper$ (syslogin) = #login#
+  </select>
+
+  <select id="getAccountByPassword" resultMap="result">
+    <include refid="selectAccount"/>
+      WHERE 
+      <isNotEmpty property="password"> (SYSPWD = #password#) </isNotEmpty>
+      <isEmpty property="password"> (SYSPWD IS NULL) </isEmpty>
+     	OR (flag_ldap = 1)
+  </select>
+  
+  <select id="getGruppiAccount" resultMap="resultGruppoConProfilo" parameterClass="java.util.HashMap">
+		SELECT W_ACCGRP.ID_GRUPPO, W_GRUPPI.NOME AS NOME_GRUPPO, W_GRUPPI.DESCR, W_PROFILI.NOME AS NOME_PROFILO
+	  FROM W_ACCGRP, W_GRUPPI, W_PROFILI
+	 WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+  	 AND W_ACCGRP.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+	   AND W_GRUPPI.COD_PROFILO = W_PROFILI.COD_PROFILO
+  	 AND W_PROFILI.CODAPP= #codApp#
+ORDER BY W_PROFILI.NOME, W_GRUPPI.NOME
+  </select>
+	
+  <select id="getGruppiAccountByCodAppCodPro" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	SELECT W_ACCGRP.ID_GRUPPO
+  FROM W_ACCGRP, W_GRUPPI, W_PROFILI
+ WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+   AND W_ACCGRP.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+   AND W_GRUPPI.COD_PROFILO = W_PROFILI.COD_PROFILO
+   AND W_PROFILI.CODAPP= #codApp#
+   AND W_PROFILI.COD_PROFILO = #codiceProfilo#
+  </select>
+
+  <!-- F.D. 25/10/06 modifica per gestione utenti prodotto (esplicito i campi di usrsys)-->
+  <update id="updatePassword">
+    UPDATE USRSYS SET SYSPWD = #nuovaPassword:VARCHAR# WHERE SYSCON = #idAccount# 
+    <isNotEmpty prepend="AND" property="vecchiaPassword"> SYSPWD = #vecchiaPassword#</isNotEmpty>
+    <isEmpty prepend="AND" property="vecchiaPassword"> SYSPWD IS NULL</isEmpty>
+  </update>
+
+  <select id="getAccountDiGruppo" resultMap="resultUtenteDiGruppo" parameterClass="java.util.HashMap">
+    SELECT USRSYS.SYSCON, USRSYS.syslogin, USRSYS.SYSUTE, FLAG_LDAP
+		FROM USRSYS, W_ACCGRP, W_GRUPPI
+		WHERE USRSYS.SYSCON = W_ACCGRP.ID_ACCOUNT
+	  AND W_ACCGRP.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+	  AND W_GRUPPI.ID_GRUPPO = #idGruppo#
+	  AND W_GRUPPI.COD_PROFILO = #codiceProfilo#
+	  ORDER BY USRSYS.SYSUTE
+  </select>
+
+  <select id="getAccountByProfilo" resultMap="resultUtenteDiGruppo">
+    SELECT SYSCON, syslogin, SYSUTE, FLAG_LDAP
+		FROM USRSYS, W_ACCPRO
+		WHERE USRSYS.SYSCON = W_ACCPRO.ID_ACCOUNT
+		  AND W_ACCPRO.COD_PROFILO = #codiceProfilo#
+	  ORDER BY USRSYS.SYSUTE
+  </select>
+  
+  <select id="getAccount" resultMap="result" parameterClass="java.util.HashMap">
+    <include refid="selectAccount"/>
+     WHERE 1=1
+		<isNotEmpty prepend="AND" property="descrizione">
+			<isEmpty property="operatoreUpper">
+				USRSYS.SYSUTE $operatoreDescrizione$ #descrizione# $escapeDescrizione$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper" >
+				$operatoreUpper$ (USRSYS.SYSUTE) $operatoreDescrizione$ #descrizione# $escapeDescrizione$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="nome">
+			<isEmpty property="operatoreUpper">
+				USRSYS.SYSLOGIN $operatoreNome$ #nome# $escapeNome$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper" >
+				$operatoreUpper$ (USRSYS.SYSLOGIN) $operatoreNome$ #nome# $escapeNome$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="codiceFiscale">
+			<isEmpty property="operatoreUpper">
+				USRSYS.SYSCF $operatoreCodiceFiscale$ #codiceFiscale# $escapeCodiceFiscale$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper" >
+				$operatoreUpper$ (USRSYS.SYSCF) $operatoreCodiceFiscale$ #codiceFiscale# $escapeCodiceFiscale$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="eMail">
+			<isEmpty property="operatoreUpper">
+				USRSYS.EMAIL $operatoreEMail$ #eMail# $escapeEMail$
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper" >
+				$operatoreUpper$ (USRSYS.EMAIL) $operatoreEMail$ #eMail# $escapeEMail$
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="uffint">
+			<isEmpty property="operatoreUpper">
+				usrsys.syscon in (select ut.syscon from usr_ein ut inner join uffint uf on ut.codein = uf.codein where (uf.nomein $operatoreUffint$ #uffint# $escapeUffint$) or (uf.cfein $operatoreUffint$ #uffint# $escapeUffint$)) 
+			</isEmpty>
+			<isNotEmpty property="operatoreUpper" >
+				usrsys.syscon in (select ut.syscon from usr_ein ut inner join uffint uf on ut.codein = uf.codein where ($operatoreUpper$ (uf.nomein) $operatoreUffint$ #uffint# $escapeUffint$) or ($operatoreUpper$ (uf.cfein) $operatoreUffint$ #uffint# $escapeUffint$))
+			</isNotEmpty>
+		</isNotEmpty>
+     <isNotEmpty prepend="AND" property="utenteDisabilitato">
+     USRSYS.SYSDISAB = #utenteDisabilitato#
+     </isNotEmpty>  
+     <isNotEmpty prepend="AND" property="utenteLDAP">
+     USRSYS.FLAG_LDAP = #utenteLDAP#
+     </isNotEmpty>  
+     <isNotEmpty prepend="AND" property="ufficioAppartenenza">
+     USRSYS.SYSUFFAPP = #ufficioAppartenenza#
+     </isNotEmpty>  
+     <isNotEmpty prepend="AND" property="categoria">
+     USRSYS.SYSCATEG = #categoria#
+     </isNotEmpty>  
+     <isNotEmpty prepend="AND" property="gestioneUtenti">
+	     <isEqual property="gestioneUtenti" compareValue="ou11">
+	     	USRSYS.SYSPWBOU like '%ou11%' and USRSYS.SYSPWBOU not like '%ou12%'
+	     </isEqual>
+	     <isEqual property="gestioneUtenti" compareValue="ou11|ou12">
+	     	USRSYS.SYSPWBOU like '%ou12%'
+	     </isEqual>
+     </isNotEmpty>  
+     <isNotEmpty prepend="AND" property="amministratore">
+	     <isEqual property="amministratore" compareValue="1">
+	     	USRSYS.SYSPWBOU like '%ou89%'
+	     </isEqual>
+	     <isEqual property="amministratore" compareValue="0">
+	     	USRSYS.SYSPWBOU not like '%ou89%'
+	     </isEqual>
+     </isNotEmpty> 
+     
+     ORDER BY USRSYS.SYSUTE
+  </select>
+
+  <delete id="deleteAccountNonAssociati" parameterClass="java.util.HashMap">
+		DELETE FROM W_ACCGRP
+		WHERE ID_GRUPPO = #idGruppo#
+		<isNotEmpty prepend="AND" property="listaAccountAssociati">
+			ID_ACCOUNT NOT IN 
+	  		<iterate property="listaAccountAssociati" open="(" close=")" conjunction=", " >
+	    		#listaAccountAssociati[]#
+			  </iterate>
+		</isNotEmpty>
+  </delete>
+  
+  <insert id="insertAssociazioneAccountGruppo" parameterClass="java.util.HashMap">
+  	INSERT INTO W_ACCGRP (ID_ACCOUNT, ID_GRUPPO, PRIORITA) VALUES (#idAccount#, #idGruppo#, #priorita#)
+  </insert>
+  
+  <!-- F.D. 16/10/2006 modifiche per la gestione della USRSYS -->
+  <insert id="insertAccount" parameterClass="it.eldasoft.gene.db.domain.admin.Account">
+  	INSERT INTO USRSYS (SYSCON, SYSNOM, SYSLOGIN, SYSPWD, SYSUTE, SYSPWBOU, ABILAP, SYSDAT,
+  			SYSPRI, SYSABU, SYSAB3, SYSABG, SYSABC, SYSLIV, SYSLIG, SYSLIC, FLAG_LDAP, DN, SYSDISAB,EMAIL,SYSSCAD,SYSUFFAPP,MERUOLO,SYSCATEG,SYSCF,SYSABAP)
+  	VALUES (#idAccount#, #loginCriptata#, #login# , #password:VARCHAR#, #nome#, #opzioniUtente:VARCHAR#,
+  			#opzioniApplicazione:VARCHAR#, #dataInserimento:TIMESTAMP#, #opzioniPrivilegi:VARCHAR#,
+  			#siglaProvincia:VARCHAR#, #abilitazioneStd:VARCHAR#, #abilitazioneGare:VARCHAR#,
+  			#abilitazioneContratti:VARCHAR#, #livelloStd:NUMERIC#, #livelloGare:NUMERIC#,
+  			#livelloContratti:NUMERIC#, #flagLdap:NUMERIC#, #dn:VARCHAR#, #utenteDisabilitato:VARCHAR#,
+  			#email:VARCHAR#,#scadenzaAccount:TIMESTAMP#,#ufficioAppartenenza:NUMERIC#,#ruoloUtenteMercatoElettronico:NUMERIC#,#categoria:NUMERIC#,#codfisc:VARCHAR#,#abilitazioneAP:VARCHAR#)
+  </insert>
+
+  <select id="getAccountCompleta" resultMap="result">
+    <include refid="selectAccount"/>
+  ORDER BY USRSYS.SYSUTE
+  </select>
+
+  <select id="getAccountByCodAppCodPro" resultMap="result" parameterClass="java.util.HashMap">
+    <include refid="selectAccount"/>, W_ACCPRO, W_PROFILI
+     WHERE USRSYS.SYSCON = W_ACCPRO.ID_ACCOUNT
+       AND W_ACCPRO.COD_PROFILO = W_PROFILI.COD_PROFILO
+       AND W_PROFILI.COD_PROFILO = #codiceProfilo#
+       AND W_PROFILI.CODAPP = #codApp#
+  ORDER BY USRSYS.SYSUTE
+  </select>
+  
+  <select id="getListaAccountByCodProfili" resultMap="result" parameterClass="java.util.HashMap">
+    <include refid="selectAccount"/>
+     WHERE USRSYS.SYSCON IN (SELECT DISTINCT W_ACCPRO.ID_ACCOUNT FROM W_ACCPRO
+       WHERE W_ACCPRO.COD_PROFILO IN 
+	  		<iterate property="codProfili" open="(" close=")" conjunction=", " >
+	    		#codProfili[]#
+			  </iterate>
+       )
+  ORDER BY USRSYS.SYSUTE
+  </select>
+
+  <update id="updateAccount" parameterClass="it.eldasoft.gene.db.domain.admin.Account">
+    UPDATE USRSYS SET SYSUTE=#nome#, SYSNOM=#loginCriptata#, SYSLOGIN=#login#, SYSPWBOU=#opzioniUtente:VARCHAR#,
+    			 ABILAP=#opzioniApplicazione:VARCHAR#, SYSPRI=#opzioniPrivilegi:VARCHAR#,
+    			 FLAG_LDAP=#flagLdap:NUMERIC#, DN=#dn:VARCHAR#, 
+           SYSAB3=#abilitazioneStd:VARCHAR#, SYSLIV=#livelloStd:NUMERIC#,
+           SYSABC=#abilitazioneContratti:VARCHAR#, SYSLIC=#livelloContratti:NUMERIC#,
+           SYSABG=#abilitazioneGare:VARCHAR#, SYSLIG=#livelloGare:NUMERIC#,
+           SYSDISAB=#utenteDisabilitato:VARCHAR#, EMAIL=#email:VARCHAR#,
+           SYSSCAD=#scadenzaAccount:TIMESTAMP#,SYSUFFAPP=#ufficioAppartenenza:NUMERIC#,
+           MERUOLO=#ruoloUtenteMercatoElettronico:NUMERIC#,
+           SYSCATEG=#categoria:NUMERIC#, SYSCF=#codfisc:VARCHAR#, SYSABAP=#abilitazioneAP:VARCHAR#
+     WHERE SYSCON = #idAccount#
+  </update>
+
+  <select id="getAccountById" resultMap="result">
+    <include refid="selectAccount"/>
+     WHERE syscon = #id# 
+  </select>
+
+  <select id="getCountLogin" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+  	SELECT count(syslogin) 
+  	  FROM USRSYS
+  	 WHERE syslogin = #login# 
+		<isNotEmpty prepend="AND" property="idAccount">
+			<![CDATA[
+			SYSCON <> #idAccount#]]>
+		</isNotEmpty>
+  </select>
+  
+  <select id="getCountDn" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+  	SELECT count(DN) 
+  	  FROM USRSYS
+  	 WHERE DN = #dn# 
+		<isNotEmpty prepend="AND" property="idAccount">
+			<![CDATA[
+			SYSCON <> #idAccount#]]>
+		</isNotEmpty>
+  </select>
+  
+  <select id="getCountLoginPassword" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+  	SELECT count(syslogin) 
+  	  FROM USRSYS
+  	 WHERE syslogin = #login# 
+  	 AND SYSPWD = #password#
+		<isNotEmpty prepend="AND" property="idAccount">
+			<![CDATA[
+			SYSCON <> #idAccount#]]>
+		</isNotEmpty>
+  </select>
+  
+  <delete id="deleteAccount" parameterClass="java.lang.Integer">  
+  	DELETE FROM USRSYS
+  		WHERE SYSCON = #id#
+  </delete>
+  
+  <delete id="deleteAccountConAssociazioneGruppo" parameterClass="java.lang.Integer">  
+  	DELETE FROM W_ACCGRP
+  		WHERE ID_ACCOUNT = #id#
+  </delete>
+  
+  <!-- F.D. 06/03/2007 gestione gruppi di appartenenza degli account -->
+  <select id="getGruppiDiAccount" resultMap="resultGruppo" parameterClass="java.util.HashMap">
+		SELECT W_GRUPPI.ID_GRUPPO, W_GRUPPI.NOME, W_GRUPPI.DESCR, W_ACCGRP.PRIORITA
+	   	FROM W_GRUPPI, W_ACCGRP
+	   	WHERE W_ACCGRP.ID_GRUPPO = W_GRUPPI.ID_GRUPPO
+	   	  AND W_GRUPPI.COD_PROFILO = #codiceProfilo#
+ 	   	  AND W_ACCGRP.ID_ACCOUNT = #idAccount#
+	   	ORDER BY W_GRUPPI.ID_GRUPPO
+  </select>  
+  
+  <select id="getGruppiConProfiloByCodApp" resultMap="resultGruppoConProfilo" parameterClass="java.util.HashMap">
+		SELECT G.ID_GRUPPO, G.NOME AS NOME_GRUPPO, G.DESCR, P.NOME AS NOME_PROFILO
+		  FROM W_GRUPPI G, W_ACCPRO AP, W_PROFILI P
+		 WHERE AP.ID_ACCOUNT = #idAccount#
+		   AND AP.COD_PROFILO = P.COD_PROFILO
+		   AND P.CODAPP = #codApp#
+		   AND AP.COD_PROFILO = G.COD_PROFILO
+		ORDER BY P.NOME, G.NOME
+	</select>
+
+  <delete id="deleteGruppiNonAssociatiProfilo" parameterClass="java.util.HashMap">
+		DELETE FROM W_ACCGRP
+		 WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+			 AND W_ACCGRP.ID_GRUPPO IN (
+					SELECT ID_GRUPPO
+					  FROM W_GRUPPI, W_PROFILI
+					 WHERE W_GRUPPI.COD_PROFILO = W_PROFILI.COD_PROFILO
+							AND W_PROFILI.COD_PROFILO = #codiceProfilo#
+              AND W_PROFILI.CODAPP IN
+              <iterate property="listaCodApp" open="(" close=")" conjunction=", " >
+	    					#listaCodApp[]#
+			  			</iterate>
+					 <isNotEmpty prepend="AND" property="listaGruppiAssociati">
+					   W_GRUPPI.ID_GRUPPO NOT IN
+					 		 <iterate property="listaGruppiAssociati" open="(" close=")" conjunction=", " >
+	    					 #listaGruppiAssociati[]#
+							 </iterate>
+					 </isNotEmpty>)
+  </delete>
+  
+  <delete id="deleteGruppiNonAssociatiAccountDaDettaglioAccount" parameterClass="java.util.HashMap">
+		DELETE FROM W_ACCGRP
+		 WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+			 AND W_ACCGRP.ID_GRUPPO IN (
+					SELECT ID_GRUPPO
+					  FROM W_GRUPPI, W_PROFILI
+					 WHERE W_GRUPPI.COD_PROFILO IN (SELECT COD_PROFILO FROM W_PROFILI WHERE CODAPP = #codApp#)
+					 <isNotEmpty prepend="AND" property="listaGruppiAssociati">
+					   W_GRUPPI.ID_GRUPPO NOT IN 
+					 		 <iterate property="listaGruppiAssociati" open="(" close=")" conjunction=", " >
+	    					 #listaGruppiAssociati[]#
+							 </iterate>
+					 </isNotEmpty>)
+  </delete>
+  
+  <delete id="deleteGruppiNonAssociatiAccountDaDettaglioProfilo" parameterClass="java.util.HashMap">
+		DELETE FROM W_ACCGRP
+		 WHERE W_ACCGRP.ID_ACCOUNT = #idAccount#
+			 AND W_ACCGRP.ID_GRUPPO IN (
+					SELECT ID_GRUPPO
+					  FROM W_GRUPPI, W_PROFILI
+					 WHERE W_GRUPPI.COD_PROFILO = W_PROFILI.COD_PROFILO
+							AND W_PROFILI.COD_PROFILO = #codiceProfilo#
+              AND W_PROFILI.CODAPP = #codApp#
+					 <isNotEmpty prepend="AND" property="listaGruppiAssociati">
+					   W_GRUPPI.ID_GRUPPO NOT IN 
+					 		 <iterate property="listaGruppiAssociati" open="(" close=")" conjunction=", " >
+	    					 #listaGruppiAssociati[]#
+							 </iterate>
+					 </isNotEmpty>)
+  </delete>
+  
+  <update id="updatePasswordSenzaVecchia">
+    UPDATE USRSYS SET SYSPWD = #nuovaPassword:VARCHAR# WHERE SYSCON = #idAccount#
+  </update>
+
+  <!-- F.D. gestione storico delle password e delle login STOUTESYS -->
+  <insert id="insertStoriaAccount" parameterClass="java.util.HashMap">
+  	INSERT INTO STOUTESYS (SYSCON, SYSNOM, SYSLOGIN, SYSPWD, SYSDAT) VALUES (#idAccount#, #loginCriptata#, #login#, #password:VARCHAR#, #dataInserimento#)
+  </insert>
+  
+  <delete id="deleteStoriaAccount" parameterClass="java.lang.Integer">  
+  	DELETE FROM STOUTESYS
+  		WHERE SYSCON = #id#
+  </delete>
+  
+  <select id="getDataUltimoCambioPsw" resultClass="java.util.Date" parameterClass="java.util.HashMap">
+  	SELECT MAX(SYSDAT)
+  	  FROM STOUTESYS
+  	 WHERE SYSLOGIN = #login#
+  	 <isNotEmpty prepend="AND" property="password">
+  	 SYSPWD = #password#
+  	 </isNotEmpty>
+  </select>
+  
+	<delete id="deletePermessiDiAccount" parameterClass="java.lang.Integer">
+		DELETE FROM G_PERMESSI
+		 WHERE SYSCON = #idAccount#
+		    OR SYSRIF = #idAccount#
+	</delete>
+	
+	<update id="updateAbilitazioneUtente">
+    	UPDATE USRSYS SET SYSDISAB = #utenteDisabilitato:VARCHAR# <isNotEmpty property="ultimoAccesso">, sysultacc = #ultimoAccesso#</isNotEmpty> WHERE SYSCON = #idAccount#
+  </update>
+  
+  <select id="getNumeroAssociazioniProfili" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+  SELECT COUNT(1)
+    FROM W_ACCPRO, W_PROFILI
+   WHERE ID_ACCOUNT = #idAccount#
+     AND W_ACCPRO.COD_PROFILO = W_PROFILI.COD_PROFILO
+     AND W_PROFILI.CODAPP = #codApp#
+  </select>
+	
+	<update id="deleteAssociazioneTecniciAccount" parameterClass="java.lang.Integer">
+    	UPDATE TECNI SET SYSCON = NULL WHERE SYSCON = #idAccount#
+  </update>
+  
+  
+  <select id="getListaUtentiUgualeCodfisc" resultMap="resultCodFiscDuplicati">
+  	SELECT syscon,sysute
+    FROM USRSYS
+  	 WHERE SYSCF = #codfisc#
+     AND SYSCON != #idAccount#
+  </select>
+  
+  <select id="getListaAccountLoginNull" resultMap="result">
+    <include refid="selectAccount"/>
+     WHERE syslogin is null and sysnom is not null
+  </select>
+  
+  <select id="getListaAccountLoginCriptataNull" resultMap="result">
+    <include refid="selectAccount"/>
+     WHERE syslogin is not null and sysnom is null
+  </select>
+
+  <select id="getListaStoriaAccountLoginNull" resultMap="resultStoricoPassword">
+  SELECT sysnom, syslogin, syspwd, syscon FROM stoutesys WHERE syslogin is null
+  </select>
+  
+  <select id="getPasswordDisallineataStorico" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+  SELECT USRSYS.SYSPWD FROM USRSYS WHERE USRSYS.SYSPWD IN (SELECT STOUTESYS.SYSPWD FROM STOUTESYS WHERE STOUTESYS.SYSCON = USRSYS.SYSCON AND USRSYS.SYSCON = #id#)
+  </select>
+
+  <update id="updateStoricoPassword" parameterClass="it.eldasoft.gene.db.domain.admin.Account">
+  UPDATE stoutesys SET syslogin = #login# WHERE sysnom = #loginCriptata# AND syspwd = #password# 
+  </update>
+  
+  <delete id="deleteCredenzialiServiziEsterniAccount" parameterClass="java.lang.Integer">  
+  	DELETE FROM WSLOGIN WHERE SYSCON = #id#
+  </delete>
+  
+  <select id="getIdGestoriUtenti" resultClass="java.lang.String">
+  select syscon FROM usrsys WHERE syspwbou LIKE '%ou89|%' OR syspwbou LIKE '%ou11|%'
+  </select>
+  
+  <select id="getUltimoCambioPassword" parameterClass="java.lang.Integer" resultClass="java.sql.Timestamp">
+   select max (sysdat) from stoutesys where syscon = #id#
+  </select>
+  
+  <insert id="insertCancellazioneUtente" parameterClass="java.util.HashMap">
+  insert into usrcanc (id,syscon,syslogin,sysscad) values (#id#,#syscon#,#syslogin#,#date#)
+  </insert>
+  
+  <select id="getDataCancellazione" parameterClass="java.lang.String" resultClass="java.sql.Date">
+  select max(sysscad) from usrcanc where syslogin = #login#
+  </select>
+  
+  <update id="updateUltimoAccesso" parameterClass="java.util.HashMap">
+  update usrsys set sysultacc = #ultimoAccesso# where syscon = #idAccount#
+  </update>
+  
+  <select id="getNumeroLoginFallite" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+  	SELECT count(id) FROM g_loginko WHERE username = #username#
+  </select>
+  
+  <select id="getUltimaLoginFallita" resultClass="java.util.Date" parameterClass="java.lang.String">
+  	SELECT MAX(logintime) FROM g_loginko WHERE username = #username#
+  </select>
+  
+  
+  <insert id="insertLoginFallita" parameterClass="java.util.HashMap">
+  insert into g_loginko (id,username,logintime,ipaddress) values (#id#,#username#,#loginTime#,#ipAddress#)
+  </insert>
+  
+  <delete id="deleteLoginFallite" parameterClass="java.lang.String">  
+  DELETE FROM g_loginko WHERE username = #username#
+  </delete>
+
+</sqlMap>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UfficiIntestatari">
+
+	<resultMap id="resultUffint" class="it.eldasoft.gene.db.domain.UfficioIntestatario">
+	  <result property="codice" column="codein" columnIndex="1"/>
+	  <result property="nome" column="nomein" columnIndex="2"/>
+	  <result property="codFiscale" column="cfein" columnIndex="3"/>
+	  <result property="partitaIVA" column="ivaein" columnIndex="4"/>
+	  <result property="dataTermineValidita" column="datfin" columnIndex="5"/>
+	</resultMap>
+
+	<select id="getUfficiIntestatari" resultMap="resultUffint">
+		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN   
+		  FROM UFFINT
+	ORDER BY UFFINT.NOMEIN ASC
+	</select>
+
+	<select id="getUfficioIntestatarioByPK" resultMap="resultUffint" parameterClass="java.lang.String">
+		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN   
+		  FROM UFFINT
+	   WHERE UFFINT.CODEIN = #codice#
+	</select>
+
+	<select id="getUfficiIntestatariAccount" resultMap="resultUffint" parameterClass="java.lang.Integer">
+		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN   
+		  FROM UFFINT, USR_EIN
+		 WHERE USR_EIN.SYSCON = #idAccount#
+		   AND USR_EIN.CODEIN = UFFINT.CODEIN 
+	ORDER BY UFFINT.NOMEIN ASC
+	</select>
+	
+  <delete id="deleteUfficiAccount" parameterClass="java.lang.Integer">
+		DELETE FROM USR_EIN WHERE SYSCON = #idAccount#
+  </delete>
+
+	<delete id="deleteUfficiNonAssociatiAccount" parameterClass="java.util.HashMap">
+		DELETE FROM USR_EIN
+		 WHERE SYSCON = #idAccount#
+	     AND CODEIN IN (
+           SELECT UFFINT.CODEIN
+			 FROM UFFINT
+		<isNotEmpty prepend="WHERE" property="listaUfficiAssociati">
+			UFFINT.CODEIN NOT IN
+	  		<iterate property="listaUfficiAssociati" open="(" close=")" conjunction=", " >
+	    		#listaUfficiAssociati[]#
+			  </iterate>
+		</isNotEmpty>)
+  </delete>
+	
+  <insert id="insertAssociazioneAccountUfficio" parameterClass="java.util.HashMap">
+  	INSERT INTO USR_EIN (SYSCON, CODEIN) VALUES (#idAccount#, #codUfficio#)
+  </insert>
+  
+</sqlMap>

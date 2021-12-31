@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+	<form-beans>
+	
+	<form-bean name="listaForm"
+			type="it.eldasoft.gene.commons.web.struts.ListaForm" />
+			
+	<form-bean name="trovaSchedRicForm"
+			type="it.eldasoft.console.web.struts.schedric.TrovaSchedRicForm" />
+			
+	<form-bean name="trovaCodaSchedForm"
+			type="it.eldasoft.console.web.struts.schedric.TrovaCodaSchedForm" />
+			
+	<form-bean name="schedRicForm"
+			type="it.eldasoft.console.web.struts.schedric.SchedRicForm" />
+			
+	</form-beans>
+
+	<global-forwards>
+	</global-forwards>
+
+	<action-mappings>
+	
+		<action path="/InitTrovaSchedRic" 
+		    type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="trovaSchedRicDef" />
+		</action>
+
+		<action path="/TrovaSchedRic" name="trovaSchedRicForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successNuovaRicerca"
+				path="/InitTrovaSchedRic.do" />
+			<forward name="successTrova"
+				path="listaSchedRicDef" />
+			<forward name="noRecordFound"
+				path="/InitTrovaSchedRic.do" />
+		</action>
+
+		<action path="/ListaSchedRic" name="listaForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successElimina"
+				path="/TrovaSchedRic.do?metodo=trovaSchedRic"/>
+		</action>
+
+		<action path="/InitTrovaCodaSched" 
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="trovaCodaSchedDef" />
+		</action>
+
+		<action path="/TrovaCodaSched" name="trovaCodaSchedForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="success" path="trovaCodaSchedDef" />
+			<forward name="successTrovaCodaSched"
+				path="/InitTrovaCodaSched.do" />
+			<forward name="successListaCodaSched"
+				path="listaCodaSchedDef" />
+			<forward name="noRecordFound"
+				path="/InitTrovaCodaSched.do" />
+		</action>
+		
+		<action path="/DettaglioCodaSched" 
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successElimina"
+				path="/TrovaCodaSched.do?metodo=trovaCodaSched" />
+			<forward name="errorElimina"
+				path="/TrovaCodaSched.do?metodo=trovaCodaSched" />
+			<forward name="errorDownload"
+				path="/TrovaCodaSched.do?metodo=trovaCodaSched" />
+		</action>
+		
+		<action path="/WizardSchedRic" 
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successReport" path="reportSchedRicDef" />
+			<forward name="successFrequenza" path="frequenzaSchedRicDef" />
+			<forward name="successGiorno" path="giornoSchedRicDef" />
+			<forward name="successSettimana" path="settimanaSchedRicDef" />
+			<forward name="successMese" path="meseSchedRicDef" />
+			<forward name="successUnica" path="unicaSchedRicDef" />
+			<forward name="successRisultato" path="risultatoSchedRicDef" />
+			<forward name="successTitolo" path="nomeSchedRicDef" />
+		</action>
+		
+		<action path="/Report" name="schedRicForm" 
+			type="it.eldasoft.console.web.struts.schedric.wizard.ReportAction"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successSalva" path="/WizardSchedRic.do?pageTo=FRE" />
+		</action>
+		
+		<action path="/Frequenza" name="schedRicForm" 
+			type="it.eldasoft.console.web.struts.schedric.wizard.FrequenzaAction"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successSalva" path="/WizardSchedRic.do?pageTo=GIO" />
+			<forward name="successGiorno" path="/WizardSchedRic.do?pageTo=GIO" />
+			<forward name="successSettimana" path="/WizardSchedRic.do?pageTo=SET" />
+			<forward name="successMese" path="/WizardSchedRic.do?pageTo=MES" />
+			<forward name="successUnica" path="/WizardSchedRic.do?pageTo=UNI" />
+			<forward name="successRisultato" path="/WizardSchedRic.do?pageTo=RIS" />
+		</action>
+		
+		<action path="/Risultato" name="schedRicForm" 
+			type="it.eldasoft.console.web.struts.schedric.wizard.RisultatoAction"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successSalva" path="/WizardSchedRic.do?pageTo=TIT" />
+		</action>
+		
+		<action path="/SalvaWizardSchedRic" name="schedRicForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successSalva" path="/DettaglioSchedRic.do?metodo=visualizzaDettaglio" />
+			<forward name="errorWizard" path="/WizardSchedRic.do?pageTo=TIT" />
+		</action>
+		
+		<action path="/DettaglioSchedRic"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successElimina" 
+					path="/TrovaSchedRic.do?metodo=trovaSchedRic"/>
+			<forward name="successAttiva" 
+					path="/TrovaSchedRic.do?metodo=trovaSchedRic"/>
+			<forward name="successDisattiva" 
+					path="/TrovaSchedRic.do?metodo=trovaSchedRic"/>
+			<forward name="tornaATrova" path="/InitTrovaSchedRic.do" />
+			<forward name="tornaALista" path="/TrovaSchedRic.do?metodo=trovaSchedRic" />
+			<forward name="tornaAHomePage" path="/Home.do" module="/"/>
+			<forward name="successVisualizzaDettaglio" path="dettaglioDatiGenSchedRicDef" />
+			<forward name="successVisualizzaSched" path="dettaglioSchedulaSchedRicDef" />
+			<forward name="successModificaDettaglio" path="editDatiGenSchedRicDef" />
+			<forward name="successModificaSched" path="editSchedulaSchedRicDef" />
+		</action>
+		
+		<action path="/SalvaSchedRic" name="schedRicForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successSalva" path="/DettaglioSchedRic.do?metodo=visualizzaDettaglio" />
+			<forward name="error" path="/DettaglioSchedRic.do?metodo=modificaDettaglio" />
+		</action>
+		
+		<action path="/SalvaSchedulazioneSchedRic" name="schedRicForm"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo">
+			<forward name="successSalva" path="/DettaglioSchedRic.do?metodo=visualizzaSchedulazione" />
+			<forward name="error" path ="/DettaglioSchedRic.do?metodo=modificaSchedulazione" />
+		</action>
+		
+		<action path="/ApriHelpListaMail" forward="helpListaMailSchedRicDef" />
+		
+	</action-mappings>
+
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config"
+			value="/WEB-INF/xml/tiles/tiles-defs-gene-common.xml , /WEB-INF/xml/tiles/tiles-defs-gene-schedric.xml" />
+		<set-property property="moduleAware" value="true" />
+	</plug-in>
+
+</struts-config>

@@ -1,0 +1,1 @@
+Si informa che in data #if ($DATASCAD)$DATASCAD#end scade l'attività "#if ($TIT)$TIT#end" per lo scadenzario correlato all'entità #if ($ENT)$ENT#end con identificativo #if ($KEY1)$KEY1#end#if ($KEY2), $KEY2#end#if ($KEY3), $KEY3#end#if ($KEY4), $KEY4#end#if ($KEY5), $KEY5#end.

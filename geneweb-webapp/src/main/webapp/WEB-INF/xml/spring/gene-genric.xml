@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ========================= DAO DEFINITIONS: IBATIS IMPLEMENTATIONS ========================= -->
+
+  <bean id="ricercheDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapRicercheDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	
+  <bean id="kronosDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapKronosDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	
+
+	<!-- ========================= DAO DEFINITIONS: JDBC IMPLEMENTATIONS ========================= -->
+
+	<!-- ========================= BEAN DEFINITIONS ========================= -->
+
+	<bean id="ricercheManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-java.io.IOException</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>	
+
+	<bean id="ricercheManager" parent="ricercheManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.genric.RicercheManager">
+				<property name="ricercheDao" ref="ricercheDao" />
+				<property name="gruppiDao" ref="gruppiDao" />
+				<property name="genChiaviManager" ref="genChiaviManager"/>
+				<property name="queryDao" ref="queryDao"/>
+				<property name="tabellatiDao" ref="tabellatiDao"/>
+				<property name="metadatiDao" ref="metadatiDao"/>
+				<property name="prospettoManager" ref="prospettoManager"/>
+				<property name="kronosDao" ref="kronosDao"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="prospettoManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-java.io.IOException</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="import*">PROPAGATION_REQUIRED,-java.io.IOException</prop>
+			</props>
+		</property>
+	</bean>	
+
+	<bean id="prospettoManager" parent="prospettoManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.genric.ProspettoManager">
+				<property name="genChiaviManager" ref="genChiaviManager"/>
+				<property name="ricercheDao" ref="ricercheDao" />
+				<property name="modelliDao" ref="modelliDao" />
+				<property name="queryDao" ref="queryDao"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean name="reportFacade" class="it.eldasoft.gene.bl.genric.ReportFacade">
+		<property name="ricercheManager" ref="ricercheManager" />
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="geneManager" ref="geneManager" />
+		<property name="loginManager" ref="loginManager" />
+		<property name="modelliManager" ref="modelliManager"/>
+		<property name="fileAllegatoManager" ref="fileAllegatoManager"/>
+	</bean>
+
+	<!-- ========================= STRUTS ACTION DEFINITIONS ========================= -->
+
+	<bean name="/geneGenric/InitTrovaRicerche" class="it.eldasoft.gene.web.struts.genric.InitTrovaRicercheAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/TrovaRicerche" class="it.eldasoft.gene.web.struts.genric.TrovaRicercheAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/ListaRicerche" class="it.eldasoft.gene.web.struts.genric.ListaRicercheAction">
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+	
+	<bean name="/geneGenric/CopiaProspetto" class="it.eldasoft.gene.web.struts.genric.prospetto.CopiaProspettoAction">
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/DettaglioRicerca" class="it.eldasoft.gene.web.struts.genric.DettaglioRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+													
+	<bean name="/geneGenric/EstraiRicercaPredefinita" class="it.eldasoft.gene.web.struts.genric.risultato.EstraiRicercaPredefinitaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="metadatiManager" ref="metadatiManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/EstraiRicerca" class="it.eldasoft.gene.web.struts.genric.risultato.EstraiRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="metadatiManager" ref="metadatiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/CambiaTabRicerca" class="it.eldasoft.gene.web.struts.genric.CambiaTabAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/EditDatiGen" class="it.eldasoft.gene.web.struts.genric.datigen.EditDatiGenRicercaAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/SalvaDatiGen" class="it.eldasoft.gene.web.struts.genric.datigen.SalvaDatiGenRicercaAction">
+		<property name="metadatiManager" ref="metadatiManager"/>
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+
+	<bean name="/geneGenric/EditGruppiRicerca" class="it.eldasoft.gene.web.struts.genric.gruppo.EditGruppiRicercaAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/SalvaGruppiRicerca" class="it.eldasoft.gene.web.struts.genric.gruppo.SalvaGruppiRicercaAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/InitAddArgomentoRicerca" class="it.eldasoft.gene.web.struts.genric.argomenti.InitAddTabellaRicercaAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+
+	<bean name="/geneGenric/AddCampoRicerca" class="it.eldasoft.gene.web.struts.genric.campo.InitAddCampoRicercaAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+
+	<bean name="/geneGenric/AddElencoCampiRicerca" class="it.eldasoft.gene.web.struts.genric.campo.InitAddCampoRicercaAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+
+	<bean name="/geneGenric/TrovaCampoRicerca" class="it.eldasoft.gene.web.struts.genric.campo.TrovaCampoRicercaAction">
+		<property name="metadatiManager" ref="metadatiManager"/>
+		<property name="geneManager" ref="geneManager"/>
+	</bean>	
+	
+		<bean name="/geneGenric/EditParametroRicerca" class="it.eldasoft.gene.web.struts.genric.parametro.InitEditParametroRicercaAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/ListaParametriRicerca" class="it.eldasoft.gene.web.struts.genric.parametro.ListaParametriRicercaAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/InitAddParametroRicerca" class="it.eldasoft.gene.web.struts.genric.parametro.InitAddParametroRicercaAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="kronosDao" ref="kronosDao"/>
+	</bean>
+
+	<bean name="/geneGenric/ListaFiltriRicerca" class="it.eldasoft.gene.web.struts.genric.filtro.ListaFiltriRicercaAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+
+	<bean name="/geneGenric/AddFiltroRicerca" class="it.eldasoft.gene.web.struts.genric.filtro.InitAddFiltroRicercaAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+
+	<bean name="/geneGenric/ListaRicerchePredefinite"
+		class="it.eldasoft.gene.web.struts.genric.ListaRicerchePredefiniteAction">
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+
+	<bean name="/geneGenric/EseguiRicercaPredefinita"
+		class="it.eldasoft.gene.web.struts.genric.EseguiRicercaPredefinitaAction">
+		<property name="ricercheManager" ref="ricercheManager" />
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/VerificaParametriRicerca"
+		class="it.eldasoft.gene.web.struts.genric.SetParametriRicercaAction">
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+		<property name="kronosDao" ref="kronosDao" />
+	</bean>
+	
+	<bean name="/geneGenric/SalvaParametriRicerca"
+		class="it.eldasoft.gene.web.struts.genric.SalvaParametriRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+	
+	<bean name="/geneGenric/VerificaParametriRicercaPredefinita" parent="/geneGenric/VerificaParametriRicerca"/>
+	
+	<bean name="/geneGenric/SalvaParametriRicercaPredefinita" parent="/geneGenric/SalvaParametriRicerca"/>
+	
+	<bean name="/geneGenric/StampaRisultatoRicerca"
+	  class="it.eldasoft.gene.web.struts.genric.risultato.StampaRisultatoRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/CreaEliminaRicerca" 
+		class="it.eldasoft.gene.web.struts.genric.CreaEliminaRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="modelliManager" ref="modelliManager"/>
+	</bean>
+
+	<bean name="/geneGenric/CreaNuovaRicerca" class="it.eldasoft.gene.web.struts.genric.CreaNuovaRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneGenric/CaricaRicerca" class="it.eldasoft.gene.web.struts.genric.CaricaRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneGenric/EsportaRisultatoRicerca" class="it.eldasoft.gene.web.struts.genric.risultato.EsportaRisultatoRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+<!-- Righe commentate per blocco sviluppo wizard report avanzati e con prospetto -->	
+<!--
+	<bean name="/geneGenric/CreaRicercaWizard"
+		class="it.eldasoft.gene.web.struts.genric.CreaRicercaWizardAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/CreaRicercaProspettoWizard" 
+		class="it.eldasoft.gene.web.struts.genric.prospetto.CreaRicercaProspettoWizardAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/CreaRicercaBaseWizard" 
+		class="it.eldasoft.gene.web.struts.genric.base.CreaRicercaBaseWizardAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+-->
+<!-- Fine righe commentate per blocco sviluppo wizard report avanzati e con prospetto -->		
+
+<!--   Bean per i report con prospetto   -->
+
+	<bean name="/geneGenric/DettaglioProspetto"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.DettaglioDatiGenProspettoAction" >
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+	  <property name="modelliManager"   ref="modelliManager" />
+	  <property name="geneManager"   ref="geneManager" />
+	</bean>
+
+	<bean name="/geneGenric/EditDatiGenProspetto"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.EditDatiGenProspettoAction">
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="geneManager"   ref="geneManager" />
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneGenric/SalvaDatiGenProspetto"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.SalvaDatiGenProspettoAction">
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="genChiaviManager" ref="genChiaviManager" />
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="geneManager"   ref="geneManager" />
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneGenric/ListaGruppiProspetto"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.ListaGruppiProspettoAction">
+		<property name="gruppiManager" ref="gruppiManager"/>
+	</bean>
+
+	<bean name="/geneGenric/SalvaGruppiProspetto"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.SalvaGruppiProspettoAction">
+		<property name="prospettoManager" ref="prospettoManager" />
+	</bean>
+
+	<bean name="/geneGenric/ParametriProspetti"
+  	class="it.eldasoft.gene.web.struts.genric.prospetto.ParametriProspettiAction">
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="modelliManager" ref="modelliManager" />
+	</bean>
+
+	<bean name="/geneGenric/SalvaParametroProspetto"
+		class="it.eldasoft.gene.web.struts.genric.prospetto.SalvaParametroProspettoAction">
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+
+	<bean name="/geneGenric/CheckParametriProspetto"
+		class="it.eldasoft.gene.web.struts.genric.prospetto.CheckParametriProspettoAction">
+		<property name="modelliManager" ref="modelliManager" />
+		<property name="prospettoManager" ref="prospettoManager" />
+		<property name="geneManager" ref="geneManager" />
+		<property name="tabellatiManager" ref="tabellatiManager" />
+		<property name="ricercheManager" ref="ricercheManager" />
+	</bean>
+
+	<bean name="/geneGenric/SalvaParametriProspetto"
+		parent="/geneGenmod/SalvaParametriModello"
+		class="it.eldasoft.gene.web.struts.genric.prospetto.SalvaParametriProspettoAction">
+	</bean>
+
+	<bean name="/geneGenric/ComponiProspetto"
+		parent="/geneGenmod/ComponiModello"
+		class="it.eldasoft.gene.web.struts.genric.prospetto.ComponiProspettoAction">
+	</bean>
+
+	<bean name="/geneGenric/CheckParametriProspettoPredefinito" 
+		parent="/geneGenric/CheckParametriProspetto"
+		class="it.eldasoft.gene.web.struts.genric.prospetto.CheckParametriProspettoPredefinitoAction">
+	</bean>
+
+	<bean name="/geneGenric/SalvaParametriProspettoPredefinito"
+		parent="/geneGenric/SalvaParametriProspetto">
+	</bean>
+
+	<bean name="/geneGenric/ComponiProspettoPredefinito"
+		parent="/geneGenmod/ComponiModello"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.ComponiProspettoAction">
+	</bean>
+	
+	<bean name="/geneGenric/CreaEliminaRicercaProspetto"
+    class="it.eldasoft.gene.web.struts.genric.prospetto.CreaEliminaRicercaProspettoAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="prospettoManager" ref="prospettoManager"/>
+	</bean>
+
+<!--   Bean per i report base   -->
+  
+  <bean name="/geneGenric/CambiaTabRicercaBase"
+    class="it.eldasoft.gene.web.struts.genric.base.CambiaTabRicercaBaseAction">
+    <property name="tabellatiManager" ref="tabellatiManager"/>
+  </bean>
+
+  <bean name="/geneGenric/EstraiRicercaBase"
+    class="it.eldasoft.gene.web.struts.genric.risultato.EstraiRicercaBaseAction">
+    <property name="ricercheManager" ref="ricercheManager"/>
+	<property name="tabellatiManager" ref="tabellatiManager"/>
+	<property name="metadatiManager" ref="metadatiManager"/>
+  </bean>
+
+	<bean name="/geneGenric/CreaEliminaRicercaBase"
+    class="it.eldasoft.gene.web.struts.genric.base.CreaEliminaRicercaBaseAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="modelliManager" ref="modelliManager"/>
+	</bean>
+	
+	<bean name="/geneGenric/AddElencoCampiRicercaBase"
+    class="it.eldasoft.gene.web.struts.genric.base.InitAddCampoRicercaBaseAction">
+		<property name="geneManager" ref="geneManager"/>
+	</bean>
+
+<!--    Fine bean per i report base   -->
+
+
+<!--   Bean per i report sql   -->
+
+  <bean name="/geneGenric/CambiaTabRicercaSql"
+    class="it.eldasoft.gene.web.struts.genric.reportSql.CambiaTabRicercaSqlAction">
+    <property name="tabellatiManager" ref="tabellatiManager"/>
+  </bean>
+
+  <!-- bean name="/geneGenric/EstraiRicercaSql"
+    class="it.eldasoft.gene.web.struts.genric.risultato.EstraiRicercaSqlAction">
+    <property name="ricercheManager" ref="ricercheManager"/>
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="metadatiManager" ref="metadatiManager"/>
+  </bean-->
+
+	<bean name="/geneGenric/CreaEliminaRicercaSql"
+    class="it.eldasoft.gene.web.struts.genric.reportSql.CreaEliminaRicercaSqlAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneGenric/EditParametroRicercaSql"
+		class="it.eldasoft.gene.web.struts.genric.reportSql.EditParametroRicercaSqlAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+	</bean>
+	
+	<!-- bean name="/geneGenric/SalvaDatiGenRicercaSql"
+		class="it.eldasoft.gene.web.struts.genric.reportSql.SalvaDatiGenRicercaSqlAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean-->
+
+<!--    Fine bean per i report sql   -->
+
+
+<!--    Bean per il wizard di una ricerca base   -->
+
+  <bean name="/geneGenric/WizardBase"
+    class="it.eldasoft.gene.web.struts.genric.base.wizard.WizardRicercaBaseAction">
+    <property name="tabellatiManager" ref="tabellatiManager"/>
+    <property name="gruppiManager" ref="gruppiManager"/>
+    <property name="geneManager" ref="geneManager"/>
+  </bean>
+
+  <bean name="/geneGenric/GruppiBase"
+    class="it.eldasoft.gene.web.struts.genric.gruppo.SalvaGruppiRicercaAction">
+    <property name="gruppiManager" ref="gruppiManager"/>
+  </bean>
+
+  <bean name="/geneGenric/SalvaWizardBase"
+    class="it.eldasoft.gene.web.struts.genric.base.wizard.SalvaWizardBaseAction">
+    <property name="ricercheManager" ref="ricercheManager"/>
+    <property name="gruppiManager" ref="gruppiManager"/>
+  </bean>
+
+<!--   Fine bean per il wizard di una ricerca base   -->
+
+<!--   Bean per le funzionalita' avanzate di import/export   -->
+
+	<bean name="/geneGenric/InitTrovaRicercheExport"
+			class="it.eldasoft.gene.web.struts.genric.impexp.InitTrovaRicercheExportAction">
+		<property name="tabellatiManager" ref="tabellatiManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="accountManager" ref="accountManager"/>
+	</bean>
+
+	<bean name="/geneGenric/TrovaRicercheExport" class="it.eldasoft.gene.web.struts.genric.impexp.TrovaRicercheExportAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+	</bean>
+
+	<bean name="/geneGenric/EsportaRicerca" class="it.eldasoft.gene.web.struts.genric.impexp.EsportaRicercaAction">
+		<property name="ricercheManager" ref="ricercheManager"/>
+		<property name="gruppiManager" ref="gruppiManager"/>
+		<property name="prospettoManager" ref="prospettoManager"/>
+		<property name="modelliManager" ref="modelliManager"/>
+	</bean>
+
+<!--    Bean per il wizard di importazione definizione report   -->
+
+  <bean name="/geneGenric/WizardImportRicerca"
+    class="it.eldasoft.gene.web.struts.genric.impexp.WizardImportaRicercaAction">
+    <property name="gruppiManager" ref="gruppiManager"/>
+    <property name="ricercheManager" ref="ricercheManager"/>
+  </bean>
+  
+  <bean name="/geneGenric/UploadDefinizioneRicerca"
+    class="it.eldasoft.gene.web.struts.genric.impexp.UploadDefinizioneRicercaAction">
+    <property name="geneManager" ref="geneManager"/>
+    <property name="ricercheManager" ref="ricercheManager"/>
+  </bean>
+  
+  <bean name="/geneGenric/SetOpzioniImport"
+  	class="it.eldasoft.gene.web.struts.genric.impexp.SetOpzioniImportAction">
+    <property name="ricercheManager" ref="ricercheManager"/>
+  </bean>
+
+  <bean name="/geneGenric/EseguiImport"
+		class="it.eldasoft.gene.web.struts.genric.impexp.EseguiImportRicercaAction">
+    <property name="gruppiManager" ref="gruppiManager"/>
+    <property name="ricercheManager" ref="ricercheManager"/>
+		<property name="prospettoManager" ref="prospettoManager"/>
+	</bean>
+
+<!--    Fine bean per il wizard di importazione definizione report   -->
+</beans>

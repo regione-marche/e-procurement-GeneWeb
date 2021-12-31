@@ -1,0 +1,10 @@
+Gent.le #if ($NOME)$NOME#end,
+la registrazione ad #if ($NOMEMITT)$NOMEMITT#end e' stata effettuata con successo,
+il suo nome utente e' #if ($LOGIN)$LOGIN#end.
+In caso di smarrimento delle credenziali contattare l'Ente.
+
+#if ($NOMEMITT)$NOMEMITT#end
+
+
+-------
+La presente comunicazione e' inviata da un sistema automatico, si prega di non rispondere.

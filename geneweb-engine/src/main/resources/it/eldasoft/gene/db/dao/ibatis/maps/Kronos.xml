@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Kronos">
+
+	<resultMap id="resultTabellatoDati"
+		class="it.eldasoft.gene.db.domain.Tabellato">
+		<result property="tipoTabellato" column="des_gruppo1"	columnIndex="1" />
+		<result property="descTabellato" column="des_gruppo2" columnIndex="2" />
+	</resultMap>
+
+  <select id="getDatiUtente" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+    SELECT des_gruppo1 FROM v_kinkropwb WHERE cod_termid = #termId# AND cod_dwreport = #appId# AND qta_riga = #id#
+  </select>
+
+  <select id="getTemporalita" resultClass="java.lang.String" parameterClass="java.lang.String">
+    SELECT temporalita FROM v_kstd_tabelle WHERE tabella = #tabella#
+  </select>
+  
+  <select id="getCampiJoin" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+    SELECT i.tabella, campo, tabella_pk, campo_pk
+    FROM v_kstd_indici i, v_kstd_campi_indici ci
+    WHERE i.tabella = #tabella#
+    AND i.esterno = -1
+    AND i.tipo_relazione = 4352
+    AND i.indice = ci.indice
+    ORDER BY tabella_pk
+  </select>
+
+  <select id="getVariabiliUTE" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+    SELECT DISTINCT cod_dwreport FROM v_kinkropwb WHERE cod_dwreport LIKE #prefissoVariabile# $escapePrefissoVariabile$
+  </select>
+
+  <select id="getValoriVariabileUTE" resultMap="resultTabellatoDati" parameterClass="java.util.HashMap">
+  SELECT DISTINCT des_gruppo1, des_gruppo2
+  FROM v_kinkropwb 
+  WHERE cod_dwreport = #variabileUtente#
+  AND cod_termid IN 
+		<iterate property="listaAttributiUtente" open="(" close=")" conjunction=", ">
+			#listaAttributiUtente[]#
+		</iterate>
+  ORDER BY des_gruppo2
+  </select>
+  
+  </sqlMap>
