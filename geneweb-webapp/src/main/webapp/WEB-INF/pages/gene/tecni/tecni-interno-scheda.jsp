@@ -44,7 +44,7 @@
 			<gene:checkCampoScheda funzione='checkCodFisNazionalita("##",document.getElementById("TECNI_NAZTEI"))' obbligatorio="${obbligatoriaCorrettezzaCodFisc}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>	
 		<gene:campoScheda campo="PIVATEC" obbligatorio='${obbligatorioPIVA}'>
-			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("TECNI_NAZTEI"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido (anteporre la sigla della nazione se estera).' onsubmit="false"/>
+			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("TECNI_NAZTEI"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>
 		<gene:campoScheda campo="INDTEC"/>
 		<gene:campoScheda campo="NCITEC"/>
@@ -212,7 +212,7 @@ function changeComuneNas(provincia, nomeUnCampoInArchivio) {
  		if(isItalia == "si"){
  			controlloOkPIVA=checkParIva(piva);
 	 	}else{
- 			controlloOkPIVA = checkPivaEuropea(piva);
+ 			controlloOkPIVA = true;
  		}
  		if(!controlloOkPIVA){
  	 		outMsg("Il valore della Partita I.V.A. o V.A.T. specificato non è valido", "ERR");

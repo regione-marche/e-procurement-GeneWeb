@@ -154,7 +154,7 @@ public class ConfigurazioneMailAction extends DispatchActionBase {
       if(new Long(0).equals(confDef)){
         Tabellato tabSA = new Tabellato();
         tabSA.setTipoTabellato(CostantiGenerali.PROP_CONFIGURAZIONE_MAIL_STANDARD);
-        tabSA.setDescTabellato("Default");
+        tabSA.setDescTabellato("STD");
         listaStazioniAppaltanti.add(tabSA);
       }
       if (listaSA != null && listaSA.size() > 0) {
@@ -168,6 +168,11 @@ public class ConfigurazioneMailAction extends DispatchActionBase {
           tabSA.setDescTabellato(codein + " - " + nomein);
           listaStazioniAppaltanti.add(tabSA);
         }
+        // Nuova configurazione per le conversazioni
+        Tabellato tabSA = new Tabellato();
+        tabSA.setTipoTabellato(CostantiGenerali.PROP_CONFIGURAZIONE_MAIL_STANDARD_CONV);
+        tabSA.setDescTabellato("CONVERSAZIONI");
+        listaStazioniAppaltanti.add(tabSA);
       }
     } catch (SQLException e) {
       this.aggiungiMessaggio(request, "errors.query.db", e.getMessage());

@@ -45,7 +45,7 @@
 					window.location.href="InitLogin.do";
 				}
 				
-				$("#reindirizzaLogin").click(
+				$("#reindirizzaLogin").on("click",
 					function() {
 						reindirizzaLogin();
 					}

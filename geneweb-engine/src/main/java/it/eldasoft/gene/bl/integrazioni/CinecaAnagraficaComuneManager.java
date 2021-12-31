@@ -10,6 +10,8 @@
  */
 package it.eldasoft.gene.bl.integrazioni;
 
+import it.cineca.u_gov.ac.sc.ws.WSACSoggettoCollettivoService;
+import it.cineca.u_gov.ac.sc.ws.Ws_002fPrivate_002fSoggettoCollettivo;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
@@ -20,13 +22,29 @@ import it.eldasoft.utils.sicurezza.ICriptazioneByte;
 import it.eldasoft.utils.utility.UtilityDate;
 import it.eldasoft.utils.utility.UtilityFiscali;
 import it.eldasoft.utils.utility.UtilityStringhe;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaType;
+import it.maggioli.eldasoft.ws.erp.WSERP_PortType;
+import it.maggioli.eldasoft.ws.erp.WSERP_ServiceLocator;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.xml.rpc.ServiceException;
+
+import org.apache.axis.client.Stub;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -41,7 +59,7 @@ public class CinecaAnagraficaComuneManager {
 
   static Logger               logger                         = Logger.getLogger(CinecaAnagraficaComuneManager.class);
 
-
+  private static final String PROP_WSERP_ERP_URL                              = "wserp.erp.url";
 
   private SqlManager          sqlManager;
 
@@ -402,6 +420,113 @@ public class CinecaAnagraficaComuneManager {
     return res;
 
   }
+  
+  public WSERPUgovAnagraficaType setAnagraficaUgov(HashMap<String, Object> soggettoCollettivo)
+		  throws GestoreException{
+	  
+		WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+		anagrafica.setAnnotazioni((String) soggettoCollettivo.get("annotazioni"));
+		anagrafica.setBic((String) soggettoCollettivo.get("bic"));
+		anagrafica.setCapDomFiscale((String) soggettoCollettivo.get("capDomFiscale"));
+		anagrafica.setCapSede((String) soggettoCollettivo.get("capSede"));
+		anagrafica.setCcDedicato((String) soggettoCollettivo.get("ccDedicato"));
+		anagrafica.setCellUfficio((String) soggettoCollettivo.get("cellUfficio"));
+		anagrafica.setCivicoDomFiscale((String) soggettoCollettivo.get("civicoDomFiscale"));
+		anagrafica.setCivicoSede((String) soggettoCollettivo.get("civicoSede"));
+		anagrafica.setCodAlboProf((String) soggettoCollettivo.get("codAlboProf"));
+		anagrafica.setCodComuneDomFiscale((String) soggettoCollettivo.get("codComuneDomFiscale"));
+		anagrafica.setCodComuneNascita((String) soggettoCollettivo.get("codComuneNascita"));
+		anagrafica.setCodComuneSede((String) soggettoCollettivo.get("codComuneSede"));
+		anagrafica.setCodEsterno((String) soggettoCollettivo.get("codEsterno"));
+		anagrafica.setCodFormaGiuridica((String) soggettoCollettivo.get("codFormaGiuridica"));
+		anagrafica.setCodiceFiscale((String) soggettoCollettivo.get("codiceFiscale"));
+		anagrafica.setCodNazioneDomFiscale((String) soggettoCollettivo.get("codNazioneDomFiscale"));
+		anagrafica.setCodNazioneSede((String) soggettoCollettivo.get("codNazioneSede"));
+		anagrafica.setCodTitoloOnorifico((String) soggettoCollettivo.get("codTitoloOnorifico"));
+		anagrafica.setCognome((String) soggettoCollettivo.get("cognome"));
+		if(soggettoCollettivo.get("dataIscrCCIAA")!= null) {
+			Date dataIscrCCIAA = (Date) soggettoCollettivo.get("dataIscrCCIAA");
+			Calendar calIscrCCIAA = Calendar.getInstance();
+			calIscrCCIAA.setTime(dataIscrCCIAA);
+			anagrafica.setDataIscrCCIAA(calIscrCCIAA);
+		}
+		if(soggettoCollettivo.get("dataIscrAlboProf")!= null) {
+			Date dataIscrAlboProf = (Date) soggettoCollettivo.get("dataIscrAlboProf");
+			Calendar calIscrAlboProf = Calendar.getInstance();
+			calIscrAlboProf.setTime(dataIscrAlboProf);
+			anagrafica.setDataIscrAlboProf(calIscrAlboProf);
+		}
+		if(soggettoCollettivo.get("dataNascita")!=null) {
+			Date dataNascita = (Date) soggettoCollettivo.get("dataNascita");
+			Calendar calDataNascita = Calendar.getInstance();
+			calDataNascita.setTime(dataNascita);
+			anagrafica.setDataNascita(calDataNascita);
+		}
+		anagrafica.setEmailUfficio((String) soggettoCollettivo.get("emailUfficio"));
+		anagrafica.setFaxUfficio((String) soggettoCollettivo.get("faxUfficio"));
+		anagrafica.setFormaGiuridica((String) soggettoCollettivo.get("formaGiuridica"));
+		anagrafica.setIdInterno((Long) soggettoCollettivo.get("idInterno"));
+		anagrafica.setIdInternoSede((Long) soggettoCollettivo.get("idInternoSede"));
+		anagrafica.setIndirizzoDomFiscale((String) soggettoCollettivo.get("indirizzoDomFiscale"));
+		anagrafica.setIndirizzoSede((String) soggettoCollettivo.get("indirizzoSede"));
+		anagrafica.setLocalitaPrincipale((String) soggettoCollettivo.get("localitaPrincipale"));
+		anagrafica.setNazione((Long) soggettoCollettivo.get("nazione"));
+		anagrafica.setNome((String) soggettoCollettivo.get("nome"));
+		anagrafica.setNumIscrAlboProf((String) soggettoCollettivo.get("numIscrAlboProf"));
+		anagrafica.setPartitaIva((String) soggettoCollettivo.get("partitaIva"));
+		anagrafica.setPecUfficio((String) soggettoCollettivo.get("pecUfficio"));
+		anagrafica.setProvAlboProf((String) soggettoCollettivo.get("cprovAlboProf"));
+		anagrafica.setProvinciaSede((String) soggettoCollettivo.get("provinciaSede"));
+		anagrafica.setRagioneSociale((String) soggettoCollettivo.get("ragioneSociale"));
+		anagrafica.setRapprLegale((String) soggettoCollettivo.get("rapprLegale"));
+		anagrafica.setSoggettiAbilitati((String) soggettoCollettivo.get("soggettiAbilitati"));
+		anagrafica.setTelUfficio((String) soggettoCollettivo.get("telUfficio"));
+		anagrafica.setTipo((String) soggettoCollettivo.get("tipo"));
+		anagrafica.setGenere((String) soggettoCollettivo.get("genere"));
+		anagrafica.setTipologia((Long) soggettoCollettivo.get("tipologia"));
+		anagrafica.setUrlSitoWeb((String) soggettoCollettivo.get("urlSitoWeb"));
+	  
+		return anagrafica;
+	  
+  }
+  
+  /**
+   * Restituisce puntatore al servizio WSERP.
+   *
+   * @param username
+   * @param password
+   * @param servizio
+   * @return
+   * @throws GestoreException
+   * @throws NoSuchAlgorithmException
+   * @throws NoSuchPaddingException
+   * @throws InvalidKeyException
+   * @throws IllegalBlockSizeException
+   * @throws BadPaddingException
+   * @throws ServiceException
+   */
+  public WSERP_PortType getWSERP(String servizio) throws GestoreException {
+
+
+	  WSERP_PortType wserp = null;
+		try {
+		  	String url = ConfigManager.getValore(PROP_WSERP_ERP_URL);
+		    WSERP_ServiceLocator wserpLocator = new WSERP_ServiceLocator();
+		    wserpLocator.setWSERPImplPortEndpointAddress(url);
+		    Remote remote = wserpLocator.getPort(WSERP_PortType.class);
+		    Stub axisPort = (Stub) remote;
+		    wserp = (WSERP_PortType) axisPort;
+		    
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return wserp;
+	    
+  }
+  
+	    
 
   /**
    * Metodo che controlla la validità del codice fiscale

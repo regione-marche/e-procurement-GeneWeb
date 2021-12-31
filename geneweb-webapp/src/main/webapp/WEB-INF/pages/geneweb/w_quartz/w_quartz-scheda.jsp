@@ -267,31 +267,31 @@
 			$("#W_QUARTZ_CRON_EXPRESSIONview").text(cronExpression);
 		}
 		
-		$("#W_QUARTZ_CRON_SECONDS").change(function() {
+		$("#W_QUARTZ_CRON_SECONDS").on("change",function() {
 		  	setCronExpression();
 		});
 		
-		$("#W_QUARTZ_CRON_MINUTES").change(function() {
+		$("#W_QUARTZ_CRON_MINUTES").on("change",function() {
 		  	setCronExpression();
 		});
 		
-		$("#W_QUARTZ_CRON_HOURS").change(function() {
+		$("#W_QUARTZ_CRON_HOURS").on("change",function() {
 		  	setCronExpression();
 		});
 		
-		$("#W_QUARTZ_CRON_DAY_OF_MONTH").change(function() {
+		$("#W_QUARTZ_CRON_DAY_OF_MONTH").on("change",function() {
 		  	setCronExpression();
 		});
 		
-		$("#W_QUARTZ_CRON_MONTH").change(function() {
+		$("#W_QUARTZ_CRON_MONTH").on("change",function() {
 		  	setCronExpression();
 		});
 		
-		$("#W_QUARTZ_CRON_DAY_OF_WEEK").change(function() {
+		$("#W_QUARTZ_CRON_DAY_OF_WEEK").on("change",function() {
 		  	setCronExpression();
 		});
 		
-		$("#W_QUARTZ_CRON_YEAR").change(function() {
+		$("#W_QUARTZ_CRON_YEAR").on("change",function() {
 		  	setCronExpression();
 		});				
 				

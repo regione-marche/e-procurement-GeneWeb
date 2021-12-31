@@ -59,7 +59,7 @@
 				})
 				.mouseover(save)
 				.mouseout(hide)
-				.click(hide);
+				.on("click",hide);
 		},
 		fixPNG: IE ? function() {
 			return this.each(function () {
@@ -127,7 +127,7 @@
 		
 		// if selected, update the helper position when the mouse moves
 		track = !!settings(this).track;
-		$(document.body).bind('mousemove', update);
+		$(document.body).on('mousemove', update);
 			
 		// update at least once
 		update(event);

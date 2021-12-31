@@ -643,7 +643,7 @@
 			}
 		);
 		
-		$("body").delegate("#startmessage", "click",
+		$("body").on("click","#startmessage", 
 			function() {
 				if ($("#mc").is(":visible")) {
 					$("#mc").hide(400);
@@ -657,7 +657,7 @@
 			}
 		);
 
-		$("body").delegate(".moutdelete", "click",
+		$("body").on("click",".moutdelete", 
 			function() {
 				var _message_id = _tabellaMessaggiOut.row($(this).parents('tr')).data().message_id;
 				_delete('OUT',_message_id);
@@ -666,7 +666,7 @@
 			}
 		);
 		
-		$("body").delegate(".mindelete", "click",
+		$("body").on("click",".mindelete", 
 			function() {
 				var _message_id = _tabellaMessaggiIn.row($(this).parents('tr')).data().message_id;
 				_delete('IN',_message_id);
@@ -674,27 +674,27 @@
 			}
 		);
 		
-		$("body").delegate("#minbutton", "click",
+		$("body").on("click","#minbutton", 
 			function() {
 				_remove();
 				_popolaTabellaMessaggiIn();
 			}
 		);
 		
-		$("body").delegate("#moutbutton", "click",
+		$("body").on("click","#moutbutton", 
 			function() {
 				_remove();
 				_popolaTabellaMessaggiOut();
 			}
 		);
 		
-		$("body").delegate("#msendbutton", "click",
+		$("body").on("click","#msendbutton", 
 			function() {
 				_inviaMessaggio();
 			}
 		);
 
-		$("body").delegate("#mnewbutton", "click",
+		$("body").on("click","#mnewbutton", 
 			function() {
 				_remove();
 				_nuovoMessaggio();

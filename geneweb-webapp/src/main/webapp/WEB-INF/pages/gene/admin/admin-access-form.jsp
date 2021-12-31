@@ -172,7 +172,7 @@
 								 Email di dominio : <span class="required-field">*</span>
 							</TD>
 							<TD class="valore-dato">
-								<html:text property="emailDominio" styleClass="testo" size="25" maxlength="60" value="@maggioli.it"/>
+								<html:text property="emailDominio" styleClass="testo" size="25" maxlength="60" value=""/> @maggioli.it
 							</TD>
 						</TR>
 						<TR>

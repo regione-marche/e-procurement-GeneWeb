@@ -85,7 +85,7 @@
 
 <script type="text/javascript">
 <!--
-	$('textarea[name="descrizione"]').bind('input propertychange', function() {checkInputLength( $(this)[0], 2000)});
-	$('textarea[name="menu"]').bind('input propertychange', function() {checkInputLength( $(this)[0], 2000)});
+	$('textarea[name="descrizione"]').on('input propertychange', function() {checkInputLength( $(this)[0], 2000)});
+	$('textarea[name="menu"]').on('input propertychange', function() {checkInputLength( $(this)[0], 2000)});
 -->
 </script>

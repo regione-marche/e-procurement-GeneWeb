@@ -61,7 +61,7 @@
 		<gene:checkCampoScheda funzione='checkCodFisNazionalita("##",document.getElementById("UTENT_NAZUTE"))' obbligatorio="${obbligatoriaCorrettezzaCodFisc}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 	</gene:campoScheda>	
 	<gene:campoScheda campo="PIVAUTE" obbligatorio='${obbligatorioPIVA}' title ='Partita I.V.A.' >
-		<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("UTENT_NAZUTE"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido (anteporre la sigla della nazione se estera).' onsubmit="false"/>
+		<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("UTENT_NAZUTE"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 	</gene:campoScheda>
 	
 	<gene:campoScheda campo="TELUTE" />
@@ -157,7 +157,7 @@
  		if(isItalia == "si"){
  			controlloOkPIVA=checkParIva(piva);
 	 	}else{
- 			controlloOkPIVA = checkPivaEuropea(piva);
+ 			controlloOkPIVA = true;
  		}
  		if(!controlloOkPIVA){
  	 		outMsg("Il valore della Partita I.V.A. o V.A.T. specificato non è valido", "ERR");

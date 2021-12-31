@@ -50,7 +50,7 @@
 	$.fn.clickMenu = function(options) 
 	{
 		var shown = false;
-		var liOffset = ( ($.browser.msie) ? 4 : 2 );
+		var liOffset = ( (navigator.userAgent.match("MSIE")) ? 4 : 2 );
 
 		var settings = $.extend({}, defaults, options);
 
@@ -95,7 +95,7 @@
 						return;
 					}
 					//assign events to all div>ul>li-elements
-					$(getAllChilds(getOneChild(div, 'UL'), 'LI')).mouseover(liHoverIn).mouseout(liHoverOut).click(settings.onClick);
+					$(getAllChilds(getOneChild(div, 'UL'), 'LI')).mouseover(liHoverIn).mouseout(liHoverOut).on("click",settings.onClick);
 					//positioning
 					if ( !checkClass(div.parentNode, 'main') )
 					{
@@ -104,7 +104,7 @@
 					//show it
 					div.isVisible = true; //we use this over :visible to speed up traversing
 					$(div).show();
-					if ( $.browser.msie ) //fixing a display-bug in ie6 and adding min-width
+					if ( navigator.userAgent.match("MSIE") ) //fixing a display-bug in ie6 and adding min-width
 					{
 						var cW = $(getOneChild(div, 'UL')).width();
 						if ( cW < 100 )
@@ -312,7 +312,7 @@
 			{
 				hoverIn(this, settings.mainDelay);
 				shown = true;
-				$(document).bind('mousedown', checkMouse);
+				$(document).on('mousedown', checkMouse);
 			}
 			return false;
 		};
@@ -449,7 +449,7 @@
 			//add shadows
 			$('ul', this).shadowBox();
 			//ie6? - add iframes
-			if ( $.browser.msie && (!$.browser.version || parseInt($.browser.version) <= 6) )
+			if ( navigator.userAgent.match("MSIE") && (!$.browser.version || parseInt($.browser.version) <= 6) )
 			{
 				if ( $.fn.bgiframe )
 				{
@@ -463,14 +463,14 @@
 				}
 			}
 			//assign events
-			$(this).bind('closemenu', function(){clean();}); //assign closemenu-event, through wich the menu can be closed from outside the plugin
+			$(this).on('closemenu', function(){clean();}); //assign closemenu-event, through wich the menu can be closed from outside the plugin
 			//add click event handling, if there are any elements inside the main menu
 			var liElems = getAllChilds(this, 'LI');
 			for ( var j = 0; j < liElems.length; j++ )
 			{
 				if ( getOneChild(getOneChild(getOneChild(liElems[j], 'DIV'), 'UL'), 'LI') ) // >div>ul>li
 				{
-					$(liElems[j]).click(mainClick);
+					$(liElems[j]).on("click",mainClick);
 				}
 			}
 			//add hover event handling and assign classes

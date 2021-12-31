@@ -3,14 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-<c:choose>
-	<c:when test="${not empty param.title}">
-		<TITLE>${param.title}</TITLE>
-	</c:when>
-	<c:otherwise>
-		<TITLE>${applicationScope.appTitle}</TITLE>
-	</c:otherwise>
-</c:choose>
+	<title>${applicationScope.appTitle}</title>
 </head>
 <body onload="javascript:document.redirectForm.submit();">
 <form name="redirectForm" id="redirectForm" action="${pageContext.request.contextPath}${historyRedirect.path}" method="post">

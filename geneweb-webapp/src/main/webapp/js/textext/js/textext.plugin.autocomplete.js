@@ -306,7 +306,7 @@
 
 			$(self).data('container', container);
 			
-			$(document.body).click(function(e) 
+			$(document.body).on("click",function(e) 
 			{
 				if (self.isDropdownVisible() && !self.withinWrapElement(e.target))
 					self.trigger(EVENT_HIDE_DROPDOWN);
@@ -765,8 +765,8 @@
 
 		if(!suggestions)
 			return self.trigger(EVENT_GET_SUGGESTIONS);
-
-		if($.isFunction(renderCallback))
+		
+		if(typeof renderCallback === "function")
 		{
 			renderCallback(self);
 		}

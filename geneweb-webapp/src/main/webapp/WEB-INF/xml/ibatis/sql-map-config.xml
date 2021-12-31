@@ -33,4 +33,7 @@
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/AttConfig.xml" />
 	
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/ConfigurazioneMail.xml" />
+	
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/DocumentoWDISCALL.xml" />
+	
 </sqlMapConfig>

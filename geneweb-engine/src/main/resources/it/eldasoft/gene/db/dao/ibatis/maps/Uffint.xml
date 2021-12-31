@@ -9,6 +9,20 @@
 	  <result property="partitaIVA" column="ivaein" columnIndex="4"/>
 	  <result property="dataTermineValidita" column="datfin" columnIndex="5"/>
 	</resultMap>
+	
+	<resultMap id="resultUffintConAddressAndNation" class="it.eldasoft.gene.db.domain.UfficioIntestatario">
+	  <result property="codice" column="codein" columnIndex="1"/>
+	  <result property="nome" column="nomein" columnIndex="2"/>
+	  <result property="codFiscale" column="cfein" columnIndex="3"/>
+	  <result property="partitaIVA" column="ivaein" columnIndex="4"/>
+	  <result property="dataTermineValidita" column="datfin" columnIndex="5"/>
+	  <result property="viaein" column="viaein" />
+	  <result property="nciein" column="nciein" />
+	  <result property="citein" column="citein" />
+	  <result property="proein" column="proein" />
+	  <result property="capein" column="capein" />
+	  <result property="codnaz" column="codnaz" />
+	</resultMap>
 
 	<select id="getUfficiIntestatari" resultMap="resultUffint">
 		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN   
@@ -17,9 +31,23 @@
 	</select>
 
 	<select id="getUfficioIntestatarioByPK" resultMap="resultUffint" parameterClass="java.lang.String">
-		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN   
+		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN
 		  FROM UFFINT
 	   WHERE UFFINT.CODEIN = #codice#
+	</select>
+	
+	<select id="getUfficioIntestatarioByPKWithAddressAndNation" resultMap="resultUffintConAddressAndNation" parameterClass="java.lang.String">
+		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN,
+			UFFINT.VIAEIN,
+			UFFINT.NCIEIN,
+			UFFINT.CITEIN,
+			UFFINT.PROEIN,
+			UFFINT.CAPEIN,
+			TAB2.TAB2D1 as CODNAZ 
+		FROM UFFINT, TAB2
+		WHERE UFFINT.CODEIN = #codice#
+		   AND TAB2.TAB2TIP = UFFINT.CODNAZ
+ 		   AND TAB2.TAB2COD = 'G_z23'
 	</select>
 
 	<select id="getUfficiIntestatariAccount" resultMap="resultUffint" parameterClass="java.lang.Integer">

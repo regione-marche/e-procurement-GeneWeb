@@ -125,6 +125,16 @@ public class UffintManager {
   }
   
   /**
+   * Estrazione dell'ufficio intestatario associato alla chiave in input 
+   * con i dati aggiuntivi di indirizzo
+   * @param codice
+   * @return Ritorna l'ufficio intestatario associato alla chiave in input
+   */
+  public UfficioIntestatario getUfficioIntestatarioByPKWithAddressAndNation(String codice) {
+    return this.uffintDao.getUfficioIntestatarioByPKWithAddressAndNation(codice);
+  }
+  
+  /**
    * Metodo per l'estrazione della lista di tutti gli uffici intestatari in cui
    * quelli associati all'utente vengono marcati
    * 

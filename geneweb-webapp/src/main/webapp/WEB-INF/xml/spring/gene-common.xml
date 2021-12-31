@@ -116,6 +116,12 @@
 		<property name="sqlMapClient" ref="sqlMapClient" />
 	</bean>
 	
+	<bean id="documentoWDISCALLDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapDocumentoWDISCALLDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	
 	
 	<!-- ========================= DAO DEFINITIONS: JDBC IMPLEMENTATIONS ========================= -->
 
@@ -776,6 +782,43 @@
 			</bean>
 		</property>
 	</bean>	
+	
+	<bean id="inviaConversazioniSchedulerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="invia*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="inviaConversazioniScheduler" parent="inviaConversazioniSchedulerTransactionProxy" >
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.tasks.InviaConversazioniManager" >
+				<property name="sqlManager" ref="sqlManager" />
+				<property name="documentoWDISCALLDao" ref="documentoWDISCALLDao" />
+				<property name="mailManager" ref="mailManager" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="inviaConversazioniSchedulerJob"
+		class="it.eldasoft.gene.commons.web.spring.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="inviaConversazioniScheduler" />
+		<property name="targetMethod" value="inviaConversazioni" />
+		<property name="concurrent" value="false"/>
+	</bean>
+	
+	<bean id="inviaConversazioniSchedulerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="inviaConversazioniSchedulerJob" />
+		<property name="cronExpression">
+			<value>0 0 0 1 1 ? 2099</value>
+		</property>
+	</bean>
+	
 
 	<!-- ========================= STRUTS ACTION DEFINITIONS ========================= -->
 

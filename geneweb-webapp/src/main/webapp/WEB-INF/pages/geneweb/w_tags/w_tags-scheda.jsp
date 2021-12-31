@@ -78,8 +78,8 @@
 							$("#TAGBORDERCOLOR").bcPicker({
 								defaultColor : "${datiRiga.W_TAGS_TAGBORDERCOLOR}"
 							});
-							$("#TAGCOLOR").children().bind('click', function(){ return false; });
-							$("#TAGBORDERCOLOR").children().bind('click', function(){ return false; });
+							$("#TAGCOLOR").children().on('click', function(){ return false; });
+							$("#TAGBORDERCOLOR").children().on('click', function(){ return false; });
 							
 						</script>
 					</c:when>
@@ -181,7 +181,7 @@
 												} else {
 													var _ck = $("<input/>",{"type":"checkbox", "id": profilo.cod_profilo});
 													_ck.attr("cod_profilo",profilo.cod_profilo);
-													_ck.click(function(){
+													_ck.on("click",function(){
 													    _salvaFiltroProfilo();
 													});
 													if (profilo.associato == "true") _ck.attr("checked","checked");

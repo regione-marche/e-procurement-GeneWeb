@@ -1,11 +1,5 @@
 package it.eldasoft.gene.web.struts.w_config;
 
-import it.eldasoft.gene.bl.PropsConfigManager;
-import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.WsdmPropsConfig;
-import it.eldasoft.utils.properties.ConfigManager;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +14,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.dao.DataAccessException;
+
+import it.eldasoft.gene.bl.PropsConfigManager;
+import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.WsdmPropsConfig;
+import it.eldasoft.utils.properties.ConfigManager;
 
 
 /**
@@ -46,9 +46,9 @@ public class SalvaConfigurazioneWsdmAction extends ActionBaseNoOpzioni {
       logger.debug("runAction: inizio metodo");
 
     String target = CostantiGeneraliStruts.FORWARD_OK;
-    
+
     String idconfi = null;
-    
+
     try {
     /* Nella pagina non e' stato indicato il gestore di salvataggio delle proprieta'.
      *
@@ -87,18 +87,21 @@ public class SalvaConfigurazioneWsdmAction extends ActionBaseNoOpzioni {
         }
       }
     }
-    
+
     String descri = request.getParameter("descri");
     request.setAttribute("descri", descri);
-    
+
     String wsdmProtocollo = request.getParameter("wsdmProtocollo");
     request.setAttribute("wsdmProtocollo", wsdmProtocollo);
-    
+
+    String codapp = request.getParameter("codapp");
+    request.setAttribute("codapp", codapp);
+
     } catch (DataAccessException dae) {
       logger.error("Errore nel update dei parametri gestiti da DB (WSDCONFIPRO)", dae);
       this.aggiungiMessaggio(request, "errors.database.dataAccessException");
       target = "errorUpdate";
-    } 
+    }
     logger.debug("runAction: fine metodo");
 
     return mapping.findForward(target);

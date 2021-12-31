@@ -690,8 +690,8 @@
 
 		input
 			.wrap(container)
-			.keydown(function(e) { return self.onKeyDown(e) })
-			.keyup(function(e) { return self.onKeyUp(e) })
+			.on("keydown",function(e) { return self.onKeyDown(e) })
+			.on("keyup",function(e) { return self.onKeyUp(e) })
 			.data('textext', self)
 			;
 

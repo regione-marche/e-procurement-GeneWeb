@@ -328,7 +328,7 @@
 		  				}
 		  			
 		  				// questo serve per ogni modifica del valore
-		  				$('#opzioniUtenteSys-ou39').click(function() {
+		  				$('#opzioniUtenteSys-ou39').on("click",function() {
 		  				 	if (this.checked) {
 		  				 		$('#warning-ou39').hide();
 		  				 	} else {

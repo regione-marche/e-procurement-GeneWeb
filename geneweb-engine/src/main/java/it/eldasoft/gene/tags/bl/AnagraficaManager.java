@@ -335,13 +335,7 @@ public class AnagraficaManager {
             messaggio += "<br>Il campo Partita IVA presenta un valore non valido.";
           else
             msg.append("Il campo Partita IVA presenta un valore non valido.\n");
-        } else {
-          if (messaggiHtml)
-            messaggio += "<br>Il campo V.A.T. presenta una Partita IVA estera non valida o che non inizia con i 2 caratteri del codice nazione.";
-          else
-            msg.append("Il campo V.A.T.  presenta una Partita IVA estera non valida o che non inizia con i 2 caratteri del codice nazione.\n");
         }
-
       }
 
       // Controllo Pec
@@ -393,6 +387,14 @@ public class AnagraficaManager {
         }
       }
 
+      //controllo nazionalità
+      if(nazimp==null){
+        controlloSuperato = "NO";
+        if (messaggiHtml)
+          messaggio += "<br>Il campo Nazione non è valorizzato.";
+        else
+          msg.append("Il campo Nazione non è valorizzato.\n");
+      }
     }
 
     if ("SI".equals(controlloSuperato) && messaggiHtml)

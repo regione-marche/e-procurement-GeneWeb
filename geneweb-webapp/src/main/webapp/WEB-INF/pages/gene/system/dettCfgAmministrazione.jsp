@@ -60,7 +60,7 @@
 			});
 			
 			$(document).ready(function() {
-				$(document).bind('keydown', 'return', function(e) {
+				$(document).on('keydown', 'return', function(e) {
 					if (e.shiftKey && e.altKey && e.which == 53) {
 						document.location.href="ApriPagina.do?<csrf:token/>&href=commons/lista-c0campi.jsp";
 					}

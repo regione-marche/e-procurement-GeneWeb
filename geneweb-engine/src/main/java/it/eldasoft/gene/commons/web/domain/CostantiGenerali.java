@@ -600,6 +600,8 @@ public class CostantiGenerali {
   public static final String   PROP_INDIRIZZO_MAIL_AMMINISTRATORE                 = "it.eldasoft.registrazione.mailAmministratore";
 
   public static final String   PROP_CONFIGURAZIONE_MAIL_STANDARD                  = "STD";
+  
+  public static final String   PROP_CONFIGURAZIONE_MAIL_STANDARD_CONV             = "CONVERSAZIONI";
 
   /**
    * Properties per l'invio comunicazioni mediante fax

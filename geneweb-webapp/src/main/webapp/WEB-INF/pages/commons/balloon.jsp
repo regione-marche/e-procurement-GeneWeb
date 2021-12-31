@@ -56,7 +56,7 @@
 					</div>
 <script type="text/javascript">
 $(document).ready(function(){
-	$("#balloon").click(function() {
+	$("#balloon").on("click",function() {
 	if ($(this).attr('class') == 'expand') {
 		$(this).attr('class', 'collapse');
 		$(this).attr('title', 'clicca sul riquadro per comprimere la nota');

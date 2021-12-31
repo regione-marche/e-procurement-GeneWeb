@@ -88,7 +88,7 @@
 	 */
 	var hideCell = function(cell)
 	{
-		if ( jQuery.browser.msie )
+		if ( navigator.userAgent.match("MSIE") )
 		{
 			(hideCell = function(c)
 			{
@@ -111,7 +111,7 @@
 	 */
 	var showCell = function(cell)
 	{
-		if ( jQuery.browser.msie )
+		if ( navigator.userAgent.match("MSIE") )
 		{
 			(showCell = function(c)
 			{
@@ -134,7 +134,7 @@
 	 */
 	var cellVisible = function(cell)
 	{
-		if ( jQuery.browser.msie )
+		if ( navigator.userAgent.match("MSIE") )
 		{
 			return (cellVisible = function(c)
 			{
@@ -350,7 +350,7 @@
 				{
 					addClass = settings.offClass;
 				}
-				var $li = $('<li class="' + addClass + '">' + text + '</li>').click(toggleClick);
+				var $li = $('<li class="' + addClass + '">' + text + '</li>').on("click",toggleClick);
 				$li[0].cmData = {id: table.id, col: i};
 				$list.append($li);
 			}

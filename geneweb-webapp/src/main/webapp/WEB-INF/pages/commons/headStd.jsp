@@ -26,14 +26,7 @@
 	<fmt:message key="label.tags.uffint.singolo" />
 </c:set>
 
-<c:choose>
-	<c:when test="${not empty param.title}">
-		<TITLE>${param.title}</TITLE>
-	</c:when>
-	<c:otherwise>
-		<TITLE>${applicationScope.appTitle}</TITLE>
-	</c:otherwise>
-</c:choose>
+<title>${applicationScope.appTitle}</title>
 
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"> <%-- per forzare ultima versione di Internet Explorer --%>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -69,9 +62,9 @@
 <script type="text/javascript"
 	src="${contextPath}/js/popupMenu.js"></script>
 <script type="text/javascript"
-	src="${contextPath}/js/jquery-2.2.4.js"></script>
+	src="${contextPath}/js/jquery-3.5.1.js"></script>
 <script type="text/javascript"
-	src="${contextPath}/js/jquery-migrate-1.4.1.js"></script>
+	src="${contextPath}/js/jquery-migrate-3.3.2.js"></script>
 <script type="text/javascript"
 	src="${contextPath}/js/jquery-ui-1.12.1.js"></script>
 <script type="text/javascript"
@@ -130,7 +123,7 @@
 			var _formLista = $("form[action*='Lista.do']");
 			var _formGeneweb = $("form input[name=jspPath][value*='/WEB-INF/pages/geneweb/']");
 			
-			if (_formScheda.size() > 0 && _formLista.size() == 0 && _formGeneweb.size() == 0) {
+			if (_formScheda.length > 0 && _formLista.length == 0 && _formGeneweb.length == 0) {
 				var _contextPath = "${pageContext.request.contextPath}";
 				var _codapp = "${sessionScope.moduloAttivo}";
 				var _profilo = "${profiloAttivo}";

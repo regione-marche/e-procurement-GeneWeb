@@ -19,7 +19,9 @@ import it.eldasoft.gene.bl.integrazioni.CinecaWSPersoneFisicheManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.datautils.DataColumn;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.tags.bl.AnagraficaManager;
+import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.spring.UtilitySpring;
@@ -27,14 +29,25 @@ import it.eldasoft.utils.utility.UtilityNumeri;
 import it.eldasoft.utils.utility.UtilityStringhe;
 import it.eldasoft.www.PortaleAlice.EsitoOutType;
 import it.eldasoft.www.PortaleAlice.PortaleAliceProxy;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaResType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovResType;
+import it.maggioli.eldasoft.ws.erp.WSERP_PortType;
 
 import java.rmi.RemoteException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Vector;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.rpc.ServiceException;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.transaction.TransactionStatus;
 
 public class GestoreIMPR extends AbstractGestoreEntita {
@@ -53,9 +66,9 @@ public class GestoreIMPR extends AbstractGestoreEntita {
     super.setRequest(request);
     anagraficaManager = (AnagraficaManager) UtilitySpring.getBean("anagraficaManager",
         this.getServletContext(), AnagraficaManager.class);
-    String integrazioneCineca = ConfigManager.getValore("cineca.ws.SoggettoCollettivo.url");
+    String integrazioneCineca = ConfigManager.getValore("integrazioneAnagraficheUGOV");
     integrazioneCineca = UtilityStringhe.convertiNullInStringaVuota(integrazioneCineca);
-    if(!"".equals(integrazioneCineca)){
+    if("1".equals(integrazioneCineca)){
       cinecaWSManager = (CinecaWSManager) UtilitySpring.getBean("cinecaWSManager",
           this.getServletContext(), CinecaWSManager.class);
       cinecaWSPersoneFisicheManager = (CinecaWSPersoneFisicheManager) UtilitySpring.getBean("cinecaWSPersoneFisicheManager",
@@ -128,6 +141,13 @@ public class GestoreIMPR extends AbstractGestoreEntita {
      try {
       String usernome = (String)this.getSqlManager().getObject(select, new Object[]{userent, codiceImpresa});
       if(usernome!=null && !"".equals(usernome)){
+        
+        Long count = (Long) this.getSqlManager().getObject("select count(*) from w_invcom where IDPRG = ? and COMKEY1 = ? and COMSTATO = ?", new Object[]{"PA",usernome,5});
+        if(count > 0){
+          String msg = "Impossibile eliminare l'impresa in quanto sono presenti offerte non ancora acquisite";
+          Exception e = null;
+          throw new GestoreException(msg, "eliminazioneImpresa", e);
+        }
         //Eliminazione da W_PUSER
         this.getSqlManager().update(
             "delete from W_PUSER where USERENT = ? and USERKEY1 = ?",
@@ -170,11 +190,17 @@ public class GestoreIMPR extends AbstractGestoreEntita {
     }
    }
 
-   String integrazioneCineca = ConfigManager.getValore("cineca.ws.SoggettoCollettivo.url");
+   String integrazioneCineca = ConfigManager.getValore("integrazioneAnagraficheUGOV");
    integrazioneCineca = UtilityStringhe.convertiNullInStringaVuota(integrazioneCineca);
 
-   if(!"".equals(integrazioneCineca)){
+   if("1".equals(integrazioneCineca)){
+	   
     try {
+    	WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+        String[] credenziali = cinecaAnagraficaComuneManager.getWSLogin(new Long(50), "CINECA");
+        String username = credenziali[0];
+        String password = credenziali[1];
+   	
       Vector<?> naturaImprVect = this.sqlManager.getVector("select TIPIMP,NATGIUI from IMPR where CODIMP = ?", new Object[] { codiceImpresa });
       Long tipimp= null;
       Long natgiui = null;
@@ -196,12 +222,19 @@ public class GestoreIMPR extends AbstractGestoreEntita {
             }
             if("2".equals(resMsg[0])){
               //de-masterizzo (per la persona fisica e' una modifica):
-                  resMsg = cinecaWSPersoneFisicheManager.wsCinecaModProMastPersonaFisica(idInterno, null);
-                  if( resMsg[0] != null && new Integer(resMsg[0]) < 0 ){
-                    UtilityStruts.addMessage(this.getRequest(), "warning",
-                        "warnings.cineca.mancataIntegrazione",
-                        new Object[] { codiceImpresa, resMsg[1]});
-                  }
+				try {
+		           	WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+	               	anagrafica.setIdInterno(idInterno);
+		            WSERPUgovResType resPF = wserp.WSERPPersonaFisica(username,password, "MASTERIZZA", anagrafica);
+		            if(!resPF.isEsito()) {
+	                    UtilityStruts.addMessage(this.getRequest(), "warning",
+	                            "warnings.cineca.mancataIntegrazione",
+	                            new Object[] { codiceImpresa, resPF.getMessaggio()});
+		            }
+
+				} catch (RemoteException e) {
+				      throw new GestoreException( "Si e' verificato un errore durante la demasterizzazione della persona fisica ",null, e);
+				}
             }
           }
 
@@ -215,12 +248,19 @@ public class GestoreIMPR extends AbstractGestoreEntita {
             }
             if("2".equals(resMsg[0])){
               //de-masterizzo (per la ditta individuale e' una modifica):
-                  resMsg = cinecaWSManager.wsCinecaModProMastDittaIndividuale(idInterno, null);
-                  if( resMsg[0] != null && new Integer(resMsg[0]) < 0 ){
-                    UtilityStruts.addMessage(this.getRequest(), "warning",
-                        "warnings.cineca.mancataIntegrazione",
-                        new Object[] { codiceImpresa, resMsg[1]});
-                  }
+				try {
+		           	WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+	               	anagrafica.setIdInterno(idInterno);
+		            WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username,password, "MASTERIZZA", anagrafica);
+		            if(!resDI.isEsito()) {
+	                    UtilityStruts.addMessage(this.getRequest(), "warning",
+	                            "warnings.cineca.mancataIntegrazione",
+	                            new Object[] { codiceImpresa, resDI.getMessaggio()});
+		            }
+
+				} catch (RemoteException e) {
+				      throw new GestoreException( "Si e' verificato un errore durante la demasterizzazione della ditta individuale ",null, e);
+				}
             }
           }
         }
@@ -236,7 +276,18 @@ public class GestoreIMPR extends AbstractGestoreEntita {
           HashMap<String, Object> soggettoCollettivo = cinecaWSManager.getDatiSoggettoCollettivo(codiceImpresa);
           if("2".equals(resMsg[0])){
             //de-masterizzo: si usa il masterizza
-                cinecaWSManager.wsCinecaMasterizzaSoggettoCollettivo(idInterno, null);
+				try {
+		           	WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+	               	anagrafica.setIdInterno(idInterno);
+		            WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MASTERIZZA", anagrafica);
+		            if(!resSC.isEsito()) {
+	                    UtilityStruts.addMessage(this.getRequest(), "warning",
+	                            "warnings.cineca.mancataIntegrazione",
+	                            new Object[] { codiceImpresa, resSC.getMessaggio()});
+		            }
+				} catch (RemoteException e) {
+				      throw new GestoreException( "Si e' verificato un errore durante la demasterizzazione del soggetto collettivo ",null, e);
+				}
           }
         }
       }
@@ -246,6 +297,15 @@ public class GestoreIMPR extends AbstractGestoreEntita {
           "Errore nel controllo della tipologia dell'impresa " + codiceImpresa,null, e);
     }
    }
+   
+     LogEvento logevento = LogEventiUtils.createLogEvento(this.getRequest());
+     logevento.setLivEvento(1);
+     logevento.setOggEvento(codiceImpresa);
+     logevento.setCodEvento("DELETE_IMPR");
+     logevento.setDescr("Eliminazione impresa da anagrafica");
+     logevento.setErrmsg("");
+     LogEventiUtils.insertLogEventi(logevento);
+   
   }
 
   @Override
@@ -345,13 +405,17 @@ public class GestoreIMPR extends AbstractGestoreEntita {
       }
     }
 
-    String integrazioneCineca = ConfigManager.getValore("cineca.ws.SoggettoCollettivo.url");
+    String integrazioneCineca = ConfigManager.getValore("integrazioneAnagraficheUGOV");
     integrazioneCineca = UtilityStringhe.convertiNullInStringaVuota(integrazioneCineca);
 
     String integrazioneWSERP = ConfigManager.getValore("wserp.erp.url");
     integrazioneWSERP = UtilityStringhe.convertiNullInStringaVuota(integrazioneWSERP);
 
-    if(!"".equals(integrazioneCineca)){
+    if("1".equals(integrazioneCineca)){
+      WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+      String[] credenziali = cinecaWSManager.getWSLogin(new Long(50), "CINECA");
+      String username = credenziali[0];
+      String password = credenziali[1];
       String[] res = null;
       if(new Long(6).equals(tipimp)){
         if(new Long(10).equals(natgiui)){
@@ -616,8 +680,22 @@ public class GestoreIMPR extends AbstractGestoreEntita {
               String[] ctrlDOres = null;
               ctrlDOres = cinecaAnagraficaComuneManager.getDatiObbligatoriAnagrafica("TRACC", null, soggettoCollettivo);
               if("true".equals(ctrlDOres[0])){
-                WsdtoSoggettoCollettivoResponse wsdtoSoggettoCollettivoResponse = cinecaWSManager.wsCinecaMasterizzaSoggettoCollettivo(idInterno,codEsterno);
-                wsdtoSoggettoCollettivoResponse.getCodEsterno();
+				try {
+	                WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+	                anagrafica.setIdInterno(idInterno);
+	                anagrafica.setCodEsterno(codEsterno);
+	                WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username, password, "MASTERIZZA", anagrafica);
+	                if(!resSC.isEsito()) {
+		                   UtilityStruts.addMessage(this.getRequest(), "warning",
+		                           "warnings.cineca.mancataIntegrazione",
+		                           new Object[] {codimp,resSC.getMessaggio()});
+	                  	 //comporre il messaggio
+	                  	 //return retMsg;
+                    }
+				} catch (RemoteException re) {
+			        throw new GestoreException("Si e' verificato un errore durante la modifica del soggetto collettivo: " + re.getMessage(),
+			                "cineca.soggettoCollettivo.remote.error", new Object[] {re.getMessage()}, re);
+				}
               }else{
                 //retMsg[1] = ctrlDOres[1];
               }
@@ -628,18 +706,65 @@ public class GestoreIMPR extends AbstractGestoreEntita {
           if("true".equals(ctrlDOres[0])){
             if(new Long(6).equals(tipimp)){
               if(new Long(10).equals(natgiui)){
-                  cinecaWSPersoneFisicheManager.wsCinecaModificaPersonaFisica(this.getRequest(),soggettoCollettivo, client);
+				try {
+	                WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+	                WSERPUgovResType resPF = wserp.WSERPPersonaFisica(username,password, "MODIFICA", anagrafica);
+		     	       if(resPF != null && resPF.isEsito()) {
+		  	        	 if(Long.valueOf(-5).equals(resPF.getStato())) {
+			        		 UtilityStruts.addMessage(this.getRequest(), "warning",
+						                "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+						                new Object[] {resPF.getMessaggio()});
+		  	        	 }
+		     	       }else {
+		                   UtilityStruts.addMessage(this.getRequest(), "warning",
+		                           "warnings.cineca.mancataIntegrazione",
+		                           new Object[] {codimp,resPF.getMessaggio()});
+		     	       }
+				} catch (RemoteException re) {
+			        throw new GestoreException("Si e' verificato un errore durante la modifica della persona fisica: " + re.getMessage(),
+			                "cineca.personaFisica.remote.error", new Object[] {re.getMessage()}, re);
+				}
               }else{
-                res = cinecaWSManager.wsCinecaModificaDittaIndividuale(this.getRequest(),soggettoCollettivo, client);
+            	  
+  				try {
+	                WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+	                WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username,password, "MODIFICA", anagrafica);
+		     	       if(resDI != null && resDI.isEsito()) {
+		  	        	 if(Long.valueOf(-5).equals(resDI.getStato())) {
+			        		 UtilityStruts.addMessage(this.getRequest(), "warning",
+						                "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+						                new Object[] {resDI.getMessaggio()});
+		  	        	 }
+		     	       }else {
+		                   UtilityStruts.addMessage(this.getRequest(), "warning",
+		                           "warnings.cineca.mancataIntegrazione",
+		                           new Object[] {codimp,resDI.getMessaggio()});
+		     	       }
+				} catch (RemoteException re) {
+			        throw new GestoreException("Si e' verificato un errore durante la modifica della ditta individuale: " + re.getMessage(),
+			                "cineca.dittaIndividuale.remote.error", new Object[] {re.getMessage()}, re);
+				}
               }
 
-              if(res[0] != null && Integer.parseInt(res[0])<0){
-                UtilityStruts.addMessage(this.getRequest(), "warning",
-                    "warnings.cineca.mancataIntegrazione",
-                    new Object[] {codimp,res[1]});
-              }
             }else{
-                cinecaWSManager.wsCinecaModificaSoggettoCollettivo(this.getRequest(),soggettoCollettivo);
+				try {
+	                WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+	                WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MODIFICA", anagrafica);
+		     	       if(resSC != null && resSC.isEsito()) {
+		  	        	 if(Long.valueOf(-5).equals(resSC.getStato())) {
+			        		 UtilityStruts.addMessage(this.getRequest(), "warning",
+						                "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+						                new Object[] {resSC.getMessaggio()});
+		  	        	 }
+		     	       }else {
+		                   UtilityStruts.addMessage(this.getRequest(), "warning",
+		                           "warnings.cineca.mancataIntegrazione",
+		                           new Object[] {codimp,resSC.getMessaggio()});
+		     	       }
+				} catch (RemoteException re) {
+			        throw new GestoreException("Si e' verificato un errore durante la modifica del soggetto collettivo: " + re.getMessage(),
+			                "cineca.soggettoCollettivo.remote.error", new Object[] {re.getMessage()}, re);
+				}
             }
           }else{
             String msg = " - Non risultano valorizzati i seguenti dati obbligatori: \n" + ctrlDOres[1];
@@ -650,6 +775,13 @@ public class GestoreIMPR extends AbstractGestoreEntita {
 
         }
 
+
+      }else {
+    	  if(res[0] != null && "-7".equals(res[0])) {
+              UtilityStruts.addMessage(this.getRequest(), "warning",
+                      "warnings.cineca.mancataIntegrazione",
+                      new Object[] {codimp,res[1]});
+    	  }
 
       }
     }

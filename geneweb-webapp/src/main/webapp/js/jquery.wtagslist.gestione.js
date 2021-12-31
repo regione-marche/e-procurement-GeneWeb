@@ -251,16 +251,16 @@ $(window).on("load", function (){
 		);
 	
 	
-	$('#menumodificaetichette, #pulsantemodificaetichette').click(function() {
+	$('#menumodificaetichette, #pulsantemodificaetichette').on("click",function() {
 		schedaModifica();
     }); 
 	
-	$('#menusalvamodificheetichette, #pulsantesalvamodificheetichette').click(function() {
+	$('#menusalvamodificheetichette, #pulsantesalvamodificheetichette').on("click",function() {
 		_salvaW_TAGSLIST();
 		schedaConferma();
     });
 	
-	$('#menuannullamodificheetichette, #pulsanteannullamodificheetichette').click(function() {
+	$('#menuannullamodificheetichette, #pulsanteannullamodificheetichette').on("click",function() {
 		schedaAnnulla();
     });
 	

@@ -22,7 +22,11 @@ import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.spring.UtilitySpring;
 import it.eldasoft.utils.utility.UtilityDate;
 import it.eldasoft.utils.utility.UtilityStringhe;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovResType;
+import it.maggioli.eldasoft.ws.erp.WSERP_PortType;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -69,7 +73,7 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
       ServletContext servletContext, TransactionStatus status, DataColumnContainer impl)
       throws GestoreException {
 
-    String urlIntegrazioneCineca = ConfigManager.getValore("cineca.ws.SoggettoCollettivo.url");
+    String urlIntegrazioneCineca = ConfigManager.getValore("integrazioneAnagraficheUGOV");
     urlIntegrazioneCineca = UtilityStringhe.convertiNullInStringaVuota(urlIntegrazioneCineca);
 
     // creo un gestore per l'entità IMPIND in modo da fare gestire
@@ -119,8 +123,14 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
       if (deleteOccorrenza) {
 
         //Integrazione Cineca
-        if(!"".equals(urlIntegrazioneCineca)){
+        if("1".equals(urlIntegrazioneCineca)){
           CinecaWSManager cinecaWSManager = (CinecaWSManager) UtilitySpring.getBean("cinecaWSManager", servletContext, CinecaWSManager.class);
+          CinecaAnagraficaComuneManager cinecaAnagraficaComuneManager = (CinecaAnagraficaComuneManager) UtilitySpring.getBean("cinecaAnagraficaComuneManager", servletContext, CinecaAnagraficaComuneManager.class);
+          WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+          String[] credenziali = cinecaAnagraficaComuneManager.getWSLogin(new Long(50), "CINECA");
+          String username = credenziali[0];
+          String password = credenziali[1];
+
           //verifico la presenza del soggetto collettivo
           String codimp =impl.getString("IMPR.CODIMP");
           String[] res = cinecaWSManager.getCinecaSoggettoCollettivo(codimp);
@@ -133,9 +143,15 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
             HashMap<String, Object> soggettoCollettivo = cinecaWSManager.getDatiSoggettoCollettivo(codimp);
             if("1".equals(res[0])){
               //masterizzo
-                  String codEsterno = (String) soggettoCollettivo.get("codEsterno");
-                  WsdtoSoggettoCollettivoResponse wsdtoSoggettoCollettivoResponse = cinecaWSManager.wsCinecaMasterizzaSoggettoCollettivo(idInterno,codEsterno);
-                  wsdtoSoggettoCollettivoResponse.getCodEsterno();
+				try {
+					String codEsterno = (String) soggettoCollettivo.get("codEsterno");
+		           	WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+	               	anagrafica.setIdInterno(idInterno);
+	               	anagrafica.setCodEsterno(codEsterno);
+		            WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MASTERIZZA", anagrafica);
+				} catch (RemoteException e) {
+				      throw new GestoreException( "Si e' verificato un errore durante la masterizzazione del soggetto collettivo ",null, e);
+				}
             }
             //devo popolare il soggetto  con i dati appena modificati
             Boolean modificaCineca = false;
@@ -149,7 +165,13 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
 
               //modifico i dati esistenti
               if(modificaCineca){
-                cinecaWSManager.wsCinecaModificaSoggettoCollettivo(request,soggettoCollettivo);
+  				try {
+	                WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+	                WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MODIFICA", anagrafica);
+				} catch (RemoteException re) {
+			        throw new GestoreException("Si e' verificato un errore durante la modifica del soggetto collettivo: " + re.getMessage(),
+			                "cineca.soggettoCollettivo.remote.error", new Object[] {re.getMessage()}, re);
+				}
               }
             }
           }
@@ -165,9 +187,13 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
         if (updateOccorrenza){
 
           //Integrazione Cineca
-          if(!"".equals(urlIntegrazioneCineca)){
+          if("1".equals(urlIntegrazioneCineca)){
             CinecaWSManager cinecaWSManager = (CinecaWSManager) UtilitySpring.getBean("cinecaWSManager", servletContext, CinecaWSManager.class);
             CinecaAnagraficaComuneManager cinecaAnagraficaComuneManager = (CinecaAnagraficaComuneManager) UtilitySpring.getBean("cinecaAnagraficaComuneManager", servletContext, CinecaAnagraficaComuneManager.class);
+            WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+            String[] credenziali = cinecaAnagraficaComuneManager.getWSLogin(new Long(50), "CINECA");
+            String username = credenziali[0];
+            String password = credenziali[1];
             //verifico la presenza del soggetto collettivo
             String codimp =impl.getString("IMPR.CODIMP");
             String[] res = cinecaWSManager.getCinecaSoggettoCollettivo(codimp);
@@ -180,12 +206,18 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
               HashMap<String, Object> soggettoCollettivo = cinecaWSManager.getDatiSoggettoCollettivo(codimp);
               if("1".equals(res[0])){
                 //masterizzo
-                    String codEsterno = (String) soggettoCollettivo.get("codEsterno");
                     String[] ctrlDOres = null;
                     ctrlDOres = cinecaAnagraficaComuneManager.getDatiObbligatoriAnagrafica("TRACC", null, soggettoCollettivo);
                     if("true".equals(ctrlDOres[0])){
-                      WsdtoSoggettoCollettivoResponse wsdtoSoggettoCollettivoResponse = cinecaWSManager.wsCinecaMasterizzaSoggettoCollettivo(idInterno,codEsterno);
-                      wsdtoSoggettoCollettivoResponse.getCodEsterno();
+        				try {
+        					String codEsterno = (String) soggettoCollettivo.get("codEsterno");
+        		           	WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+        	               	anagrafica.setIdInterno(idInterno);
+        	               	anagrafica.setCodEsterno(codEsterno);
+        		            WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MASTERIZZA", anagrafica);
+        				} catch (RemoteException e) {
+        				      throw new GestoreException( "Si e' verificato un errore durante la masterizzazione del soggetto collettivo ",null, e);
+        				}
                     }else{
                       UtilityStruts.addMessage(request, "warning",
                           "warnings.cineca.mancataIntegrazione",
@@ -208,7 +240,13 @@ public class GestoreIMPLEG extends AbstractGestoreEntita {
                   String[] ctrlDOres = null;
                   ctrlDOres = cinecaAnagraficaComuneManager.getDatiObbligatoriAnagrafica("TRACC", null, soggettoCollettivo);
                   if("true".equals(ctrlDOres[0])){
-                    cinecaWSManager.wsCinecaModificaSoggettoCollettivo(request,soggettoCollettivo);
+        				try {
+        	                WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+        	                WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MODIFICA", anagrafica);
+        				} catch (RemoteException re) {
+        			        throw new GestoreException("Si e' verificato un errore durante la modifica del soggetto collettivo: " + re.getMessage(),
+        			                "cineca.soggettoCollettivo.remote.error", new Object[] {re.getMessage()}, re);
+        				}
                   }else{
                     UtilityStruts.addMessage(request, "warning",
                         "warnings.cineca.mancataIntegrazione",

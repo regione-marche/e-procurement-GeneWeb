@@ -104,7 +104,7 @@
 							tagscode_on.push(tagcod);
 						}
 						
-						_span.click(function() {
+						_span.on("click",function() {
 							  if ($(this).hasClass("CDEFAULT")) {
 								  $(this).removeClass("CDEFAULT");
 								  $(this).addClass("C" + tagcod);

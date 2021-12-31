@@ -22,6 +22,10 @@ import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.utility.UtilityDate;
 import it.eldasoft.utils.utility.UtilityStringhe;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaResType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovResType;
+import it.maggioli.eldasoft.ws.erp.WSERP_PortType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -103,29 +107,47 @@ public class CinecaWSPersoneFisicheManager {
           }
         }
         if(codiceFiscale!=null || partitaIva!=null){
-          WsdtoPersonaFisicaResponce personaFisicaResp = this.wsCinecaEstraiPersonaFisica(codiceFiscale,partitaIva,nazionalita);
-          if(personaFisicaResp != null && personaFisicaResp.getCognome() != null ){
-            if((new Long(1).equals(nazionalita) && (personaFisicaResp.getPartitaIva() != null || personaFisicaResp.getCodiceFiscale() != null))
-                || (!new Long(1).equals(nazionalita) && personaFisicaResp.getPartitaIvaEstero() != null && personaFisicaResp.getPartitaIvaEstero().equals(partitaIva))){
-              if(personaFisicaResp.getCodAnagrafico() != null){
-                res[0] = "2";
-                res[1] = personaFisicaResp.getCodAnagrafico();
-                Long idInterno = personaFisicaResp.getIdInterno();
-                if(idInterno != null){
-                  res[2] = idInterno.toString();
-                }
-                return res;
+        	
+			WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+			
+            String[] credenziali = cinecaAnagraficaComuneManager.getWSLogin(new Long(50), "CINECA");
+            String username = credenziali[0];
+            String password = credenziali[1];
+			
+			WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+			anagrafica.setCodiceFiscale(codiceFiscale);
+			anagrafica.setPartitaIva(partitaIva);
+			anagrafica.setNazione(nazionalita);
+			WSERPUgovResType resSC = wserp.WSERPPersonaFisica(username, password, "ESTRAI", anagrafica);
+            if(resSC != null && resSC.isEsito()) {
+            	WSERPUgovAnagraficaResType anagraficaRes = resSC.getAnagraficaRes();
+            	if(anagraficaRes != null && anagraficaRes.getIdInterno() != null ){
+                        if((new Long(1).equals(nazionalita) && (anagraficaRes.getPartitaIva() != null || anagraficaRes.getCodiceFiscale() != null))
+                            || (!new Long(1).equals(nazionalita) && anagraficaRes.getPartitaIvaEstero() != null && anagraficaRes.getPartitaIvaEstero().equals(partitaIva))){
+                          if(anagraficaRes.getCodiceAnagrafico() != null){
+                            res[0] = "2";
+                            res[1] = anagraficaRes.getCodiceAnagrafico();
+                            Long idInterno = anagraficaRes.getIdInterno();
+                            if(idInterno != null){
+                              res[2] = idInterno.toString();
+                            }
+                            return res;
+                          }else{
+                            res[0] = "1";
+                            Long idInterno = anagraficaRes.getIdInterno();
+                            res[2] = idInterno.toString();
+                          }
+                        }else{
+                          res[0] = "-1";
+                        }
               }else{
-                res[0] = "1";
-                Long idInterno = personaFisicaResp.getIdInterno();
-                res[2] = idInterno.toString();
+                res[0] = "-1";
               }
-            }else{
-              res[0] = "-1";
+            }else {
+            	res[0] = "-7";
+            	res[1] = resSC.getMessaggio();
             }
-          }else{
-            res[0] = "-1";
-          }
+
         }else{
           res[0] = "-1";
         }

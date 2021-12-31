@@ -198,7 +198,7 @@ $(window).on("load", function (){
 	}
 	
 	
-	$("body").delegate('#tabellaC0CAMPI tr td:nth-child(3)', "mouseover",
+	$("body").on("mouseover",'#tabellaC0CAMPI tr td:nth-child(3)', 
 		function(event) {
 			var _c0e_nom = _tabellaC0CAMPI.cell( this ).data();
 			_c0e_nom = _c0e_nom.substring(_c0e_nom.search("\\.") + 1);
@@ -218,7 +218,7 @@ $(window).on("load", function (){
 		}
 	);
 		
-	$("body").delegate('#tabellaC0CAMPI tr', "mouseout",
+	$("body").on("mouseout",'#tabellaC0CAMPI tr', 
 		function() {
 			$("#div_descrizione").remove();
 		}

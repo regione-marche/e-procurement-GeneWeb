@@ -2233,7 +2233,7 @@ function checkPivaNazionalita(piva,selectNazionalita){
 	if(isItalia == "si"){
 		return checkCodFis(piva);
 	}else{
-	    return checkPivaEuropea(piva);	
+	    return true;	
 	}
 }
 

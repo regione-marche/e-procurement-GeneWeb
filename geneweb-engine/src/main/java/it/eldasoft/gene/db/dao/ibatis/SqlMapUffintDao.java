@@ -76,4 +76,10 @@ public class SqlMapUffintDao extends SqlMapClientDaoSupportBase implements
         hash);
   }
 
+  @Override
+  public UfficioIntestatario getUfficioIntestatarioByPKWithAddressAndNation(String codice) throws DataAccessException {
+    return (UfficioIntestatario) this.getSqlMapClientTemplate().queryForObject(
+        "getUfficioIntestatarioByPKWithAddressAndNation", codice);
+  }
+
 }

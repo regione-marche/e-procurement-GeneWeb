@@ -27,7 +27,7 @@
   </resultMap>
 
   <select id="getConfigurazioneMailByCodappIdcfg" resultMap="resultDettaglio" parameterClass="java.util.HashMap">
-  	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,'Default') as nomein, w_mail.server,
+  	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,w_mail.idcfg) as nomein, w_mail.server,
     	 w_mail.porta, w_mail.protocollo, w_mail.timeout, w_mail.tracciatura_messaggi, w_mail.mail_mittente,
     	 w_mail.password, w_mail.id_user, w_mail.dim_tot_allegati, w_mail.delay
        	FROM W_MAIL left join UFFINT on w_mail.idcfg = uffint.codein
@@ -35,7 +35,7 @@
   </select>
   
   <select id="getListaConfigurazioneMailByCodapp" resultMap="resultLista" parameterClass="java.util.HashMap">
-	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,'Default') as nomein, w_mail.server, w_mail.mail_mittente 
+	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,w_mail.idcfg) as nomein, w_mail.server, w_mail.mail_mittente 
       	FROM W_MAIL left join UFFINT on w_mail.idcfg = uffint.codein
       where w_mail.codapp=#codapp#
   </select>

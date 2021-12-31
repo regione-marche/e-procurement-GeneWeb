@@ -73,7 +73,7 @@
 					$("#opzioniDisponibili").val(opzioniDisponibili);
 				}
 				
-				$('[name^="opzioneSelezionabile_"]').change(
+				$('[name^="opzioneSelezionabile_"]').on("change",
 					function() {
 						setOpzioniDisponibili();
 					}

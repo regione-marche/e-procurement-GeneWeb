@@ -972,7 +972,7 @@ public class ModelliManager {
     // 12/09/2006 M.F. Prima Versione
     // ************************************************************
 
-    String estensioni = ".rtf;.txt;.odt;";
+    String estensioni = ".rtf;.txt;.odt;.docx;";
     if (fileName.indexOf(SEPARATORE_PROP) >= 0) {
       String estensione = fileName.substring(
           fileName.lastIndexOf(SEPARATORE_PROP)).toLowerCase()

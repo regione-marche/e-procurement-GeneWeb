@@ -40,6 +40,16 @@ public interface UffintDao {
    */
   public UfficioIntestatario getUfficioIntestatarioByPK(String codice)
       throws DataAccessException;
+  /**
+   * Estrare il singolo ufficio intestatario con le informazioni aggiuntive di Address e Nation che servono principalmente a NSO a partire dalla chiave
+   * 
+   * @param codice
+   *        chiave primaria di UFFINT
+   * @return record estratto a partire dalla chiave
+   * @throws DataAccessException
+   */
+  public UfficioIntestatario getUfficioIntestatarioByPKWithAddressAndNation(String codice)
+      throws DataAccessException;
 
   /**
    * Metodo per estrarre la lista degli uffici intestatari a cui un utente e'

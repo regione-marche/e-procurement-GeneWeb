@@ -547,7 +547,7 @@ $(function() {
   
 <script type="text/javascript">
 <!--
-	$('textarea[name="parametriModello"]').bind('input propertychange', function() {checkInputLength( $(this)[0], 512)});
+	$('textarea[name="parametriModello"]').on('input propertychange', function() {checkInputLength( $(this)[0], 512)});
 -->
 </script>  
 </BODY>

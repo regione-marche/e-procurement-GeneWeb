@@ -46,7 +46,7 @@
 			<gene:checkCampoScheda funzione='checkCodFisNazionalita("##",document.getElementById("TEIM_NAZTIM"))' obbligatorio="${obbligatoriaCorrettezzaCodFisc}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>	
 		<gene:campoScheda campo="PIVATEI" obbligatorio='${obbligatorioPIVA}'>
-			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("TEIM_NAZTIM"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido (anteporre la sigla della nazione se estera).' onsubmit="false"/>
+			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("TEIM_NAZTIM"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>
 		<gene:campoScheda campo="INDTIM"/>
 		<gene:campoScheda campo="NCITIM"/>
@@ -119,7 +119,6 @@
 		
 		<gene:campoScheda campo="TCAPRE"/>
 		<gene:campoScheda campo="NCAPRE"/>
-		
 		<gene:campoScheda campo="NOTTIM"/>
 	</gene:gruppoCampi>
 	
@@ -234,7 +233,7 @@
  	 		if(isItalia == "si"){
 		 	 	controlloOkPIVA=checkParIva(piva);
 		 	}else{
-	 	 		controlloOkPIVA=checkPivaEuropea(piva);	
+	 	 		controlloOkPIVA=true;	
 	 	 	}
 	 	 	if(!controlloOkPIVA){
 	 	 		outMsg("Il valore della Partita I.V.A. o V.A.T. specificato non è valido", "ERR");

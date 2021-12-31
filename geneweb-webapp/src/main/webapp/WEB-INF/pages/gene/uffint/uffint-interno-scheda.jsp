@@ -45,13 +45,25 @@
 
 <gene:formScheda entita="UFFINT" gestisciProtezioni="true" gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreUFFINT" >
 
-	<c:if test='${modo eq "VISUALIZZA" and gene:checkProt(pageContext, "FUNZ.VIS.ALT.GENE.SchedaUffint.Utenti") and fn:contains(listaOpzioniDisponibili, "OP101#") and (fn:contains(listaOpzioniUtenteAbilitate, "ou11#") and !fn:contains(listaOpzioniUtenteAbilitate, "ou12#"))}'>
+	<c:if test='${modo eq "VISUALIZZA"}'>
 		<gene:redefineInsert name="addToAzioni">
-			<tr>
-				<td class="vocemenulaterale" ><a 
-				href="javascript:Utenti();" tabindex="1503"
-				title="Utenti">Utenti</a></td>
-			</tr>
+			<c:if test='${gene:checkProt(pageContext, "FUNZ.VIS.ALT.GENE.SchedaUffint.Utenti") and fn:contains(listaOpzioniDisponibili, "OP101#") and (fn:contains(listaOpzioniUtenteAbilitate, "ou11#") and !fn:contains(listaOpzioniUtenteAbilitate, "ou12#"))}'>
+				<tr>
+					<td class="vocemenulaterale" ><a 
+					href="javascript:Utenti();" tabindex="1503"
+					title="Utenti">Utenti</a></td>
+				</tr>
+			</c:if>
+			<c:if test='${gene:checkProt(pageContext, "FUNZ.VIS.ALT.GENE.UFFINT.Storico") }'>
+				<c:set var="numDatiStorico" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.GetNumDatiStoricoUffintFunction", pageContext, gene:getValCampo(key, "UFFINT.CODEIN"))}'/>
+				<c:if test='${numDatiStorico ne "0"}'>
+					<tr>
+						<td class="vocemenulaterale" ><a 
+						href="javascript:DatiStorico();" tabindex="1504"
+						title="Dati storici">Dati storico (${numDatiStorico})</a></td>
+					</tr>
+				</c:if>
+			</c:if>
 		</gene:redefineInsert>
 	</c:if>
 	
@@ -67,7 +79,7 @@
 			<gene:checkCampoScheda funzione='checkCodFisNazionalita("##",document.getElementById("UFFINT_CODNAZ"))' obbligatorio="${obbligatoriaCorrettezzaCodFisc}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>	
 		<gene:campoScheda campo="IVAEIN" obbligatorio='${obbligatorioPIVA}'>
-			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("UFFINT_CODNAZ"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido (anteporre la sigla della nazione se estera).' onsubmit="false"/>
+			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("UFFINT_CODNAZ"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>
 		<gene:campoScheda campo="VIAEIN"/>
 		<gene:campoScheda campo="NCIEIN"/>
@@ -247,6 +259,10 @@
 		document.location.href = '${pageContext.request.contextPath}/ApriPagina.do?'+csrfToken+'&href=gene/uffint/uffint-lista-utenti.jsp&key=${key}';
 	}
 	
+	function DatiStorico(){
+		document.location.href = '${pageContext.request.contextPath}/ApriPagina.do?'+csrfToken+'&href=gene/sto_uffint/sto_uffint-lista.jsp&codiceUfficio=${codiceUfficio}';
+	}
+	
 	<c:if test='${!(modo eq "VISUALIZZA")}'>
 	 	var schedaConferma_Default = schedaConferma;
 	 	
@@ -279,7 +295,7 @@
 	 		if(isItalia == "si"){
 	 			controlloOkPIVA=checkParIva(piva);
 		 	}else{
-	 			controlloOkPIVA=checkPivaEuropea(piva);
+	 			controlloOkPIVA=true;
 	 		}
 	 	 	if(!controlloOkPIVA){
 	 	 		outMsg("Il valore della Partita I.V.A. o V.A.T. specificato non è valido", "ERR");
@@ -313,7 +329,11 @@
 				"display":"inline-block"
 			});
 		}
-		
+		<c:if test='${gene:checkProt(pageContext, "FUNZ.VIS.ALT.GENE.UFFINT.Storico")}'>
+			<c:if test='${!empty storicoUffint}'>
+			openPopUpCustom("href=gene/sto_uffint/sto_uffint-scheda-popup.jsp&modo=NUOVO", "storicoUffint", 650, 600, 1, 1);
+			</c:if>
+		</c:if>
 	</c:if>
 	
 	function gestioneOrdinanteIPA(isoipa){

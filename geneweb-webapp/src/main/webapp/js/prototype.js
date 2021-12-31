@@ -82,7 +82,7 @@ var Class = (function() {
   function subclass() {};
   function create() {
     var parent = null, properties = $A(arguments);
-    if (Object.isFunction(properties[0]))
+    if ((typeof properties[0] === "function"))
       parent = properties.shift();
 
     function klass() {
@@ -122,7 +122,7 @@ var Class = (function() {
 
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];
-      if (ancestor && Object.isFunction(value) &&
+      if (ancestor && (typeof value === "function") &&
           value.argumentNames().first() == "$super") {
         var method = value;
         value = (function(m) {
@@ -420,7 +420,7 @@ Object.extend(String, {
 Object.extend(String.prototype, (function() {
 
   function prepareReplacement(replacement) {
-    if (Object.isFunction(replacement)) return replacement;
+    if ((typeof replacement === "function")) return replacement;
     var template = new Template(replacement);
     return function(match) { return template.evaluate(match) };
   }
@@ -515,7 +515,7 @@ Object.extend(String.prototype, (function() {
         if (value != undefined) value = decodeURIComponent(value);
 
         if (key in hash) {
-          if (!Object.isArray(hash[key])) hash[key] = [hash[key]];
+          if (!Array.isArray(hash[key])) hash[key] = [hash[key]];
           hash[key].push(value);
         }
         else hash[key] = value;
@@ -668,7 +668,7 @@ var Template = Class.create({
   },
 
   evaluate: function(object) {
-    if (object && Object.isFunction(object.toTemplateReplacements))
+    if (object && (typeof object.toTemplateReplacements === "function"))
       object = object.toTemplateReplacements();
 
     return this.template.gsub(this.pattern, function(match) {
@@ -783,7 +783,7 @@ var Enumerable = (function() {
   }
 
   function include(object) {
-    if (Object.isFunction(this.indexOf))
+    if ((typeof this.indexOf === "function"))
       if (this.indexOf(object) != -1) return true;
 
     var found = false;
@@ -885,7 +885,7 @@ var Enumerable = (function() {
 
   function zip() {
     var iterator = Prototype.K, args = $A(arguments);
-    if (Object.isFunction(args.last()))
+    if ((typeof args.last() === "function"))
       iterator = args.pop();
 
     var collections = [this].concat(args).map($A);
@@ -992,7 +992,7 @@ Array.from = $A;
 
   function flatten() {
     return this.inject([], function(array, value) {
-      if (Object.isArray(value))
+      if (Array.isArray(value))
         return array.concat(value.flatten());
       array.push(value);
       return array;
@@ -1065,7 +1065,7 @@ Array.from = $A;
     var array = slice.call(this, 0), item;
     for (var i = 0, length = arguments.length; i < length; i++) {
       item = arguments[i];
-      if (Object.isArray(item) && !('callee' in item)) {
+      if (Array.isArray(item) && !('callee' in item)) {
         for (var j = 0, arrayLength = item.length; j < arrayLength; j++)
           array.push(item[j]);
       } else {
@@ -1180,7 +1180,7 @@ var Hash = Class.create(Enumerable, (function() {
       var key = encodeURIComponent(pair.key), values = pair.value;
 
       if (values && typeof values == 'object') {
-        if (Object.isArray(values))
+        if (Array.isArray(values))
           return results.concat(values.map(toQueryPair.curry(key)));
       } else results.push(toQueryPair(key, values));
       return results;
@@ -1340,7 +1340,7 @@ Ajax.Responders = {
 
   dispatch: function(callback, request, transport, json) {
     this.each(function(responder) {
-      if (Object.isFunction(responder[callback])) {
+      if ((typeof responder[callback] === "function")) {
         try {
           responder[callback].apply(responder, [request, transport, json]);
         } catch (e) { }
@@ -1459,7 +1459,7 @@ Ajax.Request = Class.create(Ajax.Base, {
     if (typeof this.options.requestHeaders == 'object') {
       var extras = this.options.requestHeaders;
 
-      if (Object.isFunction(extras.push))
+      if ((typeof extras.push === "function"))
         for (var i = 0, length = extras.length; i < length; i += 2)
           headers[extras[i]] = extras[i+1];
       else
@@ -1638,7 +1638,7 @@ Ajax.Updater = Class.create(Ajax.Request, {
     var onComplete = options.onComplete;
     options.onComplete = (function(response, json) {
       this.updateContent(response.responseText);
-      if (Object.isFunction(onComplete)) onComplete(response, json);
+      if ((typeof onComplete === "function")) onComplete(response, json);
     }).bind(this);
 
     $super(url, options);
@@ -2900,7 +2900,7 @@ Element.extend = (function() {
   function extendElementWith(element, methods) {
     for (var property in methods) {
       var value = methods[property];
-      if (Object.isFunction(value) && !(property in element))
+      if ((typeof value === "function") && !(property in element))
         element[property] = value.methodize();
     }
   }
@@ -2979,7 +2979,7 @@ Element.addMethods = function(methods) {
 
   if (!tagName) Object.extend(Element.Methods, methods || { });
   else {
-    if (Object.isArray(tagName)) tagName.each(extend);
+    if (Array.isArray(tagName)) tagName.each(extend);
     else extend(tagName);
   }
 
@@ -2994,7 +2994,7 @@ Element.addMethods = function(methods) {
     onlyIfAbsent = onlyIfAbsent || false;
     for (var property in methods) {
       var value = methods[property];
-      if (!Object.isFunction(value)) continue;
+      if (!(typeof value === "function")) continue;
       if (!onlyIfAbsent || !(property in destination))
         destination[property] = value.methodize();
     }
@@ -3245,7 +3245,7 @@ var Selector = Class.create({
         p = ps[i].re;
         name = ps[i].name;
         if (m = e.match(p)) {
-          this.matcher.push(Object.isFunction(c[name]) ? c[name](m) :
+          this.matcher.push((typeof c[name] === "function") ? c[name](m) :
             new Template(c[name]).evaluate(m));
           e = e.replace(m[0], '');
           break;
@@ -3253,7 +3253,7 @@ var Selector = Class.create({
       }
     }
 
-    this.matcher.push("return h.unique(n);\n}");
+    this.matcher.push("return h.uniqueSort(n);\n}");
     eval(this.matcher.join('\n'));
     Selector._cache[this.expression] = this.matcher;
   },
@@ -3272,7 +3272,7 @@ var Selector = Class.create({
       for (var i = 0; i<len; i++) {
         name = ps[i].name;
         if (m = e.match(ps[i].re)) {
-          this.matcher.push(Object.isFunction(x[name]) ? x[name](m) :
+          this.matcher.push((typeof x[name] === "function") ? x[name](m) :
             new Template(x[name]).evaluate(m));
           e = e.replace(m[0], '');
           break;
@@ -3391,7 +3391,7 @@ Object.extend(Selector, {
     pseudo: function(m) {
       var h = Selector.xpath.pseudos[m[1]];
       if (!h) return '';
-      if (Object.isFunction(h)) return h(m);
+      if ((typeof h === "function")) return h(m);
       return new Template(Selector.xpath.pseudos[m[1]]).evaluate(m);
     },
     operators: {
@@ -3421,7 +3421,7 @@ Object.extend(Selector, {
           for (var i = 0; i<len; i++) {
             name = p[i].name
             if (m = e.match(p[i].re)) {
-              v = Object.isFunction(x[name]) ? x[name](m) : new Template(x[name]).evaluate(m);
+              v = (typeof x[name] === "function") ? x[name](m) : new Template(x[name]).evaluate(m);
               exclusion.push("(" + v.substring(1, v.length - 1) + ")");
               e = e.replace(m[0], '');
               break;
@@ -3896,7 +3896,7 @@ Object.extend(Selector, {
       selector = new Selector(expressions[i].strip());
       h.concat(results, selector.findElements(element));
     }
-    return (l > 1) ? h.unique(results) : results;
+    return (l > 1) ? h.uniqueSort(results) : results;
   }
 });
 
@@ -3932,7 +3932,7 @@ var Form = {
         if (value != null && element.type != 'file' && (element.type != 'submit' || (!submitted &&
             submit !== false && (!submit || key == submit) && (submitted = true)))) {
           if (key in result) {
-            if (!Object.isArray(result[key])) result[key] = [result[key]];
+            if (!Array.isArray(result[key])) result[key] = [result[key]];
             result[key].push(value);
           }
           else result[key] = value;
@@ -4141,7 +4141,7 @@ Form.Element.Serializers = {
       return this[element.type == 'select-one' ?
         'selectOne' : 'selectMany'](element);
     else {
-      var opt, currentValue, single = !Object.isArray(value);
+      var opt, currentValue, single = !Array.isArray(value);
       for (var i = 0, length = element.length; i < length; i++) {
         opt = element.options[i];
         currentValue = this.optionValue(opt);

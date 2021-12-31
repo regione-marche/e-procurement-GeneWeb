@@ -142,6 +142,6 @@
 
 <script type="text/javascript">
 <!--
-	$('textarea[name="annotazioni"]').bind('input propertychange', function() {checkInputLength( $(this)[0], 2000)});
+	$('textarea[name="annotazioni"]').on('input propertychange', function() {checkInputLength( $(this)[0], 2000)});
 -->
 </script>

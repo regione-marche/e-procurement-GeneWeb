@@ -54,6 +54,12 @@ import it.eldasoft.utils.sicurezza.ICriptazioneByte;
 import it.eldasoft.utils.utility.UtilityDate;
 import it.eldasoft.utils.utility.UtilityFiscali;
 import it.eldasoft.utils.utility.UtilityStringhe;
+import it.maggioli.eldasoft.ws.conf.WSERPConfigurazioneOutType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaResType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaType;
+import it.maggioli.eldasoft.ws.erp.WSERPUgovResType;
+import it.maggioli.eldasoft.ws.erp.WSERP_PortType;
+import it.maggioli.eldasoft.ws.erp.WSERP_ServiceLocator;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -105,6 +111,8 @@ public class CinecaWSManager {
   private static final String SERVIZIO_DITTEINDIVIDUALI                      = "DITTEINDIVIDUALI";
   private static final String PROP_WSDITTEINDIVIDUALI_URL                      = "cineca.ws.DitteIndividuali.url";
   private static final String PROP_WSDITTEINDIVIDUALI_CLIENT                   = "cineca.ws.SoggettoCollettivo.client";
+  
+  private static final String PROP_WSERP_ERP_URL                              = "wserp.erp.url";
 
 
   private SqlManager          sqlManager;
@@ -153,7 +161,7 @@ public class CinecaWSManager {
       }
     }
 
-    String[] credenziali = this.getWSLogin(new Long(50), "CINECA");
+    String[] credenziali = this.getWSLogin(Long.valueOf(50), "CINECA");
 
     String username = credenziali[0];
     String password = credenziali[1];
@@ -844,7 +852,6 @@ public class CinecaWSManager {
 
       wscineca.masterizzaSoggettoCollettivo(dtoSearchSimple, null, null, codEsterno);
 
-
     } catch (Throwable t) {
       throw new GestoreException("Si e' verificato un errore durante la modifica del soggetto collettivo: " + t.getMessage(),
           "cineca.soggettoCollettivo.remote.error", new Object[] {t.getMessage()}, t);
@@ -1260,29 +1267,55 @@ public class CinecaWSManager {
           }
         }
           if(codiceFiscale!=null || partitaIva!=null){
-            WsdtoSoggettoCollettivoResponse soggcollResp = this.wsCinecaEstraiSoggettoCollettivo(codiceFiscale,partitaIva,nazionalita);
-            if(soggcollResp != null){
-              if((new Long(1).equals(nazionalita) && (soggcollResp.getPartitaIva() != null || soggcollResp.getCodFiscale() != null))
-                  || (!new Long(1).equals(nazionalita) && soggcollResp.getPartitaIvaEstero() != null && soggcollResp.getPartitaIvaEstero().equals(partitaIva))){
-                if(soggcollResp.getCodAnagrafico() != null){
-                  res[0] = "2";
-                  res[1] = soggcollResp.getCodAnagrafico();
-                  Long idInterno = soggcollResp.getIdInterno();
-                  if(idInterno != null){
-                    res[2] = idInterno.toString();
-                  }
-                  return res;
-                }else{
-                  res[0] = "1";
-                  Long idInterno = soggcollResp.getIdInterno();
-                  res[2] = idInterno.toString();
-                }
-              }else{
-                res[0] = "-1";
-              }
-            }else{
-              res[0] = "-1";
-            }
+			
+				WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+				
+	            String[] credenziali = this.getWSLogin(new Long(50), "CINECA");
+	            String username = credenziali[0];
+	            String password = credenziali[1];
+				
+				WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+				anagrafica.setCodiceFiscale(codiceFiscale);
+				anagrafica.setPartitaIva(partitaIva);
+				anagrafica.setNazione(nazionalita);
+
+		            WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username, password, "ESTRAI", anagrafica);
+		            
+		            if(resSC != null && resSC.isEsito()) {
+		            	WSERPUgovAnagraficaResType anagraficaRes = resSC.getAnagraficaRes();
+		            	if(anagraficaRes != null) {
+		                    if((new Long(1).equals(nazionalita) && (anagraficaRes.getPartitaIva() != null || anagraficaRes.getCodiceFiscale() != null))
+		                            || (!new Long(1).equals(nazionalita) && anagraficaRes.getPartitaIvaEstero() != null && anagraficaRes.getPartitaIvaEstero().equals(partitaIva))){
+		                    	
+		                        if(anagraficaRes.getCodiceAnagrafico() != null){
+		                            res[0] = "2";
+		                            res[1] = anagraficaRes.getCodiceAnagrafico();
+		                            Long idInterno = anagraficaRes.getIdInterno();
+		                            if(idInterno != null){
+		                              res[2] = idInterno.toString();
+		                            }
+		                            return res;
+		                          }else{
+		                            res[0] = "1";
+		                            Long idInterno = anagraficaRes.getIdInterno();
+		                            res[2] = idInterno.toString();
+		                          }
+		                    }else{
+		                        res[0] = "-1";
+		                    }
+		            	}else {
+		            		res[0] = "-1";
+		            	}
+		            	
+		            	
+		            }else {
+		            	//cf19
+		            	res[0] = "-7";
+		            	res[1] = resSC.getMessaggio();
+		            }
+
+        	  
+
           }else{
             res[0] = "-1";
           }
@@ -1292,7 +1325,10 @@ public class CinecaWSManager {
     } catch (SQLException e) {
       throw new GestoreException(
           "Errore nella selezione della partita IVA della ditta aggiudicataria ", null,e);
-    }
+    } catch (RemoteException e) {
+        throw new GestoreException(
+                "Errore nella selezione della partita IVA della ditta aggiudicataria ", null,e);
+	}
 
     return res;
 
@@ -1426,20 +1462,48 @@ public class CinecaWSManager {
     //ctrlDOres[0]="true";
     if("true".equals(ctrlDOres[0])){
       String client = null;
-      if(new Long(6).equals(tipoImpresa)){
-        Long formaGiuridica = (Long) containerIMPR.getColumn("IMPR.NATGIUI").getValue().getValue();
-        if (new Long(10).equals(formaGiuridica)) {
-          this.cinecaWSPersoneFisicheManager.wsCinecaModificaPersonaFisica(request, soggettoCollettivo, client);
-        }else{
-          res = this.wsCinecaModificaDittaIndividuale(request, soggettoCollettivo, client);
-        }
-      }else{
-          this.wsCinecaModificaSoggettoCollettivo(request,soggettoCollettivo);
-      }
-
-      if(res[0] != null && Integer.parseInt(res[0])<0){
-        this.setNoteAvvisi(res[1], codEsterno, "INS", new Long(50), new Timestamp(UtilityDate.getDataOdiernaAsDate().getTime()), false);
-      }
+      try {
+      
+	      WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+	      String[] credenziali = this.getWSLogin(new Long(50), "CINECA");
+	      String username = credenziali[0];
+	      String password = credenziali[1];
+	      WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+	      if(new Long(6).equals(tipoImpresa)){
+	        Long formaGiuridica = (Long) containerIMPR.getColumn("IMPR.NATGIUI").getValue().getValue();
+	        if (new Long(10).equals(formaGiuridica)) {
+	          WSERPUgovResType resPF = wserp.WSERPPersonaFisica(username,password, "MODIFICA", anagrafica);
+	          if(!resPF.isEsito()) {
+	              String msg = resPF.getMessaggio();
+	              res[0] = "-7";
+	              res[1] = msg;
+	          }
+	        }else{
+	          WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username,password, "MODIFICA", anagrafica);
+	          if(!resDI.isEsito()) {
+	              String msg = resDI.getMessaggio();
+	              res[0] = "-7";
+	              res[1] = msg;
+	          }
+	        }
+	      }else{
+	          WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MODIFICA", anagrafica);
+	          if(!resSC.isEsito()) {
+	              String msg = resSC.getMessaggio();
+	              res[0] = "-7";
+	              res[1] = msg;
+	          }
+	          
+	      }
+	
+	      if(res[0] != null && Integer.parseInt(res[0])<0){
+	        this.setNoteAvvisi(res[1], codEsterno, "INS", new Long(50), new Timestamp(UtilityDate.getDataOdiernaAsDate().getTime()), false);
+	      }
+	  } catch (RemoteException re) {
+	      throw new GestoreException("Si e' verificato un errore durante la modifica della anagrafica U-GOV: " + re.getMessage(),
+	              "cineca.anagraficaGenerica.remote.error",new Object[] {re.getMessage()}, re);
+	  }
+      
 
     }else{
       res[0] = "false";
@@ -1519,7 +1583,7 @@ public class CinecaWSManager {
    *
    */
 
-  private String[] getWSLogin(Long syscon, String servizio) throws GestoreException{
+  public String[] getWSLogin(Long syscon, String servizio) throws GestoreException{
     String [] cred = new String [2];
 
     List<?> datiWSLogin;
@@ -1561,12 +1625,21 @@ public class CinecaWSManager {
    *
    * @param dittaCineca
    * @return esito
+   * @throws RemoteException 
    * @throws GestoreException
    */
-  public String[] gestioneDittaCineca(HttpServletRequest request,String dittaCineca, Long tipoImpresa, Long formaGiuridica){
+  public String[] gestioneDittaCineca(HttpServletRequest request,String dittaCineca, Long tipoImpresa, Long formaGiuridica)
+  {
     String[] retMsg = new String[2];
     String[] res;
    try {
+	   
+		WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+		
+        String[] credenziali = this.getWSLogin(new Long(50), "CINECA");
+        String username = credenziali[0];
+        String password = credenziali[1];
+
      if(new Long(6).equals(tipoImpresa)){
        if(formaGiuridica != null && new Long(10).equals(formaGiuridica)){
          //PERSONA FISICA
@@ -1589,7 +1662,26 @@ public class CinecaWSManager {
                retMsg[1] = ctrlDOres[1];
                return retMsg;
              }
-             cinecaWSPersoneFisicheManager.wsCinecaModificaPersonaFisica(request, datiPersonaFisica, client);
+             
+             WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(datiPersonaFisica);
+             WSERPUgovResType resPF = wserp.WSERPPersonaFisica(username,password, "MODIFICA", anagrafica);
+	         if(!resPF.isEsito()) {
+	        	 retMsg[0] = "-7";
+	             retMsg[1] = resPF.getMessaggio();
+	             return retMsg;
+	         }else {
+	        	 if(Long.valueOf(-5).equals(resPF.getStato())) {
+	        		 UtilityStruts.addMessage(request, "warning",
+				                "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+				                new Object[] {resPF.getMessaggio()});
+	            	request.setAttribute("MSGUGOV", "WARNING");
+	            	retMsg[0] = "-5";
+	            	retMsg[1] = resPF.getMessaggio();
+            	}else {
+	                retMsg[0] = "0";
+            	}
+                return retMsg;
+            }
            }else{
              if("-1".equals(res[0])){
                //inserisco
@@ -1601,13 +1693,33 @@ public class CinecaWSManager {
                  retMsg[1] = ctrlDOres[1];
                  return retMsg;
                }
-               Long idInterno = cinecaWSPersoneFisicheManager.wsCinecaInserisciPerosnaFisica(request, datiPersonaFisica);
-               if(new Long(-5).equals(idInterno)){
-                 retMsg[0] = "-5";
-                 return retMsg;
-               }
+               	WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(datiPersonaFisica);
+	            WSERPUgovResType resPF = wserp.WSERPPersonaFisica(username,password, "INSERISCI", anagrafica);
+	            if(!resPF.isEsito()) {
+	        		retMsg[0] = "-7";
+	                retMsg[1] = resPF.getMessaggio();
+	                return retMsg;
+	            }else {
+	            	if(Long.valueOf(-5).equals(resPF.getStato())) {
+	             		 UtilityStruts.addMessage(request, "warning",
+				                  "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+				                  new Object[] {resPF.getMessaggio()});
+	            		 request.setAttribute("MSGUGOV", "WARNING");
+	            		 retMsg[0] = "-5";
+	            		 retMsg[1] = resPF.getMessaggio();
+	            	}else {
+	            		WSERPUgovAnagraficaResType anagraficaRes = resPF.getAnagraficaRes();
+	            		Long idInterno = anagraficaRes.getIdInterno();
+	            		if(idInterno!=null) {
+	            			retMsg[0] = idInterno.toString();
+	            		}		                
+	            	}
+	            	
+	                return retMsg;
+	            }
              }else{
                retMsg[0] = res[0];
+               retMsg[1] = res[1];
                return retMsg;
              }
            }
@@ -1632,8 +1744,25 @@ public class CinecaWSManager {
              retMsg[1] = ctrlDOres[1];
              return retMsg;
            }
-           retMsg = this.wsCinecaModificaDittaIndividuale(request, dittaIndividuale, client);
-           return retMsg;
+           	 WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(dittaIndividuale);
+           	 WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username,password, "MODIFICA", anagrafica);
+	         if(!resDI.isEsito()) {
+	        	 retMsg[0] = "-7";
+	             retMsg[1] = resDI.getMessaggio();
+	             return retMsg;
+	         }else {
+	        	 if(Long.valueOf(-5).equals(resDI.getStato())) {
+	        		 UtilityStruts.addMessage(request, "warning",
+				                "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+				                new Object[] {resDI.getMessaggio()});
+	            	request.setAttribute("MSGUGOV", "WARNING");
+	            	retMsg[0] = "-5";
+	            	retMsg[1] = resDI.getMessaggio();
+	        	 }else {
+	                retMsg[0] = "0";
+	        	 }
+	          return retMsg;
+	         }
 
          }else{
 
@@ -1647,10 +1776,34 @@ public class CinecaWSManager {
                retMsg[1] = ctrlDOres[1];
                return retMsg;
              }
-             retMsg =  this.wsCinecaInserisciDittaIndividuale(request, dittaIndividuale);
-             return retMsg;
+            	WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(dittaIndividuale);
+	            WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username,password, "INSERISCI", anagrafica);
+	            if(!resDI.isEsito()) {
+	        		retMsg[0] = "-7";
+	                retMsg[1] = resDI.getMessaggio();
+	                return retMsg;
+	            }else {
+	            	if(Long.valueOf(-5).equals(resDI.getStato())) {
+	             		 UtilityStruts.addMessage(request, "warning",
+				                  "warnings.cineca.mancataIntegrazioneCoordPag.warning",
+				                  new Object[] {resDI.getMessaggio()});
+	            		 request.setAttribute("MSGUGOV", "WARNING");
+	            		 retMsg[0] = "-5";
+	            		 retMsg[1] = resDI.getMessaggio();
+	            	}else {
+	            		WSERPUgovAnagraficaResType anagraficaRes = resDI.getAnagraficaRes();
+	            		Long idInterno = anagraficaRes.getIdInterno();
+	            		if(idInterno!=null) {
+	            			retMsg[0] = idInterno.toString();
+	            		}		                
+	            	}
+	            	
+	                return retMsg;
+	            }
+
            }else{
              retMsg[0] = res[0];
+             retMsg[1] = res[1];
              return retMsg;
            }
          }
@@ -1675,8 +1828,16 @@ public class CinecaWSManager {
                    return retMsg;
                  }
                  String codEsterno = (String) soggettoCollettivo.get("codEsterno");
-                 WsdtoSoggettoCollettivoResponse wsdtoSoggettoCollettivoResponse = this.wsCinecaMasterizzaSoggettoCollettivo(idInterno,codEsterno);
-                 wsdtoSoggettoCollettivoResponse.getCodAnagrafico();
+                 
+                 WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+                 anagrafica.setIdInterno(idInterno);
+                 anagrafica.setCodEsterno(codEsterno);
+                 WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username, password, "MASTERIZZA", anagrafica);
+                 if(!resSC.isEsito()) {
+                     retMsg[0] = "-7";
+                     retMsg[1] = resSC.getMessaggio();
+                     return retMsg;
+                 }
            }
 
            //e modifico
@@ -1691,8 +1852,24 @@ public class CinecaWSManager {
              String idInternoStr = res[2];
              Long idInterno = new Long(idInternoStr);
              soggettoCollettivo.put("idInterno", idInterno);
-             this.wsCinecaModificaSoggettoCollettivo(request,soggettoCollettivo);
-
+             
+             WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+             WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "MODIFICA", anagrafica);
+             if(!resSC.isEsito()) {
+                 String msg = resSC.getMessaggio();
+                 retMsg[0] = "-7";
+                 retMsg[1] = msg;
+                 return retMsg;
+             }else {
+	        	 if(Long.valueOf(-5).equals(resSC.getStato())) {
+	            	retMsg[0] = "-5";
+	            	retMsg[1] = resSC.getMessaggio();
+	        	 }else {
+	                retMsg[0] = "0";
+	        	 }
+	        	 return retMsg;
+             }
+             
          }else{
 
            if("-1".equals(res[0])){
@@ -1705,20 +1882,29 @@ public class CinecaWSManager {
                retMsg[1] = ctrlDOres[1];
                return retMsg;
              }
-             Long idInterno = this.wsCinecaInserisciSoggettoCollettivo(request, soggettoCollettivo);
-             if(new Long(-5).equals(idInterno)){
-               retMsg[0] = "-5";
-               return retMsg;
-             }
+				WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
+	            WSERPUgovResType resSC = wserp.WSERPSoggettoCollettivo(username,password, "INSERISCI", anagrafica);
+	            if(!resSC.isEsito()) {
+	        		retMsg[0] = "-7";
+	                retMsg[1] = resSC.getMessaggio();
+	                return retMsg;
+	            }else {
+	            	if(Long.valueOf(-5).equals(resSC.getStato())) {
+	            		 retMsg[0] = "-5";
+	            		 retMsg[1] = resSC.getMessaggio();
+	            	}else {
+		                retMsg[0] = "0";
+	            	}
+	            	
+	                return retMsg;
+	            }
            }else{
              retMsg[0] = res[0];
+             retMsg[1] = res[1];
              return retMsg;
            }
 
          }
-
-
-
 
      }
 
@@ -1727,7 +1913,14 @@ public class CinecaWSManager {
      retMsg[0] = "-7";
      retMsg[1] = msg;
      return retMsg;
-   }
+   
+	} catch (RemoteException e) {
+	     String msg = e.getMessage();
+	     retMsg[0] = "-7";
+	     retMsg[1] = msg;
+	     return retMsg;
+	}
+   
      retMsg[0] = "0";
      return retMsg;
   }
@@ -1971,30 +2164,55 @@ public class CinecaWSManager {
         }
 
         if(codiceFiscale!=null || partitaIva!=null){
-          WsDittaEstraiResponse dittaIndividualeResp = this.wsCinecaEstraiDittaIndividuale(codiceFiscale,partitaIva,nazionalita);
-          if(dittaIndividualeResp != null && dittaIndividualeResp.getDitta() != null ){
-            WsDitta dittaIndividuale = dittaIndividualeResp.getDitta();
-            if((new Long(1).equals(nazionalita) && (dittaIndividuale.getPartitaIVA() != null || dittaIndividuale.getCodFiscale() != null))
-                || (!new Long(1).equals(nazionalita) && dittaIndividuale.getPartitaIVAEstera() != null && dittaIndividuale.getPartitaIVAEstera().equals(partitaIva))){
-              if(dittaIndividuale.getCodAnagrafico() != null){
-                res[0] = "2";
-                res[1] = dittaIndividuale.getCodAnagrafico();
-                Long idInterno = dittaIndividuale.getIdInterno();
-                if(idInterno != null){
-                  res[2] = idInterno.toString();
-                }
-                return res;
-              }else{
-                res[0] = "1";
-                Long idInterno = dittaIndividuale.getIdInterno();
-                res[2] = idInterno.toString();
-              }
-            }else{
-              res[0] = "-1";
-            }
-          }else{
-            res[0] = "-1";
-          }
+        	
+			WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
+			
+            String[] credenziali = this.getWSLogin(new Long(50), "CINECA");
+            String username = credenziali[0];
+            String password = credenziali[1];
+			
+			WSERPUgovAnagraficaType anagrafica = new WSERPUgovAnagraficaType();
+			anagrafica.setCodiceFiscale(codiceFiscale);
+			anagrafica.setCodiceFiscale(codiceFiscale);
+			anagrafica.setPartitaIva(partitaIva);
+			anagrafica.setNazione(nazionalita);
+
+	       WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username, password, "ESTRAI", anagrafica);
+	            
+	       if(resDI != null && resDI.isEsito()) {
+	    	   WSERPUgovAnagraficaResType anagraficaRes = resDI.getAnagraficaRes();
+	    	   
+	    		   //anagraficaRes.get
+    	          //WsDittaEstraiResponse dittaIndividualeResp = this.wsCinecaEstraiDittaIndividuale(codiceFiscale,partitaIva,nazionalita);
+    	          //if(dittaIndividualeResp != null && dittaIndividualeResp.getDitta() != null ){
+	    	   	  if(anagraficaRes != null && anagraficaRes.getIdInterno()!=null) {
+    	            //WsDitta dittaIndividuale = dittaIndividualeResp.getDitta();
+    	            if((new Long(1).equals(nazionalita) && (anagraficaRes.getPartitaIva() != null || anagraficaRes.getCodiceFiscale() != null))
+    	                || (!new Long(1).equals(nazionalita) && anagraficaRes.getPartitaIvaEstero() != null && anagraficaRes.getPartitaIvaEstero().equals(partitaIva))){
+    	              if(anagraficaRes.getCodiceAnagrafico() != null){
+    	                res[0] = "2";
+    	                res[1] = anagraficaRes.getCodiceAnagrafico();
+    	                Long idInterno = anagraficaRes.getIdInterno();
+    	                if(idInterno != null){
+    	                  res[2] = idInterno.toString();
+    	                }
+    	                return res;
+    	              }else{
+    	                res[0] = "1";
+    	                Long idInterno = anagraficaRes.getIdInterno();
+    	                res[2] = idInterno.toString();
+    	              }
+    	            }else{
+    	              res[0] = "-1";
+    	            }
+    	          }else{
+    	            res[0] = "-1";
+    	          }
+	       }else {
+	           	//cf19
+	           	res[0] = "-7";
+	           	res[1] = resDI.getMessaggio();
+	       }
         }else{
           res[0] = "-1";
         }
@@ -2005,7 +2223,10 @@ public class CinecaWSManager {
     } catch (SQLException e) {
       throw new GestoreException(
           "Errore nella selezione della partita IVA della ditta individuale ", null,e);
-    }
+    } catch (RemoteException e) {
+        throw new GestoreException(
+                "Errore nella selezione della partita IVA della ditta aggiudicataria ", null,e);
+	}
 
     return res;
 

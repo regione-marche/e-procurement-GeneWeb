@@ -16,11 +16,13 @@ import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.db.datautils.DataColumn;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.domain.StoUffint;
 import it.eldasoft.gene.tags.bl.AnagraficaManager;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.spring.UtilitySpring;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import org.springframework.transaction.TransactionStatus;
 
@@ -171,6 +173,45 @@ public class GestoreUFFINT extends AbstractGestoreEntita {
     this.gestisciAggiornamentiRecordSchedaMultipla(status, impl,
         gestoreUFFSET, "UFFSET",
         new DataColumn[] {impl.getColumn("UFFINT.CODEIN") }, null);
+    
+  //verifico se alcuni dati sono stati modificati
+    String profiloAttivo = (String) this.getRequest().getSession().getAttribute(
+            CostantiGenerali.PROFILO_ATTIVO);
+    if (gene.getProfili().checkProtec(
+    		profiloAttivo,
+            "FUNZ",
+            "VIS",
+            "ALT.GENE.UFFINT.Storico")) {
+    	this.getRequest().getSession().removeAttribute("storicoUffint");
+        if (impl.isModifiedColumn("UFFINT.NOMEIN") || impl.isModifiedColumn("UFFINT.VIAEIN") || impl.isModifiedColumn("UFFINT.NCIEIN") ||
+        		impl.isModifiedColumn("UFFINT.CODCIT") || impl.isModifiedColumn("UFFINT.CITEIN") || impl.isModifiedColumn("UFFINT.PROEIN") ||
+        		impl.isModifiedColumn("UFFINT.CAPEIN") || impl.isModifiedColumn("UFFINT.CODNAZ") || impl.isModifiedColumn("UFFINT.TELEIN") ||
+        		impl.isModifiedColumn("UFFINT.FAXEIN") || impl.isModifiedColumn("UFFINT.CFEIN") || impl.isModifiedColumn("UFFINT.TIPOIN") ||
+        		impl.isModifiedColumn("UFFINT.EMAIIN") || impl.isModifiedColumn("UFFINT.EMAI2IN") || impl.isModifiedColumn("UFFINT.ISCUC") ||
+        		impl.isModifiedColumn("UFFINT.CFANAC")) {
+        	
+        	StoUffint storicoUffint = new StoUffint();
+        	storicoUffint.setDenominazione(impl.getColumn("UFFINT.NOMEIN").getOriginalValue().toString());
+        	storicoUffint.setCodice(impl.getColumn("UFFINT.CODEIN").getOriginalValue().toString());
+        	storicoUffint.setIndirizzo(impl.getColumn("UFFINT.VIAEIN").getOriginalValue().toString());
+        	storicoUffint.setCivico(impl.getColumn("UFFINT.NCIEIN").getOriginalValue().toString());
+        	storicoUffint.setCodiceIstat(impl.getColumn("UFFINT.CODCIT").getOriginalValue().toString());
+        	storicoUffint.setLocalita(impl.getColumn("UFFINT.CITEIN").getOriginalValue().toString());
+        	storicoUffint.setProvincia(impl.getColumn("UFFINT.PROEIN").getOriginalValue().toString());
+        	storicoUffint.setCap(impl.getColumn("UFFINT.CAPEIN").getOriginalValue().toString());
+        	storicoUffint.setCodiceNazione(impl.getColumn("UFFINT.CODNAZ").getOriginalValue().toString());
+        	storicoUffint.setTelefono(impl.getColumn("UFFINT.TELEIN").getOriginalValue().toString());
+        	storicoUffint.setFax(impl.getColumn("UFFINT.FAXEIN").getOriginalValue().toString());
+        	storicoUffint.setCodiceFiscale(impl.getColumn("UFFINT.CFEIN").getOriginalValue().toString());
+        	storicoUffint.setTipoAmministrazione(impl.getColumn("UFFINT.TIPOIN").getOriginalValue().toString());
+        	storicoUffint.setEmail(impl.getColumn("UFFINT.EMAIIN").getOriginalValue().toString());
+        	storicoUffint.setPec(impl.getColumn("UFFINT.EMAI2IN").getOriginalValue().toString());
+        	storicoUffint.setIscuc(impl.getColumn("UFFINT.ISCUC").getOriginalValue().toString());
+        	storicoUffint.setCfAnac(impl.getColumn("UFFINT.CFANAC").getOriginalValue().toString());  
+        	storicoUffint.setDataFineValidita(new Date());
+        	this.getRequest().getSession().setAttribute("storicoUffint", storicoUffint);
+        }
+    }
   }
 
   /**

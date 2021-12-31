@@ -105,12 +105,12 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		<c:choose>
 		<c:when test='${isModificaDatiRegistrati eq "true"}'>
 		 <gene:campoScheda campo="PIVIMP" title ='Partita I.V.A. ${gene:if(modo ne "VISUALIZZA" && obbligatorioPIVA eq "true", "(*)","") }'>
-			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("IMPR_NAZIMP"))' obbligatorio="true" messaggio='Il valore specificato non è valido (anteporre la sigla della nazione se estera).' onsubmit="false"/>
+			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("IMPR_NAZIMP"))' obbligatorio="true" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		 </gene:campoScheda>
 		</c:when>
 		<c:otherwise>
 		 <gene:campoScheda campo="PIVIMP" title ='Partita I.V.A. ${gene:if(modo ne "VISUALIZZA" && obbligatorioPIVA eq "true", "(*)","") }'>
-			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("IMPR_NAZIMP"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido (anteporre la sigla della nazione se estera).' onsubmit="false"/>
+			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("IMPR_NAZIMP"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		 </gene:campoScheda>
 		</c:otherwise>
 		</c:choose>
@@ -280,6 +280,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		<gene:campoScheda campo="DISANC"/>
 		<gene:campoScheda campo="DTRISOA"/>
 		<gene:campoScheda campo="DVERSOA"/>
+		<gene:campoScheda campo="DINTSOA" />
 		<gene:campoScheda campo="DSCANC"/>
 		<gene:campoScheda campo="DURANC" visibile="false"/>
 		<gene:campoScheda campo="OCTSOA"/>
@@ -427,6 +428,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		<gene:campoScheda campo="COORBA"/>
 		<gene:campoScheda campo="CODBIC"/>
 		<gene:campoScheda campo="SOGMOV"/>
+		<gene:campoScheda campo="SOCIOUNICO"/>
+		<gene:campoScheda campo="REGFISC"/>
 		<gene:campoScheda campo="CODATT"/>
 		<gene:campoScheda campo="CAPSOC"/>
 		<gene:campoScheda campo="CODCAS"/>
@@ -705,6 +708,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			showObj("rowIMPR_AISTPREV",vis);
 			showObj("rowIMPR_ACERTATT",vis);
 			showObj("rowIMPR_ANNOTI",vis);
+			showObj("rowIMPR_SOCIOUNICO",vis);
+			showObj("rowIMPR_REGFISC",vis);
 			visualizzazionePersonale(vis);
 			
 			if(vis)
@@ -743,6 +748,13 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 				setValue("DESC","");
 				setValue("IMPR_TCAPRE","");
 				setValue("IMPR_NCAPRE","");
+			}
+			
+			if(valore!=2 && valore!=11){
+				setValue("IMPR_DINTSOA","");
+				showObj("rowIMPR_DINTSOA",false);
+			}else{
+			    showObj("rowIMPR_DINTSOA",true);
 			}
 			
 		}
@@ -964,7 +976,7 @@ function apriLista(){
  	 	if(isItalia == "si"){
  	 		controlloOkPIVA=checkParIva(piva);
 	 	}else {
- 	 		controlloOkPIVA = checkPivaEuropea(piva);
+ 	 		controlloOkPIVA = true;
  	 	}
  	 	if(!controlloOkPIVA){
  	 		outMsg("Il valore della Partita I.V.A. o V.A.T. specificato non è valido", "ERR");

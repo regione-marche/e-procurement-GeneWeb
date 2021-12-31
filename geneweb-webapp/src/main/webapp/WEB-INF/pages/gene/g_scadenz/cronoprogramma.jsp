@@ -68,7 +68,7 @@ Cronoprogramma di uno scadenzario di un'entita'
 			// si apre il cronoprogramma con tutto
 			refreshGantt("all");
 			
-			$('input[name=filtra]').click( function( event ) {
+			$('input[name=filtra]').on( "click",function( event ) {
 				// quando si seleziona un radio si scatena l'aggiornamento del gantt filtrando le occorrenze
 				refreshGantt($(this).val());
 			});
