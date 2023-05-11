@@ -16,7 +16,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <tiles:insert attribute="head" />

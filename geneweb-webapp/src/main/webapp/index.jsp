@@ -4,10 +4,9 @@
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<c:set var="protocolloSSO" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetProtocolloSSOFunction",  pageContext)}' scope="request"/>
+<c:set var="protocolloSSO" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetProtocolloSSOFunction",  pageContext)}' scope="request" />
 
-
-<html>
+<html lang="it">
   <head>
 <c:choose>
 	<c:when test='${protocolloSSO eq "1"}'>
@@ -21,6 +20,9 @@
 	</c:when>
 	<c:when test='${protocolloSSO eq "4"}'>
     <meta HTTP-EQUIV="REFRESH" content="0; url=<%=request.getContextPath()%>/OpenIDLogin.do"></meta>
+	</c:when>
+	<c:when test='${protocolloSSO eq "6"}'>
+	<meta HTTP-EQUIV="REFRESH" content="0; url=<%=request.getContextPath()%>/SSOGatewayLogin.do"></meta>
 	</c:when>
 	<c:otherwise>
     <meta HTTP-EQUIV="REFRESH" content="0; url=<%=request.getContextPath()%>/InitLogin.do"></meta>

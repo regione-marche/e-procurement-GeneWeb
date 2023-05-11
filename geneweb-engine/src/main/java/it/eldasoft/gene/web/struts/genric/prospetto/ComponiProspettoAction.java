@@ -14,6 +14,7 @@ import it.eldasoft.gene.bl.genmod.CompositoreException;
 import it.eldasoft.gene.bl.genmod.GestioneFileModelloException;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
+import it.eldasoft.gene.db.domain.genmod.DatiModello;
 import it.eldasoft.gene.web.struts.genmod.ComponiModelloAction;
 import it.eldasoft.gene.web.struts.genmod.ComponiModelloForm;
 import it.eldasoft.gene.web.struts.genmod.CostantiGenModelli;
@@ -22,6 +23,7 @@ import it.eldasoft.utils.utility.UtilityStringhe;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -192,7 +194,34 @@ public class ComponiProspettoAction extends ComponiModelloAction {
     ParametriProspettoForm parametriProspettoForm = (ParametriProspettoForm) form;
 
     request.setAttribute("idProspetto", parametriProspettoForm.getIdProspetto());
+    
+	String messageKey = null;
 
+	ComponiModelloForm componiModelloForm = (ComponiModelloForm) form;
+
+	DatiModello datiModello = this.modelliManager.getModelloById(componiModelloForm.getIdModello());
+
+	// Nel caso il modello sia da convertire in PDF
+	if (datiModello.getPdf() == 1) {
+		String[] listaEstPdf;
+		String nomeFile;
+		String estensione;
+
+		// Estraggo lista estensioni pdf per cui il modello puo' essere convertito in
+		// PDF
+		listaEstPdf = this.modelliManager.getEstensioniModelloOutputPDF();
+		nomeFile = datiModello.getNomeFile();
+		estensione = nomeFile.substring(nomeFile.lastIndexOf(".") + 1).toUpperCase();
+
+		// Verifico se l'estensione del modello è compatibile con
+		if (!Arrays.asList(listaEstPdf).contains(estensione) && !(listaEstPdf.length == 1 && "*".equals(listaEstPdf[0]))) {
+
+			messageKey = "warnings.prospetto.caricaProspetto.modelloNonConvertibilePDF";
+			logger.warn(this.resBundleGenerale.getString(messageKey));
+			this.aggiungiMessaggio(request, messageKey);
+		}
+	}
+    
     ActionForward actForward = super.componiModello(mapping,
         (ComponiModelloForm) form, request, response);
 

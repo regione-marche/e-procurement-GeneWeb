@@ -9,6 +9,8 @@ import it.eldasoft.utils.spring.UtilitySpring;
 import it.eldasoft.utils.utility.UtilityDate;
 
 import java.io.StringReader;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +20,7 @@ import javax.servlet.jsp.PageContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.springframework.transaction.TransactionStatus;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -42,11 +45,15 @@ public class GetVerificaFirmaDigitaleFunction extends AbstractFunzioneTag {
     String state = null;
     String message = null;
     String dignomdoc = null;
+    String dignomdoc_tsd = null;
     String dignomdoc_p7m = null;
     String dignomdoc_doc = null;
     DigitalSignatureChecker digitalSignatureChecker = null;
     BlobFile digogg = null;
+    TransactionStatus transazione = null;
+    Boolean commitTransaction = true;
     try {
+      transazione = sqlManager.startTransaction();
       String idprg = (String) params[1];
       Long iddocdig = null;
       if ((String) params[2] != null) {
@@ -58,15 +65,19 @@ public class GetVerificaFirmaDigitaleFunction extends AbstractFunzioneTag {
 
       if (dignomdoc != null) {
     	  if (dignomdoc.toLowerCase().endsWith(".tsd")) {
+    	      dignomdoc_tsd = dignomdoc;
     		  dignomdoc_p7m = dignomdoc.substring(0, dignomdoc.toLowerCase().indexOf(".tsd"));
-          }
-    	  if (dignomdoc_p7m == null) {
+          } else {
+            // si presuppone sia un .p7m (senza estensione .tsd)
     		  dignomdoc_p7m = dignomdoc;
     	  }
     	  if (dignomdoc_p7m.toLowerCase().indexOf(".p7m") >= 0) {
+    	    // si tolgono tutte le estensioni p7m e si recupera il documento originariamente firmato
     		  dignomdoc_doc = dignomdoc_p7m.substring(0, dignomdoc_p7m.toLowerCase().indexOf(".p7m"));
     	  } else {
+    	    // trattasi di un documento marcato temporalmente, senza firma digitale applicata
     		  dignomdoc_doc = dignomdoc_p7m;
+    		  dignomdoc_p7m = null;
     	  }
         digogg = fileAllegatoManager.getFileAllegato(idprg, iddocdig);
         if (digogg != null && digogg.getStream() != null) {
@@ -92,22 +103,28 @@ public class GetVerificaFirmaDigitaleFunction extends AbstractFunzioneTag {
           } else {
         	  content = digogg.getStream();
           }
-          byte[] xml = digitalSignatureChecker.getXMLSignature(content, ckdate);
-          verificaFirmaDigitaleXML = new String(xml);
-          if(verificaFirmaDigitaleXML!=null && !"".equals(verificaFirmaDigitaleXML)){
-            try{
-              DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-              DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-              Document document = docBuilder.parse(new InputSource(new StringReader(verificaFirmaDigitaleXML)));
-            }catch (Exception e) {
-              verificaFirmaDigitaleXML=null;
-              state = "ERROR";
-              message = this.resBundleGenerale.getString("errors.firmadigitale.errorxml");
-              message +=e.getMessage();
-
+          
+          if (dignomdoc_p7m != null) {
+            byte[] xml = digitalSignatureChecker.getXMLSignature(content, ckdate);
+            verificaFirmaDigitaleXML = new String(xml);
+            if(verificaFirmaDigitaleXML!=null && !"".equals(verificaFirmaDigitaleXML)){
+              try{
+                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+                Document document = docBuilder.parse(new InputSource(new StringReader(verificaFirmaDigitaleXML)));
+              }catch (Exception e) {
+                verificaFirmaDigitaleXML=null;
+                state = "ERROR";
+                message = this.resBundleGenerale.getString("errors.firmadigitale.errorxml");
+                message +=e.getMessage();
+              }
+              boolean verified = digitalSignatureChecker.verifySignature(content);
+              Timestamp dataOraCorrente = new Timestamp(UtilityDate.getDataOdiernaAsDate().getTime());
+              String queryUpdate = "update w_docdig set firmacheck = ?,firmacheckts = ? where idprg = ? and iddocdig = ? and (firmacheck is null or firmacheck = ?)";
+              sqlManager.update(queryUpdate,new Object[]{Boolean.TRUE.equals(verified)?"1":"2", dataOraCorrente, idprg, iddocdig.toString(), "2"});
             }
-
           }
+          
         } else {
           state = "NO-DATA-FOUND";
         }
@@ -119,14 +136,24 @@ public class GetVerificaFirmaDigitaleFunction extends AbstractFunzioneTag {
     } catch (Exception e) {
       state = "ERROR";
       message = e.getMessage();
+      commitTransaction = false;
       if (e.getCause() != null) message += " (" + e.getCause().toString() + ")";
+    } finally {
+      if (transazione != null) {
+        try {
+          if (Boolean.TRUE.equals(commitTransaction)) {
+            sqlManager.commitTransaction(transazione);            
+          } else {
+            sqlManager.rollbackTransaction(transazione);            
+          }
+        } catch (SQLException e) {
+          throw new JspException(
+              "Errore durante l'aggiornamento dell'esito della verifica firma digitale", e);
+        }
+      }
     }
-    if (dignomdoc!= null && !dignomdoc.equals(dignomdoc_p7m)) {
-    	pageContext.setAttribute("dignomdoc_tsd", dignomdoc, PageContext.REQUEST_SCOPE);
-    }
-    if (dignomdoc_p7m!=null && !dignomdoc_p7m.equals(dignomdoc_doc)) {
-    	pageContext.setAttribute("dignomdoc_p7m", dignomdoc_p7m, PageContext.REQUEST_SCOPE);
-    }
+    pageContext.setAttribute("dignomdoc_tsd", dignomdoc_tsd, PageContext.REQUEST_SCOPE);
+   	pageContext.setAttribute("dignomdoc_p7m", dignomdoc_p7m, PageContext.REQUEST_SCOPE);
     pageContext.setAttribute("dignomdoc_doc", dignomdoc_doc, PageContext.REQUEST_SCOPE);
     pageContext.setAttribute("verificaFirmaDigitaleXML", verificaFirmaDigitaleXML, PageContext.REQUEST_SCOPE);
     pageContext.setAttribute("verificaMarcheTemporaliXML", verificaMarcheTemporaliXML, PageContext.REQUEST_SCOPE);

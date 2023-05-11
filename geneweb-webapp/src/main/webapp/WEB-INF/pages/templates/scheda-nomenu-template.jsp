@@ -21,7 +21,7 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <c:if test="${requestScope.forzaRedirect}">
 	<meta HTTP-EQUIV="REFRESH" content="0; url=${pageContext.request.contextPath}/ErrorOpenScheda.do"></meta>

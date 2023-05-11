@@ -62,11 +62,11 @@
 <script type="text/javascript"
 	src="${contextPath}/js/popupMenu.js"></script>
 <script type="text/javascript"
-	src="${contextPath}/js/jquery-3.5.1.js"></script>
+	src="${contextPath}/js/jquery-3.6.1.min.js"></script>
 <script type="text/javascript"
-	src="${contextPath}/js/jquery-migrate-3.3.2.js"></script>
+	src="${contextPath}/js/jquery-migrate-3.4.0.min.js"></script>
 <script type="text/javascript"
-	src="${contextPath}/js/jquery-ui-1.12.1.js"></script>
+	src="${contextPath}/js/jquery-ui-1.13.2.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/js/jquery.ui.datepicker-it.js"></script>
 <script type="text/javascript"
@@ -147,6 +147,25 @@ if (navigator.appName == "Microsoft Internet Explorer" && !ie10) {
   document.write("<link REL='stylesheet' HREF='${contextPath}/css/${applicationScope.pathCss}elda-ie.css' TYPE='text/css'>");
 } 
 
+$(document).ready(function(){	
+	$("input[type='file']").on("change", function() {		
+		
+		var file = $(this)[0].files[0];	
+		if(file){
+			if( !isValidFilename(file.name) ) {
+				$(this).val("");
+				alert("Il nome del file contiene caratteri speciali non consentiti!\nUnici caratteri speciali ammessi sono -_()[]");
+			}
+		}
+	});
+	
+	function isValidFilename(filename) {
+		var reg = new RegExp("^[A-Za-z0-9-_()\\s\\.\\[\\]]+$", "g");
+		return (reg.test(filename));
+	}
+	
+});
+
 		function generaPopupOpzioniUtenteLoggato() {
 			<elda:jsBodyPopup varJS="linkset" contextPath="${pageContext.request.contextPath}" chiudi="false">
 
@@ -174,6 +193,8 @@ if (navigator.appName == "Microsoft Internet Explorer" && !ie10) {
 				<elda:jsVocePopup functionJS="accediAltroApplicativoLista('${contextPath}')" descrizione="Accedi ad altro applicativo"/>
 				</c:if>
 				
+				<elda:jsVocePopup functionJS="utLogUltimiAccessi()" descrizione="Ultimi accessi"/>	
+				
 				<elda:jsVocePopup functionJS="utLogEsci()" descrizione="Esci"/>	
 			</elda:jsBodyPopup>
 			return linkset;
@@ -193,6 +214,10 @@ if (navigator.appName == "Microsoft Internet Explorer" && !ie10) {
 		
 		function utLogCambiaUfficioIntestatario() {
 			document.location.href="${pageContext.request.contextPath}/CheckUfficioIntestatario.do?<csrf:token/>";
+		}
+		
+		function utLogUltimiAccessi() {
+			document.location.href="${pageContext.request.contextPath}/UltimiAccessi.do?<csrf:token/>";
 		}
 		
 		function utLogEsci() {

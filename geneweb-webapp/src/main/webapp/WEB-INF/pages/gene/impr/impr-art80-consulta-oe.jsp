@@ -155,7 +155,7 @@
 														5. Certificazione Antimafia
 													</c:when>										
 													<c:when test="${doc[1] eq 6}">
-														6. Certificazione Regolarit&agrave; Contributiva
+														6. Certificazione Regolarit&agrave; Contributiva (DURC INPS)
 													</c:when>	
 													<c:when test="${doc[1] eq 7}">
 														7. Attestazione di regolarit&agrave; fiscale, Art. 80 - Comma 4
@@ -165,7 +165,13 @@
 													</c:when>										
 													<c:when test="${doc[1] eq 9}">
 														9. Visura Camerale
+													</c:when>
+													<c:when test="${doc[1] eq 10}">
+														10. Carichi Pendenti
 													</c:when>	
+													<c:when test="${doc[1] eq 11}">
+														11. Certificazione Regolarit&agrave; Contributiva (Cassa Previdenziale di Categoria)
+													</c:when>
 												</c:choose>
 												</b>
 											</td>

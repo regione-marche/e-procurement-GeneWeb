@@ -1,34 +1,33 @@
 package it.eldasoft.gene.web.struts.tags;
 
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.commons.web.struts.DispatchActionBaseNoOpzioni;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcExpression;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcExpressionWhere;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcFrom;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcSqlSelect;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcUtils;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcWhere;
-import it.eldasoft.gene.tags.decorators.trova.AbstractGestoreTrova;
-import it.eldasoft.gene.tags.decorators.trova.CampoTrovaTag;
-import it.eldasoft.gene.tags.decorators.trova.FormTrovaTag;
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
-import it.eldasoft.utils.profiles.CheckOpzioniUtente;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.commons.web.struts.DispatchActionBaseNoOpzioni;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcExpression;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcExpressionWhere;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcSqlSelect;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcUtils;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcWhere;
+import it.eldasoft.gene.tags.decorators.trova.CampoTrovaTag;
+import it.eldasoft.gene.tags.decorators.trova.FormTrovaTag;
+import it.eldasoft.gene.tags.decorators.trova.gestori.AbstractGestoreTrova;
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
+import it.eldasoft.utils.profiles.CheckOpzioniUtente;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 public class TrovaAction extends DispatchActionBaseNoOpzioni {
 
@@ -40,9 +39,9 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
   // trova
   // ************************************************************
 
-  private static Logger      logger                = Logger.getLogger(TrovaAction.class);
+  private static Logger      logger                    = Logger.getLogger(TrovaAction.class);
 
-  public static final String SESSION_PENDICE_TROVA = "trova";
+  public static final String SESSION_PENDICE_TROVA     = "trova";
 
   /**
    * Funzione che restituisce le opzioni per accedere alla action trova
@@ -83,9 +82,10 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
       JdbcWhere where = new JdbcWhere();
       int count;
       // Estraggo tutti i dati con i parametri
-      if (UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_COUNT) == null)
+      if (UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_COUNT) == null) {
         throw new Exception(
-            "Nella richiesta non c'è il campo con il conteggio dei campi");
+            "Nella richiesta non c'ï¿½ il campo con il conteggio dei campi");
+      }
       if (UtilityStruts.getParametroString(request, FormTrovaTag.GESTORE_TROVA) != null) {
         String classGestore = UtilityStruts.getParametroString(request,
             FormTrovaTag.GESTORE_TROVA);
@@ -94,9 +94,9 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
           // get String Class
           Class cl = Class.forName(classGestore);
           // get the constructor
-          java.lang.reflect.Constructor constructor = cl.getConstructor(new Class[] { ServletRequest.class });
+          java.lang.reflect.Constructor constructor = cl.getConstructor(new Class[] { HttpServletRequest.class, String.class });
           // create an instance
-          obj = constructor.newInstance(new Object[] { request });
+          obj = constructor.newInstance(new Object[] { request, UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_ENTITA) });
 
         } catch (Exception e) {
           throw new GestoreException(
@@ -109,17 +109,43 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
         } else {
           throw new GestoreException("Errore "
               + classGestore
-              + " non è ereditato da AbstractGestoreTrova !",
+              + " non ï¿½ ereditato da AbstractGestoreTrova !",
               "erroreGestoreTrova");
         }
       }
-      // Aggiungo alla where il filtro se è stato settato
-      if (UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_FILTRO) != null) {
+
+      // SQL Injection prevention: si spostano in sessione i campi "filtro" e tutte le where dai campi contenuti, in precedenza definiti
+      // come input hidden della form di ricerca
+      int popupLevel = UtilityStruts.getNumeroPopUp(request);
+      if (gestore != null) { 
+    	  gestore.trova();
+    	  popupLevel = gestore.getPopUpLevel();
+      }
+      
+      final String originalFilter = UtilityTags.getAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request,
+          FormTrovaTag.CAMPO_ENTITA), popupLevel, FormTrovaTag.CAMPO_ORIGINAL_FILTER);
+      String filtro = UtilityTags.getAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request,
+          FormTrovaTag.CAMPO_ENTITA), popupLevel, FormTrovaTag.CAMPO_FILTRO);
+
+        if (StringUtils.isBlank(filtro)) {
+            filtro = originalFilter;
+        } else if (StringUtils.isNotBlank(originalFilter)) {
+            filtro += " AND " + originalFilter;
+        }
+
+      // Aggiungo alla where il filtro se ï¿½ stato settato
+      if (StringUtils.isNotBlank(filtro)) {
         // Aggiungo il filtro impostato dell'utente
         where.append(new JdbcExpressionWhere(true));
-        where.append(new JdbcExpression(UtilityStruts.getParametroString(
-            request, FormTrovaTag.CAMPO_FILTRO)));
+        where.append(new JdbcExpression(filtro));
         where.append(new JdbcExpressionWhere(false));
+        // Dal momento che, una volta consumato il filtro e messo in sessione, potrei aver bisogno di ricostruire un nuovo filtro,
+        // pulisco il filtro appena consumato. Questo perchï¿½ nei gestori di ricerca, nel metodo utilizzato per costruire il filtro,
+        // viene passato il cosidetto "originalFilter", ovvero il filtro costruito PRIMA di richiamare il gestore. Quest'ultimo
+        // viene normalmente composto dal normale funzionamento dai campi della form di ricerca ed ha la necessitï¿½ di essere
+        // preservato.
+        UtilityTags.removeAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request,
+        		FormTrovaTag.CAMPO_ENTITA), popupLevel, FormTrovaTag.CAMPO_FILTRO);
       }
       // Aggiungo il flag di case sensitive
       String caseSensitive = UtilityStruts.getParametroString(request,
@@ -131,14 +157,14 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
           FormTrovaTag.CAMPO_COUNT));
       HashMap trovaSession = new HashMap();
       // hash nella quale memorizzare le select per verificare condizioni su
-      // tabelle diverse dall'entità principale mediante exists
+      // tabelle diverse dall'entitï¿½ principale mediante exists
       HashMap filtriAltreTabelle = new HashMap();
       trovaSession.put(FormTrovaTag.CAMPO_COUNT, new Integer(count));
       for (int i = 0; i < count; i++) {
         String nomeCampo = CampoTrovaTag.INIZIO_NOME_CAMPO + i;
         String nomeCampoDa = CampoTrovaTag.INIZIO_NOME_CAMPO + i + "Da";
         CampoTrovaTag.addExpressionToWhere(request, nomeCampo, where,
-            lbCaseSensitive, gestore, filtriAltreTabelle);
+            lbCaseSensitive, filtriAltreTabelle);
         trovaSession.put(nomeCampo, UtilityStruts.getParametroString(request,
             nomeCampo));
         trovaSession.put(nomeCampo + "_conf",
@@ -146,15 +172,15 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
 
         if(UtilityStruts.getParametroString(request, nomeCampoDa) != null){
           CampoTrovaTag.addExpressionToWhere(request, nomeCampoDa, where,
-              lbCaseSensitive, gestore, filtriAltreTabelle);
+              lbCaseSensitive, filtriAltreTabelle);
           trovaSession.put(nomeCampoDa, UtilityStruts.getParametroString(request,
               nomeCampoDa));
         }
       }
       // terminato il ciclo di generazione delle condizioni di filtro, si
-      // controlla l'esistenza di eventuali filtri su entità esterne e si
+      // controlla l'esistenza di eventuali filtri su entitï¿½ esterne e si
       // aggiungono in coda alla where
-      JdbcFrom from = new JdbcFrom();
+      //JdbcFrom from = new JdbcFrom();
 
       for (Iterator iterator = filtriAltreTabelle.keySet().iterator(); iterator.hasNext();) {
         String chiave = (String) iterator.next();
@@ -162,6 +188,13 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
         where.append(new JdbcExpressionWhere(JdbcUtils.JDBC_PARTICELLA_AND));
         where.append(new JdbcExpression("exists",
             new JdbcExpression[] { new JdbcExpression(selectTabella) }));
+        if (StringUtils.isNotBlank(selectTabella.getFrom().toString(false))) {
+        	if (where.getFrom() == null) {
+        		where.setFrom(selectTabella.getFrom());
+        	} else {
+        		where.getFrom().append(selectTabella.getFrom());
+        	}
+        }
         //where.append(selectTabella.getWhere());
         //from.append(selectTabella.getFrom());
       }
@@ -180,25 +213,43 @@ public class TrovaAction extends DispatchActionBaseNoOpzioni {
       // Aggiungo nel session l'oggetto con i dati di filtro
       request.getSession().setAttribute(
           SESSION_PENDICE_TROVA
-              + UtilityStruts.getParametroString(request,
-                  FormTrovaTag.CAMPO_ENTITA), trovaSession);
-      if (gestore != null) gestore.postWhere(where, lbCaseSensitive);
+              + UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_ENTITA), trovaSession);
+      
 
-      request.setAttribute(UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA,
-          where.toString(false));
+      // SQL Injection prevention: si spostano in sessione i dati di filtro in modo da rimuovere l'inserimento di campi hidden nella form di
+      // lista
+      if (StringUtils.isNotBlank(where.toString(false))) {
+	      UtilityTags.putAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_ENTITA),
+	          popupLevel, UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA, where.toString(false), true);
+      } else {
+    	  UtilityTags.removeAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_ENTITA), 
+    			  popupLevel, UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA);
+      }
 
-      request.setAttribute(UtilityTags.DEFAULT_HIDDEN_FROM_DA_TROVA, from.toString(false));
-
-      request.setAttribute(UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA,
-          UtilityTags.parametriToString(where.getParametri()));
+      // Dal momento in cui, durante la costruzione di filtri consecutivi, c'ï¿½ la possibilitï¿½ che i parametri passati alle query
+      // non vengano ripuliti o gestiti correttamente, si eliminano i parametri presenti nella mappa attuale. Questa azione, 
+      // tuttavia, viene eseguita solo se nei prepare statement sono presenti delle wildcard "?". Facendo ciï¿½, non ï¿½ garantita
+      // la corretta estrazione dei dati cercati, in quanto questa deve essere gestita dalla persona che implementa il gestore di
+      // ricerca, ma quantomeno non vengono lanciate eccezioni bloccanti.
+      if (!where.toString(false).contains("?")) {
+    	  // verifica formale: se non ci sono parametri nella query non ha senso tenere i parametri
+    	  UtilityTags.removeAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request, 
+    			  FormTrovaTag.CAMPO_ENTITA), popupLevel, UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA);
+      }
+      
+      if (where.getParametri().size() > 0) {
+        UtilityTags.putAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request, FormTrovaTag.CAMPO_ENTITA),
+            popupLevel, UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA, UtilityTags.parametriToString(where.getParametri()));
+      }
 
       // Aggiungo nel request i dati
       String pathLista = UtilityStruts.getParametroString(request,
           UtilityTags.DEFAULT_HIDDEN_FORM_TO_JSP);
-      if (pathLista == null)
+      if (pathLista == null) {
         pathLista = UtilityTags.getPathFromEntita(UtilityStruts.getParametroString(
             request, FormTrovaTag.CAMPO_ENTITA))
             + "lista.jsp";
+      }
 
       if (!UtilityStruts.isValidJspPath(pathLista)) {
         // non deve essere possibile redirezionare ad una risorsa non jsp e nemmeno risalire sopra WEB-INF/pages

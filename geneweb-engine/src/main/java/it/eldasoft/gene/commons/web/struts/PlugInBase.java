@@ -10,7 +10,6 @@
  */
 package it.eldasoft.gene.commons.web.struts;
 
-import it.eldasoft.gene.bl.PdfManager;
 import it.eldasoft.gene.bl.PropsConfigManager;
 import it.eldasoft.gene.commons.web.LimitatoreConnessioniUtenti;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
@@ -387,14 +386,6 @@ public abstract class PlugInBase implements PlugIn {
       } catch (NumberFormatException e) {
     	  context.setAttribute(CostantiGenerali.SENTINELLA_ACCESSO_ALTRO_APPLICATIVO,"0");
       }
-
-      // Sabbadin 12/04/2010: conversione pdf
-      context.setAttribute(
-          CostantiGenerali.ATTR_ATTIVA_CONVERSIONE_PDF,
-          ConfigManager.getValore(PdfManager.PROP_CONVERTITORE_PDF) != null
-              && ConfigManager.getValore(PdfManager.PROP_CONVERTITORE_PDF).length() > 0
-              ? "1"
-              : "0");
 
       // 30/11/2006 LG: inserimento nel context di path + nome file relativo al
       // manuale utente dell'applicativo

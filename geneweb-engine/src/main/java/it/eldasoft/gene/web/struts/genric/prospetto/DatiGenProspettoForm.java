@@ -60,6 +60,7 @@ public class DatiGenProspettoForm extends ActionForm {
   private String            nomeFile;
   private FormFile          selezioneFile;
   private Integer           prospetto;
+  private boolean           pdf;
   /**
    * 0 = fonte dati DB (va valorizzato schema ed entità), 1 = fonte dati report
    *
@@ -110,6 +111,7 @@ public class DatiGenProspettoForm extends ActionForm {
     this.descEntPrinc = null;
     this.idRicercaSrc  = null;
     this.nomeRicercaSrc = null;
+    this.pdf = false;
   }
 
   public DatiGenProspettoForm(DatiGenProspetto datiGenProspetto) {
@@ -151,6 +153,7 @@ public class DatiGenProspettoForm extends ActionForm {
       this.tipoFonteDati = 1;
     else
       this.tipoFonteDati = 0;
+    this.pdf = (datiModello.getPdf() == 1 ? true : false);
   }
 
   public DatiGenRicerca getDatiPerRicercaModel() {
@@ -192,7 +195,8 @@ public class DatiGenProspettoForm extends ActionForm {
     datiModello.setPersonale(this.personale ? 1 : 0);
     datiModello.setProfiloOwner(this.profiloOwner);
     datiModello.setIdRicercaSrc(UtilityStringhe.convertiStringaVuotaInNull(this.idRicercaSrc) == null ? null : Integer.valueOf(this.idRicercaSrc));
-
+    datiModello.setPdf(this.pdf ? 1 : 0);
+    
     return datiModello;
   }
 
@@ -566,6 +570,21 @@ public class DatiGenProspettoForm extends ActionForm {
    */
   public void setCodReportWS(String codReportWS) {
     this.codReportWS = codReportWS;
+  }
+  
+  /**
+   * @return Ritorna pdf.
+   */
+  public boolean isPdf() {
+    return pdf;
+  }
+
+  /**
+   * @param pdf
+   *        pdf da settare internamente alla classe.
+   */
+  public void setPdf(boolean pdf) {
+    this.pdf = pdf;
   }
 
 }

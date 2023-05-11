@@ -1,9 +1,13 @@
 package it.eldasoft.gene.tags.history;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+
+import org.apache.commons.lang.StringUtils;
 
 import it.eldasoft.gene.tags.TagSupportGene;
 import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 
 /**
  * Classe che esegue il clear dell'history dell'utente
@@ -22,7 +26,14 @@ public class HistoryAddTag extends TagSupportGene{
     private String replaceParam=null;
 	
 	public int doStartTag() throws JspException {
-		UtilityTags.getUtilityHistory(this.pageContext.getSession()).add(this.getId(),this.getTitolo(),this.pageContext, this.replaceParam);
+		final UtilityHistory history = UtilityTags.getUtilityHistory(this.pageContext.getSession()); 
+		history.add(id, titolo, pageContext, replaceParam);
+		
+		final String entity = pageContext.getRequest().getParameter(UtilityTags.SESSION_PENDICE_DEF_TROVA);
+		if (StringUtils.isNotBlank(entity)) {
+			UtilityTags.restoreHashAttributeForSqlBuild((HttpServletRequest) pageContext.getRequest(), entity, UtilityStruts.getNumeroPopUp(pageContext.getRequest()));
+		}
+		
 		return SKIP_BODY;
 	}
 	
@@ -69,5 +80,5 @@ public class HistoryAddTag extends TagSupportGene{
   public void setReplaceParam(String replaceParam) {
     this.replaceParam = replaceParam;
   }
-
+  
 }

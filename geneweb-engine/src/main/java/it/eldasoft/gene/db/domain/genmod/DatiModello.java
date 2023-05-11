@@ -63,6 +63,8 @@ public class DatiModello implements Serializable {
   private int               riepilogativo;
 
   private String            filtroEntPrinc;
+  
+  private int               pdf;
 
   private Integer           idRicercaSrc;
 
@@ -86,6 +88,7 @@ public class DatiModello implements Serializable {
     this.profiloOwner = null;
     this.riepilogativo = 0;
     this.filtroEntPrinc = null;
+    this.pdf = 0;
     this.idRicercaSrc = null;
     this.nomeRicercaSrc = null;
     this.versione = null;
@@ -326,6 +329,21 @@ public class DatiModello implements Serializable {
     this.filtroEntPrinc = filtroEntPrinc;
   }
 
+  /**
+   * @return Ritorna pdf.
+   */
+  public int getPdf() {
+    return pdf;
+  }
+
+  /**
+   * @param pdf
+   *        pdf da settare internamente alla classe.
+   */
+  public void setPdf(int pdf) {
+    this.pdf = pdf;
+  }
+  
   /**
    * @return Ritorna idRicercaSrc.
    */

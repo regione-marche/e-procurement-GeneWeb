@@ -71,7 +71,7 @@ public class InviaConversazioniManager {
         + " and w_discdest.discid = w_discuss.discid "
         + " and w_discuss.discid_p = w_discuss_p.discid_p "
         + " and w_discuss.discmesspubbl = '1' "
-        + " and (w_discdest.destinvstato is null or w_discdest.destinvstato = 0) "
+        + " and (w_discdest.destinvstato is null or w_discdest.destinvstato = 0 or w_discdest.destinvstato = 2) "
         + " order by w_discdest.discid_p, w_discdest.discid, w_discdest.destnum ";
 
     String selectW_DISCALL = "select allnum, "
@@ -81,10 +81,17 @@ public class InviaConversazioniManager {
         + " where discid_p = ? "
         + " and discid = ?"
         + " order by allnum";
-
+    
+    String selectW_DISCUSS_P = "select disckey1, "
+    	+ " discent "
+    	+ " from w_discuss_p "
+    	+ " where discid_p = ? ";
+    	
     String updateW_DISCDEST = "update w_discdest set destinvstato = ?, destinvmess = ? where discid_p = ? and discid = ? and destnum = ?";
 
     String selectW_MAIL = "select count(*) from w_mail where codapp = ? and idcfg = ?";
+    
+    String selectCOD_STIPULA = "select codstipula from g1stipula where id = ?";
 
     try {
 
@@ -101,6 +108,23 @@ public class InviaConversazioniManager {
           Long discmessope = (Long) SqlManager.getValueFromVectorParam(datiW_DISCDEST.get(de), 6).getValue();
           String discoggetto = (String) SqlManager.getValueFromVectorParam(datiW_DISCDEST.get(de), 7).getValue();
           String discprg = (String) SqlManager.getValueFromVectorParam(datiW_DISCDEST.get(de), 8).getValue();
+          
+          String oggettoMail=discoggetto;
+          
+          List<?> datiW_DISCUSS_P = this.sqlManager.getListVector(selectW_DISCUSS_P, new Object[] {discid_p});
+          String disckey1 = (String) SqlManager.getValueFromVectorParam(datiW_DISCUSS_P.get(0), 0).getValue();
+          String discent = (String) SqlManager.getValueFromVectorParam(datiW_DISCUSS_P.get(0), 1).getValue();
+          if("G1STIPULA".equals(discent)){
+        	  String cod_stipula = (String) this.sqlManager.getObject(selectCOD_STIPULA, new Object[] {disckey1});
+        	  oggettoMail = cod_stipula;
+        	  oggettoMail = "Rif. " + oggettoMail + " - " + discoggetto;
+          }
+          else {
+        	  if("GARE".equals(discent) || "TORN".equals(discent)){
+        		  oggettoMail = disckey1;
+        		  oggettoMail = "Rif. " + oggettoMail + " - " + discoggetto;
+        	  }
+          }
 
           // Lettura e gestione degli eventuali documenti allegati
           String[] fileAllegati = null;
@@ -152,9 +176,9 @@ public class InviaConversazioniManager {
                 try {
                   // Gestione per invio senza o con allegati
                   if (fileAllegati == null) {
-                    mailSender.send(destmail, discoggetto, discmesstesto, false);
+                    mailSender.send(destmail, oggettoMail, discmesstesto, false);
                   } else {
-                    mailSender.send(new String[] { destmail }, null, null, discoggetto, discmesstesto, fileAllegati, contenutoFileAllegati,
+                    mailSender.send(new String[] { destmail }, null, null, oggettoMail, discmesstesto, fileAllegati, contenutoFileAllegati,
                         false);
                   }
 

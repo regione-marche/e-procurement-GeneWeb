@@ -58,8 +58,9 @@
 				scheda=''
 				schedaPopUp=''
 				campi="V_SOGGETTI_VERIFICHE.CODTIM;V_SOGGETTI_VERIFICHE.NOMTIM"
-				chiave="DOCUMENTI_VERIFICHE_CODTIM"
-				where="V_SOGGETTI_VERIFICHE.CODIMP='${requestScope.codimp}'">
+				functionId="default"
+				parametriWhere="T:${requestScope.codimp}"
+				chiave="DOCUMENTI_VERIFICHE_CODTIM" >
 				<gene:campoScheda campo="CODTIM" title="Codice soggetto" entita="DOCUMENTI_VERIFICHE" />
 				<gene:campoScheda campo="NOMTIM" title="Nome soggetto"
 					entita="V_IMPR_SOGGETTI"

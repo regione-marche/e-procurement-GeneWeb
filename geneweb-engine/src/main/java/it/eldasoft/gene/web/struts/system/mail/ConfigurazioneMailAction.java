@@ -168,7 +168,9 @@ public class ConfigurazioneMailAction extends DispatchActionBase {
           tabSA.setDescTabellato(codein + " - " + nomein);
           listaStazioniAppaltanti.add(tabSA);
         }
-        // Nuova configurazione per le conversazioni
+      }
+      Long confConversazioni = (Long) sqlManager.getObject(selectDEF, new Object[]{codapp,CostantiGenerali.PROP_CONFIGURAZIONE_MAIL_STANDARD_CONV});
+      if(new Long(0).equals(confConversazioni)){
         Tabellato tabSA = new Tabellato();
         tabSA.setTipoTabellato(CostantiGenerali.PROP_CONFIGURAZIONE_MAIL_STANDARD_CONV);
         tabSA.setDescTabellato("CONVERSAZIONI");

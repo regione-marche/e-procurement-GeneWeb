@@ -19,7 +19,7 @@
 
 
 
-<html>
+<html lang="it">
 	<head>
 		<jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/controlliFormali.js"></script>

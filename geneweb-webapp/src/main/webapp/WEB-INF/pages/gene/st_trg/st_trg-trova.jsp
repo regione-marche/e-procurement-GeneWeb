@@ -36,9 +36,7 @@
 				
 				<gene:campoTrova campo="ST_OPERATION" title="Tipo di operazione" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoTipoOperazione" />
 
-						<input type="hidden" name="Campo22_where" value="" />
 						<input type="hidden" name="Campo22_computed" value="false" />
-						<input type="hidden" name="Campo22_from" value="" />
 						<input type="hidden" name="Campo22_conf" value="=" />
 						<input type="hidden" name="defCampo22" value="" />
 				
@@ -46,9 +44,7 @@
 				<tr id="rowCampo23">
 					<td class="etichetta-dato">Entità</td>
 					<td class="operatore-trova">
-						<input type="hidden" name="Campo23_where" value="" />
 						<input type="hidden" name="Campo23_computed" value="false" />
-						<input type="hidden" name="Campo23_from" value="" />
 						<input type="hidden" name="Campo23_conf" value="=" />
 						<input type="hidden" name="defCampo23" value="" />
 						&nbsp;

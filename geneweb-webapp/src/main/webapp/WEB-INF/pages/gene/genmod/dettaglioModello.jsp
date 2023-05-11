@@ -41,7 +41,18 @@
       <td class="valore-dato"> <a href="javascript:mostraModello(${modelliForm.idModello},'${modelliForm.nomeFile}');" title="Download modello"><c:out value="${modelliForm.nomeFile}" /></a> </td>
     </tr>
 	<tr>
-      <td class="etichetta-dato" >Modello riepilogativo ?</td>
+	<tr>
+		<td class="etichetta-dato">Componi in formato PDF</td>
+		<td class="valore-dato"><c:choose>
+				<c:when test="${modelliForm.pdf}">
+					<c:out value="Si" />
+				</c:when>
+				<c:otherwise>
+					<c:out value="No" />
+				</c:otherwise>
+			</c:choose></td>
+	</tr>
+	<td class="etichetta-dato" >Modello riepilogativo ?</td>
       <td class="valore-dato">
       	<c:choose>
 					<c:when test="${modelliForm.riepilogativo}">

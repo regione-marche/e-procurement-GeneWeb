@@ -11,7 +11,6 @@
 package it.eldasoft.gene.web.struts.genmod;
 
 import it.eldasoft.gene.bl.GeneManager;
-import it.eldasoft.gene.bl.PdfManager;
 import it.eldasoft.gene.bl.docass.DocumentiAssociatiManager;
 import it.eldasoft.gene.bl.genmod.CompositoreException;
 import it.eldasoft.gene.bl.genmod.GestioneFileModelloException;
@@ -25,6 +24,7 @@ import it.eldasoft.gene.commons.web.struts.DispatchActionBaseNoOpzioni;
 import it.eldasoft.gene.db.dao.QueryDaoException;
 import it.eldasoft.gene.db.domain.genmod.DatiModello;
 import it.eldasoft.gene.web.struts.docass.CostantiDocumentiAssociati;
+import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.metadata.cache.DizionarioTabelle;
 import it.eldasoft.utils.metadata.domain.Tabella;
 import it.eldasoft.utils.properties.ConfigManager;
@@ -35,6 +35,7 @@ import it.eldasoft.utils.utility.UtilityStringhe;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -88,9 +89,6 @@ public class ComponiModelloAction extends DispatchActionBaseNoOpzioni {
   /** Manager delle ricerche */
   private RicercheManager           ricercheManager;
 
-  /** Manager per la creazione di file pdf */
-  private PdfManager                pdfManager;
-
   /**
    * @param modelliManager
    *        The modelliManager to set.
@@ -121,13 +119,6 @@ public class ComponiModelloAction extends DispatchActionBaseNoOpzioni {
    */
   public void setRicercheManager(RicercheManager ricercheManager) {
     this.ricercheManager = ricercheManager;
-  }
-
-  /**
-   * @param pdfManager pdfManager da settare internamente alla classe.
-   */
-  public void setPdfManager(PdfManager pdfManager) {
-    this.pdfManager = pdfManager;
   }
 
   /**
@@ -185,6 +176,27 @@ public class ComponiModelloAction extends DispatchActionBaseNoOpzioni {
 
       DatiModello datiModello = this.modelliManager.getModelloById(componiModelloForm.getIdModello());
 
+		// Nel caso il modello sia da convertire in PDF
+		if (datiModello.getPdf() == 1) {
+			String[] listaEstPdf;
+			String nomeFile;
+			String estensione;
+
+			// Estraggo lista estensioni pdf per cui il modello puo' essere convertito in
+			// PDF
+			listaEstPdf = this.modelliManager.getEstensioniModelloOutputPDF();
+			nomeFile = datiModello.getNomeFile();
+			estensione = nomeFile.substring(nomeFile.lastIndexOf(".") + 1).toUpperCase();
+
+			// Verifico se l'estensione del modello è compatibile con quelle indicate
+			if (!Arrays.asList(listaEstPdf).contains(estensione) && !(listaEstPdf.length == 1 && "*".equals(listaEstPdf[0]))) {
+				
+				messageKey = "warnings.modelli.componiModello.modelloNonConvertibilePDF";
+		        logger.warn(this.resBundleGenerale.getString(messageKey));
+		        this.aggiungiMessaggio(request, messageKey);
+			}
+		}
+
       if (datiModello.getIdRicercaSrc() == null) {
         // si tratta di un modello standard
         target = this.componiModelloStandard(request, target, componiModelloForm);
@@ -192,27 +204,6 @@ public class ComponiModelloAction extends DispatchActionBaseNoOpzioni {
         // si tratta di un modello con sorgente dati un report
         target = this.componiModelloConSorgenteDatiReport(request, target, componiModelloForm,
             datiModello, codiceUfficioIntestatario);
-      }
-
-      // Sabbadin 12/04/20010
-      // se si richiede la generazione in formato pdf, viene immediatamente
-      // lanciato il processo che genera il documento pdf e si eliminano gli
-      // artefatti generati dal compositore
-      if (CostantiGeneraliStruts.FORWARD_OK.equals(target)) {
-        if (componiModelloForm.getExportPdf() == 1) {
-          String nomeFilePdf = this.pdfManager.convertiDocumento(ConfigManager.getValore(CostantiGenModelli.PROP_PATH_MODELLI)
-              + ConfigManager.getValore(CostantiGenModelli.PROP_PATH_MODELLI_OUTPUT)
-              + componiModelloForm.getFileComposto());
-          this.modelliManager.eliminaFileComposto(
-              componiModelloForm.getFileComposto(),
-              (String) request.getSession().getAttribute(
-                  CostantiGenerali.MODULO_ATTIVO));
-          File filePdf = new File(nomeFilePdf);
-          componiModelloForm.setFileComposto(filePdf.getName());
-          request.getSession().setAttribute(
-              ComponiModelloAction.SESSION_MODELLO_COMPOSTO,
-              componiModelloForm.getFileComposto());
-        }
       }
 
     } catch (CompositoreException e) {

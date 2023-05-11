@@ -75,6 +75,8 @@ public class GestoreListaUffintWsdm  extends AbstractGestoreEntita{
     ArrayList<String> currentUffint = new ArrayList<String>();
     ArrayList<String> newUffint = new ArrayList<String>();
     
+    List<Object> parameters;
+    List<Object> dynaParameters;
     
     List currentData;
     try {
@@ -84,6 +86,7 @@ public class GestoreListaUffintWsdm  extends AbstractGestoreEntita{
         String codein = (String) SqlManager.getValueFromVectorParam(currentData.get(i), 0).getValue();
         currentUffint.add(codein);
       }
+      dynaParameters = new ArrayList<Object>();
       if(listaUffintSelezionati != null){
         for(int i=0;i<listaUffintSelezionati.length;i++){
           String codein = listaUffintSelezionati[i];
@@ -91,11 +94,16 @@ public class GestoreListaUffintWsdm  extends AbstractGestoreEntita{
           if(!"".equals(uffintDaControllare)){
             uffintDaControllare+=", ";
           }
-          uffintDaControllare+="'"+codein+"'";
+          uffintDaControllare+="?";
+          dynaParameters.add(codein);
         }
       }
       if(!"".equals(uffintDaControllare)){
-        Long count = (Long) sqlManager.getObject("select count(*) from WSDMCONFIUFF U, WSDMCONFI W where U.IDCONFI = W.ID and U.IDCONFI != ? and W.CODAPP = ? and U.CODEIN in( "+ uffintDaControllare +" )", new Object[] {idconfi,codapp});
+        parameters = new ArrayList<Object>();
+        parameters.add(idconfi);
+        parameters.add(codapp);
+        parameters.addAll(dynaParameters);
+        Long count = (Long) sqlManager.getObject("select count(*) from WSDMCONFIUFF U, WSDMCONFI W where U.IDCONFI = W.ID and U.IDCONFI != ? and W.CODAPP = ? and U.CODEIN in( "+ uffintDaControllare +" )", parameters.toArray());
         if(count.intValue()>0){
           this.getRequest().setAttribute("modalita", "modifica");
           throw new GestoreException("Gli uffici intestatari selezionati sono già associati ad altre configurazioni", "wsdm.uffintGiaAssociato", new Exception());
@@ -109,7 +117,7 @@ public class GestoreListaUffintWsdm  extends AbstractGestoreEntita{
           uffintToAdd.add(codein);
         }
       }
-      
+      dynaParameters = new ArrayList<Object>();
       //Cancello gli uffint che erano presenti in DB ma sono stati deselezionati
       for(int i=0;i<currentUffint.size();i++){
         String codein = currentUffint.get(i);
@@ -117,17 +125,24 @@ public class GestoreListaUffintWsdm  extends AbstractGestoreEntita{
           if(!"".equals(uffintToDelete)){
             uffintToDelete+=", ";
           }
-          uffintToDelete+="'"+codein+"'";
+          uffintToDelete+="?";
+          dynaParameters.add(codein);
         }
       }
       
       if(!"".equals(uffintToDelete)){
-        this.sqlManager.update("delete from WSDMCONFIUFF where idconfi = ? and codein in ( "+ uffintToDelete +" )", new Object[] { new Long(idconfi) });
+        parameters = new ArrayList<Object>();
+        parameters.add(new Long(idconfi));
+        parameters.addAll(dynaParameters);
+        this.sqlManager.update("delete from WSDMCONFIUFF where idconfi = ? and codein in ( "+ uffintToDelete +" )", parameters.toArray());
       }
       
       for(int i=0;i<uffintToAdd.size();i++){
         String codein = uffintToAdd.get(i);
-        this.sqlManager.update("insert into WSDMCONFIUFF (idconfi, codein) values (?,?)", new Object[] {new Long(idconfi), codein});
+        parameters = new ArrayList<Object>();
+        parameters.add(new Long(idconfi));
+        parameters.add(codein);
+        this.sqlManager.update("insert into WSDMCONFIUFF (idconfi, codein) values (?,?)", parameters.toArray());
       }
       
     } catch (SQLException e) {

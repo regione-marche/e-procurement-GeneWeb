@@ -295,6 +295,10 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
     int idModello = -1;
     String messageKey = null;
     try {
+    	
+      // Estraggo lista estensioni pdf per cui il modello puo' essere convertito in PDF
+      String[] listaEstPdf = this.modelliManager.getEstensioniModelloOutputPDF();
+      request.setAttribute("listaEstPdf", listaEstPdf);
 
       this.setElencoSchemiEntitaNelRequest(request);
 
@@ -396,6 +400,10 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
     String messageKey = null;
     try {
 
+      // Estraggo lista estensioni pdf per cui il modello puo' essere convertito in PDF
+      String[] listaEstPdf = this.modelliManager.getEstensioniModelloOutputPDF();
+      request.setAttribute("listaEstPdf", listaEstPdf);
+  	
       this.setElencoSchemiEntitaNelRequest(request);
 
       // Rimozione dalla sessione di oggetti comuni ai vari moduli
@@ -679,6 +687,9 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
     // modello, quindi devo ripredisporre nel request il form, e reinserire gli
     // elenchi schemi/tabelle
     if (CostantiGenModelli.FORWARD_ERRORE_INSERIMENTO_MODELLO.equals(target)) {
+      // Estraggo lista estensioni pdf per cui il modello puo' essere convertito in PDF
+      String[] listaEstPdf = this.modelliManager.getEstensioniModelloOutputPDF();
+      request.setAttribute("listaEstPdf", listaEstPdf);
       this.setElencoSchemiEntitaNelRequest(request);
       this.setInfoEntitaPrincipale(modelliForm.getEntPrinc(), modelliForm);
       // set nel request del parameter per disabilitare la navigazione
@@ -858,6 +869,7 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
         if (modelliForm.getSelezioneFile() != null
             && modelliForm.getSelezioneFile().getFileName() != null
             && modelliForm.getSelezioneFile().getFileName().length() > 0) {
+          datiModello.setNomeFile(modelliForm.getSelezioneFile().getFileName().replaceAll("[^a-zA-Z0-9_.-?()=\\[\\]]", "_"));
           this.modelliManager.updateModello(datiModello,
               modelliForm.getSelezioneFile().getFileData(),
               (String) request.getSession().getAttribute(
@@ -935,6 +947,10 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
     // modello, quindi devo ripredisporre nel request il form, e reinserire gli
     // elenchi schemi/tabelle
     if (CostantiGenModelli.FORWARD_ERRORE_UPDATE_MODELLO.equals(target)) {
+      // Estraggo lista estensioni pdf per cui il modello puo' essere convertito in PDF
+      String[] listaEstPdf = this.modelliManager.getEstensioniModelloOutputPDF();
+      request.setAttribute("listaEstPdf", listaEstPdf);
+
       this.setElencoSchemiEntitaNelRequest(request);
       this.setInfoEntitaPrincipale(modelliForm.getEntPrinc(), modelliForm);
     }

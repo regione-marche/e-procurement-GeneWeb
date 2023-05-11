@@ -43,6 +43,9 @@
 		<c:set var="where" value="${where} and codapp = '${param.codapp}'"/>
 	</c:if>
 	
+	<c:set var="where" value="${where} and (isarchi!='1' or isarchi is null)"/>
+	
+	
 	<table class="dettaglio-tab">
 	
 		<tr>

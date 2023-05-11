@@ -90,6 +90,7 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.ws.BindingProvider;
 
 import org.apache.axis.client.Stub;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -112,6 +113,7 @@ public class CinecaWSManager {
   private static final String PROP_WSDITTEINDIVIDUALI_URL                      = "cineca.ws.DitteIndividuali.url";
   private static final String PROP_WSDITTEINDIVIDUALI_CLIENT                   = "cineca.ws.SoggettoCollettivo.client";
   
+  private static final String PROP_WS_COD_EXT_COORDPAG                   	  = "cineca.ws.codEsternoCoordPag";
   private static final String PROP_WSERP_ERP_URL                              = "wserp.erp.url";
 
 
@@ -1188,6 +1190,17 @@ public class CinecaWSManager {
             codComuneNascita = (String) this.sqlManager.getObject("select tabcod5 from tabsche where tabcod='S2003' and tabcod1='09' and tabdesc like ? ", new Object[]{"%" + comuneNascita.toUpperCase() + "%"});
           }
           codComuneNascita = UtilityStringhe.convertiNullInStringaVuota(codComuneNascita);
+          //cerco eventualmente il cod comune nascita straniero
+          if("".equals(codComuneNascita)){
+        	  codComuneNascita = (String) this.sqlManager.getObject("select tabcod2 from tabsche where tabcod='S2019' and tabcod1='01' and tabdesc = ? ", new Object[]{comuneNascita.toUpperCase()});
+        	  codComuneNascita = UtilityStringhe.convertiNullInStringaVuota(codComuneNascita);
+        	  if(!"".equals(codComuneNascita)) {
+                  String codNazioneNascita = (String) this.sqlManager.getObject("select tab2tip from tab2 where tab2cod= ? and "+ this.sqlManager.getDBFunction("UPPER")+"( tab2d2 ) = ? ",
+                          new Object[]{"UBUY1",comuneNascita.toUpperCase()});
+                  datiBaseSoggettoCollettivo.put("codNazioneNascita", codNazioneNascita);
+        	  }
+          }
+          
           if(!"".equals(codComuneNascita)){
             datiBaseSoggettoCollettivo.put("codComuneNascita", codComuneNascita);
 
@@ -1196,7 +1209,32 @@ public class CinecaWSManager {
         datiBaseSoggettoCollettivo.put("dataNascita", dataNascita);
         datiBaseSoggettoCollettivo.put("cognome", cognome);
         datiBaseSoggettoCollettivo.put("nome", nome);
+
+        //gestione campo genere in base al CF
+        genere = StringUtils.stripToEmpty(genere);
+        //Verifico che sia un codice fiscale italiano 
+        if("".equals(genere) && tipologia!=null && Long.valueOf(6).equals(tipologia)) {
+        	//nel caso di libero prof. calcolo di genere dal cf
+        	codiceFiscale = StringUtils.stripToEmpty(codiceFiscale);
+        	if(!"".equals(codiceFiscale) && codiceFiscale.length()==16) {
+        		boolean isCFvalido = this.controlloCF(codiceFiscale);
+				if(isCFvalido) {
+            		String discr = codiceFiscale.substring(9,11);
+            		discr = StringUtils.stripToEmpty(discr);
+            		if(StringUtils.isNumeric(discr)){
+            			int discrInt = Long.valueOf(discr).intValue();
+            			if(discrInt>=1 && discrInt<=31) {
+            				genere="M";
+            			}
+            			if(discrInt>=41 && discrInt<=71) {
+            				genere="F";
+            			}
+            		}
+				}
+        	}
+        }
         datiBaseSoggettoCollettivo.put("genere", genere);
+        
         if(tipoAlboProf != null){
           String codAlboProf = (String) this.sqlManager.getObject("select tab2d1 from tab2 where tab2cod= ? and tab2tip = ? ",
               new Object[]{"UBUY4",tipoAlboProf.toString()});
@@ -1218,6 +1256,13 @@ public class CinecaWSManager {
 
         datiBaseSoggettoCollettivo.put("annotazioni", annotazioni);
         datiBaseSoggettoCollettivo.put("soggettiAbilitati", soggettiAbilitati);
+        
+        //gestione del codice esterno Coordinate di Pagamento
+        String codEsternoCoordPag = ConfigManager.getValore(PROP_WS_COD_EXT_COORDPAG);
+        codEsternoCoordPag = StringUtils.stripToEmpty(codEsternoCoordPag);
+        if(!"".equals(codEsternoCoordPag)){
+        	datiBaseSoggettoCollettivo.put("codEsternoCoordPag", codEsternoCoordPag);	
+        }
 
       }
 

@@ -1,15 +1,15 @@
 package it.eldasoft.gene.tags.decorators.archivi;
 
+import java.util.Vector;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyContent;
+
 import it.eldasoft.gene.tags.BodyTagSupportGene;
 import it.eldasoft.gene.tags.decorators.scheda.CampoSchedaTagImpl;
 import it.eldasoft.gene.tags.decorators.scheda.FormSchedaTag;
 import it.eldasoft.gene.tags.decorators.scheda.IFormScheda;
 import it.eldasoft.gene.tags.decorators.wizard.FormSchedaWizardTag;
-
-import java.util.Vector;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyContent;
 
 public class ArchivioTag extends BodyTagSupportGene {
 
@@ -36,6 +36,10 @@ public class ArchivioTag extends BodyTagSupportGene {
   private int               campoEnd;
 
   private String            where;
+  
+  private String            parametriWhere;
+  
+  private String            functionId;
 
   private String            formName;
   
@@ -69,6 +73,8 @@ public class ArchivioTag extends BodyTagSupportGene {
     this.chiave = null;
     this.campoStart = -1;
     this.where = null;
+    this.parametriWhere = null;
+    this.functionId = null;
     this.formName = null;
     this.inseribile = true;
     this.campiNoSet=null;
@@ -283,13 +289,43 @@ public class ArchivioTag extends BodyTagSupportGene {
   public String getWhere() {
     return where;
   }
-
+  
   /**
    * @param where
    *        The where to set.
    */
   public void setWhere(String where) {
     this.where = where;
+  }
+  
+  /**
+   * @return Returns the parametriWhere
+   */
+  public String getParametriWhere() {
+    return parametriWhere;
+  }
+  
+  /**
+   * @param parametriWhere
+   *        The parametriWhere
+   */
+  public void setParametriWhere(final String parametriWhere) {
+    this.parametriWhere = parametriWhere;
+  }
+  
+  /**
+   * @return Return the function ID
+   */
+  public String getFunctionId() {
+    return functionId;
+  }
+  
+  /**
+   * @param functionId
+   *            The function ID
+   */
+  public void setFunctionId(final String functionId) {
+    this.functionId = functionId;
   }
 
   /**

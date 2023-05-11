@@ -12,6 +12,7 @@ package it.eldasoft.gene.web.struts.genric.prospetto;
 
 import it.eldasoft.gene.bl.GeneManager;
 import it.eldasoft.gene.bl.TabellatiManager;
+import it.eldasoft.gene.bl.genmod.ModelliManager;
 import it.eldasoft.gene.bl.genric.GestoreVisibilitaDati;
 import it.eldasoft.gene.bl.genric.ProspettoManager;
 import it.eldasoft.gene.bl.genric.RicercheManager;
@@ -67,6 +68,9 @@ public class EditDatiGenProspettoAction extends AbstractActionBaseGenRicerchePro
    * Reference alla classe di business logic per l'accesso ai tabellati
    */
   private TabellatiManager tabellatiManager;
+  
+  /** Manager dei modelli */
+  private ModelliManager      modelliManager;
 
   /**
    * Reference alla classe di business logic per l'accesso ai dati relativi alle
@@ -103,6 +107,13 @@ public class EditDatiGenProspettoAction extends AbstractActionBaseGenRicerchePro
   public void setProspettoManager(ProspettoManager prospettoManager) {
     this.prospettoManager = prospettoManager;
   }
+  
+  /**
+   * @param modelliManager modelliManager da settare internamente alla classe.
+   */
+  public void setModelliManager(ModelliManager modelliManager) {
+    this.modelliManager = modelliManager;
+  }
 
   /**
    * @param geneManager geneManager da settare internamente alla classe.
@@ -130,6 +141,13 @@ public class EditDatiGenProspettoAction extends AbstractActionBaseGenRicerchePro
     String messageKey = null;
 
     try {
+    	
+       String[] listaEstPdf;
+    	
+       // Estraggo lista estensioni pdf per cui il modello puo' essere convertito in PDF
+       listaEstPdf=this.modelliManager.getEstensioniModelloOutputPDF();
+       request.setAttribute("listaEstPdf", listaEstPdf);
+        
       //Lettura dal request l'id del prospetto da modificare. Se non si trova
       //tale parametro, allora si sta per creare una nuova ricerca con modello
       String idRicerca = request.getParameter("idRicerca");

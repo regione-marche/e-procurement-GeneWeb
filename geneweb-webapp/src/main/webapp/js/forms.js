@@ -320,6 +320,11 @@ function isNumericStr(sText, decimal)
 	var Char;
 	var findDec=false;
 	var idx, i;
+		
+	//Si controlla il caso in cui in un campo numerico si inseriscano i caratteri "." o "-" senza cifre
+	if(sText.length == 1 && (sText=="." || sText=="-"))
+		return false;
+	
 	if(!decimal)
 		ValidChars = "0123456789";
 	for (i = (sText.charAt(0)=='-' ? 1:0); i < sText.length ; i++){ 
@@ -2196,10 +2201,13 @@ function toDate(strData){
 function changeFiltroArchivioComuni(provincia, nomeUnCampoInArchivio) {
 	if (activeForm == null) throw "Form non esistente o non inizializzato";	
 	var objCampo = activeForm.getCampo(nomeUnCampoInArchivio);
-	if (provincia != '')
-		objCampo.archivio.formObj.archWhereLista.value = "tb1.tabcod3 = '" + provincia + "'";
-	else
-		objCampo.archivio.formObj.archWhereLista.value = "";
+	if (provincia != '') {
+		objCampo.archivio.formObj.archFunctionId.value = "default_true";
+		objCampo.archivio.formObj.archWhereParametriLista.value = "T:" + provincia;
+	} else {
+		objCampo.archivio.formObj.archFunctionId.value = "default_false";
+		objCampo.archivio.formObj.archWhereParametriLista.value = "";
+	}
 }
 
 function aggiornaNazionalita(comuneNascita, valoreItalia, campoNazione){

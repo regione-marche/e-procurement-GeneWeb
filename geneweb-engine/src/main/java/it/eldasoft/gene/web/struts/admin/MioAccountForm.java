@@ -10,13 +10,13 @@
  */
 package it.eldasoft.gene.web.struts.admin;
 
-import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
-import it.eldasoft.gene.commons.web.struts.DispatchForm;
-import it.eldasoft.gene.db.domain.admin.Account;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMapping;
+
+import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
+import it.eldasoft.gene.commons.web.struts.DispatchForm;
+import it.eldasoft.gene.db.domain.admin.Account;
 
 /**
  * Form di gestione dell'Account
@@ -38,6 +38,8 @@ public class MioAccountForm extends DispatchForm {
   private final String[]          listaValueGenric    = CostantiGeneraliAccount.LISTA_VALUE_GENRIC;
   private final String[]          listaTextGenmod     = CostantiGeneraliAccount.LISTA_TEXT_GENMOD;
   private final String[]          listaValueGenmod    = CostantiGeneraliAccount.LISTA_VALUE_GENMOD;
+  private final String[]          listaTextQform     = CostantiGeneraliAccount.LISTA_TEXT_QFORM;
+  private final String[]          listaValueQform    = CostantiGeneraliAccount.LISTA_VALUE_QFORM;
   private final String[]          listaTextScadenza  =  CostantiGeneraliAccount.LISTA_TEXT_SCADENZA;
 
   private String            idAccount;
@@ -93,7 +95,7 @@ public class MioAccountForm extends DispatchForm {
     this.codfisc=null;
   }
 
-  
+
   public String getIdAccount() {
     return idAccount;
   }
@@ -156,6 +158,14 @@ public class MioAccountForm extends DispatchForm {
 
   public String[] getListaValueGenric() {
     return listaValueGenric;
+  }
+
+  public String[] getListaTextQform() {
+    return listaTextQform;
+  }
+
+  public String[] getListaValueQform() {
+    return listaValueQform;
   }
 
   /**

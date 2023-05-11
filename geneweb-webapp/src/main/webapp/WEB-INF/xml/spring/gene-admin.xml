@@ -28,6 +28,12 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="sqlMapClient" ref="sqlMapClient" />
 	</bean>
+	
+	<bean id="tecniDao"
+		class="it.eldasoft.gene.db.dao.ibatis.SqlMapTecniciDao">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
 
 	<!-- ========================= DAO DEFINITIONS: JDBC IMPLEMENTATIONS ========================= -->
 
@@ -80,6 +86,7 @@
 				<property name="ricercheDao" ref="ricercheDao" />
 				<property name="modelliDao" ref="modelliDao" />
 				<property name="uffintDao" ref="uffintDao" />
+				<property name="logEventiDao" ref="logEventiDao" />
 			</bean>
 		</property>
 	</bean>
@@ -128,6 +135,25 @@
 				<property name="uffintDao" ref="uffintDao" />
 				<property name="accountManager" ref="accountManager" />
 				<property name="mailManager" ref="mailManager" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="teniciManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true" >
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes" >
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="tecniciManager" parent="teniciManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.admin.TecniciManager">
+				<property name="tecniDao" ref="tecniDao" />
 			</bean>
 		</property>
 	</bean>

@@ -10,12 +10,12 @@
  */
 package it.eldasoft.gene.db.dao;
 
-import it.eldasoft.gene.db.domain.Tabellato;
-import it.eldasoft.gene.db.domain.TabellatoWsdm;
-
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+
+import it.eldasoft.gene.db.domain.Tabellato;
+import it.eldasoft.gene.db.domain.TabellatoWsdm;
 
 /**
  * Interfaccia DAO per l'accesso ai dati dei tabellati TAB1, TAB2,ecc
@@ -67,6 +67,17 @@ public interface TabellatiDao {
       throws DataAccessException;
 
   /**
+   * Estrae la decrizione supplementare di un tabellato
+   *
+   * @param codiceTabellato
+   * @param valoreTabellato
+   * @return
+   * @throws DataAccessException
+   */
+  public String getDescrSupplementare(String codiceTabellato, String valoreTabellato)
+      throws DataAccessException;
+
+  /**
    * Estrae l'elenco dei tabellati (codice - descrizione) dal TAB6, filtrando
    * per il codiceTabellato
    *
@@ -90,7 +101,7 @@ public interface TabellatiDao {
    */
   public void updateDescTabellato(String valoreCampoDesc,String valoreChiaveCOD,String valoreChiaveTIP,String tabellato)
       throws DataAccessException;
-  
+
   /**
    * Estrae la lista dei valori di un tabellato
    *
@@ -100,7 +111,7 @@ public interface TabellatiDao {
    * @throws DataAccessException
    */
   public List<TabellatoWsdm> getTabellatiWsdm(Long idconfi, String sistema, String codice) throws DataAccessException;
-  
+
   /**
    * Estrae la lista dei valori di un tabellato
    *
@@ -110,8 +121,8 @@ public interface TabellatiDao {
    * @throws DataAccessException
    */
   public List<TabellatoWsdm> getTabellatiFromIdconfiCftab(Long idconfi, String cftab) throws DataAccessException;
-  
-  
+
+
   /**
    * Estrae l'elenco dei tabellati (codice - descrizione) dal TAB6, filtrando
    * per il codiceTabellato

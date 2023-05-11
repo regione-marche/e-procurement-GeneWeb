@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.lang.StringUtils;
+
 public class PopUpGenericoSupportTag extends TagSupportGene {
 
   /**
@@ -56,14 +58,17 @@ public class PopUpGenericoSupportTag extends TagSupportGene {
     return PopUpGenericoImpl.getNomeVariabileJs(this.getId());
   }
 
+  @Override
   public int doStartTag() throws JspException {
     super.doStartTag();
     impl = new PopUpGenericoImpl(this.getId(), this.getContextPath(),
         this.getJavascript());
-    impl.setTitolo("");
+    impl.setTitolo("Visualizza opzioni");
     if (this.variableJs != null) impl.setVariableJs(this.getVariableJs());
     if (this.onClick != null) impl.setOnClick(this.onClick);
-    impl.setTitolo(this.titolo);
+    if (StringUtils.isNotBlank(this.titolo)) {
+      impl.setTitolo(this.titolo);
+    }
     //F.D. 06/03/08 setto l'attributo speciale
     impl.setSpeciale(this.speciale);
     try {

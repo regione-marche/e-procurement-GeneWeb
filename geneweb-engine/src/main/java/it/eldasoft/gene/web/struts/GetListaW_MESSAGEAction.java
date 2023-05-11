@@ -1,30 +1,33 @@
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-import it.eldasoft.utils.utility.UtilityDate;
-
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetListaW_MESSAGEAction extends Action {
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.utils.utility.UtilityDate;
+import net.sf.json.JSONObject;
+
+public class GetListaW_MESSAGEAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetListaW_MESSAGEAction.class);
 
   /**
    * Manager per la gestione delle interrogazioni di database.
@@ -39,8 +42,11 @@ public class GetListaW_MESSAGEAction extends Action {
     this.sqlManager = sqlManager;
   }
 
-  public final ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-      final HttpServletResponse response) throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -48,30 +54,30 @@ public class GetListaW_MESSAGEAction extends Action {
     response.setContentType("text/text;charset=utf-8");
     PrintWriter out = response.getWriter();
 
-    String type = request.getParameter("type");
-    String start = request.getParameter("start");
-    String end = request.getParameter("end");
-    Long indexstart = new Long(0);
-    Long indexend = new Long(99);
-    
-    if (start != null && !"".equals(start)) {
-      indexstart = new Long(start);
-    }
-    
-    if (end != null && !"".equals(end)) {
-      indexend = new Long(end);
-    }
-    
+    try {
 
-    ProfiloUtente profilo = (ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
-    if (profilo != null) {
-      Long syscon = new Long(profilo.getId());
+      String type = request.getParameter("type");
+      String start = request.getParameter("start");
+      String end = request.getParameter("end");
+      Long indexstart = new Long(0);
+      Long indexend = new Long(99);
 
-      JSONObject result = new JSONObject();
-      int totalRecords = 0;
-      List<HashMap<String, Object>> hMapRecords = new ArrayList<HashMap<String, Object>>();
+      if (start != null && !"".equals(start)) {
+        indexstart = new Long(start);
+      }
 
-      try {
+      if (end != null && !"".equals(end)) {
+        indexend = new Long(end);
+      }
+
+      ProfiloUtente profilo = (ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
+      if (profilo != null) {
+        Long syscon = new Long(profilo.getId());
+
+        JSONObject result = new JSONObject();
+        int totalRecords = 0;
+        List<HashMap<String, Object>> hMapRecords = new ArrayList<HashMap<String, Object>>();
+
         if ("IN".equals(type)) {
           String selectW_MESSAGE = "select message_id, " // 0
               + "message_date, " // 1
@@ -149,15 +155,22 @@ public class GetListaW_MESSAGEAction extends Action {
         result.put("iTotalDisplay", totalRecords);
         result.put("data", hMapRecords);
 
-      } catch (SQLException e) {
-        throw new JspException("Errore durante la lettura dei messaggi", e);
+        out.println(result);
+        out.flush();
       }
 
-      out.println(result);
-      out.flush();
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
     }
 
-    return null;
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

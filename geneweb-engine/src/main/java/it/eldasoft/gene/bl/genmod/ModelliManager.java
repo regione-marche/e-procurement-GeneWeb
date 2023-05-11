@@ -563,6 +563,9 @@ public class ModelliManager {
     String fileComposto;
     // Estraggo i dati del modello
     DatiModello datiModello = this.getModelloById(idModello);
+    
+    int generaPdfI = datiModello.getPdf();
+    boolean generaPdfB = (generaPdfI==1);
 
     String idApplicazione = ConfigManager.getValore(CostantiGenerali.PROP_ID_APPLICAZIONE);
 
@@ -574,14 +577,37 @@ public class ModelliManager {
     servizio.setEndpoint(ConfigManager.getValore(CostantiGenModelli.PROP_URL_WEB_SERVICE));
     fileComposto = servizio.componi(datiModello.getNomeFile(), entita,
         elencoChiavi, valoriChiavi, idApplicazione, codiceApplicazione,
-        registri);
+        registri, generaPdfB);
 
     if (logger.isDebugEnabled())
       logger.debug("componiModello: fine metodo");
 
     return fileComposto;
   }
+  
+  /**
+   * Funzione che restituisce la lista di estensioni per la quale è possibile comporre un modello formato PDF
+   *        
+   * @return Ritorna la lista di estensioni
+   * @throws RemoteException
+   */
+  public String[] getEstensioniModelloOutputPDF() throws RemoteException, CompositoreException {
 
+    if (logger.isDebugEnabled())
+      logger.debug("getEstensioniModelloOutputPDF: inizio metodo");
+    String[] listaEstPdf;
+    // Estraggo le estensioni per la quale è possibile comporre un modello formato PDF
+
+    ServizioCompositoreProxy servizio = new ServizioCompositoreProxy();
+    servizio.setEndpoint(ConfigManager.getValore(CostantiGenModelli.PROP_URL_WEB_SERVICE));
+    listaEstPdf = servizio.getEstensioniModelloOutputPDF();
+    
+    if (logger.isDebugEnabled())
+      logger.debug("getEstensioniModelloOutputPDF: fine metodo");
+
+    return listaEstPdf;
+  }
+  
   /**
    * Funzione che esegue la composizione di un modello per una data applicazione
    *

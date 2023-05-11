@@ -32,7 +32,7 @@
 			replaceParam='${gene:if(param.metodo eq "update" || param.metodo eq "updateFiglia1N","metodo;apri;modo;VISUALIZZA","")}' />
 	</c:if>
 </gene:insert>
-<HTML>
+<HTML lang="it">
 <HEAD>
 <c:if test="${requestScope.forzaRedirect}">
 	<meta HTTP-EQUIV="REFRESH" content="0; url=${pageContext.request.contextPath}/ErrorOpenScheda.do"></meta>

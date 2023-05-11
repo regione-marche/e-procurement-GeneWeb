@@ -12,12 +12,25 @@
 %>
 
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="digitalSignatureUrlCheck" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-check-url")}'/>
+<c:set var="digitalSignatureProvider" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-provider")}'/>
+
+
 
 <gene:template file="scheda-template.jsp">
 
-
-	<jsp:include page="verifica-firmadigitale-interno.jsp">
-		<jsp:param name="jspParent" value="scheda"/>
-	</jsp:include>
+	<c:choose>
+		<c:when test="${!empty digitalSignatureUrlCheck && !empty digitalSignatureProvider && (digitalSignatureProvider eq 1 || digitalSignatureProvider eq 2)}">
+			<jsp:include page="verifica-firmadigitale-interno-maggioli.jsp">
+				<jsp:param name="jspParent" value="scheda"/>
+			</jsp:include>
+		</c:when>
+		<c:otherwise>
+			<jsp:include page="verifica-firmadigitale-interno.jsp">
+				<jsp:param name="jspParent" value="scheda"/>
+			</jsp:include>
+		</c:otherwise>
+	</c:choose>
 
 </gene:template>

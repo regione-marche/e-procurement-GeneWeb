@@ -236,6 +236,18 @@
     			</span>
 				</td>
    		</tr>
+   	</c:if>
+   	<c:if test='${gene:checkProt(pageContext,"FUNZ.VIS.ALT.GENEWEB.QuestionariQForm") && (fn:contains(listaOpzioniDisponibili, "OP135#") || fn:contains(listaOpzioniDisponibili, "OP136#"))}'>
+   		<tr id="rQform">
+   			<td class="etichetta-dato" >Gestione Q-Form</td>
+   			<td class="valore-dato"> 
+					<html:select  name="accountForm" property="opzioniUtenteSys" styleId="opzioniQform" >	
+						<html:options property="listaValueQform" labelProperty="listaTextQform" />
+	    		</html:select>
+    		</td>
+   		</tr>
+   	</c:if>
+	<c:if test='${fn:contains(listaOpzioniDisponibili, "OP2#")}'>
 		<tr id="rowSchedulazioni">
 			<td class="etichetta-dato">Amministrazione schedulazioni di report</td>
 			<td class="valore-dato">
@@ -256,10 +268,57 @@
 			<tr id="rowAbilitaInserimentoNote" >
 				<td class="etichetta-dato" >Abilita utente all'inserimento note</td>
    				<td class="valore-dato">
-   					<c:if test='${fn:contains(listaOpzioniUtenteSys, "ou59#")}'>
-   						<c:set var="tmp" value='checked="checked"'/>
-   					</c:if>
-   					<input type="checkbox" name="opzioniUtenteSys" value="ou59" ${tmp} />
+				<c:choose>
+					<c:when test='${fn:contains(listaOpzioniUtenteAbilitate, "ou89#")}'>
+						<c:if test='${fn:contains(listaOpzioniUtenteSys, "ou59#")}'>
+							<c:set var="tmp" value='checked="checked"'/>	
+						</c:if>
+						<input type="checkbox" name="opzioniUtenteSys" id="opzioniUtenteSys-ou59" value="ou59" ${tmp} />
+						<div class="info-wizard" id="warning-ou59">ATTENZIONE: funzionalità deprecata per rischi di sicurezza! Attivando questa opzione potrebbe essere iniettato codice malevolo attraverso il testo delle note.</div>
+						<gene:javaScript>
+						$(document).ready(function() {
+							// questo serve per l'apertura della pagina
+							var ou59Impostato = $("#opzioniUtenteSys-ou59").prop("checked");
+							if (!ou59Impostato) {
+								$('#warning-ou59').hide();
+							}
+							var ou89Impostato = $("#opzioniUtenteSys-ou89").prop("checked");
+							if (!ou89Impostato) {
+								$("#opzioniUtenteSys-ou59").prop("checked","").prop("disabled","true");
+							}
+						
+							// questo serve per ogni modifica del valore
+							$('#opzioniUtenteSys-ou59').on("click",function() {
+								if (this.checked) {
+									$('#warning-ou59').show();
+								} else {
+									$('#warning-ou59').hide();
+								}
+							});
+							// questo serve per ogni modifica del valore del ou89
+							$('#opzioniUtenteSys-ou89').on("click",function() {
+								if (!this.checked) {
+									$("#opzioniUtenteSys-ou59").prop("checked","").prop("disabled","true");
+									$('#warning-ou59').hide();
+								}else{
+									$("#opzioniUtenteSys-ou59").prop("disabled","");
+								}
+							});
+						});
+						</gene:javaScript>
+					</c:when>
+					<c:otherwise>
+						<c:choose>
+			 				<c:when test='${fn:contains(listaOpzioniUtenteSys, "ou59#")}'>
+			 				<input type="hidden" name="opzioniUtenteSys" id="opzioniUtenteSys-ou59" value="ou59"/>
+			 					Si
+			 				</c:when>
+			 				<c:otherwise>
+			 				 	No
+			 				</c:otherwise>
+	 					</c:choose>
+					</c:otherwise>
+				</c:choose>
 				</td>
    		</tr>
    		<tr id="rowBloccaEditUffint" >

@@ -1,26 +1,29 @@
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetRecipientListAction extends Action {
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import net.sf.json.JSONObject;
+
+public class GetRecipientListAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetRecipientListAction.class);
 
   /**
    * Manager per la gestione delle interrogazioni di database.
@@ -35,8 +38,11 @@ public class GetRecipientListAction extends Action {
     this.sqlManager = sqlManager;
   }
 
-  public final ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-      final HttpServletResponse response) throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -44,9 +50,10 @@ public class GetRecipientListAction extends Action {
     response.setContentType("text/text;charset=utf-8");
     PrintWriter out = response.getWriter();
 
-    JSONObject result = new JSONObject();
-    
     try {
+
+      JSONObject result = new JSONObject();
+
       // Lista degli uffici
       List<?> datiUFFINT = sqlManager.getListVector("select codein, nomein from uffint order by nomein", new Object[] {});
       if (datiUFFINT != null && datiUFFINT.size() > 0) {
@@ -60,7 +67,7 @@ public class GetRecipientListAction extends Action {
         }
         result.put("uff", hMapRecords);
       }
-      
+
       // Lista degli utenti
       List<?> datiUSRSYS = sqlManager.getListVector("select syscon, sysute from usrsys order by sysute", new Object[] {});
       if (datiUSRSYS != null && datiUSRSYS.size() > 0) {
@@ -80,15 +87,22 @@ public class GetRecipientListAction extends Action {
         hMapRecords.add(hMapTutti);
         result.put("usr", hMapRecords);
       }
-      
-    } catch (SQLException e) {
-      throw new JspException("Errore durante la lettura della lista dei destinatari", e);
+
+      out.println(result);
+      out.flush();
+
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
     }
 
-    out.println(result);
-    out.flush();
-
-    return null;
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

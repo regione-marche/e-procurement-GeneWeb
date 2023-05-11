@@ -74,7 +74,7 @@
 		<input type="hidden" name="codapp" value="${codapp}" /> 
 		<input type="hidden" name="tabAttivo" value="datigen" /> 
 		<input type="hidden" name="risultatiPerPagina" value="20" />
-		<input type="hidden" name="_csrf" value="${param._csrf}" />
+		<jsp:include page="/WEB-INF/pages/commons/csrf.jsp" />
 	</form>
 	</c:if>
 </gene:template>

@@ -83,15 +83,21 @@
 		</gene:campoScheda>
 		<gene:campoScheda campo="VIAEIN"/>
 		<gene:campoScheda campo="NCIEIN"/>
-		<gene:campoScheda campo="PROEIN"/>
+		<gene:campoScheda campo="PROEIN">
+			<c:set var="functionIdComuni" value="default_${!empty datiRiga.UFFINT_PROEIN}" />
+			<c:if test="${!empty datiRiga.UFFINT_PROEIN}">
+				<c:set var="parametriWhereComuni" value="T:${datiRiga.UFFINT_PROEIN}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.CAPEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.PROEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.CITEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
+				functionId="${functionIdComuni}"
+				parametriWhere="${parametriWhereComuni}"
 				chiave="" 
-				where='${gene:if(!empty datiRiga.UFFINT_PROEIN, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.UFFINT_PROEIN), "\'"), "")}'  
-				formName="formIstat" 
+				formName="formComuni" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_PROEIN" definizione="T9" visibile="false"/>
 			<gene:campoScheda campo="CAPEIN"/>
@@ -126,6 +132,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
 			campi="TECNI.CODTEC;TECNI.NOMTEC" 
+			functionId="skip"
 			chiave="UFFINT_CODRES"
 			formName="formResponsabile"
 			inseribile="${empty sessionScope.uffint or !fn:contains(archiviFiltrati,'TECNI')}">
@@ -205,9 +212,9 @@
 				scheda="" 
 				schedaPopUp="" 
 				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC" 
+				functionId="skip"
 				chiave="" 
-				where="" 
-				formName="formIstat1" 
+				formName="formProvince" 
 				inseribile="false" >
 			<gene:campoScheda campo="PROICC"/>
 			<gene:campoScheda entita="TABSCHE" campo="TABDESC" title="Provincia" where="TABCOD='S2003' and TABSCHE.TABCOD1='07' and UFFINT.PROICC = TABSCHE.TABCOD2" modificabile='${gene:checkProt( pageContext, "COLS.MOD.GENE.UFFINT.PROICC")}' visibile='${gene:checkProt( pageContext, "COLS.VIS.GENE.UFFINT.PROICC")}'/>
@@ -228,7 +235,7 @@
 		</gene:campoScheda>
 	</c:if>
 
-	<gene:fnJavaScriptScheda funzione='changeComune("#UFFINT_PROEIN#", "COM_PROEIN")' elencocampi='UFFINT_PROEIN' esegui="false"/>
+	<gene:fnJavaScriptScheda funzione='changeComuneUffint("#UFFINT_PROEIN#", "COM_PROEIN")' elencocampi='UFFINT_PROEIN' esegui="false"/>
 	<gene:fnJavaScriptScheda funzione='setValueIfNotEmpty("UFFINT_PROEIN", "#COM_PROEIN#")' elencocampi='COM_PROEIN' esegui="false"/>
 	<gene:fnJavaScriptScheda funzione='aggiornaNazionalita("#UFFINT_CITEIN#", "${valoreItalia}", "UFFINT_CODNAZ")' elencocampi='UFFINT_CITEIN' esegui="false"/>
 	<gene:fnJavaScriptScheda funzione="gestioneOrdinanteIPA('#IS_ORDINANTE_IPA#')" elencocampi="IS_ORDINANTE_IPA" esegui="true" />
@@ -236,7 +243,8 @@
 
 <gene:javaScript>
 <c:if test='${! empty sessionScope.uffint && fn:contains(archiviFiltrati,"TECNI") && modoAperturaScheda eq "MODIFICA"}'>
-	document.formResponsabile.archWhereLista.value="TECNI.CGENTEI='${datiRiga.UFFINT_CODEIN}'";
+	document.formResponsabile.archFunctionId.value = "tecniUffintFilter";
+	document.formResponsabile.archWhereParametriLista.value = "T:${datiRiga.UFFINT_CODEIN}";
 </c:if>
 
 	function visualizzaCFANAC(valore){
@@ -248,7 +256,7 @@
 		}
 	}
 
-	function changeComune(provincia, nomeUnCampoInArchivio) {
+	function changeComuneUffint(provincia, nomeUnCampoInArchivio) {
 		changeFiltroArchivioComuni(provincia, nomeUnCampoInArchivio);
 		setValue("UFFINT_CAPEIN", "");
 		setValue("UFFINT_CITEIN", "");

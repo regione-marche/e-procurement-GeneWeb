@@ -65,7 +65,19 @@ public class LogoutAction extends ActionBaseNoOpzioni {
     ProfiloUtente utente = (ProfiloUtente) session.getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
 
     String propProtSSO = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_PROTOCOLLO));
-    String propDefURL = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_LOGOUT_URL));
+    String propDefURL;
+    if ("6".equals(propProtSSO)) {
+    	final String url = StringUtils.stripToNull(ConfigManager
+	        .getValore(CostantiGenerali.PROP_SSO_GATEWAY_WS_AUTHSERVICE_URL));
+	    final String endpoint = StringUtils.stripToNull(ConfigManager
+	        .getValore(CostantiGenerali.PROP_SSO_GATEWAY_ENDPOINT));
+	    final String clientId = StringUtils.stripToNull(ConfigManager
+	        .getValore(CostantiGenerali.PROP_SSO_GATEWAY_CLIENTID));
+	    
+	    propDefURL = url + endpoint + "/" + clientId;
+    } else {
+    	propDefURL = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_LOGOUT_URL));
+    }
     //Per sistemi con autenticazione SSO si fa la redirect con disconnessione
     // anche della sessione remota
     if(propProtSSO != null && !"0".equals(propProtSSO) && propDefURL != null){

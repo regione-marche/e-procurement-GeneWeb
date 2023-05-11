@@ -1,5 +1,22 @@
 package it.eldasoft.gene.tags.decorators.lista;
 
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTag;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.sql.sqlparser.JdbcColumn;
@@ -18,28 +35,14 @@ import it.eldasoft.gene.tags.decorators.scheda.CampiNonDiEntita.EntitaLocal;
 import it.eldasoft.gene.tags.decorators.scheda.FormPagineTag;
 import it.eldasoft.gene.tags.decorators.scheda.FormSchedaTag;
 import it.eldasoft.gene.tags.decorators.trova.FormTrovaTag;
+import it.eldasoft.gene.tags.history.UtilityHistory;
+import it.eldasoft.gene.tags.utils.KeyParamValidator;
 import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload;
 import it.eldasoft.utils.metadata.cache.DizionarioTabelle;
 import it.eldasoft.utils.metadata.domain.Campo;
 import it.eldasoft.utils.spring.UtilitySpring;
 import it.eldasoft.utils.utility.UtilityStringhe;
-
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 public class FormListaTag extends BodyTagSupportGene {
 
@@ -117,6 +120,21 @@ public class FormListaTag extends BodyTagSupportGene {
   }
 
   /**
+   * @return Ritorna plugin.
+   */
+  public String getPlugin() {
+    return this.getAttributes().getPlugin();
+  }
+
+  /**
+   * @param plugin
+   *        plugin da settare internamente alla classe.
+   */
+  public void setPlugin(String plugin) {
+    this.getAttributes().setPlugin(plugin);
+  }
+
+  /**
    * Di default valuto la pagina
    */
   @Override
@@ -141,25 +159,38 @@ public class FormListaTag extends BodyTagSupportGene {
       this.setId(scheda.getId());
     }
 
-    if (scheda == null)
+    if (scheda == null) {
       this.pageContext.setAttribute(UtilityTags.REQUEST_VAR_TIPO_PAGINA,
           UtilityTags.PAGINA_LISTA, PageContext.REQUEST_SCOPE);
-    if (this.getEntita() == null && this.getVarName() == null)
+    }
+    if (this.getEntita() == null && this.getVarName() == null) {
       throw new JspException(
           "Attenzione bisogna settare o il nome della tabella o la variabile che contiene i dati della lista !");
-    if (this.getEntita() != null)
+    }
+    if (this.getEntita() != null) {
       getAttributes().setTabella(
           DizionarioTabelle.getInstance().getDaNomeTabella(this.getEntita()));
-    else if (!(this.pageContext.getAttribute(this.getVarName(),
+    } else if (!(this.pageContext.getAttribute(this.getVarName(),
         PageContext.REQUEST_SCOPE) instanceof List)) {
       throw new JspException("La variabile \""
           + this.getVarName()
           + "\" contenente i dati non è una variabile di tipo Lista !");
     } else {
       this.setDatiRequest(true);
-      // Imposto l'entita vuota
+      // Imposto l'entita vuota``
       this.setEntita(null);
     }
+
+    String lsModo = UtilityTags.getParametro(this.pageContext,
+        UtilityTags.DEFAULT_HIDDEN_PARAMETRO_MODO);
+
+    // si esegue la chiamata all'eventuale plugin per il popolamento di dati
+    // nel request da usare nella pagina
+    AbstractGestorePreload plugin = this.getPluginInstance();
+    if (plugin != null) {
+      plugin.doBeforeBodyProcessing(this.pageContext, lsModo);
+    }
+
 
     // Aggiungo l'eventuale gestore dell'archivio sulla lista se è nel request
     this.getAttributes().setArchivio(
@@ -167,6 +198,12 @@ public class FormListaTag extends BodyTagSupportGene {
 
     this.impostaValoriNelRequest();
     this.body = new StringBuffer();
+    
+    if (StringUtils.isNotBlank(getEntita())) {
+    	UtilityHistory history = UtilityTags.getUtilityHistory(pageContext.getSession());
+		history.addQueriedEntity(getEntita());
+    }
+    
     return BodyTag.EVAL_BODY_BUFFERED;
   }
 
@@ -201,7 +238,7 @@ public class FormListaTag extends BodyTagSupportGene {
     // ************************************************************
     // Inizializzazioni
     String lWhere = null;
-    String lFrom = null;
+    //String lFrom = null;
     String lParametri = null;
     String elencoCampiChiave = "";
     JdbcSqlSelect select = null;
@@ -213,11 +250,19 @@ public class FormListaTag extends BodyTagSupportGene {
 
     SqlManager sql = (SqlManager) UtilitySpring.getBean("sqlManager",
         this.pageContext, SqlManager.class);
+    
+    final String key = UtilityTags.getParametro(this.pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA);
+    final String keyParent = UtilityTags.getParametro(this.pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT);
 
     StringBuffer buf = new StringBuffer();
     this.getAttributes().setCurCella(-1);
     // Se si tratta della prima interazione allora eseguo la select sul DB
     if (this.isFirstIteration()) {
+    	// Valido le eventuali chiavi ricevute nella request
+    	if (StringUtils.isNotBlank(key))
+    		KeyParamValidator.validate(key);
+    	if (StringUtils.isNotBlank(keyParent))
+    		KeyParamValidator.validate(keyParent);
 
       // WE412: anche nella lista va rigenerato l'attributo da porre in sessione
       // prendendolo dal parameter del request (perche' valorizzato in
@@ -451,17 +496,22 @@ public class FormListaTag extends BodyTagSupportGene {
           }
         }
         // Aggiungo l'eventuale where
-        lWhere = UtilityTags.getParametro(pageContext,
-            UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA);
-        if (!UtilityTags.isFreeFromSqlInjection(lWhere)) {
-          String message = "Rilevata condizione SQL potenzialmente afflitta da SQL Injection: " + lWhere;
-          logger.error(message);
-          throw new JspException(message);
+        // SQL Injection prevention: si estraggono dalla sessione i campi di filtro originariamente presenti nella request come attributi
+        int popupLevel = UtilityTags.getNumeroPopUp(this.pageContext);
+        lWhere = UtilityTags.getAttributeForSqlBuild(this.pageContext.getSession(), this.getEntita(), popupLevel, UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA);
+        
+        final String addFilters = UtilityTags.getAttributeForSqlBuild(this.pageContext.getSession(), this.getEntita(), popupLevel, UtilityTags.DEFAULT_HIDDEN_FILTRI_ADDIZIONALI_DA_TROVA);
+        if (StringUtils.isNotBlank(addFilters)) {
+        	if (StringUtils.isNotBlank(lWhere)) {
+        		lWhere += " AND " + addFilters;
+        	} else {
+        		lWhere = addFilters;
+        	}
         }
-        lFrom = UtilityTags.getParametro(pageContext,
-            UtilityTags.DEFAULT_HIDDEN_FROM_DA_TROVA);
-        lParametri = UtilityTags.getParametro(pageContext,
-            UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA);
+
+        //lFrom = UtilityTags.getParametro(pageContext,
+        //    UtilityTags.DEFAULT_HIDDEN_FROM_DA_TROVA);
+        lParametri = UtilityTags.getAttributeForSqlBuild(this.pageContext.getSession(), this.getEntita(), popupLevel, UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA);
 
         // {M.F. 12.10.06} Aggiungo l'eventuale where settata
         if (this.getAttributes().getWhere() != null) {
@@ -535,19 +585,19 @@ public class FormListaTag extends BodyTagSupportGene {
 
         // Se non è impostata la from aggiungo la where data dalla form
         // di trova
-        if (lFrom != null && lFrom.length() > 0) {
-            String lsTmp = lFrom;
-            do {
-              int pos = lsTmp.indexOf(',');
-              if (pos >= 0) {
-                select.getFrom().append(new JdbcTable(lsTmp.substring(0, pos)));
-                lsTmp = lsTmp.substring(pos + 1);
-              } else {
-                select.getFrom().append(new JdbcTable(lsTmp));
-                lsTmp = "";
-              }
-            } while (lsTmp.trim().length() > 0);
-          }
+//        if (lFrom != null && lFrom.length() > 0) {
+//            String lsTmp = lFrom;
+//            do {
+//              int pos = lsTmp.indexOf(',');
+//              if (pos >= 0) {
+//                select.getFrom().append(new JdbcTable(lsTmp.substring(0, pos)));
+//                lsTmp = lsTmp.substring(pos + 1);
+//              } else {
+//                select.getFrom().append(new JdbcTable(lsTmp));
+//                lsTmp = "";
+//              }
+//            } while (lsTmp.trim().length() > 0);
+//          }
         // }
 
         // Se devo creo il gestore delle pagine per la paginazione sulla lista
@@ -600,12 +650,7 @@ public class FormListaTag extends BodyTagSupportGene {
         buf.append(UtilityTags.getHtmlHideInput("metodo", "apri"));
         buf.append(UtilityTags.getHtmlHideInput(
             UtilityTags.DEFAULT_HIDDEN_NOME_TABELLA, this.getEntita()));
-        buf.append(UtilityTags.getHtmlHideInput(
-            UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA, lWhere));
-        buf.append(UtilityTags.getHtmlHideInput(
-                UtilityTags.DEFAULT_HIDDEN_FROM_DA_TROVA, lFrom));
-        buf.append(UtilityTags.getHtmlHideInput(
-            UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA, lParametri));
+
         buf.append(UtilityTags.getHtmlHideInput(
             UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA, ""));
         buf.append(UtilityTags.getHtmlHideInput(
@@ -750,6 +795,17 @@ public class FormListaTag extends BodyTagSupportGene {
       this.body.append(buf);
 
     }
+
+    String lsModo = UtilityTags.getParametro(this.pageContext,
+        UtilityTags.DEFAULT_HIDDEN_PARAMETRO_MODO);
+
+    // si esegue la chiamata all'eventuale plugin per il popolamento di ulteriori dati
+    // nel request dopo il caricamento di una riga di dati
+    AbstractGestorePreload plugin = this.getPluginInstance();
+    if (plugin != null) {
+      plugin.doAfterFetch(this.pageContext, lsModo);
+    }
+
     // Mi sposto sulla prossima riga
     this.getAttributes().setCurrentRow(getAttributes().getCurrentRow() + 1);
     if (this.getAttributes().getCurrentRow() < this.getAttributes().getValori().size()) {
@@ -796,6 +852,7 @@ public class FormListaTag extends BodyTagSupportGene {
           this.getAttributes().getElencoCampi().toString()));
 
     if (scheda == null) this.body.append("</form>\n");
+    
     return SKIP_BODY;
   }
 
@@ -1288,4 +1345,22 @@ public class FormListaTag extends BodyTagSupportGene {
     this.getAttributes().setGestisciProtezioniRighe(gestisciProprietaRighe);
   }
 
+  /**
+   * @return istanza del plugin specificato nel tag
+   */
+  private AbstractGestorePreload getPluginInstance() {
+    Object o = null;
+    if (this.getAttributes().getPlugin() != null) {
+      try {
+        // si crea il plugin con un argomento valorizzato con il tag stesso
+        Class cl = Class.forName(this.getAttributes().getPlugin());
+        java.lang.reflect.Constructor constructor = cl.getConstructor(new Class[] { BodyTagSupportGene.class });
+        o = constructor.newInstance(new Object[] { this });
+      } catch (Exception e) {
+        logger.warn("Errore durante l'istanziazione del plugin " + this.getAttributes().getPlugin() + ", si considera la definizione come assente", e);
+        o = null;
+      }
+    }
+    return (AbstractGestorePreload) o;
+  }
 }

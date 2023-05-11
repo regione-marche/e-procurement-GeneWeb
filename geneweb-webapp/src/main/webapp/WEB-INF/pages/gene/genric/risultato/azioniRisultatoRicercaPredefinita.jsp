@@ -60,7 +60,7 @@
 			<td class="nolinkmenulaterale">
 				Export
 	      <a href="${contextPath}/geneGenric/EsportaRisultatoRicerca.do?formato=0" title="Esporta dati in CSV"><img alt="Export CSV" src="${contextPath}/img/ico_file_csv.png"></a>
-          <a href="${contextPath}/geneGenric/EsportaRisultatoRicerca.do?formato=1" title="Esporta dati in Excel"><img alt="Export Excel" src="${contextPath}/img/ico_file_excel.png"></a>
+          <a href="${contextPath}/geneGenric/EsportaRisultatoRicerca.do?formato=4" title="Esporta dati in Excel"><img alt="Export Excel" src="${contextPath}/img/ico_file_excel.png"></a>
           <a href="${contextPath}/geneGenric/EsportaRisultatoRicerca.do?formato=2" title="Esporta dati in RTF"><img alt="Export RTF" src="${contextPath}/img/ico_file_rtf.png"></a>
           <a href="${contextPath}/geneGenric/EsportaRisultatoRicerca.do?formato=3" title="Esporta dati in PDF"><img alt="Export PDF" src="${contextPath}/img/ico_file_pdf.png"></a>
 				

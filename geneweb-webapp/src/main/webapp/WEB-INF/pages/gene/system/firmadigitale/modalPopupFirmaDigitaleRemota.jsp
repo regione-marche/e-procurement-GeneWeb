@@ -16,6 +16,13 @@
 */
 %>
 
+<%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+
+
+
 <style type="text/css">
 			.ui-dialog-titlebar {
 				display: none;
@@ -37,20 +44,28 @@
   <form>
 	  <table class="dati-login" style="width:auto!important;">
 	  <tr>
-		<td class="etichetta-dato">Utente&nbsp;&nbsp;
+		<td class="etichetta-dato">Alias&nbsp;&nbsp;
 		</td>
 		<td class="valore-dato">
-			<input id="user-dialog" name="username" title="Username" class="testo" type="text" size="24" value="" maxlength="100"/>
+			<input id="user-dialog" name="alias" title="Alias" class="testo" type="text" size="24" value="" maxlength="100"/>
+			<input type="button" class="bottone-azione" value='Richiedi OTP' title='Richiedi OTP' onclick="javascript:richiediOTP();">
 		</td>
 	  </tr>
 	  <tr>
-		<td class="etichetta-dato">Password&nbsp;&nbsp;
+		<td class="etichetta-dato">Pin&nbsp;&nbsp;
 		</td>
 		<td class="valore-dato">
-			<input id="pass-dialog" name="password" title="Password" class="testo" type="password" size="24" value="" maxlength="100" autocomplete="new-password"/>
+			<input id="pass-dialog" name="pin" title="Pin" class="testo" type="password" size="24" value="" maxlength="100" autocomplete="new-password"/>
 		</td>
 	  </tr>
 	  <tr>
+		<td class="etichetta-dato">OTP&nbsp;&nbsp;
+		</td>
+		<td class="valore-dato">
+			<input id="otp-dialog" name="otp" title="otp" class="testo" type="text" size="24" value="" maxlength="100"/>
+		</td>
+	  </tr>
+	  <tr id="trModalitaFirma">
 		<td colspan="2">
 		<br>
 		<input type="radio" value="cades" name="modalitaFirma" id="CAdES" checked="true"/><span>Firma P7M (CAdES)&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -63,13 +78,15 @@
 
 <script type="text/javascript"> 
 
+document.getElementById('trModalitaFirma').style.visibility = 'hidden';
+
 function _nowait() {
 	document.getElementById('bloccaScreen').style.visibility = 'hidden';
 	document.getElementById('wait').style.visibility = 'hidden';
 }
 
-var passwordFirma;
-var usernameFirma;
+var pinFirma;
+var aliasFirma;
 
 function openModal(idprg,iddocdig,nome,contextPath,coacod){
 	
@@ -96,12 +113,15 @@ function openModal(idprg,iddocdig,nome,contextPath,coacod){
 	  },
 	  buttons: {
 		"Conferma": function() {
-			var psw = $("#pass-dialog").val();
-			var usr = $("#user-dialog").val();
-			if(!psw || !usr){
-				alert("I campi username e password sono obbligatori");
+			var pin = $("#pass-dialog").val();
+			var alias = $("#user-dialog").val();
+			var otp = $("#otp-dialog").val();
+			
+			if(!pin || !alias || !otp){
+				alert("I campi Alias, Pin e OTP sono obbligatori");
 				return;
 			}
+				
 			setCredenziali(idprg,iddocdig,contextPath,coacod);
 		},
 		"Annulla": function() {
@@ -119,10 +139,10 @@ function openModal(idprg,iddocdig,nome,contextPath,coacod){
 			metodo: 'getCredenziali'
 		},
 		success: function(data) {
-				passwordFirma = data.password;
-				usernameFirma = data.username;
-				$("#pass-dialog").val(passwordFirma);
-				$("#user-dialog").val(usernameFirma);
+				pinFirma = data.pin;
+				aliasFirma = data.alias;
+				$("#pass-dialog").val(pinFirma);
+				$("#user-dialog").val(aliasFirma);
 		},
 		error: function() {
 			_nowait();
@@ -147,8 +167,9 @@ function setCredenziali(idprg,iddocdig,contextPath,coacod){
 		dataType: 'json',
 		data: {
 			metodo: 'setFirmaDigitale',
-			password: $("#pass-dialog").val(),
-			username: $("#user-dialog").val(),
+			pin: $("#pass-dialog").val(),
+			alias: $("#user-dialog").val(),
+			otp: $("#otp-dialog").val(),
 			idprg: idprg,
 			iddocdig: iddocdig,
 			c0acod: coacod,
@@ -172,6 +193,43 @@ function setCredenziali(idprg,iddocdig,contextPath,coacod){
 	});
 }
 
+function richiediOTP(){
+	var alias = $("#user-dialog").val();
+	console.log(alias);
+	if(alias == null || alias == ''){alert("Per richiedere l'OTP inserire l'alias");return;}
+	document.getElementById('bloccaScreen').style.visibility='visible';
+	$('#bloccaScreen').css("width",$(document).width());
+	$('#bloccaScreen').css("height",$(document).height());
+	document.getElementById('wait').style.visibility='visible';
+	$("#wait").offset({ top: $(window).height() / 2, left: ($(window).width() / 2) - 200});
+	$.ajax({
+		url: contextPath+'/RichiestaOTP.do',
+		type: 'POST',
+		async: true,
+		dataType: 'json',
+		data: {
+			alias: alias
+		},
+		success: function(data) {
+			var response = data.message;
+			if(response != "ok"){
+				$("#errorMessage").html(response);
+				$("#errorMessage").css("display","block");
+				_nowait();
+			}else{
+				historyReload();
+			}
+			
+		},
+		error: function() {
+			_nowait();
+			alert("Errore nella richiesta dell'OTP");
+		},
+		complete: function() {
+			_nowait();
+		}
+	});
+}
 </script>
 
 

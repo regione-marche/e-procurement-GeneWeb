@@ -94,6 +94,9 @@ public class EsportaRisultatoRicercaAction extends ActionBaseNoOpzioni {
       case FactoryExport.EXPORT_PDF:
         nomeFile = nomeFile.concat("pdf");
         break;
+      case FactoryExport.EXPORT_XLSX:
+        nomeFile = nomeFile.concat("xlsx");
+        break;
       }
 
       ContenitoreDatiRicerca contenitorePerModel = contenitoreForm.getDatiPerModel();

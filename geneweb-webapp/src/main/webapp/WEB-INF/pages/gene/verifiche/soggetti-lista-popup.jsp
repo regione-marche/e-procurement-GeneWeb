@@ -15,10 +15,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereV_SOGGETTI_VERIFICHEFunction" />
+
 <c:set var="archiviFiltrati" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "it.eldasoft.associazioneUffintAbilitata.archiviFiltrati")}'/>
 
 <c:set var="filtroUffint" value=""/> 
-<c:if test="${!fn:contains(trovaAddWhere, 'CGENTIM') && ! empty sessionScope.uffint && fn:contains(archiviFiltrati,'TEIM')}">
+<c:set var="nomeContainerFiltri" value="deftrovaV_SOGGETTI_VERIFICHE-${empty param.numeroPopUp ? 0 : param.numeroPopUp}"/> 
+<c:if test="${!fn:contains(sessionScope[nomeContainerFiltri].trovaAddWhere, 'CGENTIM') && ! empty sessionScope.uffint && fn:contains(archiviFiltrati,'TEIM')}">
 	<c:set var="filtroUffint" value="CGENTIM = '${sessionScope.uffint}'"/>
 </c:if>
 

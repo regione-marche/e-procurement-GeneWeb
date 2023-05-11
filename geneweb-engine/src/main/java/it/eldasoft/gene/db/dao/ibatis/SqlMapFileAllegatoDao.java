@@ -1,14 +1,14 @@
 package it.eldasoft.gene.db.dao.ibatis;
 
-import it.eldasoft.gene.commons.web.spring.SqlMapClientDaoSupportBase;
-import it.eldasoft.gene.db.dao.FileAllegatoDao;
-import it.eldasoft.gene.db.domain.BlobFile;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
+
+import it.eldasoft.gene.commons.web.spring.SqlMapClientDaoSupportBase;
+import it.eldasoft.gene.db.dao.FileAllegatoDao;
+import it.eldasoft.gene.db.domain.BlobFile;
 
 public class SqlMapFileAllegatoDao extends SqlMapClientDaoSupportBase implements FileAllegatoDao {
 

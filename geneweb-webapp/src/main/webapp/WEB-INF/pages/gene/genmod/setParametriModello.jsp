@@ -59,7 +59,7 @@
 </c:if>
 
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <script type="text/javascript" src="${contextPath}/js/controlliFormali.js"></script>
@@ -538,7 +538,6 @@ $(function() {
 	<html:hidden name="componiModelloForm" property="fileComposto"/>
 	<html:hidden name="componiModelloForm" property="paginaSorgente"/>
 	<html:hidden name="componiModelloForm" property="riepilogativo"/>
-	<html:hidden name="componiModelloForm" property="exportPdf"/>
 </html:form>
         </div>
       </TD>

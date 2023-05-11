@@ -5,23 +5,23 @@
  * Tutti i diritti sono riservati.
  *
  * Questo codice sorgente e' materiale confidenziale di proprieta' di EldaSoft S.p.A.
- * In quanto tale non puo' essere distribuito liberamente ne' utilizzato a meno di 
+ * In quanto tale non puo' essere distribuito liberamente ne' utilizzato a meno di
  * aver prima formalizzato un accordo specifico con EldaSoft.
  */
 package it.eldasoft.gene.tags.decorators.lista;
-
-import java.util.List;
-import java.util.Vector;
 
 import it.eldasoft.gene.tags.TagAttributes;
 import it.eldasoft.gene.tags.decorators.archivi.ArchivioRequest;
 import it.eldasoft.gene.tags.decorators.scheda.CampiNonDiEntita;
 import it.eldasoft.utils.metadata.domain.Tabella;
 
+import java.util.List;
+import java.util.Vector;
+
 public class FormListaAttributes extends TagAttributes {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID        = 1L;
 
@@ -60,7 +60,7 @@ public class FormListaAttributes extends TagAttributes {
 
   /** Where aggiuntiva sulla lista */
   private String            where;
-  
+
   /** Indica se aggiungere l'attributo distinct */
   private String            distinct;
 
@@ -97,9 +97,12 @@ public class FormListaAttributes extends TagAttributes {
 
   /** Flag per dire di gestire la proprieta dei gruppi sulle righe */
   private boolean           gestisciProtezioniRighe = false;
-  
+
   /** Elenco dei campi modificabili nella lista e inviati con il submit del form */
   private StringBuffer      elencoCampi;
+
+  /** Gestore di precaricamento della pagina */
+  private String            plugin;
 
   public FormListaAttributes(String tipoVar) {
     super(tipoVar);
@@ -120,6 +123,7 @@ public class FormListaAttributes extends TagAttributes {
     setInserisciDaArchivio(true);
     setTableclass("datilista");
     this.elencoCampi = new StringBuffer("");
+    this.plugin = null;
   }
 
   public ArchivioRequest getArchivio() {
@@ -321,12 +325,26 @@ public String getVarName() {
   public void setGestisciProtezioniRighe(boolean gestisciProtezioniRighe) {
     this.gestisciProtezioniRighe = gestisciProtezioniRighe;
   }
-  
+
   /**
    * @return Ritorna elencoCampi.
    */
   public StringBuffer getElencoCampi() {
     return elencoCampi;
   }
-  
+
+  /**
+   * @return Ritorna plugin.
+   */
+  public String getPlugin() {
+    return plugin;
+  }
+
+  /**
+   * @param plugin
+   *        plugin da settare internamente alla classe.
+   */
+  public void setPlugin(String plugin) {
+    this.plugin = plugin;
+  }
 }

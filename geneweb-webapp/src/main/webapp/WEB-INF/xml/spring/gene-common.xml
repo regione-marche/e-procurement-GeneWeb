@@ -330,8 +330,6 @@
 		</property>
 	</bean>
 
-	<bean id="pdfManager" class="it.eldasoft.gene.bl.PdfManager" />
-
 	<bean id="ldapManager" parent="defaultManagerTransactionProxy">
 		<property name="target">
 			<bean class="it.eldasoft.gene.bl.system.LdapManager">
@@ -450,7 +448,7 @@
 		<property name="transactionAttributes">
 			<props>
 				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
-				<prop key="invia*">PROPAGATION_REQUIRED</prop>
+				<prop key="invia*">PROPAGATION_NOT_SUPPORTED</prop>
 			</props>
 		</property>
 	</bean>
@@ -476,6 +474,41 @@
 		<property name="jobDetail" ref="inviaComunicazioneSchedulerJob" />
 		<property name="cronExpression">
 			<value>0 0 0 1 1 ? 2099</value>
+		</property>
+	</bean>
+	
+	<bean id="riconciliazionePECSchedulerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_NOT_SUPPORTED</prop>
+				<prop key="aggiornaStato*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="riconciliazionePECScheduler" parent="riconciliazionePECSchedulerTransactionProxy" >
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.tasks.RiconciliazionePECManager" >
+				<property name="sqlManager" ref="sqlManager" />
+				<property name="mailManager" ref="mailManager" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="riconciliazionePECSchedulerJob"
+		class="it.eldasoft.gene.commons.web.spring.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="riconciliazionePECScheduler" />
+		<property name="targetMethod" value="aggiornaStatoRiconciliazionePEC" />
+		<property name="concurrent" value="false"/>
+	</bean>
+	
+	<bean id="riconciliazionePECSchedulerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="riconciliazionePECSchedulerJob" />
+		<property name="cronExpression">
+			<value>0 0 0 ? * * 2099</value>
 		</property>
 	</bean>
 	
@@ -665,6 +698,7 @@
 				<prop key="art80ConsultaImpresa*">PROPAGATION_REQUIRED</prop>
 				<prop key="art80CreaOE">PROPAGATION_REQUIRED</prop>
 				<prop key="art80CreaOEAll">PROPAGATION_REQUIRED</prop>
+				<prop key="art80SetServiceOE">PROPAGATION_REQUIRED</prop>
 			</props>
 		</property>
 	</bean>
@@ -783,6 +817,25 @@
 		</property>
 	</bean>	
 	
+	<bean id="qformManagerTransactionProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_SUPPORTS</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="qformManager" parent="qformManagerTransactionProxy" >
+		<property name="target">
+			<bean class="it.eldasoft.gene.bl.integrazioni.QformManager" >
+				<property name="sqlManager" ref="sqlManager" />
+			</bean>
+		</property>
+	</bean>	
+	
 	<bean id="inviaConversazioniSchedulerTransactionProxy"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
 		abstract="true">
@@ -857,6 +910,12 @@
 	<bean name="/SpidLoginResponse"
 		class="it.eldasoft.gene.web.struts.login.spid.SpidLoginResponseAction" parent="/Login" />
 
+	<bean name="/SSOGatewayLogin"
+		class="it.eldasoft.gene.web.struts.login.gateway.SSOGatewayLoginAction"/>
+
+	<bean name="/SSOGatewayLoginResponse" parent="/Login"
+		class="it.eldasoft.gene.web.struts.login.gateway.SSOGatewayLoginResponseAction"/>
+		
 	<bean name="/AccessoDiretto"
 		class="it.eldasoft.gene.web.struts.login.AccessoDirettoAction" parent="/Login" />
 	
@@ -1116,7 +1175,28 @@
 
 	<bean name="/Art80Download" class="it.eldasoft.gene.web.struts.Art80DownloadAction" >
 		<property name="art80Manager" ref="art80Manager" />
+	</bean>
+	
+	<bean name="/Art80SetServiceOE" class="it.eldasoft.gene.web.struts.Art80SetServiceOEAction" >
+		<property name="art80Manager" ref="art80Manager" />
 	</bean>	
+	
+	<bean id="scaricaDocumentiVerificheManager" parent="defaultManagerTransactionProxy" >
+		<property name="target">
+			<bean class="it.eldasoft.gene.web.struts.ScaricaDocumentiVerificheManager" >
+				<property name="sqlManager" ref="sqlManager" />
+				<property name="fileAllegatoManager" ref="fileAllegatoManager" />
+				<property name="tabellatiManager" ref="tabellatiManager" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean name="/ScaricaTuttiAllegatiVerifiche" class="it.eldasoft.gene.web.struts.ScaricaTuttiAllegatiVerificheAction">
+		<property name="fileManager" ref="fileManager" />
+		<property name="scaricaDocumentiVerificheManager" ref="scaricaDocumentiVerificheManager" />
+		<property name="geneManager" ref="geneManager" />
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
 	
 	<bean name="/FirmaRemota" class="it.eldasoft.gene.web.struts.FirmaRemotaAction" >
 		<property name="firmaRemotaManager" ref="firmaRemotaManager" />
@@ -1124,9 +1204,19 @@
 		<property name="fileAllegatoManager" ref="fileAllegatoManager" />
 	</bean>
 	
+	<!-- Inserimento logiche per effettuare la verifica della firma tramite servizio maggioli esterno -->
+	<bean name="/VerificaFirmaServizioEsterno" class="it.eldasoft.gene.web.struts.VerificaFirmaServizioEsterno">
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+	
 	<bean name="/SetFirmaDigitaleRemota" class="it.eldasoft.gene.web.struts.SetFirmaDigitaleRemotaAction" >
 		<property name="firmaRemotaManager" ref="firmaRemotaManager" />
 		<property name="sqlManager" ref="sqlManager" />
+		<property name="genChiaviManager" ref="genChiaviManager" />
+	</bean>
+	
+	<bean name="/RichiestaOTP" class="it.eldasoft.gene.web.struts.RichiestaOTPAction" >
+		
 	</bean>
 	
 	<bean name="/GetWTags" class="it.eldasoft.gene.web.struts.GetWTagsAction">
@@ -1145,7 +1235,47 @@
 		<property name="sqlManager" ref="sqlManager" />
 	</bean>
 	
+	<bean name="/LoadQFormEditor" class="it.eldasoft.gene.web.struts.LoadQFormEditorAction">
+		<property name="qformManager" ref="qformManager" />
+	</bean>
+	
+	<bean name="/SaveQFormEditor" class="it.eldasoft.gene.web.struts.SaveQFormEditorAction">
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+	
+	<bean name="/PingQFormEditor" class="it.eldasoft.gene.web.struts.PingQFormEditorAction">
+	</bean>
+	
+	<bean name="/SetStatoQformlib" class="it.eldasoft.gene.web.struts.SetStatoQformlibAction">
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+	
+	<bean name="/CopyQformlib" class="it.eldasoft.gene.web.struts.CopyQformlibAction">
+		<property name="sqlManager" ref="sqlManager" />
+		<property name="genChiaviManager" ref="genChiaviManager" />
+		<property name="geneManager" ref="geneManager" />
+		
+	</bean>
+	
+	<bean name="/LoadQFormPreview" class="it.eldasoft.gene.web.struts.LoadQFormPreviewAction">
+		<property name="qformManager" ref="qformManager" />
+	</bean>
+	
+	<bean name="/DeleteDatiPreviweQForm" class="it.eldasoft.gene.web.struts.DeleteDatiPreviweQFormAction">
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+	
 	<bean name="/AdminAccess" 
 		class="it.eldasoft.gene.web.struts.login.AdminAccessAction">
 	</bean>	
+	
+	<bean name="/UltimiAccessi" 
+		class="it.eldasoft.gene.web.struts.UltimiAccessiAction">
+		<property name="accountManager" ref="accountManager" />
+	</bean>	
+	
+	<bean name="/ConfigurazioneTabellatiFG" class="it.eldasoft.gene.web.struts.ConfigurazioneTabellatiFGAction" >
+		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+	
 	</beans>

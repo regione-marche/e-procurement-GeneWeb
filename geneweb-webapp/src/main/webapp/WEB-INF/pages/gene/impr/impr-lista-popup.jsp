@@ -16,10 +16,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereIMPRFunction" />
+
 <c:set var="archiviFiltrati" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "it.eldasoft.associazioneUffintAbilitata.archiviFiltrati")}'/>
 
 <c:set var="filtroUffint" value=""/> 
-<c:if test="${!fn:contains(trovaAddWhere, 'CGENIMP') && ! empty sessionScope.uffint && fn:contains(archiviFiltrati,'IMPR')}">
+<c:set var="nomeContainerFiltri" value="deftrovaIMPR-${empty param.numeroPopUp ? 0 : param.numeroPopUp}"/> 
+<c:if test="${!fn:contains(sessionScope[nomeContainerFiltri].trovaAddWhere, 'CGENIMP') && ! empty sessionScope.uffint && fn:contains(archiviFiltrati,'IMPR')}">
 	<c:set var="filtroUffint" value="CGENIMP = '${sessionScope.uffint}'"/>
 </c:if>
 
@@ -56,13 +59,19 @@
 			<c:set var="impresaRegistrata" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.ImpresaRegistrataSuPortaleFunction",  pageContext, fn:substringAfter(chiaveRigaJava, ":") )}'/>
 				
 			<c:if test="${isPopolatatW_PUSER == 'SI'}">
-					<gene:campoLista title="&nbsp;" width="20" >
-						<c:if test="${impresaRegistrata == 'SI'}">
-							<img width="16" height="16" title="Impresa registrata su portale" alt="Impresa registrata su portale" src="${pageContext.request.contextPath}/img/ditta_acquisita.png"/>
-						</c:if>
-						
-					</gene:campoLista>
-				</c:if>
+				<gene:campoLista title="&nbsp;" width="20" >
+					<c:if test="${impresaRegistrata == 'SI'}">
+						<c:choose>
+						<c:when test="${requestScope.registrazioneImpPortaleNonCompleta == 'SI'}">
+							<img width="16" height="16" title="Impresa con registrazione non completa su portale" alt="Impresa con registrazione non completa su portale" src="${pageContext.request.contextPath}/img/ditta_acquisita_noncompleta.png"/>
+						</c:when>
+						<c:otherwise>
+							<img width="16" height="16" title="Impresa registrata su portale" alt="Impresa registrata su portale" src="${pageContext.request.contextPath}/img/ditta_acquisita.png"/>				
+						</c:otherwise>
+						</c:choose>
+					</c:if>
+				</gene:campoLista>
+			</c:if>
 		</gene:formLista>
   </gene:redefineInsert>
 </gene:template>

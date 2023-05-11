@@ -20,15 +20,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereV_CAIS_TITFunction" />
+
 <c:set var="indiceRiga" value="-1"/>
 <c:set var="numCambi" value="0"/>
 
 <c:set var="esisteCategorieLavori150" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.EsisteCategoriaPerTipoAppaltoFunction", pageContext, "4")}' />
 <c:set var="esisteCategorieServiziProfessionali" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.EsisteCategoriaPerTipoAppaltoFunction", pageContext, "5")}' />
-<c:set var="tmp" value='${trovaAddWhere}' /> 
+<c:set var="str" value="${'deftrovaV_CAIS_TIT-'}${param.numeroPopUp}" />
+<c:set var="tmp" value="${sessionScope[str]}" /> 
 <c:choose>
-	<c:when test='${(!empty tmp) and fn:contains(tmp, "V_CAIS_TIT.TIPLAVG=") and (! fn:contains(tmp, "null"))}' >
-		<c:set var="tipoCategoria" value="${fn:substring(tmp, fn:indexOf(tmp, 'V_CAIS_TIT.TIPLAVG=')+19, fn:indexOf(tmp, 'V_CAIS_TIT.TIPLAVG=')+19+1)}" />
+	<c:when test='${(!empty tmp) and fn:containsIgnoreCase(tmp, "V_CAIS_TIT.TIPLAVG = ?") and fn:containsIgnoreCase(tmp, "N:")}' >
+		<c:set var="tipoCategoria" value='${fn:substring(tmp, fn:indexOf(tmp, ":")+1,fn:indexOf(tmp, ":")+2)}' />
 	</c:when>
 	<c:otherwise>
 		<c:set var="tipoCategoria" value="1" />
@@ -54,6 +57,14 @@
 	<c:set var="filtroUlteriore" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.GetUlterioreFiltroCategorieFunction", pageContext, parametro)}' />
 	<c:set var="filtroLista" value="${filtroLista} ${filtroUlteriore }" />
 </c:if>
+
+<c:set var="isRadioServizi" value='false'/>
+<c:set var="tmp" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetListaTipiCategorieFunction", pageContext)}'/>
+<c:forEach var="cat" items="${requestScope.tipiCategorie}">
+	<c:if test='${cat.tipoTabellato eq 3}'>
+		<c:set var="isRadioServizi" value='true'/>
+	</c:if>
+</c:forEach>
 
 	<gene:setString name="titoloMaschera" value="Selezione della categoria d'iscrizione"/>
 	<gene:redefineInsert name="corpo">
@@ -87,14 +98,18 @@
 						<span id="spanServizi">
 							<c:choose>
 								<c:when test="${esisteCategorieServiziProfessionali eq 'true'}">
-									<input type="radio" value="3" id="radioServizi" name="filtroCategoria" <c:if test='${tipoCategoria eq 3}'>checked="checked"</c:if> onclick="javascript:cambiaCategoria(3);"/>${descTipoCategoria[3].descTabellato}
-									&nbsp;
+									<c:if test="${isRadioServizi eq 'true'}">
+										<input type="radio" value="3" id="radioServizi" name="filtroCategoria" <c:if test='${tipoCategoria eq 3}'>checked="checked"</c:if> onclick="javascript:cambiaCategoria(3);"/>${descTipoCategoria[3].descTabellato}
+										&nbsp;
+									</c:if>
 									<span id="spanServiziProfessionali">
 										<input type="radio" value="5" id="radioServiziProfessionali" name="filtroCategoria" <c:if test='${tipoCategoria eq 5}'>checked="checked"</c:if> onclick="javascript:cambiaCategoria(5);"/>${descTipoCategoria[4].descTabellato}
 									</span>
 								</c:when>
 								<c:otherwise>
-									<input type="radio" value="3" id="radioServizi" name="filtroCategoria" <c:if test='${tipoCategoria eq 3}'>checked="checked"</c:if> onclick="javascript:cambiaCategoria(3);"/>${descTipoCategoria[3].descTabellato}
+									<c:if test="${isRadioServizi eq 'true'}">			
+										<input type="radio" value="3" id="radioServizi" name="filtroCategoria" <c:if test='${tipoCategoria eq 3}'>checked="checked"</c:if> onclick="javascript:cambiaCategoria(3);"/>${descTipoCategoria[3].descTabellato}
+									</c:if>
 								</c:otherwise>
 							</c:choose>
 						</span>
@@ -217,9 +232,9 @@
 			valore = valore.toUpperCase();
 			
 		}
-		var condizioneWhere = "V_CAIS_TIT.TIPLAVG=" + tipoCategoria + "${param.filtroLotto}";
 		var parentFormName = eval('window.opener.activeArchivioForm');
-		eval("window.opener.document." + parentFormName + ".archWhereLista").value = condizioneWhere;
+		eval("window.opener.document." + parentFormName + ".archFunctionId").value = "default_load:filtroLotto";
+		eval("window.opener.document." + parentFormName + ".archWhereParametriLista").value = "N:" + tipoCategoria;
     	var nomeCampoArchivio = null;
 		
 		/*

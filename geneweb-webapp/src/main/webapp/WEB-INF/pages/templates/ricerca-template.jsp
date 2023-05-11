@@ -30,7 +30,7 @@
 		<gene:historyAdd titolo='${gene:getString(pageContext,"titoloMaschera",gene:resource("label.tags.template.trova.titolo"))}' id="ricerca" />
 	</c:if>
 </gene:insert>
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <script type="text/javascript" src="${contextPath}/js/forms.js"></script>

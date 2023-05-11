@@ -12,8 +12,10 @@ package it.eldasoft.gene.tags.functions;
 
 import it.eldasoft.gene.bl.scadenz.ScadenzariManager;
 import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import it.eldasoft.gene.tags.decorators.trova.FormTrovaTag;
 import it.eldasoft.gene.tags.utils.AbstractFunzioneTag;
 import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.spring.UtilitySpring;
 
 import java.sql.SQLException;
@@ -25,6 +27,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
+
 /**
  * Funzione per il ricalcolo dei termini e scadenze della lista delle attività
  *
@@ -32,64 +35,76 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ListaAttivitaScadenzarioFunction extends AbstractFunzioneTag {
 
-  private static final String KEY_SESSIONE_DATA_RICALCOLO_SCADENZARIO = "dataCalcoloScadenzario";
-  private static final String KEY_SESSIONE_CHIAVE_SCADENZARIO         = "chiaviScadenzario";
-  private static final String KEY_SESSIONE_ENTITA_SCADENZARIO         = "entitaScadenzario";
-  private static final String FILTRO_ATTIVITA                         = "filtroAttivita";
-  private static final int    INTERVALLO_RICALCOLO                    = 5;                       // in minuti
+	private static final String ENTITA_SCADENZARIO = "G_SCADENZ";
+	private static final String KEY_SESSIONE_DATA_RICALCOLO_SCADENZARIO = "dataCalcoloScadenzario";
+	private static final String KEY_SESSIONE_CHIAVE_SCADENZARIO = "chiaviScadenzario";
+	private static final String KEY_SESSIONE_ENTITA_SCADENZARIO = "entitaScadenzario";
+	private static final int INTERVALLO_RICALCOLO = 5; // in minuti
 
-  public ListaAttivitaScadenzarioFunction() {
-    super(4, new Class[] {PageContext.class, String.class, String.class, String.class });
-  }
+	public static final String FILTRO_ATTIVITA = "filtroAttivita";
 
-  @Override
-  public String function(PageContext pageContext, Object[] params)
-      throws JspException {
+	public ListaAttivitaScadenzarioFunction() {
+		super(4, new Class[] { PageContext.class, String.class, String.class, String.class });
+	}
 
-    ScadenzariManager scadenzariManager = (ScadenzariManager) UtilitySpring.getBean("scadenzariManager",
-        pageContext, ScadenzariManager.class);
+	@Override
+	public String function(PageContext pageContext, Object[] params) throws JspException {
 
-    String codapp = (String) params[1];
-    String ent = (String) params[2];
-    String chiavi = (String) params[3];
-    HttpSession sessione = pageContext.getSession();
-    String entitaScadenzario = StringUtils.stripToNull((String)sessione.getAttribute(KEY_SESSIONE_ENTITA_SCADENZARIO));
-    String chiaviScadenzario = StringUtils.stripToNull((String)sessione.getAttribute(KEY_SESSIONE_CHIAVE_SCADENZARIO));
-    Date dataCalcoloScadenzario = (Date)sessione.getAttribute(KEY_SESSIONE_DATA_RICALCOLO_SCADENZARIO);
+		ScadenzariManager scadenzariManager = (ScadenzariManager) UtilitySpring.getBean("scadenzariManager",
+				pageContext, ScadenzariManager.class);
 
-    // si esplode la chiave del record da cui partire
-    Vector<JdbcParametro> campiChiave = UtilityTags.stringParamsToVector(chiavi, null);
-    Object[] valoriChiave = new Object[campiChiave.size()];
-    for (int i=0; i<campiChiave.size(); i++) {
-      valoriChiave[i]=campiChiave.get(i).getValue();
-    }
+		String codapp = (String) params[1];
+		String ent = (String) params[2];
+		String chiavi = (String) params[3];
+		HttpSession sessione = pageContext.getSession();
+		String entitaScadenzario = StringUtils
+				.stripToNull((String) sessione.getAttribute(KEY_SESSIONE_ENTITA_SCADENZARIO));
+		String chiaviScadenzario = StringUtils
+				.stripToNull((String) sessione.getAttribute(KEY_SESSIONE_CHIAVE_SCADENZARIO));
+		Date dataCalcoloScadenzario = (Date) sessione.getAttribute(KEY_SESSIONE_DATA_RICALCOLO_SCADENZARIO);
 
-    // si calcola il lasso dall'ultimo ricalcolo del calendario
-    long diffMinuti = INTERVALLO_RICALCOLO;
-    Date dataAttuale =  new Date();
-    if(dataCalcoloScadenzario!=null){
-      diffMinuti = ( (dataAttuale.getTime() - dataCalcoloScadenzario.getTime())
-          / (60000) );
-    }
+		// si esplode la chiave del record da cui partire
+		Vector<JdbcParametro> campiChiave = UtilityTags.stringParamsToVector(chiavi, null);
+		Object[] valoriChiave = new Object[campiChiave.size()];
+		for (int i = 0; i < campiChiave.size(); i++) {
+			valoriChiave[i] = campiChiave.get(i).getValue();
+		}
 
-    try {
-      //Nel caso in cui è cambiata l'entità o la chiave si deve annullare il valore della variabile di sessione filtroAttivita
-      if (!(ent.equals(entitaScadenzario) && chiavi.equals(chiaviScadenzario)))
-          sessione.removeAttribute(FILTRO_ATTIVITA);
+		// si calcola il lasso dall'ultimo ricalcolo del calendario
+		long diffMinuti = INTERVALLO_RICALCOLO;
+		Date dataAttuale = new Date();
+		if (dataCalcoloScadenzario != null) {
+			diffMinuti = ((dataAttuale.getTime() - dataCalcoloScadenzario.getTime()) / (60000));
+		}
 
-      // si ricalcola l'algoritmo se cambia l'entita', la chiave, o e' trascorso l'intervallo massimo tra un ricalcolo e un altro
-      if (!(ent.equals(entitaScadenzario) && chiavi.equals(chiaviScadenzario) && diffMinuti < INTERVALLO_RICALCOLO)) {
-        scadenzariManager.updateDateScadenzarioEntita(ent, valoriChiave, codapp, false, null);
-        sessione.setAttribute(KEY_SESSIONE_ENTITA_SCADENZARIO, ent);
-        sessione.setAttribute(KEY_SESSIONE_CHIAVE_SCADENZARIO, chiavi);
-        sessione.setAttribute(KEY_SESSIONE_DATA_RICALCOLO_SCADENZARIO, dataAttuale);
-      }
+		try {
+			// Ogni volta che listo le attività dello scadenzario pulisco l'eventuale deftrova presente in sessione
+			if (sessione.getAttribute(FILTRO_ATTIVITA) == null) {
+				UtilityTags.deleteHashAttributesForSqlBuild(sessione, ENTITA_SCADENZARIO,
+						UtilityStruts.getNumeroPopUp(pageContext.getRequest()));
+			}
 
-    } catch (SQLException e) {
-      throw new JspException("Errore durante il ricalcolo dei termini e scadenze della lista delle attività", e);
-    }
+			// Nel caso in cui è cambiata l'entità o la chiave si deve annullare il valore
+			// della variabile di sessione filtroAttivita
+			if (!(ent.equals(entitaScadenzario) && chiavi.equals(chiaviScadenzario))) {
+				sessione.removeAttribute(FILTRO_ATTIVITA);
+			}
 
-    return "";
-  }
+			// si ricalcola l'algoritmo se cambia l'entita', la chiave, o e' trascorso
+			// l'intervallo massimo tra un ricalcolo e un altro
+			if (!(ent.equals(entitaScadenzario) && chiavi.equals(chiaviScadenzario)
+					&& diffMinuti < INTERVALLO_RICALCOLO)) {
+				scadenzariManager.updateDateScadenzarioEntita(ent, valoriChiave, codapp, false, null);
+				sessione.setAttribute(KEY_SESSIONE_ENTITA_SCADENZARIO, ent);
+				sessione.setAttribute(KEY_SESSIONE_CHIAVE_SCADENZARIO, chiavi);
+				sessione.setAttribute(KEY_SESSIONE_DATA_RICALCOLO_SCADENZARIO, dataAttuale);
+			}
+
+		} catch (SQLException e) {
+			throw new JspException("Errore durante il ricalcolo dei termini e scadenze della lista delle attività", e);
+		}
+
+		return "";
+	}
 
 }

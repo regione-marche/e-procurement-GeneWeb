@@ -271,6 +271,7 @@ public class CinecaAnagraficaComuneManager {
         msgDetail += "conto corrente dedicato";
       }
 
+    /*
     if(!isStraniera){
       String soggettiAbilitati = (String) datiAnagrafica.get("soggettiAbilitati");
       soggettiAbilitati = UtilityStringhe.convertiNullInStringaVuota(soggettiAbilitati);
@@ -284,6 +285,7 @@ public class CinecaAnagraficaComuneManager {
         }
       }
     }
+    */
 
     String ragioneSociale = (String) datiAnagrafica.get("ragioneSociale");
     ragioneSociale = UtilityStringhe.convertiNullInStringaVuota(ragioneSociale);
@@ -485,6 +487,8 @@ public class CinecaAnagraficaComuneManager {
 		anagrafica.setGenere((String) soggettoCollettivo.get("genere"));
 		anagrafica.setTipologia((Long) soggettoCollettivo.get("tipologia"));
 		anagrafica.setUrlSitoWeb((String) soggettoCollettivo.get("urlSitoWeb"));
+		anagrafica.setCodEsternoCoordPag((String) soggettoCollettivo.get("codEsternoCoordPag"));
+		anagrafica.setCodNazioneNascita((String) soggettoCollettivo.get("codNazioneNascita"));
 	  
 		return anagrafica;
 	  

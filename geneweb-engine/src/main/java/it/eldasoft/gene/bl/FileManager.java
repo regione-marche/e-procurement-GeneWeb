@@ -235,7 +235,7 @@ public class FileManager {
           + pathNameFile.substring(start + 1)
           + "\"");
       OutputStream out = response.getOutputStream();
-      response.setContentLength((int) f.length());
+      response.addHeader("Content-Length", Long.toString(f.length()));
 
       byte[] buffer = new byte[2048];
       int bytesRead = stream.read(buffer);

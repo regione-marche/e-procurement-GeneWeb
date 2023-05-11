@@ -493,18 +493,28 @@ public class EstraiRicercaAction extends ActionBaseNoOpzioni {
         request.setAttribute("risultatoRicerca", risultato);
         if (flagLogEvento) {
           LogEvento logEvento = LogEventiUtils.createLogEvento(request);
-          logEvento.setLivEvento(1);
+          logEvento.setLivEvento(LogEvento.LIVELLO_INFO);
           logEvento.setCodEvento("RUN_REPORT");
           logEvento.setDescr("Estrazione report con id= " + contenitorePerModel.getDatiGenerali().getIdRicerca().toString());
-          ParametroStmt temp[] = datiRisultato.getParametriSql();
-          String parametri = "";
-          for (int i=0;i<temp.length;i++) {
-            if (i>0) {
-              parametri = parametri + ", ";
+          
+          if (datiRisultato != null) {
+          	ParametroStmt temp[] = datiRisultato.getParametriSql();
+            String parametri = "";
+            for (int i=0;i<temp.length;i++) {
+              if (i>0) {
+                parametri = parametri + ", ";
+              }
+              parametri = parametri + temp[i].getValore().toString();
             }
-            parametri = parametri + temp[i].getValore().toString();
+            logEvento.setErrmsg("SQL: " + datiRisultato.getQuerySql() + ", PARAMETRI: " + parametri + "");	
+          } else {
+          	// Se si arriva qui allora si e' verificato un errore nell'esecuzione della query
+          	// e si logga l'errore
+          	logEvento.setErrmsg(this.resBundleGenerale.getString(messageKey));
+          	logEvento.setLivEvento(LogEvento.LIVELLO_ERROR);
           }
-          logEvento.setErrmsg("SQL: " + datiRisultato.getQuerySql() + ", PARAMETRI: " + parametri + "");
+          
+          
           LogEventiUtils.insertLogEventi(logEvento);
         }
       }

@@ -48,14 +48,20 @@
 		</gene:campoScheda>
 		<gene:campoScheda campo="INDTEC"/>
 		<gene:campoScheda campo="NCITEC"/>
-		<gene:campoScheda campo="PROTEC"/>
+		<gene:campoScheda campo="PROTEC">
+			<c:set var="protecFunctionId" value="default_${!empty datiRiga.TECNI_PROTEC}" />
+			<c:if test="${!empty datiRiga.TECNI_PROTEC}">
+				<c:set var="protecParametriWhere" value="T:${datiRiga.TECNI_PROTEC}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.TECNI.CAPTEC") and gene:checkProt(pageContext, "COLS.MOD.GENE.TECNI.PROTEC") and gene:checkProt(pageContext, "COLS.MOD.GENE.TECNI.LOCTEC") and gene:checkProt(pageContext, "COLS.MOD.GENE.TECNI.CITTEC"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
+				functionId="${protecFunctionId}"
+				parametriWhere="${protecParametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty datiRiga.TECNI_PROTEC, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.TECNI_PROTEC), "\'"), "")}'  
 				formName="formIstat" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_PROTEC" definizione="T9" visibile="false"/>
@@ -65,14 +71,20 @@
 		</gene:archivio>
 		<gene:campoScheda campo="NAZTEI"/>
 		<gene:campoScheda campo="SEXTEI" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoSesso" />
-		<gene:campoScheda campo="PRONAS"/>
+		<gene:campoScheda campo="PRONAS">
+			<c:set var="pronasFunctionId" value="default_${!empty datiRiga.TECNI_PRONAS}" />
+			<c:if test="${!empty datiRiga.TECNI_PRONAS}">
+				<c:set var="pronasParametriWhere" value="T:${datiRiga.TECNI_PRONAS}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.TECNI.PRONAS") and gene:checkProt(pageContext, "COLS.MOD.GENE.TECNI.CNATEC"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABDESC" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.DESCRI"
+				functionId="${pronasFunctionId}"
+				parametriWhere="${pronasParametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty datiRiga.TECNI_PRONAS, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.TECNI_PRONAS), "\'"), "")}'  
 				formName="formNascita" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="CNA_PNATEC" definizione="T9" visibile="false"/>
@@ -101,8 +113,8 @@
 				scheda="" 
 				schedaPopUp="" 
 				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC" 
+				functionId="skip"
 				chiave="" 
-				where="" 
 				formName="formIstat1" 
 				inseribile="false" >
 			<gene:campoScheda campo="PROALB"/>
@@ -118,6 +130,7 @@
 				scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.ImprScheda"),"gene/impr/impr-scheda.jsp","")}' 
 				schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.ImprScheda"),"gene/impr/impr-scheda-popup.jsp","")}'
 				campi="IMPR.CODIMP;IMPR.NOMEST;IMPR.CGENIMP"
+				functionId="skip"
 				chiave="TECNI_CODSTU" >
 			<gene:campoScheda campo="CODSTU"/>
 			<gene:campoScheda entita="IMPR" campo="NOMEST" where="TECNI.CODSTU = IMPR.CODIMP" modificabile='${gene:checkProt( pageContext, "COLS.MOD.GENE.TECNI.CODSTU")}' visibile='${gene:checkProt( pageContext, "COLS.VIS.GENE.TECNI.CODSTU")}'/>

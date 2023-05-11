@@ -930,22 +930,29 @@ public class RicercheManager {
 
     // Stringa utilizzata per l'esecuzione della query e passata alla preparedStatement:
     // tutte le righe di commento vengono rimosse;
-    // tutti i parametri vengono rimossi con il punto interrogativo;
-    String querySql = new String(ricerca.getDatiGenerali().getDefSql());
+    // tutti i parametri vengono sostituiti con il punto interrogativo;
+
+    // Sostituzione di tutte le tabulazione con uno spazio
+    String querySql = new String(StringUtils.replace(ricerca.getDatiGenerali().getDefSql(), "\t", " "));
     String lineSeparator = System.getProperty("line.separator");
 
-    if (StringUtils.contains(querySql, lineSeparator)) {
-      String[] sqlRighe = StringUtils.split(querySql, lineSeparator);
+    // Split del testo in righe
+    String[] sqlRighe = querySql.split("\\r?\\n");
 
-      querySql = "";
+    querySql = "";
 
-      for (int i=0; i < sqlRighe.length; i++) {
-        if (!sqlRighe[i].trim().startsWith("--")) {
-          if (StringUtils.isEmpty(querySql)) {
-            querySql = sqlRighe[i];
+    // Rimozione delle righe di commento e del testo di commento posto alla fine
+    // di una riga che contiene comunque codice SQL
+    for (int i = 0; i < sqlRighe.length; i++) {
+      if (!sqlRighe[i].trim().startsWith("--")) {
+        if (StringUtils.isEmpty(querySql)) {
+          querySql = sqlRighe[i];
+        } else {
+          querySql = querySql.concat(lineSeparator);
+          if (sqlRighe[i].indexOf("--") > 0) {
+          	querySql = querySql.concat(StringUtils.substringBefore(sqlRighe[i], "--"));  // rimozione del commento posto 
           } else {
-            querySql = querySql.concat(lineSeparator);
-            querySql = querySql.concat(sqlRighe[i]);
+          	querySql = querySql.concat(sqlRighe[i]);
           }
         }
       }

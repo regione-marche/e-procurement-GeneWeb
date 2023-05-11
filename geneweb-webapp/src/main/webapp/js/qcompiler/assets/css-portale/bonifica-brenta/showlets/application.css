@@ -1,0 +1,267 @@
+/* =ERRORS-AND-MESSAGES */
+.error, .errors, .required-field {
+	color: #FF0000;
+}
+
+.warnings {
+	color: #0000FF;
+}
+
+/* =BALLOON */
+.balloon {
+	background-color: #C0C0C0;
+	border: 1px dotted #CDCDCD;
+	margin-top:5px;
+	font-style:italic;
+}
+
+.balloon a {
+	color: #043F56;
+}
+
+/* =TABLES */
+.light-table, .light-table th, .light-table td {
+	border: 0;
+	color: #000;
+}
+
+.light-table th {
+	background-color:#e3914c;
+	color:#fff;
+}
+
+.light-table td {
+	background: none;
+}
+
+/* =DETAIL-FORM */
+
+.detail-section-title {
+	color:#EA5E00;
+	font-weight: bold;
+	text-align: center;
+	background-color: #DBDBDB;
+	padding: 5px;
+	text-transform:uppercase;
+	border: 1px dotted #c0b28c;
+}
+
+.detail-row label{
+	font-weight:bold;
+}
+
+ .detail-section .detail-row ul li a , .last-detail-section .detail-row ul li a {
+ 	color: #06c;
+}
+
+fieldset {
+	background-attachment: scroll;
+	border-radius: 10px;
+	background-color: #DBDBDB;
+	border: 1px dotted #c0b28c;
+}
+
+legend {
+	background-attachment: scroll;
+	color: #000;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+
+.element {
+	font-size: 1em;
+}
+
+.element input, .element select, .element textarea {
+	background-color: #FFF;
+	border-radius:4px;
+	border: 1px solid #CCCCCC;
+}
+
+.element .no-editable {
+	background-color: #DBDBDB;
+	margin-top: -1px;
+}
+
+.portgare-list h2, .portgare-view h2 {
+	font-size: 1.5em;
+	color:#3C64A5;
+	font-weight:bold;
+	text-transform: uppercase;
+}
+
+.portgare-list label, .portgare-view label {
+	color: #333;
+	font-weight:bold;
+}
+
+.element label {
+	color: #333;
+}
+
+div div.note {
+    background-color: #C0C0C0;
+	border: 1px dotted #c0b28c;
+}
+
+.fieldset-row{
+    border: 1px dashed #c0b28c;
+}
+
+.fieldset-row:hover{
+	border: 1px solid #00FF00;
+}
+
+
+div.sottosezione h4 {
+	border-bottom: 2px #144873 solid;
+	color: #144873;
+}
+
+.special {
+	background-color: #DBDBDB;
+}
+
+.special a {
+	color: #333;
+}
+
+.special .important{
+	background-color:#e3914c;
+	color:#fff;
+	padding:3px;
+	border-radius:4px;
+}
+/* =LIST-FORM */
+.list-item {
+	list-style-type: none;
+	padding-bottom: 1em;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom-style: dashed;
+	border-bottom-color: #DBDBDB;
+	border-bottom-width: 2px;
+	overflow: hidden;
+}
+
+.list-item-row {
+	display: block;
+	padding: 0em;
+}
+
+.list-summary {
+	overflow: hidden;
+	color: #333;
+	font-size: 1.2em;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	border: 1px dotted #c0b28c;
+	background-color:#DBDBDB;
+	padding-bottom: 0.5em;
+	padding-top: 0.5em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	border-radius:4px;
+	-webkit-border-radius: 4px;
+	text-align: center;
+}
+/* =FILTER-FORM */
+
+/* =CHANGE-PASSWORD-FORM */
+#change_password_form label.error {
+	color: #B70039;
+}
+
+#change_password_form label.success_msg {
+	color: #0060BF;
+}
+
+/* =WIZARD-STEPS */
+.steps {
+	border-bottom: 5px solid #e3914c;
+	font-weight:bold;
+	text-transform:uppercase;
+	padding-bottom:5px;
+}
+
+.steps li{
+    color: #4C4D52;
+	border-radius: 4px 4px 0 0;
+    -webkit-border-radius: 4px 4px 0 0;
+	background-color: #e4e4e4;
+    padding: 10px 15px;
+	border: 1px solid #e3914c;
+	margin-left:2px;
+}
+
+.current-step {
+	background-color: #e3914c;
+	border-radius: 4px 4px 0 0;
+	-webkit-border-radius: 4px 4px 0 0;
+	color:#fff;
+	border-bottom: 1px solid #e3914c;
+	margin: -15px;
+	padding: 10px 15px;
+}
+
+/* =PAGINATION */
+#pagination-navi .selected {
+	background-color: #FFF;
+	color: #043F56;
+}
+
+/* =MENU-FORM */
+.menu-gestione {
+	background-color: #e7e7e7;
+}
+
+.menu-gestione li:hover, .menu-gestione li:focus {
+	background-color: #ccc;
+	color:#333
+}
+
+.menu-gestione li.disabled {
+	background-color: #F2F2F2;
+}
+
+.menu-gestione a {
+	color: #333;
+}
+
+.menu-gestione li:hover a, .menu-gestione li:focus a {
+	color: #b22825;
+}
+
+.menu-gestione li.disabled a {
+	color: #C4C4C4;
+}
+
+.menu-gestione li.disabled:hover, .menu-gestione li.disabled:focus {
+	background-color: #F2F2F2;
+}
+
+.menu-gestione li.disabled:hover a, .menu-gestione li.disabled:focus a {
+	color: #C4C4C4;
+}
+
+.menu-gestione .info {
+	color: #333;
+}
+
+/* =PAGINATION */
+#pagination-navi .nav-page-button {
+	background: #FFF;
+	border: 1px solid #e3914c;
+	color: #06c;
+}
+
+#pagination-navi .selected {
+	background-color: #e3914c;
+	color: #FFF;
+}
+
+/* =TREE CONTENT */
+.tree-content{
+	line-height:1.2em;
+}

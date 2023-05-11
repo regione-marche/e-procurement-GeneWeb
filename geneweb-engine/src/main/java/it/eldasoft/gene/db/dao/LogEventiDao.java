@@ -11,6 +11,7 @@
 package it.eldasoft.gene.db.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import it.eldasoft.gene.db.domain.LogEvento;
 
@@ -53,5 +54,15 @@ public interface LogEventiDao {
    * @throws DataAccessException
    */
   public String searchLogFromCodOggetto(String codice, String oggetto) throws DataAccessException;
+  
+  /**
+   * Recupera gli eventi di un particolare utente
+   * 
+   * @param user
+   *        user da estrarre
+   * @throws DataAccessException
+   */
+  
+  public List<LogEvento> getUltimiAccessi(Long idUtente) throws DataAccessException;
 
 }

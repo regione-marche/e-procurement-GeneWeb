@@ -28,6 +28,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda-popup.jsp","")}'
 			campi="TEIM.CODTIM;TEIM.NOMTIM"
+			functionId="skip"
 			chiave="IMPAZI_CODTEC_${param.contatore}"
 			formName="formTeimAzi${param.contatore}">
 			<gene:campoScheda entita="IMPAZI" where="IMPR.CODIMP = IMPAZI.CODIMP4" campo="CODTEC_${param.contatore}" campoFittizio="true" definizione="T10;0;;;CODTEC2" value="${item[1]}" obbligatorio="true"/>
@@ -48,6 +49,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda-popup.jsp","")}'
 			campi="TEIM.CODTIM;TEIM.NOMTIM"
+			functionId="skip"
 			chiave="IMPAZI_CODTEC${param.contatore}"
 			formName="formTeimAzi${param.contatore}">
 			<gene:campoScheda entita="IMPAZI" where="IMPR.CODIMP = IMPAZI.CODIMP4" campo="CODTEC_${param.contatore}" campoFittizio="true" definizione="T10;0;;;CODTEC2" obbligatorio="true" />

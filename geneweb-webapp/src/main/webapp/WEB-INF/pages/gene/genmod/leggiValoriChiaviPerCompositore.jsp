@@ -27,7 +27,7 @@
 
 <c:set var="valori" value="${param.valori}" />
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 </HEAD>
@@ -41,7 +41,6 @@
 	<html:hidden property="valori" value="${param.valori}"/>
 	<html:hidden property="noFiltroEntitaPrincipale"/>
 	<html:hidden property="paginaSorgente" value=""/>
-	<html:hidden property="exportPdf"/>
 	<input type="hidden" name="idRicerca" value="">
   <% //Javascript per creare l'elenco dei modelli %> 
   <script type="text/javascript">

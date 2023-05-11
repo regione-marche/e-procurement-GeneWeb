@@ -16,7 +16,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 

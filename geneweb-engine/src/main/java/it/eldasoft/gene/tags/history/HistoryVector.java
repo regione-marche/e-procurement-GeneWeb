@@ -11,7 +11,10 @@
 package it.eldasoft.gene.tags.history;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * Oggetto che gestisce un vettore di history Item
@@ -20,26 +23,75 @@ import java.util.Vector;
  */
 public class HistoryVector implements Serializable {
 
-  /** UID */
+  // Costanti
   private static final long serialVersionUID = -637658293654068008L;
   
-  private Vector<HistoryItem> vect;
+  // Campi
+  private HttpSession session;
+  private List<HistoryItem> items;
 
-  public HistoryVector() {
-    this.vect = new Vector<HistoryItem>();
+  // Costruttori
+  public HistoryVector(final HttpSession session) {
+	this.session = session;
+    items = new ArrayList<HistoryItem>();
   }
-
-
-  /**
-   * @return Returns the vect.
-   */
-  public Vector<HistoryItem> getVect() {
-    return vect;
+  
+  // Metodi
+  public HistoryItem get(final int index) {
+	  return items.get(index);
   }
-
+  
+  public void push(final HistoryItem item) {
+	  items.add(item);
+  }
+  
+  public HistoryItem pop() {
+	  HistoryItem item = items.remove(items.size() - 1); //pop();
+	  item.clearDeftrova(session);
+	  
+	  return item;
+  }
+  
+  public HistoryItem popWithoutClear() {
+	  return items.remove(items.size() - 1);
+  }
+  
+  public HistoryItem update(final HistoryItem item) {
+	  return items.set(size() - 1, item);
+  }
+  
+  public boolean isEmpty() {
+	  return items.isEmpty();
+  }
+  
+  public List<HistoryItem> popMultiple(final int amount) {
+	  final List<HistoryItem> poppedItems = new ArrayList<HistoryItem>();
+	  
+	  for (int i = 0; i < amount; i++) {
+		  poppedItems.add(pop());
+	  }
+	  
+	  return poppedItems;
+  }
+  
+  public void clear() {
+	  while(!items.isEmpty()) {
+		  pop();
+	  }
+  }
+  
+  public HistoryItem peek() {
+	  if (items.isEmpty()) return null;
+	  return items.get(items.size() - 1);
+  }
+  
+  public int size() {
+	  return items.size();
+  }
+  
   @Override
   public String toString() {
-    return vect.toString();
+    return items.toString();
   }
 
 }

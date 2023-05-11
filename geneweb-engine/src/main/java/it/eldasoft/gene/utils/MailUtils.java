@@ -52,7 +52,7 @@ public class MailUtils {
     String nomeMittente = ConfigManager.getValore(CostantiGenerali.PROP_TITOLO_APPLICATIVO);
 
     IMailSender mailSender = null;
-
+    
     try {
 
       ConfigurazioneMail config = manager.getConfigurazione(codapp,idcfg);

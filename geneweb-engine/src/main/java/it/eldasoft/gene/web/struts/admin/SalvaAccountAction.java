@@ -10,6 +10,25 @@
  */
 package it.eldasoft.gene.web.struts.admin;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+
 import it.eldasoft.gene.bl.MessageManager;
 import it.eldasoft.gene.bl.TabellatiManager;
 import it.eldasoft.gene.bl.admin.AccountManager;
@@ -31,25 +50,6 @@ import it.eldasoft.utils.profiles.CheckOpzioniUtente;
 import it.eldasoft.utils.profiles.OpzioniUtente;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.sicurezza.CriptazioneException;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * Action per insert e modifica di un account
@@ -117,71 +117,102 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
     String target = SalvaAccountAction.FORWARD_INSERIMENTO_OK;
     String messageKey = null;
 
-    AccountForm utenteProdottoForm = (AccountForm) form;
+    CheckOpzioniUtente checkAmministratore = new CheckOpzioniUtente(
+            CostantiGeneraliAccount.OPZIONI_AMMINISTRAZIONE_PARAM_SISTEMA);
+
+    HttpSession sessione = request.getSession();
+    ProfiloUtente profiloUtente = (ProfiloUtente) sessione.getAttribute("profiloUtente");
+	OpzioniUtente opzioniUtenteLoggato = new OpzioniUtente(profiloUtente.getFunzioniUtenteAbilitate());
+	boolean isEsecutoreAmministratore = checkAmministratore.test(opzioniUtenteLoggato);
+
+	AccountForm utenteProdottoForm = (AccountForm) form;
     boolean amministratoreForm = false;
     boolean credenzialiDisponibili = true;
     Collection<String> list = Arrays.asList(utenteProdottoForm.getOpzioniUtenteSys());
-    if (list.contains("ou89")) {amministratoreForm = true;}
-    if(amministratoreForm) credenzialiDisponibili = this.accountManager.getCredenziaDisponibili(utenteProdottoForm.getLogin());
-    
+	for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		// si controlla ogni singola opzione e ogni parte di opzione, anche quando
+		// concatenate
+		String opzione = (String) iterator.next();
+		if (opzione.indexOf("ou89") != -1) {
+			amministratoreForm = true;
+		}
+	}
+	if (amministratoreForm) {
+		credenzialiDisponibili = this.accountManager.getCredenziaDisponibili(utenteProdottoForm.getLogin());
+	}
+	
+	boolean bloccaOperazione = false;
+	 
     try {
       if (!(this.accountManager.isUsedLogin(utenteProdottoForm.getLogin(), -1) || ("1".equals(utenteProdottoForm.getFlagLdap()) && this.accountManager.isUsedDn(
           utenteProdottoForm.getDn(), -1))) && (credenzialiDisponibili)) {
-        Account accountUtente = new Account();
-        accountUtente = utenteProdottoForm.getDatiPerModel(accountUtente,
-            (String) request.getSession().getAttribute(
-                CostantiGenerali.MODULO_ATTIVO));
-        this.insertAccount(accountUtente, request);
+    	  
+    	  if (amministratoreForm && !isEsecutoreAmministratore) {
+          	target = CostantiGeneraliStruts.FORWARD_OPZIONE_NON_ABILITATA;
+            messageKey = "errors.opzione.noAbilitazione";
+            logger.error(this.resBundleGenerale.getString(messageKey));
+            this.aggiungiMessaggio(request, messageKey);
+  		  
+    	  } else {
+    		  
+    	        Account accountUtente = new Account();
+    	        accountUtente = utenteProdottoForm.getDatiPerModel(accountUtente,
+    	            (String) request.getSession().getAttribute(
+    	                CostantiGenerali.MODULO_ATTIVO));
+    	        this.insertAccount(accountUtente, request);
 
-        // preparo il form per la visualizzazione ricaricando dal db il nuovo
-        // account in modo che venga decriptata la login
-        Account account = this.accountManager.getAccountById(new Integer(
-            accountUtente.getIdAccount()));
-        request.setAttribute("idAccount", new Integer(account.getIdAccount()));
-        
-        
-        
-        // controllo sul codice fiscale duplicato
-        if (StringUtils.isNotBlank(account.getCodfisc())) {
-          List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), utenteProdottoForm.getCodfisc());
+    	        // preparo il form per la visualizzazione ricaricando dal db il nuovo
+    	        // account in modo che venga decriptata la login
+    	        Account account = this.accountManager.getAccountById(new Integer(
+    	            accountUtente.getIdAccount()));
+    	        request.setAttribute("idAccount", new Integer(account.getIdAccount()));
 
-          // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
-          request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
-        }
+    	        // controllo sul codice fiscale duplicato
+    	        if (StringUtils.isNotBlank(account.getCodfisc())) {
+    	          List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), utenteProdottoForm.getCodfisc());
 
-        // setto il modo cosÏ riesco a stabilire in fase di creazione della
-        // pagina se siamo in inserimento
-        // e di conseguenza non inserisco nell'history la pagina di dettaglio
-        HttpSession sessione = request.getSession();
-        // Set in sessione di id e nome dell'account che si sta modificando
-        sessione.setAttribute(CostantiGenerali.ID_OGGETTO_SESSION, new Integer(
-            account.getIdAccount()));
-        sessione.setAttribute(CostantiGenerali.NOME_OGGETTO_SESSION,
-            account.getNome());
-        this.setMenuTab(request);
-        
-        ProfiloUtente profiloUtente = (ProfiloUtente) sessione.getAttribute("profiloUtente");
-        int id = new Integer(profiloUtente.getId());
-        Account currentUser = this.accountManager.getAccountById(id);
-        
-        //inserisco il log di inserimento nuovo utente nel database
-        LogEvento logEvento = LogEventiUtils.createLogEvento(request);
-        logEvento.setLivEvento(LogEvento.LIVELLO_INFO);
-        logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_ADD_USER);
-        logEvento.setDescr("L'utente " + id + " ha aggiunto nuovo utente con id ="+ account.getIdAccount() + " e login = " + account.getLogin());
-        logEvento.setErrmsg("");
-        LogEventiUtils.insertLogEventi(logEvento);
-        if (amministratoreForm){
-          this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = " + id + ") ha inserito l'utenza amministrativa "+ account.getLogin() +" (id = " + account.getIdAccount() + ")","", id);
-        }
+    	          // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
+    	          request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
+    	        }
+
+    	        // setto il modo cosÏ riesco a stabilire in fase di creazione della
+    	        // pagina se siamo in inserimento
+    	        // e di conseguenza non inserisco nell'history la pagina di dettaglio
+    	        // Set in sessione di id e nome dell'account che si sta modificando
+    	        sessione.setAttribute(CostantiGenerali.ID_OGGETTO_SESSION, new Integer(
+    	            account.getIdAccount()));
+    	        sessione.setAttribute(CostantiGenerali.NOME_OGGETTO_SESSION,
+    	            account.getNome());
+    	        this.setMenuTab(request);
+    	        
+    	        int id = new Integer(profiloUtente.getId());
+    	        Account currentUser = this.accountManager.getAccountById(id);
+    	        
+    	        if (amministratoreForm){
+    	        	if (isEsecutoreAmministratore) {
+    	                this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = " + id + ") ha inserito l'utenza amministrativa "+ account.getLogin() +" (id = " + account.getIdAccount() + ")","", id);
+    	        	} else {
+    	        		bloccaOperazione = true;
+    	        	}
+    	        }
+
+    	        //inserisco il log di inserimento nuovo utente nel database
+    	        LogEvento logEvento = LogEventiUtils.createLogEvento(request);
+    	        logEvento.setLivEvento(LogEvento.LIVELLO_INFO);
+    	        logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_ADD_USER);
+    	        logEvento.setDescr("L'utente " + id + " ha aggiunto nuovo utente con id ="+ account.getIdAccount() + " e login = " + account.getLogin());
+    	        logEvento.setErrmsg("");
+    	        LogEventiUtils.insertLogEventi(logEvento);
+    	  }
       } else {
         if (this.accountManager.isUsedLogin(utenteProdottoForm.getLogin(), -1))
           messageKey = "errors.login.loginDuplicato";
         else{
-          if(!credenzialiDisponibili){
-            messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
-          }else{
-          messageKey = "errors.login.dnDuplicato";}
+			if (!credenzialiDisponibili) {
+				messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
+			} else {
+				messageKey = "errors.login.dnDuplicato";
+			}
         }
         target = SalvaAccountAction.FORWARD_LOGIN_KO;
 
@@ -289,14 +320,31 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
 
     String messageKey = null;
 
+    CheckOpzioniUtente checkAmministratore = new CheckOpzioniUtente(
+            CostantiGeneraliAccount.OPZIONI_AMMINISTRAZIONE_PARAM_SISTEMA);
+
+    HttpSession sessione = request.getSession();
+    ProfiloUtente profiloUtente = (ProfiloUtente) sessione.getAttribute("profiloUtente");
+	OpzioniUtente opzioniUtenteLoggato = new OpzioniUtente(profiloUtente.getFunzioniUtenteAbilitate());
+	boolean isEsecutoreAmministratore = checkAmministratore.test(opzioniUtenteLoggato);
+
     AccountForm accountForm = (AccountForm) form;
     boolean amministratoreForm = false;
     boolean credenzialiDisponibili = true;
     Collection<String> list = Arrays.asList(accountForm.getOpzioniUtenteSys());
-    if (list.contains("ou89")) {
-      amministratoreForm = true;
-    }
-    if(amministratoreForm) credenzialiDisponibili = this.accountManager.getCredenziaDisponibili(accountForm.getLogin());
+	for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		// si controlla ogni singola opzione e ogni parte di opzione, anche quando
+		// concatenate
+		String opzione = (String) iterator.next();
+		if (opzione.indexOf("ou89") != -1) {
+			amministratoreForm = true;
+		}
+	}
+	if (amministratoreForm) {
+		credenzialiDisponibili = this.accountManager.getCredenziaDisponibili(accountForm.getLogin());
+	}
+	
+	boolean bloccaOperazione = false;
     
     try {
       Integer id = Integer.valueOf(accountForm.getIdAccount());
@@ -304,58 +352,72 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
           id.intValue()) && (credenzialiDisponibili)) {
         Account accountDb = this.accountManager.getAccountById(id);
         OpzioniUtente opzioniUtente = new OpzioniUtente(accountDb.getOpzioniUtente());
-        CheckOpzioniUtente checkAmministratore = new CheckOpzioniUtente(
-            CostantiGeneraliAccount.OPZIONI_AMMINISTRAZIONE_PARAM_SISTEMA);
 
         // crea opzioniUtenteForm,   
-        HttpSession sessione = request.getSession();
-        ProfiloUtente profiloUtente = (ProfiloUtente) sessione.getAttribute("profiloUtente");
         int idCurrentUser = new Integer(profiloUtente.getId());
         Account currentUser = this.accountManager.getAccountById(idCurrentUser);
         
         if (!checkAmministratore.test(opzioniUtente) && amministratoreForm ){
-          this.messageManager.insertMessageToUsersAdministrator("L'amministratore " + currentUser.getLogin() + " (id = " + idCurrentUser + ") ha conferito i diritti di amministratore all'utenza " + accountForm.getLogin() + " (id = " + id + ")","", idCurrentUser);
-          // tracciatura evento, metti anche nel log una tracciatura info
+        	if (isEsecutoreAmministratore) {
+                this.messageManager.insertMessageToUsersAdministrator("L'amministratore " + currentUser.getLogin() + " (id = " + idCurrentUser + ") ha conferito i diritti di amministratore all'utenza " + accountForm.getLogin() + " (id = " + id + ")","", idCurrentUser);        		
+        	} else {
+        		bloccaOperazione = true;
+        	}
+            // tracciatura evento, metti anche nel log una tracciatura info
         }
         else{
           if (checkAmministratore.test(opzioniUtente) && !amministratoreForm ){
-            this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = "+ idCurrentUser +") ha rimosso i diritti di amministratore all'utenza "+ accountForm.getLogin() +" (id = " + id + ")","", idCurrentUser);
+          	if (isEsecutoreAmministratore) {
+                this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = "+ idCurrentUser +") ha rimosso i diritti di amministratore all'utenza "+ accountForm.getLogin() +" (id = " + id + ")","", idCurrentUser);
+        	} else {
+        		bloccaOperazione = true;
+        	}
           }
         }
-
-        this.accountManager.updateAccount(accountForm.getDatiPerModel(
-            accountDb, (String) request.getSession().getAttribute(
-                CostantiGenerali.MODULO_ATTIVO)));
-        Account account = this.accountManager.getAccountById(id);
-        AccountForm formUtente = new AccountForm(account);
-        request.setAttribute("modo", "visualizza");
-        request.setAttribute("accountForm", formUtente);
-        request.setAttribute("metodo", "carica");
         
-        if(amministratoreForm){
-          this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = "+ idCurrentUser +") ha aggiornato l'utenza amministrativa  "+ accountForm.getLogin() +" (" + id + ") con opzioni utente = " + list.toString() + ", sysab3 = "+ account.getAbilitazioneStd() +", sysabg = "+ account.getAbilitazioneGare(),"", idCurrentUser);
+        if (bloccaOperazione) {
+        	target = CostantiGeneraliStruts.FORWARD_OPZIONE_NON_ABILITATA;
+            messageKey = "errors.opzione.noAbilitazione";
+            logger.error(this.resBundleGenerale.getString(messageKey));
+            this.aggiungiMessaggio(request, messageKey);
+        } else {
+            this.accountManager.updateAccount(accountForm.getDatiPerModel(
+                    accountDb, (String) request.getSession().getAttribute(
+                        CostantiGenerali.MODULO_ATTIVO)));
+                Account account = this.accountManager.getAccountById(id);
+                AccountForm formUtente = new AccountForm(account);
+                request.setAttribute("modo", "visualizza");
+                request.setAttribute("accountForm", formUtente);
+                request.setAttribute("metodo", "carica");
+                
+                if(amministratoreForm){
+                  this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = "+ idCurrentUser +") ha aggiornato l'utenza amministrativa  "+ accountForm.getLogin() +" (" + id + ") con opzioni utente = " + list.toString() + ", sysab3 = "+ account.getAbilitazioneStd() +", sysabg = "+ account.getAbilitazioneGare(),"", idCurrentUser);
+                }
+                
+                // controllo sul codice fiscale duplicato
+                if (StringUtils.isNotBlank(account.getCodfisc())) {
+                  List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), accountForm.getCodfisc());
+
+                  // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
+                  request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
+                }
+
+                // Set in sessione di id e nome dell'account che si sta modificando
+                request.getSession().setAttribute(CostantiGenerali.ID_OGGETTO_SESSION,
+                    new Integer(formUtente.getIdAccount()));
+                request.getSession().setAttribute(
+                    CostantiGenerali.NOME_OGGETTO_SESSION, formUtente.getNome());
+
+                this.setMenuTab(request);        	
         }
-        
-        // controllo sul codice fiscale duplicato
-        if (StringUtils.isNotBlank(account.getCodfisc())) {
-          List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), accountForm.getCodfisc());
 
-          // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
-          request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
-        }
-
-        // Set in sessione di id e nome dell'account che si sta modificando
-        request.getSession().setAttribute(CostantiGenerali.ID_OGGETTO_SESSION,
-            new Integer(formUtente.getIdAccount()));
-        request.getSession().setAttribute(
-            CostantiGenerali.NOME_OGGETTO_SESSION, formUtente.getNome());
-
-        this.setMenuTab(request);
       } else {
         target = SalvaAccountAction.FORWARD_LOGIN_KO;
-        if(credenzialiDisponibili){
-        messageKey = "errors.login.loginDuplicato";}
-        else{messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente"; }
+		if (credenzialiDisponibili) {
+			messageKey = "errors.login.loginDuplicato";
+		} else {
+			messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
+		}
         logger.error(this.resBundleGenerale.getString(messageKey));
         this.aggiungiMessaggio(request, messageKey);
         request.setAttribute("idAccount", accountForm.getIdAccount());

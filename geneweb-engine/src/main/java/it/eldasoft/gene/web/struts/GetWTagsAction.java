@@ -11,27 +11,30 @@
 
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetWTagsAction extends Action {
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import net.sf.json.JSONObject;
+
+public class GetWTagsAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetWTagsAction.class);
 
   private SqlManager sqlManager;
 
@@ -39,8 +42,11 @@ public class GetWTagsAction extends Action {
     this.sqlManager = sqlManager;
   }
 
-  public final ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-      final HttpServletResponse response) throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -103,7 +109,8 @@ public class GetWTagsAction extends Action {
         List<?> datiW_TAGSLIST = sqlManager.getListVector(
             "select w_tagslist.tagentity, w_tagslist.tagfield, w_tagslist.tagcod, w_tags.tagview "
                 + " from w_tagslist, w_tags where w_tagslist.codapp = ? and w_tags.codapp = w_tagslist.codapp and w_tags.tagcod = w_tagslist.tagcod"
-                + " order by w_tagslist.tagentity, w_tagslist.tagfield, w_tags.tagview", new Object[] { codapp });
+                + " order by w_tagslist.tagentity, w_tagslist.tagfield, w_tags.tagview",
+            new Object[] { codapp });
         if (datiW_TAGSLIST != null && datiW_TAGSLIST.size() > 0) {
           for (int a = 0; a < datiW_TAGSLIST.size(); a++) {
             HashMap<String, String> hMap = new HashMap<String, String>();
@@ -118,25 +125,32 @@ public class GetWTagsAction extends Action {
       } else if ("taginfo".equals(q)) {
         if (tagentity == null || "".equals(tagentity.trim()) || "null".equals(tagentity.trim())) {
           String taginfo = (String) sqlManager.getObject(
-              "select taginfo from w_tagslist where codapp = ? and tagentity is null and tagfield = ? and tagcod = ?", new Object[] {
-                  codapp, tagfield, tagcod });
+              "select taginfo from w_tagslist where codapp = ? and tagentity is null and tagfield = ? and tagcod = ?",
+              new Object[] { codapp, tagfield, tagcod });
           result.put("taginfo", taginfo);
         } else {
           String taginfo = (String) sqlManager.getObject(
-              "select taginfo from w_tagslist where codapp = ? and tagentity = ? and tagfield = ? and tagcod = ?", new Object[] { codapp,
-                  tagentity, tagfield, tagcod });
+              "select taginfo from w_tagslist where codapp = ? and tagentity = ? and tagfield = ? and tagcod = ?",
+              new Object[] { codapp, tagentity, tagfield, tagcod });
           result.put("taginfo", taginfo);
         }
       }
 
-    } catch (SQLException e) {
-      throw new JspException("Errore durante la lettura delle informazioni sulle integrazioni", e);
+      out.println(result);
+      out.flush();
+
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
     }
 
-    out.println(result);
-    out.flush();
-
-    return null;
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

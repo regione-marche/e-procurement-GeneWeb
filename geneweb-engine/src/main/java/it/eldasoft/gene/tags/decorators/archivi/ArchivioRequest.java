@@ -1,17 +1,18 @@
 package it.eldasoft.gene.tags.decorators.archivi;
 
-import java.util.HashMap;
-
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
 import it.eldasoft.gene.tags.utils.UtilityTags;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
+import it.eldasoft.utils.metadata.cache.DizionarioTabelle;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.spring.UtilitySpring;
 import it.eldasoft.utils.sql.comp.SqlComposer;
 import it.eldasoft.utils.sql.comp.SqlComposerException;
 import it.eldasoft.utils.utility.UtilityStringhe;
+
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -20,9 +21,9 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Clase che gestisce l'archivio nel request
- * 
+ *
  * @author cit_franceschin
- * 
+ *
  */
 public class ArchivioRequest {
 
@@ -47,6 +48,10 @@ public class ArchivioRequest {
   private String             tipoCampoChanged;
 
   private String             where;
+  
+  private String             parametriWhere;
+  
+  private String             functionId;
 
   private String             lista;
   private String             scheda;
@@ -55,7 +60,7 @@ public class ArchivioRequest {
   private boolean            inseribile;
 
   private String             body                 = "";
-  
+
   private String             campiNoSet;
 
   private void setValoriDaRequest(HttpServletRequest request) {
@@ -79,6 +84,10 @@ public class ArchivioRequest {
         ArchivioTagImpl.HIDE_INPUT_VALUE_CHIAVE);
     this.where = UtilityStruts.getParametroString(request,
         ArchivioTagImpl.HIDE_INPUT_WHERE_SU_LISTA);
+    this.parametriWhere = UtilityStruts.getParametroString(request, 
+        ArchivioTagImpl.HIDE_INPUT_WHERE_PARAMETRI_SU_LISTA);
+    this.functionId = UtilityStruts.getParametroString(request, 
+        ArchivioTagImpl.HIDE_INPUT_FUNCTION_ID);
     this.lista = UtilityStruts.getParametroString(request,
         ArchivioTagImpl.HIDE_INPUT_LISTA);
     this.scheda = UtilityStruts.getParametroString(request,
@@ -97,7 +106,7 @@ public class ArchivioRequest {
 
   /**
    * Costruttore per la creazione dell'oggetto partendo dal request
-   * 
+   *
    * @param request
    *        Request dell'azione
    * @param lista
@@ -132,38 +141,65 @@ public class ArchivioRequest {
           }
           this.valueCampoChanged = "%" + this.valueCampoChanged.toUpperCase() + "%";
         }
-        if (this.getWhere() != null && this.getWhere().trim().length() > 0) {
-          where = where.trim();
-          if (where.length() > 0)
-            where += " and (" + this.getWhere() + ")";
-          else
-            where = this.getWhere();
-        }
+        // il campo archWhereLista non deve essere una condizione sql da aggiungere alla where ma un discriminante con il quale, nella jsp, definire una serie di condizioni per costruire il filtro sql da aggiungere lato server in modo fisso
+//        if (this.getWhere() != null && this.getWhere().trim().length() > 0) {
+//          where = where.trim();
+//          if (where.length() > 0)
+//            where += " and (" + this.getWhere() + ")";
+//          else
+//            where = this.getWhere();
+//        }
         // Valore del campo modificato
         request.setAttribute(UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA,
             this.valueCampoChanged);
       } else {
-        // Se si ha una where l'aggiungo
-        if (this.getWhere() != null && this.getWhere().trim().length() > 0) {
-          where = this.getWhere().trim();
-          // Valore del campo modificato
-          request.setAttribute(UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA,
-              "");
-        }
+        // il campo archWhereLista non deve essere una condizione sql da aggiungere alla where ma un discriminante con il quale, nella jsp, definire una serie di condizioni per costruire il filtro sql da aggiungere lato server in modo fisso
+//        // Se si ha una where l'aggiungo
+//        if (this.getWhere() != null && this.getWhere().trim().length() > 0) {
+//          where = this.getWhere().trim();
+//          // Valore del campo modificato
+//          request.setAttribute(UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA,
+//              "");
+//        }
+        this.valueCampoChanged = "";
       }
       // Ora setto i parametri per il filtro sulla lista
-      request.setAttribute(UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA, where);
+      // Per determinare l'entita' non si considera piu' solo il primo campo, ma il primo campo
+      // associato ad una entita' esistente nel DizionarioTabelle 
+      // qui si potrebbe derivare l'entita da this.campiArchivio (es: UFFINT.CODEIN;UFFINT.NOMEIN)
+      String entita = null;
+      String[] arrayCampiArchivio = this.campiArchivio.split(";");
+      int i = 0;
+      DizionarioTabelle dizionarioTabelle = DizionarioTabelle.getInstance();
+      
+      while (i < arrayCampiArchivio.length) {
+      	String ent = arrayCampiArchivio[i].substring(0, arrayCampiArchivio[i].indexOf('.'));
+      	if (dizionarioTabelle.getDaNomeTabella(ent) != null) {
+      		entita = ent;
+      		i = arrayCampiArchivio.length;
+      	} else {
+      		i++;
+      	}
+      }
+      //String entita = this.campiArchivio.substring(0, this.campiArchivio.indexOf('.'));
+      int popupLevel = UtilityStruts.getNumeroPopUp(request);
+      UtilityTags.createHashAttributeForSqlBuild(request.getSession(), entita, popupLevel);
+      UtilityTags.putAttributeForSqlBuild(request.getSession(), entita, popupLevel, UtilityTags.HIDDEN_WHERE_FILTRO_ARCHIVIO, where);
+      UtilityTags.putAttributeForSqlBuild(request.getSession(), entita, popupLevel, UtilityTags.HIDDEN_PARAMETRI_FILTRO_ARCHVIO, this.valueCampoChanged);
+      //UtilityTags.putAttributeForSqlBuild(request.getSession(), UtilityStruts.getParametroString(request, FormTrovaTag.),
+      //    UtilityTags.DEFAULT_HIDDEN_CHECK_MANIPOLAZIONE_WHERE_DA_TROVA, where);
       // Aggiungo l'oggetto al request per il passaggio alla lista
       request.setAttribute(REQUEST_VAR_ARCHIVIO, this);
     } else {
-      // Se si ha una where l'aggiungo
-      if (this.getWhere() != null && this.getWhere().trim().length() > 0) {
-        // Ora setto i parametri per il filtro sulla lista
-        request.setAttribute(UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA,
-            this.getWhere().trim());
-        // Valore del campo modificato
-        request.setAttribute(UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA, "");
-      }
+//      // Se si ha una where l'aggiungo
+//      if (this.getWhere() != null && this.getWhere().trim().length() > 0) {
+//        // Ora setto i parametri per il filtro sulla lista
+//        request.setAttribute(UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA,
+//            this.getWhere().trim());
+//        request.setAttribute(UtilityTags.DEFAULT_HIDDEN_CHECK_MANIPOLAZIONE_WHERE_DA_TROVA, UtilityTags.genSha256(where));
+//        // Valore del campo modificato
+//        request.setAttribute(UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA, "");
+//      }
     }
   }
 
@@ -175,6 +211,8 @@ public class ArchivioRequest {
     this.campiScheda = impl.getCampiMaschera();
     this.chiavi = impl.getChiave();
     this.where = impl.getWhere();
+    this.parametriWhere = impl.getParametriWhere();
+    this.functionId = impl.getFunctionId();
     this.lista = impl.getLista();
     this.scheda = impl.getScheda();
     this.schedaPopUp = impl.getSchedaPopUp();
@@ -215,6 +253,7 @@ public class ArchivioRequest {
     return buf.toString();
   }
 
+  @Override
   public String toString() {
     StringBuffer buf = new StringBuffer("");
 
@@ -248,18 +287,22 @@ public class ArchivioRequest {
     buf.append(UtilityTags.getHtmlHideInput(
         ArchivioTagImpl.HIDE_INPUT_VALUE_CAMPO_CHANGED, this.valueCampoChanged));
     buf.append(UtilityTags.getHtmlHideInput(
-        ArchivioTagImpl.HIDE_INPUT_WHERE_SU_LISTA, this.where));
+         ArchivioTagImpl.HIDE_INPUT_WHERE_SU_LISTA, this.where));
+    buf.append(UtilityTags.getHtmlHideInput(
+        ArchivioTagImpl.HIDE_INPUT_WHERE_PARAMETRI_SU_LISTA, this.parametriWhere));
+    buf.append(UtilityTags.getHtmlHideInput(
+        ArchivioTagImpl.HIDE_INPUT_FUNCTION_ID, this.functionId));
     // {M.F. 22.11.2006} Aggiungo il flag di inseribile
     buf.append(UtilityTags.getHtmlHideInput(
         ArchivioTagImpl.HIDE_INPUT_INSERIBILE, this.isInseribile() ? "1" : "0"));
-    
+
     return buf.toString();
   }
 
   /**
    * Funzione che restituisce il javascript con l'elenco dei valori per il
    * passaggio alla funzione di copia
-   * 
+   *
    * @param valoriCampi
    * @return String il create dell'array in javascript
    */
@@ -349,6 +392,20 @@ public class ArchivioRequest {
   public String getWhere() {
     return where;
   }
+  
+  /**
+   * @return Returns the parametriWhere.
+   */
+  public String getParametriWhere() {
+    return parametriWhere;
+  }
+
+  /**
+   * @return Returns the functionId.
+   */
+  public String getFunctionId() {
+    return functionId;
+  }
 
   public static ArchivioRequest getArchivio(PageContext pageContext) {
     HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
@@ -376,7 +433,7 @@ public class ArchivioRequest {
     return titolo;
   }
 
-  
+
   /**
    * @return Returns the body.
    */

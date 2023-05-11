@@ -1,8 +1,5 @@
 package it.eldasoft.gene.db.sql.sqlparser;
 
-import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
-import it.eldasoft.utils.utility.UtilityDate;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,6 +7,9 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+
+import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
+import it.eldasoft.utils.utility.UtilityDate;
 
 public class JdbcParametro implements Serializable {
 
@@ -22,6 +22,11 @@ public class JdbcParametro implements Serializable {
    * Definizione del tipo di campo
    */
   public static final char TIPO_DATA       = 'D';
+  /**
+   * Utilizzato per poter inserire anche ora minuti secondi
+   * mancherebbe la gestione anche dei millisecondi
+   */
+  public static final char TIPO_DATA_FULL  = 'X';
 
   public static final char TIPO_NUMERICO   = 'N';
 
@@ -49,6 +54,14 @@ public class JdbcParametro implements Serializable {
   public JdbcParametro(char tipo, Object value) {
     this.tipo = tipo == TIPO_INDEFINITO ? getTipo(value) : tipo;
     this.value = value;
+    if(JdbcParametro.TIPO_DATA_FULL == this.tipo) {
+    	if( value instanceof java.util.Date) {
+    		this.value = new Timestamp(((java.util.Date) value).getTime());
+    	} else if(value instanceof java.lang.String) {
+    		this.value = new Timestamp(UtilityDate.convertiData((String)value,
+      			  UtilityDate.FORMATO_GG_MM_AAAA_HH_MI_SS).getTime());
+    	}
+    }
   }
 
   /**
@@ -70,6 +83,11 @@ public class JdbcParametro implements Serializable {
     // Setto l'oggetto solo se il valore non è vuoto (significa nullo)
     if (parvalue.length() > 0) {
       switch (lcTipo) {
+      case JdbcParametro.TIPO_DATA_FULL:
+    	  this.value = new Timestamp(UtilityDate.convertiData(parvalue,
+    			  UtilityDate.FORMATO_GG_MM_AAAA_HH_MI_SS).getTime());
+    	  this.tipo = JdbcParametro.TIPO_DATA_FULL;
+    	  break;
       case JdbcParametro.TIPO_DATA:
         this.value = new Timestamp(UtilityDate.convertiData(parvalue,
             UtilityDate.FORMATO_GG_MM_AAAA).getTime());

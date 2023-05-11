@@ -44,12 +44,19 @@ public class ImpresaRegistrataSuPortaleFunction extends
           "sqlManager", pageContext, SqlManager.class);
 
 	  String result = "NO";
+	  String registrazioneImpPortaleNonCompleta = "NO";
 
 	  try {
         String select="select count(IDUSER) from W_PUSER where USERENT = ?  and USERKEY1 = ?";
         Long numOccorrenze = (Long) sqlManager.getObject(select, new Object[]{"IMPR",codiceDitta});
-        if(numOccorrenze!=null && numOccorrenze.longValue()>0)
+        if(numOccorrenze!=null && numOccorrenze.longValue()>0) {
           result = "SI";
+          select="select userreg from W_PUSER where USERENT = ?  and USERKEY1 = ?";
+          Long userreg = (Long) sqlManager.getObject(select, new Object[]{"IMPR",codiceDitta});
+          if(userreg != null && userreg==2) {
+        	  registrazioneImpPortaleNonCompleta = "SI";
+          }
+        }
       } catch (SQLException e) {
           throw new JspException(
               "Errore durante la registrazione sul portale ",e);
@@ -66,6 +73,7 @@ public class ImpresaRegistrataSuPortaleFunction extends
     	    pageContext.setAttribute("isAmministratoreGare", "SI",
                 PageContext.REQUEST_SCOPE);
 	  }
+	  pageContext.setAttribute("registrazioneImpPortaleNonCompleta",registrazioneImpPortaleNonCompleta,PageContext.REQUEST_SCOPE);
 	  return result;
 	}
 

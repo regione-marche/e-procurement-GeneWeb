@@ -27,7 +27,7 @@
 			replaceParam='${gene:if(param.metodo eq "update","metodo;apri;modo;VISUALIZZA","")}' />
 	</c:if>
 </gene:insert>
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 

@@ -14,5 +14,19 @@
   <select id="searchLogFromCodOggetto" parameterClass="java.util.HashMap" resultClass="java.lang.String">
 	  	SELECT W_LOGEVENTI.ERRMSG FROM W_LOGEVENTI WHERE W_LOGEVENTI.CODEVENTO = #codice# AND W_LOGEVENTI.OGGEVENTO = #oggetto#
   </select>
+  
+  <resultMap id="resultUltimiAccessi" class="it.eldasoft.gene.db.domain.LogEvento">
+    <result property="id" column="idevento" columnIndex="1"/>
+    <result property="data" column="dataora" columnIndex="2"/>
+    <result property="livEvento" column="livevento" columnIndex="3"/>
+    <result property="codEvento" column="codevento" columnIndex="4"/>
+    <result property="ip" column="ipevento" columnIndex="5"/>
+    <result property="descr" column="descr" columnIndex="6"/>
+  </resultMap>
+  
+  <select id="getUltimiAccessi" parameterClass="java.util.HashMap" resultMap="resultUltimiAccessi">
+	  	SELECT IDEVENTO,DATAORA,LIVEVENTO,CODEVENTO,IPEVENTO,DESCR FROM W_LOGEVENTI WHERE SYSCON = #idUtente# AND <![CDATA[
+			DATAORA > #data#]]> AND (CODEVENTO = 'LOGIN' OR CODEVENTO = 'LOGOUT' OR CODEVENTO = 'LOGIN_LOCK' OR CODEVENTO = 'LOGIN_UNLOCK' OR CODEVENTO = 'ACCESSO_SIMULTANEO') ORDER BY IDEVENTO DESC
+  </select>
 
 </sqlMap>

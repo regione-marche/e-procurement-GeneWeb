@@ -463,7 +463,8 @@
     			body: ""
 			},
     		error: function(e) {
-    			alert("Errore nella cancellazione del messaggio");
+    			if (e.status != 200)
+					alert("Errore nella cancellazione del messaggio");
     		},
     		complete: function() {
     			_aggiornaContatore();

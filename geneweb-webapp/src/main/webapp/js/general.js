@@ -636,6 +636,10 @@ function historyReload(){
 	bloccaRichiesteServer();
 	window.location=contextPath+'/History.do?metodo=reload&numeroPopUp='+getNumeroPopUp();
 }
+function historyReloadWithoutPopUps(){
+	bloccaRichiesteServer();
+	window.location=contextPath+'/History.do?metodo=reload';
+}
 
 function callObjFn(objName,functionName,param){
 	/***********************************************************
@@ -1284,46 +1288,30 @@ function bloccoPulsanteInvio(evento){
 	}
 
 	function checkBrowser() {
-		// default message
+		
 		var isBrowserSupportato = true;
-		// get the user agent
-		var user_agent = navigator.userAgent;
+		var userAgent = navigator.userAgent;
 
-		// browser is internet explorer
-		if (user_agent && user_agent.indexOf('MSIE') != -1) {
+		var isChrome = userAgent.match(/chrome|chromium|crios/i) && !userAgent.match(/edg/i) && !userAgent.match(/opr\//i);
+		var isFirefox = userAgent.match(/firefox|fxios/i);
+		var isOpera = userAgent.match(/opr\//i);
+		var isEdge = userAgent.match(/edg/i);
+		var isSafari = userAgent.match(/safari/i);
 
-		// get the internet explorer version
-		var regular_expression  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-		var internet_explorer_version = false;
-		var rounded_internet_explorer_version = false;
-		if (regular_expression.exec(user_agent) != null) {
-		  internet_explorer_version = parseFloat( RegExp.$1 );
-		  rounded_internet_explorer_version = parseInt(internet_explorer_version);
-		} // if
-
-		if (internet_explorer_version) {
-		  // using IE10 in compatibility mode || using IE9 in compatibility mode || using IE8 in compatibility mode
-		  if (
-			((user_agent.indexOf('Trident/6.0') != -1) && (rounded_internet_explorer_version != 10)) ||
-			((user_agent.indexOf('Trident/5.0') != -1) && (rounded_internet_explorer_version != 9))
-		  ) {
+		if(!isChrome && !isFirefox && !isOpera && !isEdge && !isSafari){
 			isBrowserSupportato = false;
-
-		  // runing obsoletete internet explorer version
-		  } else if (internet_explorer_version < 9.0) {
-			isBrowserSupportato = false;
-		  } // if
-		} // if
-
-		} else if (/Firefox[\/\s](\d+\.\d+)/.test(user_agent)) { //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
-			var ffversion = new Number(RegExp.$1) // capture x.x portion and store as a number
-			if (ffversion < 5) {
-				isBrowserSupportato = false;
-			}
 		}
-
-		// if we are using unsupported browser
-		if (! isBrowserSupportato) {
+		
+		if (!isBrowserSupportato) {
 			document.getElementById("browserSupportati").style.display = "";
 		}
+		
+	}
+	
+	function qformEditor(id,entita,readOnly){
+		document.location.href='ApriPagina.do?'+csrfToken+'&href=geneweb/qeditor/qeditor.jsp&ent=' + entita + '&id='+id + '&firstTimer=true&readOnly='+readOnly;
+	}
+	
+	function qformAnteprima(id,entita){
+		document.location.href='ApriPagina.do?'+csrfToken+'&href=geneweb/qeditor/anteprimaQform.jsp&ent=' + entita + '&id='+id ;
 	}

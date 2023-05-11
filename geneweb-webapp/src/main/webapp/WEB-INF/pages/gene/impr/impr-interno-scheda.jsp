@@ -15,6 +15,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <fmt:setBundle basename="AliceResources" />
 
@@ -81,7 +82,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		</gene:campoScheda>
 
 		<gene:campoScheda campo="CODIMP" keyCheck="true" modificabile='${modoAperturaScheda eq "NUOVO"}' gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoCodificaAutomatica" obbligatorio="${isCodificaAutomatica eq 'false'}" />
-		<gene:campoScheda campo="NOMEST" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoNote"  obbligatorio="true"/>
+		<gene:campoScheda campo="NOMEST" obbligatorio="true"/>
 		<gene:campoScheda campo="NOMIMP" visibile="false" >
 			<%/* Aggiungo il calcolo paretndo dal nome esteso */%>
 			<gene:calcoloCampoScheda funzione='"#IMPR_NOMEST#".substr(0,60)' elencocampi="IMPR_NOMEST" />
@@ -89,6 +90,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		<gene:campoScheda campo="TIPIMP"/>
 		<gene:campoScheda campo="TIPRTI"/>
 		<gene:campoScheda campo="NATGIUI"/>
+		<gene:campoScheda campo="TIPOCOOP" visibile="${not empty valoreSocCooperativa }"/>
 		<gene:campoScheda campo="GFIIMP" visibile="false" />
 		<c:choose>
 		<c:when test='${isModificaDatiRegistrati eq "true"}'>
@@ -114,19 +116,25 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		 </gene:campoScheda>
 		</c:otherwise>
 		</c:choose>
+		<gene:campoScheda campo="ISGRUPPOIVA" visibile="${isAttivaGestioneGruppoIva}"/>
 		<gene:campoScheda campo="OGGSOC"/>
 		<gene:campoScheda campo="ISMPMI" visibile="false"/>
 		<gene:campoScheda campo="COGNOME"/>
 		<gene:campoScheda campo="NOME"/>
-		<gene:campoScheda campo="SEXTEC" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoSesso" />
-		<gene:campoScheda campo="PRONAS"/>
+		<gene:campoScheda campo="PRONAS">
+			<c:set var="functionId" value="default_${!empty datiRiga.IMPR_PRONAS}" />
+			<c:if test="${!empty datiRiga.IMPR_PRONAS}">
+				<c:set var="parametriWhere" value="T:${datiRiga.IMPR_PRONAS}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" 
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.IMPR.PRONAS") && gene:checkProt(pageContext, "COLS.MOD.GENE.IMPR.CNATEC"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABDESC" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.DESCRI" 
+				functionId="${functionId}"
+				parametriWhere="${parametriWhere}"
 				chiave="IMPR.PRONAS" 
-				where='${gene:if(!empty datiRiga.IMPR_PRONAS, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.IMPR_PRONAS), "\'"), "")}'  
 				formName="formProv" 
 				inseribile="false" 
 				scollegabile="true">
@@ -145,14 +153,20 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		</gene:campoScheda>
 		<gene:campoScheda campo="INDIMP"/>
 		<gene:campoScheda campo="NCIIMP"/>
-		<gene:campoScheda campo="PROIMP"/>
+		<gene:campoScheda campo="PROIMP">
+			<c:set var="indFunctionId" value="default_${!empty datiRiga.IMPR_PROIMP}" />
+			<c:if test="${!empty datiRiga.IMPR_PROIMP}">
+				<c:set var="indParametriWhere" value="T:${datiRiga.IMPR_PROIMP}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.IMPR.CAPIMP") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPR.PROIMP") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPR.LOCIMP") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPR.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT" 
+				functionId="${indFunctionId}"
+				parametriWhere="${indParametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty datiRiga.IMPR_PROIMP, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.IMPR_PROIMP), "\'"), "")}' 
 				formName="formIstat" 
 				inseribile="false" 
 				>
@@ -216,8 +230,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 				scheda="" 
 				schedaPopUp="" 
 				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC" 
+				functionId="skip"
 				chiave="" 
-				where="" 
 				formName="formIstat1" 
 				inseribile="false" >
 			<gene:campoScheda campo="PCCIAA"/>
@@ -261,8 +275,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 				scheda="" 
 				schedaPopUp="" 
 				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC" 
+				functionId="skip"
 				chiave="" 
-				where=''  
 				formName="formAlbo" 
 				inseribile="false" >
 			<gene:campoScheda campo="PROALB"/>
@@ -450,6 +464,14 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 	
 	<c:set var="art80wsurl" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "art80.ws.url")}'/>
 	<c:set var="art80wsurlgateway" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "art80.ws.url.gateway")}'/>
+	<c:set var="art80gatewaymultiuffint" value="1" />
+	<c:if test="${art80wsurlgateway eq '1'}">
+		<c:set var="art80gatewaymultiuffinttmp" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "art80.gateway.multiuffint")}'/>
+		<c:if test="${!empty art80gatewaymultiuffinttmp}">
+			<c:set var="art80gatewaymultiuffint" value='${art80gatewaymultiuffinttmp}'/>
+		</c:if>
+	</c:if>
+	 
 	
 	<gene:gruppoCampi idProtezioni="ART80" visibile="${!empty art80wsurl}">
 	
@@ -458,7 +480,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		</gene:campoScheda>
 	
 		<c:choose>
-			<c:when test="${art80wsurlgateway eq '1' && !empty sessionScope.uffint}">
+			<c:when test="${art80wsurlgateway eq '1' && art80gatewaymultiuffint eq '1' && !empty sessionScope.uffint }">
 				<gene:campoScheda entita="ART80" campo="STATO" modificabile="false" where="ART80.CODIMP=IMPR.CODIMP AND ART80.CODEIN='${sessionScope.uffint}'">
 					<c:if test="${modo eq 'VISUALIZZA'}">
 						<c:choose>
@@ -475,17 +497,32 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 							<c:otherwise>
 								<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou225#") && datiRiga.IMPR_TIPIMP ne 3 && datiRiga.IMPR_TIPIMP ne 10}'>
 									<span style="float: right;">
+										&nbsp;&nbsp;
 										<a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','consulta');" 
 											title="Consulta il dettaglio dei documenti">
 											Consulta il dettaglio dei documenti
 										</a>
 									</span>
 								</c:if>
+								<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou225#")}'>
+									<c:if test="${datiRiga.ART80_SERVICE eq 'one_shot'}">
+										<span style="float: right;">
+											<a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','aggiorna');" 
+												title="Aggiorna verifica art.80">
+												Richiedi aggiornamento verifica art.80
+											</a>
+										</span>
+									</c:if>
+								</c:if>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
 				</gene:campoScheda>
-				<gene:campoScheda entita="ART80" campo="DATA_RICHIESTA" modificabile="false" where="ART80.CODIMP=IMPR.CODIMP AND ART80.CODEIN='${sessionScope.uffint}'" />
+				<gene:campoScheda entita="ART80" campo="SERVICE" modificabile="false" where="ART80.CODIMP=IMPR.CODIMP AND ART80.CODEIN='${sessionScope.uffint}'" visibile='${datiRiga.IMPR_TIPIMP ne 3 && datiRiga.IMPR_TIPIMP ne 10}'>
+					<gene:addValue value="one_shot" descr="One shot"/>
+					<gene:addValue value="monitoring" descr="Monitoraggio"/>
+				</gene:campoScheda>
+				<gene:campoScheda title="Data richiesta/aggiornamento" entita="ART80" campo="DATA_RICHIESTA" modificabile="false" where="ART80.CODIMP=IMPR.CODIMP AND ART80.CODEIN='${sessionScope.uffint}'" />
 				<gene:campoScheda entita="ART80" campo="DATA_LETTURA" modificabile="false" where="ART80.CODIMP=IMPR.CODIMP AND ART80.CODEIN='${sessionScope.uffint}'" />
 			</c:when>
 			<c:otherwise>
@@ -505,17 +542,32 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 							<c:otherwise>
 								<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou225#") && datiRiga.IMPR_TIPIMP ne 3 && datiRiga.IMPR_TIPIMP ne 10}'>
 									<span style="float: right;">
+										&nbsp;&nbsp;
 										<a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','consulta');" 
 											title="Consulta il dettaglio dei documenti">
 											Consulta il dettaglio dei documenti
 										</a>
 									</span>
 								</c:if>
+								<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou225#")}'>
+									<c:if test="${datiRiga.IMPR_ART80_SERVICE eq 'one_shot'}">
+										<span style="float: right;">
+										    <a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','aggiorna');" 
+												title="Aggiorna verifica art.80">
+												Richiedi aggiornamento verifica art.80
+											</a>
+										</span>
+									</c:if>
+								</c:if>
 							</c:otherwise>
 						</c:choose>
 					</c:if>
 				</gene:campoScheda>
-				<gene:campoScheda campo="ART80_DATA_RICHIESTA" modificabile="false" />
+				<gene:campoScheda campo="ART80_SERVICE" modificabile="false" visibile='${datiRiga.IMPR_TIPIMP ne 3 && datiRiga.IMPR_TIPIMP ne 10}'>
+					<gene:addValue value="one_shot" descr="One shot"/>
+					<gene:addValue value="monitoring" descr="Monitoraggio"/>
+				</gene:campoScheda>
+				<gene:campoScheda title="Data richiesta/aggiornamento" campo="ART80_DATA_RICHIESTA" modificabile="false" />
 				<gene:campoScheda campo="ART80_DATA_LETTURA" modificabile="false" />
 			</c:otherwise>
 		</c:choose>
@@ -566,7 +618,12 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 	<gene:fnJavaScriptScheda funzione='creaListaRegioni()' elencocampi='IMPR_ZONEAT' esegui="true" />
 	<gene:fnJavaScriptScheda funzione='changeProvincia("#IMPR_PRONAS#", "COM_PRONAS")' elencocampi='IMPR_PRONAS' esegui="false"/>
 	<gene:fnJavaScriptScheda funzione='setValueIfNotEmpty("IMPR_PRONAS", "#COM_PRONAS#")' elencocampi='COM_PRONAS' esegui="false"/>
-
+	<c:if test='${isAttivaGestioneGruppoIva}'>
+		<gene:fnJavaScriptScheda funzione='modifyNAZIMP("#IMPR_NAZIMP#","#IMPR_TIPIMP#")' elencocampi="IMPR_NAZIMP" esegui="true" />
+	</c:if>
+	<c:if test='${not empty valoreSocCooperativa }'>
+		<gene:fnJavaScriptScheda funzione='modifyNATGIUI("#IMPR_NATGIUI#")' elencocampi="IMPR_NATGIUI" esegui="false" />
+	</c:if>
 	
 </gene:formScheda>
 <gene:javaScript>
@@ -578,9 +635,20 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			var vis=(valore!=3 && valore!=10);
 			showObj("rowIMPR_TIPRTI",!vis);
 			showObj("rowIMPR_NATGIUI",vis);
+			<c:if test="${not empty valoreSocCooperativa  }">
+				if(!vis){
+					showObj("rowIMPR_TIPOCOOP",false);
+				}else{
+					var natgiui=getValue("IMPR_NATGIUI");
+					modifyNATGIUI(natgiui);
+				}
+			</c:if>
 			showObj("rowIMPR_GFIIMP",vis);
 			showObj("rowIMPR_CFIMP",vis);
 			showObj("rowIMPR_PIVIMP",vis);
+			showObj("rowIMPR_ISGRUPPOIVA",vis);
+			if(!vis)
+				setValue("IMPR_ISGRUPPOIVA","");
 			showObj("rowIMPR_OGGSOC",vis);
 			showObj("rowIMPR_INTERD",vis);
 			showObj("rowIND",vis);
@@ -719,7 +787,6 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			vis=valore==6;
 			showObj("rowIMPR_COGNOME",vis);
 			showObj("rowIMPR_NOME",vis);
-			showObj("rowIMPR_SEXTEC",vis);
 			showObj("rowIMPR_PRONAS",vis);
 			showObj("rowIMPR_CNATEC",vis);
 			showObj("rowIMPR_DNATEC",vis);
@@ -736,8 +803,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			if(!vis){
 				setValue("IMPR_COGNOME","");
 				setValue("IMPR_NOME","");
-				setValue("IMPR_SEXTEC","");
-				setValue("IMPR_PRONAS","");
+ 				setValue("IMPR_PRONAS","");
 				setValue("IMPR_CNATEC","");
 				setValue("IMPR_DNATEC","");
 				setValue("IMPR_INCTEC","");
@@ -929,6 +995,7 @@ function apriLista(){
  }
  
  <c:if test='${!(modo eq "VISUALIZZA")}'>
+ 	
  	var schedaConferma_Default = schedaConferma;
  	
  	function schedaConferma_Custom(){
@@ -937,6 +1004,23 @@ function apriLista(){
  	 var controlloOkCodFisc=true;
  	 var isModificaDatiRegistrati = "${isModificaDatiRegistrati }";
  	 clearMsg();
+ 	 
+ 	 var isgruppoiva="";
+ 	 var controlloObblCodFiscSuperato=true;
+ 	 if (tipimp!=3 && tipimp!=10){
+ 	 	var controlliSuperati=true;
+	 	 var obbligatorioCodFisc="${obbligatorioCodFisc}";
+	 	 isgruppoiva=getValue("IMPR_ISGRUPPOIVA");
+	 	 if(obbligatorioCodFisc=="true" || isgruppoiva=="1"){
+	 	 	var codfisc=getValue("IMPR_CFIMP");
+	 	 	if(codfisc == null  || codfisc == ""){
+	 	 		outMsg("Il campo codice fiscale è obbligatorio", "ERR");
+				onOffMsg();
+				controlloObblCodFiscSuperato = false;
+	 	 	}
+	 	 }
+	 	 
+	 }
  	  	 	  	 	  	 
  	 if ((obbligatoriaCorrettezzaCodFisc== "true" || isModificaDatiRegistrati == "true") && tipimp!=3 && tipimp!=10){
  	 	var selectNazionalita= document.getElementById("IMPR_NAZIMP");
@@ -953,10 +1037,10 @@ function apriLista(){
  	 }
  	 var esitoControlloPIVA = true;
  	 var obbligatorioPIVA="${obbligatorioPIVA }";
- 	 if(obbligatorioPIVA == "true"){
+ 	 if(obbligatorioPIVA == "true" || isgruppoiva == "1"){
  	 	var saltareControlloObbligPivaLibProfessionista = "${saltareControlloObbligPivaLibProfessionista }";
  	 	var saltareControlloObbligPivaImpSociale = "${saltareControlloObbligPivaImpSociale }";
- 	 	if (!(tipimp==3 || tipimp==10 || (tipimp == 6 && saltareControlloObbligPivaLibProfessionista == "true") || (tipimp == 13 && saltareControlloObbligPivaImpSociale == "true"))){
+ 	 	if ((isgruppoiva == "1" && tipimp!=3 && tipimp!=10)  || !(tipimp==3 || tipimp==10 || (tipimp == 6 && saltareControlloObbligPivaLibProfessionista == "true") || (tipimp == 13 && saltareControlloObbligPivaImpSociale == "true"))){
  	 		var piva=getValue("IMPR_PIVIMP");
  	 		if(piva==null || piva==""){
  	 			outMsg("Il campo partita I.V.A. è obbligatorio", "ERR");
@@ -1001,7 +1085,7 @@ function apriLista(){
 	}
  	///////////////
  	  	 
- 	 if(controlloOkCodFisc && controlloOkPIVA && esitoControlloPIVA)
+ 	 if(controlloOkCodFisc && controlloOkPIVA && esitoControlloPIVA && controlloObblCodFiscSuperato)
  	 	schedaConferma_Default();
  	}
  	
@@ -1024,6 +1108,7 @@ function apriLista(){
  }
  
  $(window).on("load", function() {
+ 
  	var tempo = 300;
  	var numPersone="${numElementiListaPersonale}";
  	if(numPersone>3){
@@ -1160,6 +1245,8 @@ function art80submit(codimp,operazione) {
 		href = "gene/impr/impr-art80-crea-oe.jsp";
 	} else if (operazione == 'consulta') {
 		href = "gene/impr/impr-art80-consulta-oe.jsp";
+	} else if (operazione == 'aggiorna') {
+		href = "gene/impr/impr-art80-setservice-oe.jsp";
 	}
 	
 	bloccaRichiesteServer();
@@ -1176,8 +1263,8 @@ function art80submit(codimp,operazione) {
         "value": codimp,
         "type": "hidden"
     })).append($('<input>', {
-        "name": "_csrf",
-        "value": "${param._csrf}",
+        "name": "<csrf:tokenname />",
+        "value": "<csrf:tokenvalue />",
         "type": "hidden"
     }));
     $("body").append(_form);
@@ -1218,6 +1305,80 @@ function art80submit(codimp,operazione) {
 			setValue("IMPR_NOMEST",trim(trim(cognome)+" "+trim(nome)));				
 		}
 	}	
-
- 
+	
+	function aggiornaEtichette(isgruppoiva){
+		var obbligatorioCodFisc="${obbligatorioCodFisc}";
+		var obbligatorioPIVA="${obbligatorioPIVA}";
+		if(isgruppoiva=="1" || obbligatorioPIVA=="true"){
+			var testo = $("#rowIMPR_PIVIMP .etichetta-dato").text();
+			if (testo.indexOf("(*)")<0){
+				testo += "(*)";
+				$("#rowIMPR_PIVIMP .etichetta-dato").text(testo);
+			}
+			
+		}else{
+			var testo = $("#rowIMPR_PIVIMP .etichetta-dato").text();
+			if (testo.indexOf("(*)")>0){
+				testo = testo.replace("(*)","");
+				$("#rowIMPR_PIVIMP .etichetta-dato").text(testo);
+			}
+		}
+		
+		if(isgruppoiva=="1" || obbligatorioCodFisc=="true"){
+			var testo = $("#rowIMPR_CFIMP .etichetta-dato").text();
+			if (testo.indexOf("(*)")<0){
+				testo += " (*)";
+				$("#rowIMPR_CFIMP .etichetta-dato").text(testo);
+			}
+			
+		}else{
+			var testo = $("#rowIMPR_CFIMP .etichetta-dato").text();
+			if (testo.indexOf("(*)")>0){
+				testo = testo.replace(" (*)","");
+				$("#rowIMPR_CFIMP .etichetta-dato").text(testo);
+			}
+		}
+	}
+	
+	function inizializzaEtichette(){
+			var isgruppoiva=getValue("IMPR_ISGRUPPOIVA");
+			aggiornaEtichette(isgruppoiva);
+		}
+		
+	<c:if test='${modoAperturaScheda ne "VISUALIZZA" && isAttivaGestioneGruppoIva}'>
+		$('#IMPR_ISGRUPPOIVA').on('change',  function () {
+			var isgruppoiva = this.value;
+			aggiornaEtichette(isgruppoiva);
+		});
+					
+		
+		inizializzaEtichette();
+	</c:if>
+ 	
+ 	<c:if test='${isAttivaGestioneGruppoIva}'>
+	 	function modifyNAZIMP(nazimp,tipimp){
+	 		if(tipimp!=3 && tipimp!=10){
+				if(nazimp!='1' && nazimp!=null && nazimp!=''){
+					showObj("rowIMPR_ISGRUPPOIVA",false);
+					setValue("IMPR_ISGRUPPOIVA","");
+				}else{
+					showObj("rowIMPR_ISGRUPPOIVA",true);
+				}
+				
+				<c:if test='${modoAperturaScheda ne "VISUALIZZA"}'>
+					inizializzaEtichette();
+				</c:if>
+			}
+	 	}
+ 	</c:if>
+ 	
+ 	function modifyNATGIUI(natgiui){
+	 	var valoreSocCooperativa = "${valoreSocCooperativa }";
+	 	if(natgiui==valoreSocCooperativa){
+	 		showObj("rowIMPR_TIPOCOOP",true);
+	 	}else{
+	 		showObj("rowIMPR_TIPOCOOP",false);
+	 		setValue("IMPR_TIPOCOOP","");
+	 	}
+	}
 </gene:javaScript>

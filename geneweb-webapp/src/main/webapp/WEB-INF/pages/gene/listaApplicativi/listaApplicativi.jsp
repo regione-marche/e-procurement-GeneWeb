@@ -19,7 +19,7 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <script type="text/javascript">

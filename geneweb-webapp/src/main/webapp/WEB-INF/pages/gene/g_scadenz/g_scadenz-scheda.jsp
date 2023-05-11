@@ -114,7 +114,8 @@
                         chiave=""
                         scheda=""
                         schedaPopUp=""
-                        where='${gene:concat(gene:concat("G_EVENTISCADENZ.DISCR = \'", discriminante), "\'")} and ${gene:concat(gene:concat("G_EVENTISCADENZ.ENT = \'", entitaPartenza), "\'")}'
+                        functionId="default"
+						parametriWhere="T:${discriminante};T:${entitaPartenza}"
                         >
                   <gene:campoScheda campo="CODEVENTO"  />
                   <gene:campoScheda campo="TIT" entita="G_EVENTISCADENZ" where="G_EVENTISCADENZ.COD=G_SCADENZ.CODEVENTO"/>

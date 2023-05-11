@@ -16,6 +16,9 @@
     <result property="userId" column="id_user"/>
     <result property="dimTotAll" column="dim_tot_allegati"/>
     <result property="delay" column="delay"/>
+    <result property="serverIMAP" column="server_imap" />
+    <result property="portaIMAP" column="porta_imap" />
+    <!-- result property="protocolloIMAP" column="protocollo_imap" / -->
   </resultMap>
   
   <resultMap id="resultLista" class="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
@@ -29,7 +32,8 @@
   <select id="getConfigurazioneMailByCodappIdcfg" resultMap="resultDettaglio" parameterClass="java.util.HashMap">
   	SELECT w_mail.codapp, w_mail.idcfg, coalesce(uffint.nomein,w_mail.idcfg) as nomein, w_mail.server,
     	 w_mail.porta, w_mail.protocollo, w_mail.timeout, w_mail.tracciatura_messaggi, w_mail.mail_mittente,
-    	 w_mail.password, w_mail.id_user, w_mail.dim_tot_allegati, w_mail.delay
+    	 w_mail.password, w_mail.id_user, w_mail.dim_tot_allegati, w_mail.delay, w_mail.server_imap, 
+    	 w_mail.porta_imap <!-- , w_mail.protocollo_imap -->
        	FROM W_MAIL left join UFFINT on w_mail.idcfg = uffint.codein
       WHERE w_mail.codapp = #codapp# AND w_mail.idcfg = #idcfg# 
   </select>
@@ -46,16 +50,17 @@
   
   <insert id="insertConfigurazioneMail" parameterClass="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
   	INSERT INTO W_MAIL (codapp, idcfg, server, porta, protocollo, timeout, tracciatura_messaggi,
-  	 mail_mittente, password, id_user, dim_tot_allegati, delay) VALUES (#codapp#, #idcfg#, #server#, 
-  	 #porta:VARCHAR#, #protocollo:VARCHAR#, #timeout:VARCHAR#, #debug:VARCHAR#, #mailMitt#,
-  	 #password:VARCHAR#, #userId:VARCHAR#, #dimTotAll:VARCHAR#, #delay:VARCHAR#)
+  	 mail_mittente, password, id_user, dim_tot_allegati, delay, server_imap, porta_imap <!-- , protocollo_imap -->) 
+  	 VALUES (#codapp#, #idcfg#, #server#, #porta:VARCHAR#, #protocollo:VARCHAR#, #timeout:VARCHAR#, 
+  	 #debug:VARCHAR#, #mailMitt#, #password:VARCHAR#, #userId:VARCHAR#, #dimTotAll:VARCHAR#, #delay:VARCHAR#,
+  	 #serverIMAP:VARCHAR#, #portaIMAP:VARCHAR# <!-- , #protocolloIMAP:VARCHAR# -->)
   </insert>
  
   <update id="updateConfigurazioneMail" parameterClass="it.eldasoft.gene.db.domain.system.ConfigurazioneMail">
   	UPDATE W_MAIL SET SERVER = #server#, PORTA = #porta:VARCHAR#, PROTOCOLLO = #protocollo:VARCHAR#,
   	 TIMEOUT = #timeout:VARCHAR#, TRACCIATURA_MESSAGGI = #debug:VARCHAR#, MAIL_MITTENTE = #mailMitt#,
   	 PASSWORD = #password:VARCHAR#, ID_USER = #userId:VARCHAR#, DIM_TOT_ALLEGATI = #dimTotAll:VARCHAR#, 
-  	 DELAY = #delay:VARCHAR#
+  	 DELAY = #delay:VARCHAR#, SERVER_IMAP = #serverIMAP:VARCHAR#, PORTA_IMAP = #portaIMAP:VARCHAR# <!-- , PROTOCOLLO_IMAP = #protocolloIMAP:VARCHAR# -->
   	WHERE CODAPP=#codapp# AND idcfg=#idcfg#
   </update>
   

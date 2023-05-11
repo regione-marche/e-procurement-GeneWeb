@@ -23,7 +23,7 @@
 	<c:set var="esisteElenchiOperatori" value='${gene:callFunction("it.eldasoft.gene.tags.functions.EsisteElenchiOperatoriFunction", pageContext)}' />
 
 	<gene:redefineInsert name="corpo">
-  	<gene:formTrova entita="IMPR" gestisciProtezioni="true" >
+  	<gene:formTrova entita="IMPR" gestisciProtezioni="true" gestore="it.eldasoft.gene.tags.decorators.trova.gestori.IMPRGestoreTrova">
 			<gene:gruppoCampi idProtezioni="Gen">
 				<tr><td colspan="3"><b>Dati generali</b></td></tr>
 				<gene:campoTrova campo="CODIMP"/>
@@ -70,30 +70,19 @@
 				<gene:campoTrova campo="DATACHIU" entita="G_NOTEAVVISI" 
 					where="IMPR.CODIMP = G_NOTEAVVISI.NOTEKEY1 and G_NOTEAVVISI.NOTEPRG = 'PG' and G_NOTEAVVISI.NOTEENT='IMPR'" />
 			</gene:gruppoCampi>
+			<input type="hidden" id="tipoAppalto" name="tipoAppalto" />
 		</gene:formTrova>
 
 		<gene:javaScript>
 			function gestioneNumcla(numcla){
-
-			<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GARE.V_CATE_ELENCHI.NUMCLA")}'>
 				var tipoAppalto = "";
 				var filtroClassificaNew = "";
 
-				var index = document.getElementById("Campo15").selectedIndex;
+				var index = document.getElementById("Campo16").selectedIndex;
 				if (index>0){
-					tipoAppalto = document.getElementById("Campo15").options[index].text.substr(0,1);
+					tipoAppalto = document.getElementById("Campo16").options[index].text.substr(0,1);
+					document.getElementById("tipoAppalto").value = tipoAppalto;
 				}
-								
-				var filtroClassificaOld = "IMPR.CODIMP = V_CATE_ELENCHI.CODIMP";
-				if (tipoAppalto!=null && tipoAppalto!=""){
-					filtroClassificaNew=filtroClassificaOld+" and V_CATE_ELENCHI.TIPCAT="+tipoAppalto;
-				} else {
-					filtroClassificaNew=filtroClassificaOld;
-				}
-				setValue("Campo16_where",filtroClassificaNew);
-				setValue("Campo15_where",filtroClassificaNew);
-				setValue("Campo14_where",filtroClassificaNew);
-			</c:if>
 			}
 		</gene:javaScript>
 		

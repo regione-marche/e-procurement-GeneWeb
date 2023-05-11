@@ -31,6 +31,7 @@
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
 			campi="TECNI.CODTEC;TECNI.NOMTEC"
 			chiave="G2FUNZ_CODFUN_${param.contatore}"
+			functionId="skip"
 			formName="formTecniPers${param.contatore}"
 			inseribile="${empty sessionScope.uffint or !fn:contains(archiviFiltrati,'TECNI')}">
 			<gene:campoScheda entita="G2FUNZ" where="UFFINT.CODEIN = G2FUNZ.CODEI" campo="CODFUN_${param.contatore}" title="Codice del tecnico incaricato" campoFittizio="true" definizione="T10;0;;;CODFUN" value="${item[2]}" />
@@ -49,6 +50,7 @@
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
 			campi="TECNI.CODTEC;TECNI.NOMTEC"
 			chiave="G2FUNZ_CODFUN_${param.contatore}"
+			functionId="skip"
 			formName="formTecniPers${param.contatore}"
 			inseribile="${empty sessionScope.uffint or !fn:contains(archiviFiltrati,'TECNI')}">
 			<gene:campoScheda entita="G2FUNZ" where="UFFINT.CODEIN = G2FUNZ.CODEI" campo="CODFUN_${param.contatore}" title="Codice del tecnico incaricato" campoFittizio="true" definizione="T10;0;;;CODFUN" />
@@ -62,6 +64,7 @@
 
 <gene:javaScript>
 <c:if test='${! empty sessionScope.uffint && fn:contains(archiviFiltrati,"TECNI") && modoAperturaScheda eq "MODIFICA"}'>
-	document.formTecniPers${param.contatore}.archWhereLista.value="TECNI.CGENTEI='${codiceUfficio}'";
+	document.formTecniPers${param.contatore}.archFunctionId.value = "tecniUffintFilter";
+	document.formTecniPers${param.contatore}.archWhereParametriLista.value = "T:${codiceUfficio}";
 </c:if>
 </gene:javaScript>

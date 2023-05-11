@@ -10,15 +10,6 @@
  */
 package it.eldasoft.gene.bl.integrazioni;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
-import it.eldasoft.utils.properties.ConfigManager;
-import it.eldasoft.utils.sicurezza.CriptazioneException;
-import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
-import it.eldasoft.utils.sicurezza.ICriptazioneByte;
-import it.eldasoft.utils.utility.UtilityDate;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,11 +24,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
+
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.sicurezza.CriptazioneException;
+import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
+import it.eldasoft.utils.sicurezza.ICriptazioneByte;
+import it.eldasoft.utils.utility.UtilityDate;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * Integrazione con i servizi Kinisi' per la gestione delle verifiche
@@ -54,11 +53,16 @@ public class Art80Manager {
   private static final String PROP_ART80_USERNAME            = "art80.ws.username";
   private static final String PROP_ART80_PASSWORD            = "art80.ws.password";
   private static final String PROP_ART80_URL_GATEWAY         = "art80.ws.url.gateway";
+  private static final String PROP_ART80_GATEWAY_MULTIUFFINT = "art80.gateway.multiuffint";
 
   private static final int    ART80_STATO_ANAGRAFICA_INVIATA = 10;
+  private static final int    ART80_SET_SERVICE_RICHIESTA    = 20;
 
   private static final String ART80_201                      = "L'operatore economico e' stato creato con successo nel sistema di verifica";
   private static final String ART80_409                      = "I dati dell'operatore economico sono gia' stati inviati in precedenza. E' stato aggiornato lo 'Stato documentale' nella sezione 'Verifiche Art. 80' della scheda dell'impresa.";
+
+  private static final String ART80_SET_SERVICE_201          = "La richiesta di aggiornamento dell'operatore economico e' stata inoltrata con successo nel sistema di verifica";
+  private static final String ART80_SET_SERVICE_409          = "I dati dell'operatore economico non sono presenti nel sistema di verifica. La richiesta di aggiornamento non puo' essere inoltrata";
 
   private SqlManager          sqlManager;
 
@@ -130,13 +134,23 @@ public class Art80Manager {
         if (responseCode == 200) {
           BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
           String output = org.apache.commons.io.IOUtils.toString(br);
-          
+
           if (logger.isDebugEnabled()) {
             logger.debug("__art80Login output: " + output);
           }
-          
+
           JSONObject jsonOutput = JSONObject.fromObject(output);
+          
+          // "status":400,"status_message":"Sa Code Unknown","token":null
+          String jsonOutputStatus = jsonOutput.getString("status");
+          if (!"200".equals(jsonOutputStatus)) {
+            String jsonOutputMessage = jsonOutput.getString("status_message");
+            throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + jsonOutputStatus + " - " + jsonOutputMessage,
+                "art80.ws.remote.generic", new Object[] { jsonOutputStatus, jsonOutputMessage }, null);
+          }
+          
           token = jsonOutput.getString("token");
+          
         } else if (responseCode == 400) {
           throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
         } else if (responseCode == 401) {
@@ -174,10 +188,12 @@ public class Art80Manager {
    *        Codice impresa (puo' essere anche RTI o Studio Associato)
    * @param codein
    *        Codice della UFFINT dell'operatore che sta effettuando la richiesta.
+   * @param status_service
+   *        Stato di servizio - Tipologia di monitoraggio (one_shot, monitoring)
    * @return
    * @throws GestoreException
    */
-  public List<Object> art80CreaOE(String codimp, String codein) throws GestoreException {
+  public List<Object> art80CreaOE(String codimp, String codein, String status_service) throws GestoreException {
 
     List<Object> result = new Vector<Object>();
 
@@ -187,7 +203,7 @@ public class Art80Manager {
       if (tipimp == null) {
         // Non e' specificato il tipo di raggruppamento, si tratta come se fosse
         // una impresa singola.
-        int responseCode = __art80CreaOE(codimp, codein);
+        int responseCode = __art80CreaOE(codimp, codein, status_service);
         if (responseCode == 201) {
           result.add(((Object) (new Object[] { codimp, responseCode, ART80_201 })));
         } else if (responseCode == 409) {
@@ -209,7 +225,7 @@ public class Art80Manager {
             for (int i = 0; i < datiRAGIMP_3_10.size(); i++) {
               String coddic = (String) SqlManager.getValueFromVectorParam(datiRAGIMP_3_10.get(i), 0).getValue();
               if (coddic != null) {
-                int responseCodeImpresa = __art80CreaOE(coddic, codein);
+                int responseCodeImpresa = __art80CreaOE(coddic, codein, status_service);
                 if (responseCodeImpresa == 201) {
                   result.add(((Object) (new Object[] { coddic, responseCodeImpresa, ART80_201 })));
                 } else if (responseCodeImpresa == 409) {
@@ -231,7 +247,7 @@ public class Art80Manager {
           // raggruppamento stesso
           // che e' a tutti gli effetti un'entita' giuridica
 
-          int responseCodeRaggruppamento = __art80CreaOE(codimp, codein);
+          int responseCodeRaggruppamento = __art80CreaOE(codimp, codein, status_service);
           if (responseCodeRaggruppamento == 201) {
             result.add(((Object) (new Object[] { codimp, responseCodeRaggruppamento, ART80_201 })));
           } else if (responseCodeRaggruppamento == 409) {
@@ -243,7 +259,7 @@ public class Art80Manager {
             for (int i = 0; i < datiRAGIMP_7_8_12.size(); i++) {
               String coddic = (String) SqlManager.getValueFromVectorParam(datiRAGIMP_7_8_12.get(i), 0).getValue();
               if (coddic != null) {
-                int responseCodeProfessionista = __art80CreaOE(coddic, codein);
+                int responseCodeProfessionista = __art80CreaOE(coddic, codein, status_service);
                 if (responseCodeProfessionista == 201) {
                   result.add(((Object) (new Object[] { coddic, responseCodeProfessionista, ART80_201 })));
                 } else if (responseCodeProfessionista == 409) {
@@ -263,7 +279,7 @@ public class Art80Manager {
           // In questo caso il codice dell'impresa non corrisponde ad alcun
           // raggruppamento di imprese o professionisti. Si tratta di una
           // impresa "singola".
-          int responseCode = __art80CreaOE(codimp, codein);
+          int responseCode = __art80CreaOE(codimp, codein, status_service);
           if (responseCode == 201) {
             result.add(((Object) (new Object[] { codimp, responseCode, ART80_201 })));
           } else if (responseCode == 409) {
@@ -308,6 +324,112 @@ public class Art80Manager {
   }
 
   /**
+   * Richiesta di aggiornamento di controllo "One Shot". E' possibile anche
+   * cambiare la tipologia di controllo da "One Shot" a "Monitoraggio".
+   * 
+   * @param codimp
+   * @param codein
+   * @param status_service
+   * @return
+   * @throws GestoreException
+   */
+  public List<Object> art80SetServiceOE(String codimp, String codein, String status_service) throws GestoreException {
+
+    List<Object> result = new Vector<Object>();
+
+    try {
+      Long tipimp = (Long) this.sqlManager.getObject("select tipimp from impr where codimp = ?", new Object[] { codimp });
+
+      if (tipimp == null) {
+        // Non e' specificato il tipo di raggruppamento, si tratta come se fosse
+        // una impresa singola.
+        int responseCode = __art80SetServiceOE(codimp, codein, status_service);
+        if (responseCode == 201) {
+          result.add(((Object) (new Object[] { codimp, responseCode, ART80_SET_SERVICE_201 })));
+        } 
+
+      } else {
+
+        switch (tipimp.intValue()) {
+        case 3:
+        case 10:
+          // Raggruppamento di imprese: in questo caso bisogna
+          // richiamare la
+          // creazione di un nuovo operatore economico per ogni impresa o
+          // professionista del
+          // raggruppamento.
+          List<?> datiRAGIMP_3_10 = this.sqlManager.getListVector("select coddic from ragimp where codime9 = ?", new Object[] { codimp });
+          if (datiRAGIMP_3_10 != null && datiRAGIMP_3_10.size() > 0) {
+            for (int i = 0; i < datiRAGIMP_3_10.size(); i++) {
+              String coddic = (String) SqlManager.getValueFromVectorParam(datiRAGIMP_3_10.get(i), 0).getValue();
+              if (coddic != null) {
+                int responseCodeImpresa = __art80SetServiceOE(coddic, codein, status_service);
+                if (responseCodeImpresa == 201) {
+                  result.add(((Object) (new Object[] { coddic, responseCodeImpresa, ART80_SET_SERVICE_201 })));
+                } 
+              }
+            }
+          }
+          __art80AggiornaStatoRaggruppamento(codimp, codein);
+          break;
+
+        case 7:
+        case 8:
+        case 12:
+          // Raggruppamento di professionisti: in questo caso bisogna
+          // richiamare
+          // la creazione di un nuovo operatore economico per ogni
+          // professionista del raggruppamento (come fatto sopra) oltre al
+          // raggruppamento stesso
+          // che e' a tutti gli effetti un'entita' giuridica
+
+          int responseCodeRaggruppamento = __art80SetServiceOE(codimp, codein, status_service);
+          if (responseCodeRaggruppamento == 201) {
+            result.add(((Object) (new Object[] { codimp, responseCodeRaggruppamento, ART80_SET_SERVICE_201 })));
+          } 
+
+          List<?> datiRAGIMP_7_8_12 = this.sqlManager.getListVector("select coddic from ragimp where codime9 = ?", new Object[] { codimp });
+          if (datiRAGIMP_7_8_12 != null && datiRAGIMP_7_8_12.size() > 0) {
+            for (int i = 0; i < datiRAGIMP_7_8_12.size(); i++) {
+              String coddic = (String) SqlManager.getValueFromVectorParam(datiRAGIMP_7_8_12.get(i), 0).getValue();
+              if (coddic != null) {
+                int responseCodeProfessionista = __art80SetServiceOE(coddic, codein, status_service);
+                if (responseCodeProfessionista == 201) {
+                  result.add(((Object) (new Object[] { coddic, responseCodeProfessionista, ART80_SET_SERVICE_201 })));
+                } 
+              }
+            }
+          }
+
+          // Aggiornamento della lista "cf_childs".
+          // All'operazione deve essere indicato il codice dell'impresa padre.
+          art80AggiornaProfessionistiStudioAssociato(codimp, codein);
+
+          break;
+
+        default:
+          // In questo caso il codice dell'impresa non corrisponde ad alcun
+          // raggruppamento di imprese o professionisti. Si tratta di una
+          // impresa "singola".
+          int responseCode = __art80SetServiceOE(codimp, codein, status_service);
+          if (responseCode == 201) {
+            result.add(((Object) (new Object[] { codimp, responseCode, ART80_SET_SERVICE_201 })));
+          } 
+
+          break;
+        }
+
+      }
+
+    } catch (SQLException e) {
+      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+          "art80.ws.remote.error", e);
+    }
+
+    return result;
+  }
+
+  /**
    * Invio dati a KINISI' per la creazione di un nuovo operatore economico.
    * 
    * @param codimp
@@ -315,10 +437,13 @@ public class Art80Manager {
    * @param codein
    *        - Codice della UFFINT dell'operatore che sta effettuando la
    *        richiesta.
+   * @param status_service
+   *        Stato del servizio - Tipologia di monitoraggio (one_shot,
+   *        monitoring)
    * @return
    * @throws GestoreException
    */
-  private int __art80CreaOE(String codimp, String codein) throws GestoreException {
+  private int __art80CreaOE(String codimp, String codein, String status_service) throws GestoreException {
 
     HttpURLConnection conn = null;
 
@@ -336,7 +461,8 @@ public class Art80Manager {
           + "proimp, " // 7
           + "nazimp, " // 8
           + "emaiip, " // 9
-          + "emai2ip " // 10
+          + "emai2ip, " // 10
+          + "natgiui " // 11
           + "from impr where codimp = ?";
 
       List<?> datiIMPR = this.sqlManager.getVector(selectIMPR, new Object[] { codimp });
@@ -346,9 +472,18 @@ public class Art80Manager {
         String nomest = (String) SqlManager.getValueFromVectorParam(datiIMPR, 0).getValue();
         String pivimp = (String) SqlManager.getValueFromVectorParam(datiIMPR, 1).getValue();
         String cfimp = (String) SqlManager.getValueFromVectorParam(datiIMPR, 2).getValue();
+        
         if (nomest == null || cfimp == null) {
-          throw new GestoreException("Verifiche Art.80, e' obbligatorio indicare la ragione sociale ed il codice fiscale",
+          throw new GestoreException("Verifiche Art.80, e' obbligatorio indicare ragione sociale e codice fiscale",
               "art80.mandatory");
+        } 
+        
+        
+        // Natura giuridica
+        Long natgiui = (Long) SqlManager.getValueFromVectorParam(datiIMPR, 11).getValue();
+        String legal_type = null;
+        if (natgiui != null) {
+          legal_type = ConfigManager.getValore("art80.natgiui." + natgiui.toString());
         }
 
         // Indirizzo
@@ -372,15 +507,15 @@ public class Art80Manager {
           String proimpdesc = (String) this.sqlManager.getObject("select tab3desc from tab3 where tab3cod = ? and tab3tip = ?",
               new Object[] { "Agx15", proimp });
           if (proimpdesc != null) citta = proimpdesc;
-          citta += "(" + proimp + ")";
+          // citta += "(" + proimp + ")";
         }
 
         // Nazione
         String nazione = null;
         Long nazimp = (Long) SqlManager.getValueFromVectorParam(datiIMPR, 8).getValue();
         if (nazimp != null) {
-          nazione = (String) this.sqlManager.getObject("select tab1desc from tab1 where tab1cod = ? and tab1tip = ?", new Object[] {
-              "Ag010", nazimp });
+          nazione = (String) this.sqlManager.getObject("select tab1desc from tab1 where tab1cod = ? and tab1tip = ?",
+              new Object[] { "Ag010", nazimp });
         }
 
         // Email
@@ -404,6 +539,9 @@ public class Art80Manager {
           in.put("sa_code", __art80GetCFEIN(codein));
         }
 
+        // Tipologia di monitoraggio (one_shot, monitoring)
+        in.put("status_service", status_service);
+
         if (nomest != null) in.put("ragione_sociale", nomest);
         if (pivimp != null) in.put("iva", pivimp);
         if (cfimp != null) in.put("cf", cfimp);
@@ -413,6 +551,7 @@ public class Art80Manager {
         if (nazione != null) in.put("nazione", nazione);
         if (emaiip != null) in.put("email", emaiip);
         if (emai2ip != null) in.put("pec", emai2ip);
+        if (legal_type != null) in.put("legal_type", legal_type);
 
         String url = __art80GetURL();
         conn = (HttpURLConnection) new URL(url + "/web_services/suppliers.php").openConnection();
@@ -433,47 +572,193 @@ public class Art80Manager {
         responseCode = conn.getResponseCode();
         String responseMessage = conn.getResponseMessage();
 
+        boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
+        
         if (responseCode == 201) {
-          if (b_gateway == false) {
+          if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
             // Configurazione "standard": si aggiornano i campi della tabella
             // IMPR
-            this.sqlManager.update("update impr set art80_stato = ?, art80_data_richiesta = ?, art80_uff_codein = ? where codimp = ?",
-                new Object[] { new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), codein, codimp });
+            this.sqlManager.update(
+                "update impr set art80_stato = ?, art80_data_richiesta = ?, art80_uff_codein = ?, art80_service = ? where codimp = ?",
+                new Object[] { new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), codein, status_service, codimp });
           } else {
             // Configurazione "gateway": si utilizzano i campo della tabella
             // ART80
-            Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?", new Object[] {
-                codimp, codein });
+            Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?",
+                new Object[] { codimp, codein });
             if (cnt == null || (cnt != null && cnt.longValue() == 0)) {
-              this.sqlManager.update("insert into art80 (codimp, stato, data_richiesta, codein) values (?,?,?,?)", new Object[] { codimp,
-                  new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), codein });
+              this.sqlManager.update("insert into art80 (codimp, stato, data_richiesta, codein, service) values (?,?,?,?,?)",
+                  new Object[] { codimp, new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), codein, status_service });
             } else {
-              this.sqlManager.update("update art80 set stato = ?, data_richiesta = ? where codimp = ? and codein = ?", new Object[] {
-                  new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), codimp, codein });
+              this.sqlManager.update("update art80 set stato = ?, data_richiesta = ?, status_service = ? where codimp = ? and codein = ?",
+                  new Object[] { new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), status_service, codimp, codein });
             }
           }
         } else if (responseCode == 409) {
           // In questo caso l'impresa e' gia' stata inviata, si provvede a
           // leggere "direttamente" lo stato aggiornato.
-          if (b_gateway == false) {
+          if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
             // Configurazione "standard": si aggiornano i campi della tabella
             // IMPR
-            this.sqlManager.update("update impr set art80_data_richiesta = ?, art80_uff_codein = ? where codimp = ?", new Object[] {
-                new Date(), codein, codimp });
+            this.sqlManager.update("update impr set art80_data_richiesta = ?, art80_uff_codein = ?, art80_service = ? where codimp = ?",
+                new Object[] { new Date(), codein, status_service, codimp });
           } else {
             // Configurazione "gateway": si utilizzano i campi della tabella
             // ART80
-            Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?", new Object[] {
-                codimp, codein });
+            Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?",
+                new Object[] { codimp, codein });
             if (cnt == null || (cnt != null && cnt.longValue() == 0)) {
-              this.sqlManager.update("insert into art80 (codimp, data_richiesta, codein) values (?,?,?)", new Object[] { codimp,
-                  new Date(), codein });
+              this.sqlManager.update("insert into art80 (codimp, data_richiesta, codein, service) values (?,?,?,?)",
+                  new Object[] { codimp, new Date(), codein, status_service });
             } else {
-              this.sqlManager.update("update art80 set data_richiesta = ? where codimp = ? and codein = ?", new Object[] { new Date(),
-                  codimp, codein });
+              this.sqlManager.update("update art80 set data_richiesta = ?, service = ? where codimp = ? and codein = ?",
+                  new Object[] { new Date(), status_service, codimp, codein });
             }
           }
           art80AggiornaStatoImpresaCODIMP(codimp, codein);
+        } else if (responseCode == 422) {
+          throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        } else if (responseCode == 400) {
+          throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        } else if (responseCode == 401) {
+          throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        } else {
+          throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+              "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
+        }
+
+      }
+
+    } catch (SQLException e) {
+      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+          "art80.ws.remote.error", e);
+    } catch (MalformedURLException e) {
+      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+          "art80.ws.remote.error", e);
+    } catch (IOException e) {
+      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+          "art80.ws.remote.error", e);
+    } finally {
+      if (conn != null) conn.disconnect();
+    }
+
+    return responseCode;
+
+  }
+
+  /**
+   * Aggiornamento del tipo di controllo (One Shot/Monitoraggio).
+   * 
+   * @param codimp
+   * @param codein
+   * @param status_service
+   * @return
+   * @throws GestoreException
+   */
+  private int __art80SetServiceOE(String codimp, String codein, String status_service) throws GestoreException {
+
+    HttpURLConnection conn = null;
+
+    int responseCode = 0;
+
+    try {
+
+      String selectIMPR = "select nomest, " // 0
+          + "cfimp " // 1
+          + "from impr where codimp = ?";
+
+      List<?> datiIMPR = this.sqlManager.getVector(selectIMPR, new Object[] { codimp });
+      if (datiIMPR != null && datiIMPR.size() > 0) {
+
+        // Ragione sociale, partita IVA, codice fiscale
+        String nomest = (String) SqlManager.getValueFromVectorParam(datiIMPR, 0).getValue();
+        String cfimp = (String) SqlManager.getValueFromVectorParam(datiIMPR, 1).getValue();
+        if (nomest == null || cfimp == null) {
+          throw new GestoreException("Verifiche Art.80, e' obbligatorio indicare la ragione sociale ed il codice fiscale",
+              "art80.mandatory");
+        }
+
+        JSONObject in = new JSONObject();
+        JSONArray cfs = new JSONArray();
+
+        // Token di autenticazione
+        in.put("token", __art80Login(codein));
+
+        // Azione
+        in.put("action", "set_status_service");
+
+        // Codice fiscale della stazione appaltante (solo per gestione
+        // "gateway")
+        boolean b_gateway = __art80TestGateway();
+        if (b_gateway) {
+          in.put("sa_code", __art80GetCFEIN(codein));
+        }
+
+        // Tipologia di monitoraggio (one_shot, monitoring)
+        in.put("status_service", status_service);
+
+        // Codice fiscale da aggiornare
+        if (cfimp != null) {
+          cfs.add(cfimp);
+          in.put("cfs", cfs);
+        }
+
+        String url = __art80GetURL();
+        conn = (HttpURLConnection) new URL(url + "/web_services/suppliers.php").openConnection();
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Accept", "application/json");
+        OutputStream os = conn.getOutputStream();
+        os.write(in.toString().getBytes());
+        os.flush();
+
+        if (logger.isDebugEnabled()) {
+          logger.debug("__art80AggiornaOE request: " + in.toString());
+          logger.debug("__art80AggiornaOE responseCode: " + conn.getResponseCode());
+          logger.debug("__art80AggiornaOE responseMessage: " + conn.getResponseMessage());
+        }
+
+        responseCode = conn.getResponseCode();
+        String responseMessage = conn.getResponseMessage();
+
+        boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
+        
+        if (responseCode == 201) {
+          if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
+
+            // Copia della richiesta precedente nella tabella ART80_STO
+            this.sqlManager.update(
+                "insert into art80_sto (codimp, stato, data_richiesta, data_lettura, codein, service) (select codimp, art80_stato, art80_data_richiesta, art80_data_lettura, art80_uff_codein, art80_service from impr where codimp = ?)",
+                new Object[] { codimp });
+
+            // Configurazione "standard": si aggiornano i campi della tabella
+            // IMPR
+            this.sqlManager.update(
+                "update impr set art80_stato = ?, art80_data_richiesta = ?, art80_uff_codein = ?, art80_service = ? where codimp = ?",
+                new Object[] { new Long(ART80_SET_SERVICE_RICHIESTA), new Date(), codein, status_service, codimp });
+
+          } else {
+            // Configurazione "gateway": si utilizzano i campo della tabella
+            // ART80
+            Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?",
+                new Object[] { codimp, codein });
+            if (cnt == null || (cnt != null && cnt.longValue() == 0)) {
+              this.sqlManager.update("insert into art80 (codimp, stato, data_richiesta, codein, service) values (?,?,?,?,?)",
+                  new Object[] { codimp, new Long(ART80_SET_SERVICE_RICHIESTA), new Date(), codein, status_service });
+            } else {
+
+              // Copia della richiesta precedente nella tabella ART80_STO
+              this.sqlManager.update(
+                  "insert into art80_sto (codimp, stato, data_richiesta, data_lettura, codein, service) (select codimp, stato, data_richiesta, data_lettura, codein, service from art80 where codimp = ? and codein = ?)",
+                  new Object[] { codimp, codein });
+
+              this.sqlManager.update("update art80 set stato = ?, data_richiesta = ?, service = ? where codimp = ? and codein = ?",
+                  new Object[] { new Long(ART80_SET_SERVICE_RICHIESTA), new Date(), status_service, codimp, codein });
+            }
+          }
+        } else if (responseCode == 409) {
+          throw new GestoreException("Verifiche Art.80, operatore economico non trovato", "art80.ws.remote.oenotfound");
         } else if (responseCode == 422) {
           throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
         } else if (responseCode == 400) {
@@ -527,23 +812,28 @@ public class Art80Manager {
 
     try {
 
-      if (__art80TestGateway() == false) {
+      boolean b_gateway = __art80TestGateway();
+      boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
+      
+      if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
         // Configurazion "standard"
-        String selectIMPRA = "select codimp from impr where art80_stato is not null and cfimp is not null and (tipimp not in (3,10) or tipimp is null)";
+        String selectIMPRA = "select codimp, art80_uff_codein from impr where art80_stato is not null and cfimp is not null and (tipimp not in (3,10) or tipimp is null)";
         List<?> datiIMPRA = this.sqlManager.getListVector(selectIMPRA, new Object[] {});
         if (datiIMPRA != null && datiIMPRA.size() > 0) {
           for (int i = 0; i < datiIMPRA.size(); i++) {
             String codimp = (String) SqlManager.getValueFromVectorParam(datiIMPRA.get(i), 0).getValue();
-            __art80Aggiorna(codimp, null);
+            String codein = (String) SqlManager.getValueFromVectorParam(datiIMPRA.get(i), 1).getValue();
+            __art80Aggiorna(codimp, codein);
           }
         }
 
-        String selectIMPRA310 = "select codimp from impr where art80_stato is not null and tipimp in (3,10)";
+        String selectIMPRA310 = "select codimp, art80_uff_codein from impr where art80_stato is not null and tipimp in (3,10)";
         List<?> datiIMPRA310 = this.sqlManager.getListVector(selectIMPRA310, new Object[] {});
         if (datiIMPRA310 != null && datiIMPRA310.size() > 0) {
           for (int i = 0; i < datiIMPRA310.size(); i++) {
             String codimp = (String) SqlManager.getValueFromVectorParam(datiIMPRA310.get(i), 0).getValue();
-            this.__art80AggiornaStatoRaggruppamento(codimp, null);
+            String codein = (String) SqlManager.getValueFromVectorParam(datiIMPRA310.get(i), 1).getValue();
+            this.__art80AggiornaStatoRaggruppamento(codimp, codein);
           }
         }
 
@@ -614,12 +904,13 @@ public class Art80Manager {
         String cf_parent = (String) this.sqlManager.getObject("select cfimp from impr where codimp = ?", new Object[] { codimpPadre });
 
         // Lista dei codici fiscali dei professionisti "figli" dello studio
-        // associato che risultano inviati in quanche stato (devono essere
+        // associato che risultano inviati in qualche stato (devono essere
         // esclusi professionisti che non sono ancora stati inviati).
         String selectRAGIMP = null;
         boolean b_gateway = __art80TestGateway();
+        boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
 
-        if (b_gateway == true) {
+        if (b_gateway == true && b_gateway_multiuffint == true) {
           selectRAGIMP = "select impr.cfimp from impr, ragimp, art80 "
               + " where impr.codimp = ragimp.coddic "
               + " and ragimp.codime9 = ? "
@@ -674,13 +965,13 @@ public class Art80Manager {
           if (responseCode == 200) {
             // Operazione andata a buon fine, non serve alcuna operazione
           } else if (responseCode == 422) {
-            throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), parametri di input mancanti", "art80.ws.remote.missinginputparameters");
           } else if (responseCode == 400) {
-            throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
           } else if (responseCode == 401) {
-            throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
           } else {
-            throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato l'errore " + responseCode + " - " + responseMessage,
                 "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
           }
 
@@ -690,13 +981,13 @@ public class Art80Manager {
       }
 
     } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -721,7 +1012,10 @@ public class Art80Manager {
   private void __art80AggiornaStatoRaggruppamento(String codimp, String codein) throws GestoreException {
     try {
 
-      if (__art80TestGateway() == false) {
+      boolean b_gateway = __art80TestGateway();
+      boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
+      
+      if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
         // *** Configurazione "standard" ***
 
         // Data massima di richiesta
@@ -770,8 +1064,8 @@ public class Art80Manager {
 
         // Aggiornamento
         String updateIMPR = "update impr set art80_stato = ?, art80_data_richiesta = ?, art80_data_lettura = ? where codimp = ?";
-        this.sqlManager.update(updateIMPR, new Object[] { art80_stato_raggruppamento, art80_data_richiesta_raggruppamento,
-            art80_data_lettura_raggruppamento, codimp });
+        this.sqlManager.update(updateIMPR,
+            new Object[] { art80_stato_raggruppamento, art80_data_richiesta_raggruppamento, art80_data_lettura_raggruppamento, codimp });
       } else {
         // *** Configurazione "gateway" ***
 
@@ -911,13 +1205,15 @@ public class Art80Manager {
       if (responseCode == 200) {
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
         String output = org.apache.commons.io.IOUtils.toString(br);
-        
+
         if (logger.isDebugEnabled()) {
           logger.debug("__art80Aggiorna output: " + output);
         }
-          
+
         JSONObject jsonOutput = JSONObject.fromObject(output);
 
+        boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
+        
         Object odata = jsonOutput.get("data");
         if (odata instanceof JSONArray) {
           JSONArray jdata = (JSONArray) odata;
@@ -926,14 +1222,14 @@ public class Art80Manager {
               JSONArray jd = jdata.getJSONArray(d);
               Long stato = jd.getLong(1);
 
-              if (__art80TestGateway() == false) {
+              if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
                 // Configurazione "standard": si aggiorna la tabella IMPR
-                this.sqlManager.update("update impr set art80_stato = ?, art80_data_lettura = ? where codimp = ?", new Object[] { stato,
-                    new Date(), codimp });
+                this.sqlManager.update("update impr set art80_stato = ?, art80_data_lettura = ? where codimp = ?",
+                    new Object[] { stato, new Date(), codimp });
               } else {
                 // Configurazione "gateway": si aggiorna la tabella ART80
-                this.sqlManager.update("update art80 set stato = ?, data_lettura = ? where codimp = ? and codein = ?", new Object[] {
-                    stato, new Date(), codimp, codein });
+                this.sqlManager.update("update art80 set stato = ?, data_lettura = ? where codimp = ? and codein = ?",
+                    new Object[] { stato, new Date(), codimp, codein });
               }
             }
           }
@@ -1034,10 +1330,12 @@ public class Art80Manager {
       int responseCode = conn.getResponseCode();
       String responseMessage = conn.getResponseMessage();
 
+      boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
+      
       if (responseCode == 200) {
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
         String output = org.apache.commons.io.IOUtils.toString(br);
-        
+
         if (logger.isDebugEnabled()) {
           logger.debug("__art80Consulta output: " + output);
         }
@@ -1077,7 +1375,7 @@ public class Art80Manager {
           // permettere l'aggiornamento manuale
           // dei dati
           if (jdata.get("id") != null && jdata.getInt("id") > 0) {
-            if (b_gateway == false) {
+            if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
               // Configurazione "standard": si aggiorna la tabella IMPR
               this.sqlManager.update("update impr set art80_stato = ?, art80_data_lettura = ? where codimp = ?",
                   new Object[] { jdata.getLong("stato_art_80"), new Date(), codimp });
@@ -1091,8 +1389,8 @@ public class Art80Manager {
             if (jdocuments != null) {
               __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "att_ottemperanza",
                   1);
-              __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments,
-                  "sanzioni_amm_reato", 2);
+              __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "sanzioni_amm_reato",
+                  2);
               __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments,
                   "cas_giudiziale_carica", 3);
               __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments,
@@ -1102,7 +1400,20 @@ public class Art80Manager {
               __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments,
                   "att_regolarita_fiscale", 7);
               __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "anac", 8);
-              __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "visura_camerale", 9);
+              __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "visura_camerale",
+                  9);
+
+              // Carichi pendenti (tipo 10)
+              // descrittivo, parametro documentoStringType
+              __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "carichi_pendenti",
+                  10);
+
+              // Certificazione Regolarità Contributiva (Cassa Previdenziale di
+              // Categoria) (tipo 11)
+              // descrittivo, parametro documentoStringType
+              __getRequestsAndDocumentsFromType(token, cfimp, codein, b_gateway, cfein, responseDocuments, jdocuments, "cert_reg_contributiva",
+                  11);
+
             }
           }
           responseHMap.put("documents", responseDocuments);
@@ -1191,7 +1502,7 @@ public class Art80Manager {
         try {
           note = jdocuments.getJSONObject(documentStringType).getString("note");
         } catch (Exception e) {
-          
+
         }
       }
     }
@@ -1251,7 +1562,7 @@ public class Art80Manager {
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
         String output = org.apache.commons.io.IOUtils.toString(br);
         JSONObject jsonOutput = JSONObject.fromObject(output);
-        
+
         if (logger.isDebugEnabled()) {
           logger.debug("__art80GetDocumentsFromType output: " + output);
         }
@@ -1365,11 +1676,11 @@ public class Art80Manager {
       if (responseCode == 200) {
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
         String output = org.apache.commons.io.IOUtils.toString(br);
-        
+
         if (logger.isDebugEnabled()) {
           logger.debug("__art80GetRequestsFromType output: " + output);
         }
-        
+
         JSONObject jsonOutput = JSONObject.fromObject(output);
         Object olinks = jsonOutput.get("data");
         if (olinks instanceof JSONArray) {
@@ -1446,11 +1757,11 @@ public class Art80Manager {
       if (responseCode == 200) {
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
         String output = org.apache.commons.io.IOUtils.toString(br);
-        
+
         if (logger.isDebugEnabled()) {
           logger.debug("__art80GetDatesFromType output: " + output);
         }
-                
+
         JSONObject jsonOutput = JSONObject.fromObject(output);
         JSONObject jdata = jsonOutput.getJSONObject("data");
         if (jdata != null) {
@@ -1556,11 +1867,11 @@ public class Art80Manager {
       if (responseCode == 200) {
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
         String output = org.apache.commons.io.IOUtils.toString(br);
-        
+
         if (logger.isDebugEnabled()) {
           logger.debug("__art80GetDatesFromType output: " + output);
         }
-        
+
         JSONObject jsonOutput = JSONObject.fromObject(output);
         JSONObject jdata = jsonOutput.getJSONObject("data");
         if (jdata != null) {
@@ -1620,7 +1931,7 @@ public class Art80Manager {
     }
 
     link += "&filepath=" + path;
-    
+
     if (logger.isDebugEnabled()) {
       logger.debug("__art80Download url: " + link);
     }
@@ -1643,6 +1954,22 @@ public class Art80Manager {
     }
 
     return b_gateway;
+
+  }
+  
+  /**
+   * Verifica se il sistema, in configurazione "gateway" deve funzionare in modalita' multi-uffint o mono-uffint.
+   * @return
+   */
+  private boolean __art80TestGatewayMultiUffint() {
+    boolean b_gatewaymultiuffint = true;
+
+    String gatewaymultiuffint = ConfigManager.getValore(PROP_ART80_GATEWAY_MULTIUFFINT);
+    if (gatewaymultiuffint != null && !"1".equals(gatewaymultiuffint)) {
+      b_gatewaymultiuffint = false;
+    }
+
+    return b_gatewaymultiuffint;
 
   }
 

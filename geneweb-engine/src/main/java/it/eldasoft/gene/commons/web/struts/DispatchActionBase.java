@@ -119,6 +119,19 @@ public abstract class DispatchActionBase extends DispatchAction implements
         logger.error(this.resBundleGenerale.getString(messageKey));
         this.aggiungiMessaggio(request, messageKey);
       }
+      
+      if (target == null && !this.verificaDoppiaAutenticazione(request)) {
+          // in caso sia presente il flag della doppia autenticazione
+          // vuol dire che l'utente admin non ha effettuato la doppia 
+          // autenticazione quindi si introduce un 
+          // messaggio d'errore nel request e si termina l'elaborazione
+          // redirezionando l'utente alla pagina principale dell'applicazione
+          // con il messaggio d'errore stesso
+          target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+          messageKey = "errors.opzione.noDoppiaAutenticazione";
+          logger.error(this.resBundleGenerale.getString(messageKey));
+          this.aggiungiMessaggio(request, messageKey);
+        }
 
       if (target == null && !this.verificaAcquistoOpzione(request)) {
         // in caso non sia stata acquistata l'opzione si introduce un
@@ -195,7 +208,7 @@ public abstract class DispatchActionBase extends DispatchAction implements
    *        request http
    * @return true se la sessione del client è attiva, false altrimenti
    */
-  private boolean verificaSessionePresente(HttpServletRequest request) {
+  protected final boolean verificaSessionePresente(HttpServletRequest request) {
     boolean esito = false;
 
     HttpSession session = request.getSession();
@@ -205,6 +218,28 @@ public abstract class DispatchActionBase extends DispatchAction implements
     return esito;
   }
 
+  /**
+   * Verifica che l'utenza autenticata abbia effettuato la doppia autenticazione
+   * nel caso sia nella casistica un cui viene richiesta. Questo controllo viene bypassato
+   * per le azioni di Cambio password
+   *
+   * @param request
+   *        request http
+   *
+   * @return true se la doppia autenticazione non è richiesta o 
+   *         è stata effettuata
+   */
+  protected final boolean verificaDoppiaAutenticazione(HttpServletRequest request) {
+		Boolean esito = false;
+		String actionCambiaPssw = request.getContextPath() + "/geneAdmin/CambiaPasswordScaduta.do";
+
+		if (request.getSession().getAttribute(CostantiGenerali.SENTINELLA_DOPPIA_AUTENTICAZIONE) == null
+				|| actionCambiaPssw.equals(request.getRequestURI())) {
+			esito = true;
+		}
+		return esito;
+	}
+  
   /**
    * Verifica che l'applicazione Web sia stata acquistata con il pacchetto
    * necessario per l'abilitazione della funzionalità a cui appartiene l'azione

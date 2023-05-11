@@ -10,7 +10,9 @@
  */
 package it.eldasoft.gene.web.struts.login;
 
+import it.eldasoft.gene.commons.web.LimitatoreConnessioniUtenti;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.db.domain.LogEvento;
@@ -23,15 +25,17 @@ import it.eldasoft.gene.web.struts.login.portoken.PortokenClient;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.maggioli.eldasoft.mtoken.Mtoken;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
@@ -47,7 +51,7 @@ public class AdminAccessAction extends ActionBaseNoOpzioni {
   private static final String PORTOKEN        = "portoken";
   private static final String MTOKEN        = "mtoken";
   
-  private Logger         logger            = Logger.getLogger(RecuperaPasswordAction.class);
+  private Logger         logger            = Logger.getLogger(AdminAccessAction.class);
 
   @SuppressWarnings("unchecked")
   public String loginMtoken(ActionMapping mapping, ActionForm form, HttpServletRequest request) {
@@ -85,6 +89,7 @@ public class AdminAccessAction extends ActionBaseNoOpzioni {
           if(client.isEsito()) {
               utente = StringUtils.stripToNull(client.getUtente());
               email = StringUtils.stripToNull(client.getEmail());
+              request.getSession().removeAttribute(CostantiGenerali.SENTINELLA_DOPPIA_AUTENTICAZIONE);
               
               target = CostantiGeneraliStruts.FORWARD_OK;
               
@@ -121,6 +126,33 @@ public class AdminAccessAction extends ActionBaseNoOpzioni {
       }
       
       LogEventiUtils.insertLogEventi(logEvento);
+      
+      if(CostantiGeneraliStruts.FORWARD_OK.equals(target)) {
+      //JIRA GENEWEB-159: controllo accessi multipli 
+        HashMap<String, String[]> sessioni = LimitatoreConnessioniUtenti.getInstance().getDatiSessioniUtentiConnessi();
+        List<String> ipList= new ArrayList<String>();
+        
+        String user = ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getLogin();
+        
+        for(String key :sessioni.keySet()) {
+          if(user.equalsIgnoreCase(sessioni.get(key)[1])){ 
+            ipList.add(sessioni.get(key)[0]);   
+          }
+        }  
+        if(ipList.size()>1) {
+          List<String> ipListUnique= new ArrayList<String>();
+          for(String ip : ipList) {
+            if(!ipListUnique.contains(ip)) {
+              ipListUnique.add(ip);
+            }
+          }
+          LogEvento eventoLoginMultipli = LogEventiUtils.createLogEvento(request);
+           eventoLoginMultipli.setLivEvento(LogEvento.LIVELLO_WARNING);
+           eventoLoginMultipli.setCodEvento(LogEventiUtils.COD_EVENTO_ACCESSO_SIMULTANEO);
+           eventoLoginMultipli.setDescr("Sessioni attive: "+ipList.size()+" | Ip connessi: "+String.join(", ", ipListUnique));
+           LogEventiUtils.insertLogEventi(eventoLoginMultipli);
+        } 
+      }
 
       return target;
   }
@@ -145,6 +177,7 @@ public class AdminAccessAction extends ActionBaseNoOpzioni {
           TokenContent tokenContent = response.getTokenContent();
           String utente = StringUtils.stripToNull(tokenContent.getUtente());
           String email = StringUtils.stripToNull(tokenContent.getEmail());
+          request.getSession().removeAttribute(CostantiGenerali.SENTINELLA_DOPPIA_AUTENTICAZIONE);
           logEvento.setDescr("Login mediante Portoken da parte dell'amministratore impersonato da " + utente + " (" + email + ") con motivazione di accesso o ticket: " + motivazione);
       } else {
           logEvento.setDescr("Tentativo di login dell'amministratore non validato. (" + domainMail + ").");
@@ -157,6 +190,33 @@ public class AdminAccessAction extends ActionBaseNoOpzioni {
           target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
       }
       LogEventiUtils.insertLogEventi(logEvento);
+      
+      if(CostantiGeneraliStruts.FORWARD_OK.equals(target)) {
+        //JIRA GENEWEB-159: controllo accessi multipli 
+          HashMap<String, String[]> sessioni = LimitatoreConnessioniUtenti.getInstance().getDatiSessioniUtentiConnessi();
+          List<String> ipList= new ArrayList<String>();
+          
+          String user = ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getLogin();
+          
+          for(String key :sessioni.keySet()) {
+            if(user.equalsIgnoreCase(sessioni.get(key)[1])){ 
+              ipList.add(sessioni.get(key)[0]);   
+            }
+          }  
+          if(ipList.size()>1) {
+            List<String> ipListUnique= new ArrayList<String>();
+            for(String ip : ipList) {
+              if(!ipListUnique.contains(ip)) {
+                ipListUnique.add(ip);
+              }
+            }
+            LogEvento eventoLoginMultipli = LogEventiUtils.createLogEvento(request);
+             eventoLoginMultipli.setLivEvento(LogEvento.LIVELLO_WARNING);
+             eventoLoginMultipli.setCodEvento(LogEventiUtils.COD_EVENTO_ACCESSO_SIMULTANEO);
+             eventoLoginMultipli.setDescr("Sessioni attive: "+ipList.size()+" | Ip connessi: "+String.join(", ", ipListUnique));
+             LogEventiUtils.insertLogEventi(eventoLoginMultipli);
+          } 
+        }
 
       return target;
   }

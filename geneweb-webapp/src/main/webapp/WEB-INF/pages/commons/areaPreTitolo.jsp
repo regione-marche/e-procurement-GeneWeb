@@ -17,6 +17,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 
 <c:set var="isNavigazioneDisattiva" value="${isNavigazioneDisabilitata}" />
+<c:set var="connessioniAttive" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetCountSessioniAttiveUtenteFunction",pageContext)}' />
 
 		<div class="over-hidden">
 			<div class="breadcrumbs">
@@ -29,6 +30,10 @@
 				<c:if test="${empty param.hideOpzioni && ((empty isNavigazioneDisattiva) or (isNavigazioneDisattiva ne '1')) && (! empty profiloAttivo)}">
 				<A id="lUtente" href="javascript:showMenuPopup('lUtente',generaPopupOpzioniUtenteLoggato());">
 				<IMG src="${pageContext.request.contextPath}/img/arrow-down.gif" alt="Opzioni" title="Opzioni"></A>
+				</c:if>
+				<c:if test='${connessioniAttive > 1}'>(Connessioni attive: ${connessioniAttive})</c:if>
+				<c:if test='${ipConnessioniUtente.size() > 1}'>
+				<IMG src="${pageContext.request.contextPath}/img/conf_allert.png" alt="Alert" title="${ipConnessioniUtente}" width="20px">
 				</c:if>
 				| <A id="idUtLogEsci" href="javascript:utLogEsci();" tabindex="1500" 
 				  class="link-generico">Esci</A></c:if>

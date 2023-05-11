@@ -70,6 +70,7 @@ public class PopUpGenericoImpl {
   /**
    * Conversione a stringa
    */
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer("");
     buffer.append("&nbsp;");
@@ -93,11 +94,10 @@ public class PopUpGenericoImpl {
       buffer.append("img/opzioni_info.gif\" ");
     else
       buffer.append("img/opzioni_speciali.gif\" ");
-    buffer.append(UtilityTags.convStringa(this.titolo));
     buffer.append("title=\"");
     buffer.append(UtilityTags.convStringa(this.titolo));
     //if (!this.speciale)
-      buffer.append("\" alt=\"\" height=\"16\" width=\"16\"></A>");
+      buffer.append("\" alt=\"").append(UtilityTags.convStringa(this.titolo)).append("\" height=\"16\" width=\"16\"></A>");
     //else
     //  buffer.append("\" alt=\"\" height=\"16\" width=\"28\"></A>");
     // Chiamo l'eventuale inizializzazione del PopUp

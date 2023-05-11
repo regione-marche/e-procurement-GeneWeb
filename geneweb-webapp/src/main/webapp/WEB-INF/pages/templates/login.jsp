@@ -26,7 +26,7 @@
 <c:set var="protocolloSSO" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetProtocolloSSOFunction",  pageContext)}' scope="request"/>
 <c:set var="spidAgid" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "sso.spid.validator")}' scope="request"/>
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <tiles:insert attribute="head" />

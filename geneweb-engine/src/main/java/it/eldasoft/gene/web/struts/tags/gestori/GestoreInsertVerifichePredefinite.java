@@ -10,15 +10,8 @@
  */
 package it.eldasoft.gene.web.struts.tags.gestori;
 
-import it.eldasoft.gene.bl.GenChiaviManager;
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.db.datautils.DataColumn;
-import it.eldasoft.gene.db.datautils.DataColumnContainer;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
-import it.eldasoft.utils.spring.UtilitySpring;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -27,6 +20,14 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.transaction.TransactionStatus;
+
+import it.eldasoft.gene.bl.GenChiaviManager;
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.db.datautils.DataColumn;
+import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import it.eldasoft.utils.spring.UtilitySpring;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Gestore non standard (in quanto è implementato il costruttore in modo da non
@@ -86,6 +87,7 @@ public class GestoreInsertVerifichePredefinite extends
     Long tipimp = new Long(1);//default tipo impresa vale 1
     String ufficioIntestatario=null;
     String cfein = null;
+    ArrayList<String> erroriBloccanti = new ArrayList<String>();
     HttpSession session = this.getRequest().getSession();
     if ( session != null) {
       ufficioIntestatario = StringUtils.stripToNull(((String) session.getAttribute("uffint")));
@@ -94,83 +96,97 @@ public class GestoreInsertVerifichePredefinite extends
             "select cfein from uffint where codein=?", new Object[] {ufficioIntestatario});
         cfein = UtilityStringhe.convertiNullInStringaVuota(cfein);
         if("".equals(cfein)){
-          throw new GestoreException("Errore durante l'estrazione del codice fiscale dell'ufficio intestatario",null);
+          erroriBloccanti.add("Il codice fiscale dell'ufficio intestatario non risulta valorizzato");
         }
-
         tipimp = (Long) this.sqlManager.getObject("select tipimp from impr where codimp = ?",new Object[] { codimp });
-
+        if(tipimp==null) {
+        	erroriBloccanti.add("Il tipo impresa non risulta valorizzato"); 	
+        }
       } catch (SQLException e) {
-        throw new GestoreException("Errore durante l'estrazione del codice fiscale dell'ufficio intestatario",null, e);
+        throw new GestoreException("Errore durante l'estrazione della tipologia di impresa e/o del codice fiscale dell'ufficio intestatario",null, e);
       }
     }
-      //G_z24 verifiche in dipendenza dal tipo di impresa
-      String sqlRCpredefinite = "select tab2cod, tab2tip, tab2d1, tab2d2 from tab2 where tab2cod = ? order by tab2tip asc";
-      List listaTabellati = null;
-      try {
-        listaTabellati = this.sqlManager.getListVector(sqlRCpredefinite,new Object[] { "G_z24" });
-        //filtro sul tipo impresa
+   
+    if(tipimp!=null && !"".equals(cfein)) {
+    	String tipimpString="";
+        tipimpString = tipimp.toString();
 
+        //G_z24 verifiche in dipendenza dal tipo di impresa
+        String sqlRCpredefinite = "select tab2cod, tab2tip, tab2d1, tab2d2 from tab2 where tab2cod = ? order by tab2tip asc";
+        List listaTabellati = null;
+        try {
+          listaTabellati = this.sqlManager.getListVector(sqlRCpredefinite,new Object[] { "G_z24" });
+          //filtro sul tipo impresa
 
-        for (int i = 0; i < listaTabellati.size(); i++) {
-          Boolean tipoImprFounded = false;
-          String tipRC = SqlManager.getValueFromVectorParam(listaTabellati.get(i), 1).getStringValue();
-          String tipologieImpreseStr = SqlManager.getValueFromVectorParam(listaTabellati.get(i), 2).getStringValue();
-          tipologieImpreseStr = UtilityStringhe.convertiNullInStringaVuota(tipologieImpreseStr);
-          if("".equals(tipologieImpreseStr)){
-            tipoImprFounded = true;
-          }else{
-            String[] tipologieImpreseArray = tipologieImpreseStr.split(";");
-            for (int k = 0; k < tipologieImpreseArray.length; k++){
-              String tipologiaImpresa= tipologieImpreseArray[k];
-              if(tipimp.equals(new Long(tipologiaImpresa))){
-                tipoImprFounded = true;
+          for (int i = 0; i < listaTabellati.size(); i++) {
+            Boolean tipoImprFounded = false;
+            String tipRC = SqlManager.getValueFromVectorParam(listaTabellati.get(i), 1).getStringValue();
+            String tipologieImpreseStr = SqlManager.getValueFromVectorParam(listaTabellati.get(i), 2).getStringValue();
+            tipologieImpreseStr = UtilityStringhe.convertiNullInStringaVuota(tipologieImpreseStr);
+            if("".equals(tipologieImpreseStr)){
+              tipoImprFounded = true;
+            }else{
+              String[] tipologieImpreseArray = tipologieImpreseStr.split(";");
+              for (int k = 0; k < tipologieImpreseArray.length; k++){
+                String tipologiaImpresa= tipologieImpreseArray[k];
+                if(tipimpString.equals(tipologiaImpresa)){
+                  tipoImprFounded = true;
+                  break;
+                }
               }
             }
+            if(tipoImprFounded.equals(true)){
+              //ricerco i default per ciascuna RC predefinita:
+              String sqlRCdefault = "select tab2d1, tab2d2 from tab2 where tab2cod = ? and tab2tip = ?";
+              String defGGvaliditaStr = null;
+              String defGGavvscadStr = null;
+              Vector<?> rcDefaultVect = this.sqlManager.getVector(sqlRCdefault,new Object[] { "G_z25",tipRC });
+              if(rcDefaultVect!=null){
+                defGGvaliditaStr = ((JdbcParametro) rcDefaultVect.get(0)).getStringValue();
+                defGGavvscadStr = ((JdbcParametro) rcDefaultVect.get(1)).getStringValue();
+              }
+              defGGvaliditaStr = UtilityStringhe.convertiNullInStringaVuota(defGGvaliditaStr);
+              defGGavvscadStr = UtilityStringhe.convertiNullInStringaVuota(defGGavvscadStr);
+              Vector elencoCampi = new Vector();
+              int idVerifica = genChiaviManager.getNextId("VERIFICHE");
+              elencoCampi.add(new DataColumn("VERIFICHE.ID", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, idVerifica)));
+              elencoCampi.add(new DataColumn("VERIFICHE.CONTESTO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_TESTO, "ART80")));
+              elencoCampi.add(new DataColumn("VERIFICHE.CODIMP", new JdbcParametro(JdbcParametro.TIPO_TESTO, codimp)));
+              elencoCampi.add(new DataColumn("VERIFICHE.CFEIN", new JdbcParametro(JdbcParametro.TIPO_TESTO, cfein)));
+              String tipoVerificaStr= SqlManager.getValueFromVectorParam(listaTabellati.get(i), 1).getStringValue();
+              elencoCampi.add(new DataColumn("VERIFICHE.TIPO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO,new Long(tipoVerificaStr))));
+              if(!"".equals(defGGvaliditaStr)){
+                elencoCampi.add(new DataColumn("VERIFICHE.GG_VALIDITA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(defGGvaliditaStr))));
+              }
+              if(!"".equals(defGGavvscadStr)){
+                elencoCampi.add(new DataColumn("VERIFICHE.GG_AVVISO_SCADENZA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(defGGavvscadStr))));
+              }
+              elencoCampi.add(new DataColumn("VERIFICHE.IS_SILENZIO_ASSENSO", new JdbcParametro(JdbcParametro.TIPO_TESTO, "1")));
+              elencoCampi.add(new DataColumn("VERIFICHE.STATO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(1))));
+
+              DataColumnContainer container = new DataColumnContainer(elencoCampi);
+              container.insert("VERIFICHE", sqlManager);
+
+            }
+
           }
-          if(tipoImprFounded.equals(true)){
-            //ricerco i default per ciascuna RC predefinita:
-            String sqlRCdefault = "select tab2d1, tab2d2 from tab2 where tab2cod = ? and tab2tip = ?";
-            String defGGvaliditaStr = null;
-            String defGGavvscadStr = null;
-            Vector<?> rcDefaultVect = this.sqlManager.getVector(sqlRCdefault,new Object[] { "G_z25",tipRC });
-            if(rcDefaultVect!=null){
-              defGGvaliditaStr = ((JdbcParametro) rcDefaultVect.get(0)).getStringValue();
-              defGGavvscadStr = ((JdbcParametro) rcDefaultVect.get(1)).getStringValue();
-            }
-            defGGvaliditaStr = UtilityStringhe.convertiNullInStringaVuota(defGGvaliditaStr);
-            defGGavvscadStr = UtilityStringhe.convertiNullInStringaVuota(defGGavvscadStr);
-            Vector elencoCampi = new Vector();
-            int idVerifica = genChiaviManager.getNextId("VERIFICHE");
-            elencoCampi.add(new DataColumn("VERIFICHE.ID", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, idVerifica)));
-            elencoCampi.add(new DataColumn("VERIFICHE.CONTESTO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_TESTO, "ART80")));
-            elencoCampi.add(new DataColumn("VERIFICHE.CODIMP", new JdbcParametro(JdbcParametro.TIPO_TESTO, codimp)));
-            elencoCampi.add(new DataColumn("VERIFICHE.CFEIN", new JdbcParametro(JdbcParametro.TIPO_TESTO, cfein)));
-            String tipoVerificaStr= SqlManager.getValueFromVectorParam(listaTabellati.get(i), 1).getStringValue();
-            elencoCampi.add(new DataColumn("VERIFICHE.TIPO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO,new Long(tipoVerificaStr))));
-            if(!"".equals(defGGvaliditaStr)){
-              elencoCampi.add(new DataColumn("VERIFICHE.GG_VALIDITA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(defGGvaliditaStr))));
-            }
-            if(!"".equals(defGGavvscadStr)){
-              elencoCampi.add(new DataColumn("VERIFICHE.GG_AVVISO_SCADENZA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(defGGavvscadStr))));
-            }
-            elencoCampi.add(new DataColumn("VERIFICHE.IS_SILENZIO_ASSENSO", new JdbcParametro(JdbcParametro.TIPO_TESTO, "1")));
-            elencoCampi.add(new DataColumn("VERIFICHE.STATO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(1))));
 
-            DataColumnContainer container = new DataColumnContainer(elencoCampi);
-            container.insert("VERIFICHE", sqlManager);
 
-          }
-
+        } catch (SQLException e) {
+              throw new GestoreException("Errore durante l'inserimento delle verifiche predefinite",null, e);
         }
+    	
+        // setta l'operazione a completata, in modo da scatenare il reload della
+        // pagina principale
+        this.getRequest().setAttribute("verificheInserite", "1");
+    	
+    }
+    
+    if(erroriBloccanti != null && erroriBloccanti.size()>0) {
+    	this.getRequest().setAttribute("erroriBloccanti",erroriBloccanti);
+    	this.getRequest().setAttribute("verificheInserite", "2");
+    }
 
-
-      } catch (SQLException e) {
-            throw new GestoreException("Errore durante l'inserimento delle verifiche predefinite",null, e);
-      }
-
-    // setta l'operazione a completata, in modo da scatenare il reload della
-    // pagina principale
-    this.getRequest().setAttribute("verificheInserite", "1");
   }
 
 

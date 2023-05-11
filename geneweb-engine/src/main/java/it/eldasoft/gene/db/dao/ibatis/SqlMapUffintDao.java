@@ -82,4 +82,16 @@ public class SqlMapUffintDao extends SqlMapClientDaoSupportBase implements
         "getUfficioIntestatarioByPKWithAddressAndNation", codice);
   }
 
+  @Override
+  public UfficioIntestatario getUfficioIntestatarioFullByPKWithNation(String codice) throws DataAccessException {
+    return (UfficioIntestatario) this.getSqlMapClientTemplate().queryForObject(
+        "getUfficioIntestatarioFullByPKWithNation", codice);
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public List<String> getCodiciUfficiIntestatariAccount(int idAccount) throws DataAccessException{
+    return this.getSqlMapClientTemplate().queryForList("getCodiciUfficiIntestatariAccount",idAccount);
+  }
+
 }

@@ -23,7 +23,7 @@
 <gene:insert name="addHistory">
 	<gene:historyAdd titolo='${gene:getString(pageContext,"titoloMaschera",gene:resource("label.tags.template.lista.titolo"))}' id="lista" />
 </gene:insert>
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <!-- M.F. 13/02/2007 Aggiungo gli oggetti e le funzioni javascript per la gestione delle form e dei messaggi -->

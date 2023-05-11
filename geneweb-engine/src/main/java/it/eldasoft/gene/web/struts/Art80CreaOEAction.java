@@ -49,12 +49,14 @@ public class Art80CreaOEAction extends ActionBaseNoOpzioni {
 
       String codimp = request.getParameter("codimp");
       String codein = (String) request.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
+      String status_service = request.getParameter("status_service");
 
       List<Object> resultCreaOE = new Vector<Object>();
-      resultCreaOE = art80Manager.art80CreaOE(codimp, codein);
+      resultCreaOE = art80Manager.art80CreaOE(codimp, codein, status_service);
 
       request.getSession().setAttribute("codimp", codimp);
       request.getSession().setAttribute("resultCreaOE", resultCreaOE);
+      request.getSession().setAttribute("status_service", status_service);
 
     } catch (Exception e) {
       target = FORWARD_ERROR;

@@ -57,6 +57,7 @@
 		<result property="riepilogativo" column="riepilogativo" columnIndex="13" />
 		<result property="filtroEntPrinc" column="filtroEntPrinc" columnIndex="14" />
 		<result property="idRicercaSrc" column="id_ricerca_src" columnIndex="15" />
+		<result property="pdf" column="pdf" columnIndex="16" />
 	</resultMap>
 	<resultMap id="resultDatiGruppoModello"
 		class="it.eldasoft.gene.db.domain.genmod.DatiGruppoModello">
@@ -289,7 +290,7 @@
 		parameterClass="java.lang.Integer">
 		SELECT W_MODELLI.ID_MODELLO, W_MODELLI.TIPO, W_MODELLI.NOME, W_MODELLI.DESCR,	W_MODELLI.NOMEFILE, W_MODELLI.DISP,
 		W_MODELLI.CODAPP, W_MODELLI.OWNER, W_MODELLI.ENTPRINC, W_MODELLI.PROSPETTO, W_MODELLI.PERSONALE, W_MODELLI.PROFILO_OWNER, 
-		W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC, W_MODELLI.ID_RICERCA_SRC
+		W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC, W_MODELLI.ID_RICERCA_SRC, W_MODELLI.PDF
 		FROM W_MODELLI 
 		WHERE W_MODELLI.ID_MODELLO = #idModello#
 	</select>
@@ -317,16 +318,16 @@
 		       <isNotEmpty prepend="" property="nomeFile">NOMEFILE = #nomeFile#,</isNotEmpty> 
 					DISP = #disponibile#, CODAPP = #codiceApplicativo:VARCHAR# , ENTPRINC = #entPrinc:VARCHAR#,
 				PROSPETTO = #prospetto:NUMERIC#, PERSONALE = #personale#, RIEPILOGATIVO = #riepilogativo#, 
-				FILTROENTPRINC = #filtroEntPrinc:VARCHAR#, ID_RICERCA_SRC = #idRicercaSrc:NUMERIC#
+				FILTROENTPRINC = #filtroEntPrinc:VARCHAR#, ID_RICERCA_SRC = #idRicercaSrc:NUMERIC#, PDF = #pdf:NUMERIC#
 		WHERE ID_MODELLO = #idModello#
 	</update>
 
 	<insert id="insertModello" parameterClass="it.eldasoft.gene.db.domain.genmod.DatiModello">
-		INSERT INTO W_MODELLI (ID_MODELLO, TIPO, NOME, DESCR, NOMEFILE, DISP, CODAPP, OWNER, ENTPRINC, PROSPETTO, PERSONALE, PROFILO_OWNER, RIEPILOGATIVO, FILTROENTPRINC, ID_RICERCA_SRC)
+		INSERT INTO W_MODELLI (ID_MODELLO, TIPO, NOME, DESCR, NOMEFILE, DISP, CODAPP, OWNER, ENTPRINC, PROSPETTO, PERSONALE, PROFILO_OWNER, RIEPILOGATIVO, FILTROENTPRINC, ID_RICERCA_SRC, PDF)
 		VALUES (#idModello#, #tipoModello#, #nomeModello#,#descrModello:VARCHAR#, 
 				    #nomeFile#, #disponibile#, #codiceApplicativo:VARCHAR#, #owner:NUMERIC#,
 				    #entPrinc:VARCHAR#, #prospetto:NUMERIC#, #personale#, #profiloOwner:VARCHAR#,
-				    #riepilogativo:VARCHAR#, #filtroEntPrinc:VARCHAR#, #idRicercaSrc:NUMERIC#)
+				    #riepilogativo:VARCHAR#, #filtroEntPrinc:VARCHAR#, #idRicercaSrc:NUMERIC#, #pdf:NUMERIC#)
 	</insert>
 	
 	<!-- Query tabelle W_GRPMOD -->

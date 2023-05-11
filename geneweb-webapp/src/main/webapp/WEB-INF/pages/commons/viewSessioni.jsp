@@ -5,7 +5,7 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
-<html>
+<html lang="it">
 <head>
 <title>Sessioni Utente Connesse</title>
 <META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">

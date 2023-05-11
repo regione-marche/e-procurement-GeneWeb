@@ -48,6 +48,10 @@ public class ArchivioTagImpl {
   public static final String HIDE_INPUT_VALUE_CHIAVE        = "archValueChiave";
 
   public static final String HIDE_INPUT_WHERE_SU_LISTA      = "archWhereLista";
+  
+  public static final String HIDE_INPUT_WHERE_PARAMETRI_SU_LISTA = "archWhereParametriLista";
+
+  public static final String HIDE_INPUT_FUNCTION_ID         = "archFunctionId";
 
   public static final String HIDE_INPUT_INSERIBILE          = "archSiPuoInserire";
 
@@ -80,6 +84,10 @@ public class ArchivioTagImpl {
   private int                campoEnd;
 
   private String             where;
+  
+  private String             parametriWhere;
+  
+  private String             functionId;
 
   private boolean            inseribile;
 
@@ -117,6 +125,8 @@ public class ArchivioTagImpl {
     this.campoStart = parent.getCampoStart();
     this.campoEnd = parent.getCampoEnd();
     this.where = parent.getWhere();
+    this.parametriWhere = parent.getParametriWhere();
+    this.functionId = parent.getFunctionId();
     this.inseribile = parent.isInseribile();
     if (body == null) body = "";
     this.body = body;
@@ -317,7 +327,21 @@ public class ArchivioTagImpl {
   public String getWhere() {
     return where;
   }
-
+  
+  /**
+   * @return Returns the parametriWhere.
+   */
+  public String getParametriWhere() {
+    return parametriWhere;
+  }
+  
+  /**
+   * @return Returns the function ID.
+   */
+  public String getFunctionId() {
+    return functionId;
+  }
+  
   /**
    * @return Returns the inseribile.
    */

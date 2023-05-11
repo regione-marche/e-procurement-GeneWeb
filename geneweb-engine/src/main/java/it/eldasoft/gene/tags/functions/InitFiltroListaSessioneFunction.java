@@ -10,17 +10,17 @@
  */
 package it.eldasoft.gene.tags.functions;
 
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.tags.utils.AbstractFunzioneTag;
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.utils.properties.ConfigManager;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.tags.utils.AbstractFunzioneTag;
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.utils.properties.ConfigManager;
 
 /**
  * Funzione che elabora i filtri impostati nella pagina
@@ -44,13 +44,8 @@ public class InitFiltroListaSessioneFunction extends AbstractFunzioneTag {
       throws JspException {
 
     HttpSession sessione = pageContext.getSession();
-    String trovaAddWhere = UtilityTags.getParametro(pageContext,"trovaAddWhere");
-    if (!UtilityTags.isFreeFromSqlInjection(trovaAddWhere)) {
-      String message = "Rilevata condizione SQL potenzialmente afflitta da SQL Injection: " + trovaAddWhere;
-      logger.error(message);
-      throw new JspException(message);
-    }
-    String trovaParameter = UtilityTags.getParametro(pageContext,"trovaParameter");
+    String trovaAddWhere = UtilityTags.getParametro(pageContext,UtilityTags.DEFAULT_HIDDEN_WHERE_DA_TROVA);
+    String trovaParameter = UtilityTags.getParametro(pageContext,UtilityTags.DEFAULT_HIDDEN_PARAMETRI_DA_TROVA);
 
     String parametro = (String)params[1];
 

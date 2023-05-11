@@ -27,14 +27,20 @@
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDTIP_${param.contatore}" title="Tipo"      campoFittizio="true" definizione="T30;0;Ag030;;INDTIP" value="${indtip[param.contatore - 1]}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDIND_${param.contatore}" title="Indirizzo" campoFittizio="true" definizione="T60;0;;;INDIND" value="${indind[param.contatore - 1]}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDNC_${param.contatore}"  title="N.Civico"  campoFittizio="true" definizione="T10;0;;;INDNC" value="${indnc[param.contatore - 1]}" />
-		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDPRO_${param.contatore}" title="Provincia" campoFittizio="true" definizione="T4040;0;Agx15;;INDPROI" value="${indpro[param.contatore - 1]}" />
+		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDPRO_${param.contatore}" title="Provincia" campoFittizio="true" definizione="T4040;0;Agx15;;INDPROI" value="${indpro[param.contatore - 1]}">
+            <c:set var="functionId" value="default_${!empty indpro[param.contatore - 1]}" />
+            <c:if test="${!empty indpro[param.contatore - 1]}">
+                <c:set var="parametriWhere" value="T:${indpro[param.contatore - 1]}" />
+            </c:if>
+        </gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.INDCAP") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.INDPRO") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.INDLOC") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda=""
 				schedaPopUp=""
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3"
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
+				functionId="${functionId}"
+				parametriWhere="${parametriWhere}"
 				chiave=""
-				where='${gene:if(!empty indpro[param.contatore-1], gene:concat(gene:concat("TB1.TABCOD3 = \'", indpro[param.contatore-1]), "\'"), "")}'
 				formName="formIstatIndirizzo${param.contatore}"
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_INDPRO_${param.contatore}" definizione="T9" visibile="false"/>
@@ -56,14 +62,20 @@
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDTIP_${param.contatore}" title="Tipo" campoFittizio="true"      definizione="T30;0;Ag030;;INDTIP"  />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDIND_${param.contatore}" title="Indirizzo" campoFittizio="true" definizione="T60;0;;;INDIND" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDNC_${param.contatore}"  title="N.Civico" campoFittizio="true"  definizione="T10;0;;;INDNC" />
-		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDPRO_${param.contatore}" title="Provincia" campoFittizio="true" definizione="T40;0;Agx15;;INDPROI" />
+		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDPRO_${param.contatore}" title="Provincia" campoFittizio="true" definizione="T40;0;Agx15;;INDPROI">
+            <c:set var="functionId" value="default_${!empty indpro[param.contatore - 1]}" />
+            <c:if test="${!empty indpro[param.contatore - 1]}">
+                <c:set var="parametriWhere" value="T:${indpro[param.contatore - 1]}" />
+            </c:if>
+        </gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.INDCAP") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.INDPRO") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.INDLOC") and gene:checkProt(pageContext, "COLS.MOD.GENE.IMPIND.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
+				functionId="${functionId}"
+				parametriWhere="${parametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty indpro[param.contatore-1], gene:concat(gene:concat("TB1.TABCOD3 = \'", indpro[param.contatore-1]), "\'"), "")}' 
 				formName="formIstatIndirizzo${param.contatore}" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_INDPRO_${param.contatore}" definizione="T9" visibile="false"/>

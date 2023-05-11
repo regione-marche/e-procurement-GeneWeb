@@ -15,6 +15,7 @@
 				<ref bean="art80GetStatusAllTrigger" />
 				<ref bean="impostaStatoVerificheSchedulerTrigger" />
 				<ref bean="inviaConversazioniSchedulerTrigger" />
+				<ref bean="riconciliazionePECSchedulerTrigger" />
 			</list>
 		</property>
 		<property name="waitForJobsToCompleteOnShutdown" value="true" />

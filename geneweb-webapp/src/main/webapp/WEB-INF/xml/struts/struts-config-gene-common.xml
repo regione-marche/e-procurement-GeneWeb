@@ -43,6 +43,19 @@
 		
         <form-bean name="adminAccessForm" 
         	type="it.eldasoft.gene.web.struts.AdminAccessForm"/>
+        
+        <form-bean name="qeditorForm"
+			type="it.eldasoft.gene.commons.web.struts.QeditorForm" />
+			
+		<form-bean name="verificaFirmaForm"   
+		      type="org.apache.struts.action.DynaActionForm">
+		      <form-property name="idprg" type="java.lang.String"/>
+		      <form-property name="iddocdig" type="java.lang.Long"/>
+		      <form-property name="firmacheckts" type="java.util.Date"/>
+		      <form-property name="nomeFile" type="java.lang.String"/>
+		      <form-property name="firma" type="it.eldasoft.gene.web.struts.model.FirmaCheck"/>
+		</form-bean>
+		
 	</form-beans>
 
 	<global-forwards>
@@ -92,6 +105,17 @@
 		</action>
 		
 		<action path="/SpidLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+		
+		<action path="/SSOGatewayLogin"  type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="successPrepareLogin" path="/WEB-INF/pages/commons/redirect.jsp"/>
+		</action>
+		
+		<action path="/SSOGatewayLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false">
 			<forward name="success" path="/CheckProfilo.do" />
 			<forward name="successSkipProfili" path="/CheckVersione.do" />
@@ -524,6 +548,15 @@
 			scope="request" validate="false">
 		</action>
 		
+		<action path="/Art80SetServiceOE"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" >
+			<forward name="art80setserviceoesuccess" path="/WEB-INF/pages/gene/impr/impr-art80-setservice-oe-success.jsp" module="/" />
+			<forward name="art80setserviceoeerror" path="/WEB-INF/pages/gene/impr/impr-art80-setservice-oe.jsp" module="/" />
+		</action>
+		
+		<action path="/ScaricaTuttiAllegatiVerifiche" type="org.springframework.web.struts.DelegatingActionProxy" parameter="metodo" scope="request" validate="false" />
+		
 		<action path="/FirmaRemota"
 			type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false" >
@@ -532,6 +565,9 @@
 		</action>
 		
 		<action path="/SetFirmaDigitaleRemota" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo" />
+		
+		<action path="/RichiestaOTP" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false" parameter="metodo" />
 
 		<action path="/GetWTags" type="org.springframework.web.struts.DelegatingActionProxy"
@@ -550,6 +586,37 @@
 			scope="request" validate="false">
 		</action>
 		
+		<action path="/LoadQFormEditor" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		
+		<action path="/SaveQFormEditor" name="qeditorForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/geneweb/qeditor/qeditor.jsp" />
+			<forward name="error" path="/WEB-INF/pages/geneweb/qeditor/qeditor.jsp" />
+		</action>
+		
+		<action path="/PingQFormEditor" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/SetStatoQformlib" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/CopyQformlib" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/LoadQFormPreview" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<action path="/DeleteDatiPreviweQForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
 		<action parameter="/WEB-INF/pages/gene/admin/admin-access-form.jsp"
             path="/OpenAdminAccess" scope="request" type="it.eldasoft.gene.commons.web.struts.ForwardAction"/>
 		
@@ -559,6 +626,23 @@
             <forward name="successSkipProfili" path="/CheckVersione.do"/>
             <forward name="error" path="/WEB-INF/pages/gene/admin/admin-access-form.jsp"/>
         </action>
+        
+        <action path="/UltimiAccessi"
+		type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/WEB-INF/pages/commons/viewUltimiAccessi.jsp" module="/" />
+		</action>
+		
+		<action path="/ConfigurazioneTabellatiFG" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+		</action>
+		
+		<!-- Inserimento logiche per effettuare la verifica della firma tramite servizio maggioli esterno -->
+		<action path="/VerificaFirmaServizioEsterno" type="org.springframework.web.struts.DelegatingActionProxy" 
+						scope="request" validate="false" name="verificaFirmaForm">
+			<forward name="success" path="/WEB-INF/pages/gene/system/firmadigitale/verifica-firma-digitale-html.jsp" module="/" />
+		</action>
+		
 
 	</action-mappings>
 			

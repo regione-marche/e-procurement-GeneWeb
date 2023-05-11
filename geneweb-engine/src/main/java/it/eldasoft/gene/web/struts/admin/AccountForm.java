@@ -10,6 +10,12 @@
  */
 package it.eldasoft.gene.web.struts.admin;
 
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionMapping;
+
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.struts.DispatchForm;
@@ -19,12 +25,6 @@ import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.utility.UtilityDate;
 import it.eldasoft.utils.utility.UtilityNumeri;
 import it.eldasoft.utils.utility.UtilityStringhe;
-
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts.action.ActionMapping;
 
 /**
  * Form di gestione dell'Account
@@ -48,9 +48,13 @@ public class AccountForm extends DispatchForm {
   private final String[]          listaValueGenric    = CostantiGeneraliAccount.LISTA_VALUE_GENRIC;
   private final String[]          listaTextGenmod     = CostantiGeneraliAccount.LISTA_TEXT_GENMOD;
   private final String[]          listaValueGenmod    = CostantiGeneraliAccount.LISTA_VALUE_GENMOD;
+  private final String[]          listaTextQform     = CostantiGeneraliAccount.LISTA_TEXT_QFORM;
+  private final String[]          listaValueQform    = CostantiGeneraliAccount.LISTA_VALUE_QFORM;
   private final String[]          listaTextScadenza  =  CostantiGeneraliAccount.LISTA_TEXT_SCADENZA;
   private final String[]          listaTextAP         = CostantiGeneraliAccount.LISTA_TEXT_AP;
   private final String[]          listaValueAP        = CostantiGeneraliAccount.LISTA_VALUE_AP;
+  private final String[]          listaTextSelOp     = CostantiGeneraliAccount.LISTA_TEXT_SELOP;
+  private final String[]          listaValueSelOp    = CostantiGeneraliAccount.LISTA_VALUE_SELOP;
 
 
   private String            idAccount;
@@ -442,6 +446,14 @@ public class AccountForm extends DispatchForm {
     return listaValueGenric;
   }
 
+  public String[] getListaTextQform() {
+    return listaTextQform;
+  }
+
+  public String[] getListaValueQform() {
+    return listaValueQform;
+  }
+
   /**
    * @param opzioniGestioneProtezioni
    *        The opzioniGestioneProtezioni to set.
@@ -772,6 +784,14 @@ public class AccountForm extends DispatchForm {
 
   public void setAbilitazioneAP(String abilitazioneAP) {
     this.abilitazioneAP = abilitazioneAP;
+  }
+
+  public String[] getListaTextSelOp() {
+    return listaTextSelOp;
+  }
+
+  public String[] getListaValueSelOp() {
+    return listaValueSelOp;
   }
 
 }

@@ -64,17 +64,22 @@ public class GestoreRaggruppamento extends AbstractGestorePreload {
       try {
 
         String url_gateway = ConfigManager.getValore("art80.ws.url.gateway");
+        String gateway_multiuffint = ConfigManager.getValore("art80.gateway.multiuffint");
+        if (gateway_multiuffint == null) {
+          gateway_multiuffint = "1";
+        }
+        
         String select = null;
-        if ("1".equals(url_gateway)) {
+        if ("1".equals(url_gateway) && "1".equals(gateway_multiuffint)) {
           String codein = (String) pageContext.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
-          select = "SELECT CODIME9, CODDIC, NOMDIC, QUODIC, IMPMAN, CGENIMP, CFIMP, PIVIMP, ART80.STATO,ART80.DATA_RICHIESTA, ART80.DATA_LETTURA "
+          select = "SELECT CODIME9, CODDIC, NOMDIC, QUODIC, IMPMAN, CGENIMP, CFIMP, PIVIMP, ART80.STATO,ART80.DATA_RICHIESTA, ART80.DATA_LETTURA, ART80.SERVICE "
               + " FROM RAGIMP LEFT OUTER JOIN ART80 ON (RAGIMP.CODDIC = ART80.CODIMP AND ART80.CODEIN = '"
               + codein
               + "'), IMPR "
               + " WHERE RAGIMP.CODIME9 = ? "
               + " AND RAGIMP.CODDIC=IMPR.CODIMP";
         } else {
-          select = "select CODIME9, CODDIC, NOMDIC, QUODIC, IMPMAN, CGENIMP, CFIMP, PIVIMP, ART80_STATO, ART80_DATA_RICHIESTA, ART80_DATA_LETTURA from RAGIMP,IMPR where CODIME9 = ? and coddic=codimp";
+          select = "select CODIME9, CODDIC, NOMDIC, QUODIC, IMPMAN, CGENIMP, CFIMP, PIVIMP, ART80_STATO, ART80_DATA_RICHIESTA, ART80_DATA_LETTURA, ART80_SERVICE from RAGIMP,IMPR where CODIME9 = ? and coddic=codimp";
         }
 
         List<?> listaRaggruppamenti = sqlManager.getListVector(select, new Object[] { codimp });

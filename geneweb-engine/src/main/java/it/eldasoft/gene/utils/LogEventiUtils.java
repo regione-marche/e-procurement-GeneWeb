@@ -50,6 +50,7 @@ public class LogEventiUtils {
   public static final String COD_EVENTO_LOCK_LOGIN_UTENTE = "LOGIN_LOCK";
   public static final String COD_EVENTO_UNLOCK_LOGIN_UTENTE = "LOGIN_UNLOCK";
   public static final String COD_EVENTO_CHANGE_PROFILO = "CHANGE_USER_PROFILI";
+  public static final String COD_EVENTO_ACCESSO_SIMULTANEO = "ACCESSO_SIMULTANEO";
 
   /**
    * Crea un'istanza di LogEvento,prepopolandola con alcuni dati di default.

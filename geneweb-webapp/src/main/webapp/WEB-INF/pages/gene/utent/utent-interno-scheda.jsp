@@ -41,14 +41,20 @@
 	<gene:campoScheda campo="NCIUTE" />
 	<gene:campoScheda campo="CAPUTE" />
 	<gene:campoScheda campo="INDCOR" />
-	<gene:campoScheda campo="PROUTE" />
+	<gene:campoScheda campo="PROUTE">
+		<c:set var="functionId" value="default_${!empty datiRiga.UTENT_PROUTE}" />
+		<c:if test="${!empty datiRiga.UTENT_PROUTE}">
+			<c:set var="parametriWhere" value="T:${datiRiga.UTENT_PROUTE}" />
+		</c:if>
+	</gene:campoScheda>
 	<gene:archivio titolo="Comuni" 
 		obbligatorio="true"
 		lista="gene/commons/istat-comuni-lista-popup.jsp" 
 		scheda=""
-		schedaPopUp="" campi="TB1.TABCOD3;TABSCHE.TABDESC"
+		schedaPopUp="" campi="G_COMUNI.PROVINCIA;G_COMUNI.DESCRI"
+		functionId="${functionId}"
+		parametriWhere="${parametriWhere}"
 		chiave=""
-		where='${gene:if(!empty datiRiga.UTENT_PROUTE, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.UTENT_PROUTE), "\'"), "")}'
 		formName="formIstat" inseribile="false">
 		<gene:campoScheda campoFittizio="true" campo="COM_PROOPE" definizione="T9" visibile="false" />
 		<gene:campoScheda campo="LOCUTE" />

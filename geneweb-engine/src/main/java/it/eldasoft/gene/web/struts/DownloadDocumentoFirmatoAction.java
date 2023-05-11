@@ -116,8 +116,14 @@ public class DownloadDocumentoFirmatoAction extends ActionBaseNoOpzioni {
             if(doc == null){doc = p7m.getStream();}
             try{
           	  if (DOCUMENTO_MARCATO.equals(ext)) {
-                  byte[] docp7m = digitalSignatureChecker.getContentTimeStamp(doc);
-                  doc = digitalSignatureChecker.getContent(docp7m);
+                  byte[] innerDoc = digitalSignatureChecker.getContentTimeStamp(doc);
+                  if (DOCUMENTO_FIRMATO.equals(fileNameSplit[fileNameSplit.length - 2])) {
+                    doc = digitalSignatureChecker.getContent(innerDoc);
+                  } else {
+                    // caso di file non firmato ma solamente marcato temporalmente
+                    doc = innerDoc;
+                  }
+                  
           	  } else {
                   doc = digitalSignatureChecker.getContent(doc);
           	  }

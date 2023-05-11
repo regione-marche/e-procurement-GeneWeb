@@ -1,5 +1,14 @@
 package it.eldasoft.gene.tags.decorators.trova;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+
+import org.apache.log4j.Logger;
+
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
@@ -31,15 +40,6 @@ import it.eldasoft.utils.sql.comp.SqlComposer;
 import it.eldasoft.utils.sql.comp.SqlComposerException;
 import it.eldasoft.utils.utility.UtilityStringhe;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-
-import org.apache.log4j.Logger;
-
 public class CampoTrovaTag extends AbstractCampoBodyTag {
 
   static Logger              logger            = Logger.getLogger(CampoTrovaTag.class);
@@ -60,24 +60,27 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
   @Override
   public int doStartTag() throws JspException {
     FormTrovaTag form = (FormTrovaTag) getParent(FormTrovaTag.class);
-    if (form == null)
+    if (form == null) {
       throw new JspException(
-          "Attenzione il campo di trova deve trovarsi all'iterno "
-              + "di una form Trova !");
-    if ((this.getEntita() == null || this.getEntita().length() == 0)&& (!this.isComputed()))
+          "Attenzione il tag campoTrova deve trovarsi all'interno di un tag formTrova!");
+    }
+    if ((this.getEntita() == null || this.getEntita().length() == 0)&& (!this.isComputed())) {
       this.setEntita(form.getEntita());
+    }
 
     // anche per il campo
-    if (form.isGestisciProtezioni() && !this.isSetGestisciProtezioni())
+    if (form.isGestisciProtezioni() && !this.isSetGestisciProtezioni()) {
       this.setGestisciProtezioni(true);
+    }
 
     // Se non impostata prendo l'entita dalla form
-    if ((this.getEntita() == null) && (!this.isComputed())) this.setEntita(form.getEntita());
+    if ((this.getEntita() == null) && (!this.isComputed())) { this.setEntita(form.getEntita()); }
     String nomeCampo;
-    if (this.getEntita()!=null)
+    if (this.getEntita()!=null) {
         nomeCampo = this.getEntita() + "." + this.getCampo();
-    else
+    } else {
         nomeCampo = this.getCampo();
+    }
     Campo campo = DizionarioCampi.getInstance().getCampoByNomeFisico(nomeCampo);
     StringBuffer out = new StringBuffer();
     // Creo il nome del campo
@@ -91,8 +94,9 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
     }
 
     this.getDecoratore().setCampo(campo, this.pageContext);
-    if (this.getDecoratore().getGestore() != null)
+    if (this.getDecoratore().getGestore() != null) {
       this.setGestore(this.getDecoratore().getGestore().getClass().getName());
+    }
     this.getDecoratore().setNome(nomeCampo);
     this.getDecoratore().setFormName(form.getFormName());
 
@@ -120,8 +124,9 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
 
         if ((opzioniGenRicCompleto.test(opzioniUtente)
             || opzioniGenRicPersonale.test(opzioniUtente)
-            || opzioniGenModCompleto.test(opzioniUtente) || opzioniGenModPersonale.test(opzioniUtente)))
+            || opzioniGenModCompleto.test(opzioniUtente) || opzioniGenModPersonale.test(opzioniUtente))) {
           visualizzaVociStandardPopup = true;
+        }
       }
 
       if ("TIMESTAMP".equals(this.getDecoratore().getDominio())) {
@@ -136,11 +141,13 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
       out.append("<td class=\"etichetta-dato\">" + this.getTitle() + "</td>\n");
       out.append("<td class=\"operatore-trova\">\n");
       // Imposto tutti gli elementi nascosti con i dati obbligatori
-      out.append(UtilityTags.getHtmlHideInput(nomeCampo + "_where",
-          this.getWhere()));
 
-      out.append(UtilityTags.getHtmlHideInput(nomeCampo + "_from",
-            this.getFrom()));
+      // SQL Injection prevention: si spostano in sessione i campi "filtro" e tutte le where dai campi contenuti, in precedenza definiti
+      // come input hidden della form di ricerca
+      int popupLevel = UtilityTags.getNumeroPopUp(this.pageContext);
+      UtilityTags.putAttributeForSqlBuild(this.pageContext.getSession(), form.getEntita(), popupLevel, nomeCampo + "_where", this.getWhere());
+      UtilityTags.putAttributeForSqlBuild(this.pageContext.getSession(), form.getEntita(), popupLevel, nomeCampo + "_from", this.getFrom());
+
       out.append(UtilityTags.getHtmlHideInput(nomeCampo + "_computed",
               Boolean.toString(this.isComputed())));
       // Aggiungo l'eventuale gestore
@@ -226,13 +233,12 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
 	        out.append("</select>\n");
 	        out.append("</td>\n<td class=\"valore-dato-trova\">");
 
-	        //Creazione del campo nomeCampo+'Da' che rappresentqa il campo in cui inserire
+	        //Creazione del campo nomeCampo+'Da' che rappresenta il campo in cui inserire
 	        // il limite inferiore della data
 	        // Imposto tutti gli elementi nascosti con i dati obbligatori
-	        out.append(UtilityTags.getHtmlHideInput(nomeCampo + "Da_where",
-	            this.getWhere()));
-	        out.append(UtilityTags.getHtmlHideInput(nomeCampo + "Da_from",
-	            this.getFrom()));
+	        UtilityTags.putAttributeForSqlBuild(this.pageContext.getSession(), form.getEntita(), popupLevel, nomeCampo + "Da_where", this.getWhere());
+	        UtilityTags.putAttributeForSqlBuild(this.pageContext.getSession(), form.getEntita(), popupLevel, nomeCampo + "Da_from", this.getFrom());
+
 	        // Aggiungo l'eventuale gestore
 	        out.append(UtilityTags.getHtmlHideInput(nomeCampo + "Da_gestore",
 	            this.getGestore()));
@@ -410,43 +416,35 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
    *        Eventuale gestore di campo
    */
   private static void addExpressionToWhere(JdbcWhere where, JdbcColumn col,
-      String conf, Object val, char tipo, boolean caseSensitive,
-      SqlManager manager, AbstractGestoreTrova gestore, String gestoreCampo) {
+      String conf, Object val, char tipo, boolean caseSensitive, 
+      SqlManager manager, String gestoreCampo) {
     if (val == null && !("IS NULL".equals(conf) || "IS NOT NULL".equals(conf))) return;
-    if (gestore != null || (gestoreCampo != null && gestoreCampo.length() > 0)) {
-      // Se c'è un gestore allora verifico se è gestita la colonna
-      DataColumn colWithValue = new DataColumn(col.getTable(), col.getName(),
-          tipo);
-      colWithValue.setValue(new JdbcParametro(tipo, val));
-      // Se è gestito dal gestore allora esce
-      if (gestore != null
-          && gestore.gestisciCampo(where, colWithValue, conf, manager)) return;
-      if (gestoreCampo != null && gestoreCampo.length() > 0) {
-        Object lGestore = UtilityTags.createObject(gestoreCampo);
-        // Setto il gestore solo se è un gestore astratto di campo
-        if (lGestore instanceof AbstractGestoreCampo) {
-          AbstractGestoreCampo gestCampo = (AbstractGestoreCampo) lGestore;
-          // Chiamo la funzione di personalizzazione sul campo
-          Vector params = new Vector();
-          String whereTmp = gestCampo.gestisciDaTrova(params, colWithValue,
-              conf, manager);
-          if (whereTmp != null) {
-            JdbcParametro lPar[] = new JdbcParametro[params.size()];
-            for (int i = 0; i < params.size(); i++) {
-              lPar[i] = new JdbcParametro(JdbcParametro.TIPO_INDEFINITO,
-                  params.get(i));
-            }
-            where.append(new JdbcExpressionWhere(JdbcUtils.JDBC_PARTICELLA_AND));
-            where.append(new JdbcExpressionWhere(true));
-            where.append(new JdbcExpression(whereTmp, lPar));
-            where.append(new JdbcExpressionWhere(false));
-            return;
-          }
-        }
-      }
-
-    }
+    // Se c'è un gestore allora verifico se è gestita la colonna
+    DataColumn colWithValue = new DataColumn(col.getTable(), col.getName(),tipo);
+    	colWithValue.setValue(new JdbcParametro(tipo, val));
     // Verifico se e impostato un gestore di campo
+    if (gestoreCampo != null && gestoreCampo.length() > 0) {
+    	Object lGestore = UtilityTags.createObject(gestoreCampo);
+    	// Setto il gestore solo se è un gestore astratto di campo
+    	if (lGestore instanceof AbstractGestoreCampo) {
+    		AbstractGestoreCampo gestCampo = (AbstractGestoreCampo) lGestore;
+    		// Chiamo la funzione di personalizzazione sul campo
+    		Vector params = new Vector();
+    		String whereTmp = gestCampo.gestisciDaTrova(params, colWithValue,
+    				conf, manager);
+    		if (whereTmp != null) {
+    			JdbcParametro lPar[] = new JdbcParametro[params.size()];
+    			for (int i = 0; i < params.size(); i++) {
+    				lPar[i] = new JdbcParametro(JdbcParametro.TIPO_INDEFINITO,params.get(i));
+    			}
+    			where.append(new JdbcExpressionWhere(JdbcUtils.JDBC_PARTICELLA_AND));
+    			where.append(new JdbcExpressionWhere(true));
+    			where.append(new JdbcExpression(whereTmp, lPar));
+    			where.append(new JdbcExpressionWhere(false));
+    			return;
+    		}
+    		}
+    	}
 
     switch (tipo) {
     case JdbcParametro.TIPO_TESTO:
@@ -562,8 +560,7 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
    * @return true se settato un qualche filtro, false altrimenti
    */
   public static boolean addExpressionToWhere(HttpServletRequest request,
-      String nomeCampo, JdbcWhere where, boolean caseSensitive,
-      AbstractGestoreTrova gestore, HashMap filtriAltreTabelle) {
+      String nomeCampo, JdbcWhere where, boolean caseSensitive, HashMap filtriAltreTabelle) {
     boolean esito = true;
 
     SqlManager sql = (SqlManager) UtilitySpring.getBean("sqlManager",
@@ -578,10 +575,12 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
     String valore = UtilityStruts.getParametroString(request, nomeCampo);
     String entita = UtilityStruts.getParametroString(request,
         FormTrovaTag.CAMPO_ENTITA);
-    String sWhere = UtilityStruts.getParametroString(request, nomeCampo
-        + "_where");
-    String sFrom = UtilityStruts.getParametroString(request, nomeCampo
-        + "_from");
+
+    // SQL Injection prevention: si spostano in sessione i campi "filtro" e tutte le where dai campi contenuti, in precedenza definiti
+    // come input hidden della form di ricerca
+    int popupLevel = UtilityStruts.getNumeroPopUp(request);
+    String sWhere = UtilityTags.getAttributeForSqlBuild(request.getSession(), entita, popupLevel, nomeCampo + "_where");
+    String sFrom = UtilityTags.getAttributeForSqlBuild(request.getSession(), entita, popupLevel, nomeCampo + "_from");
     String sConf = UtilityStruts.getParametroString(request, nomeCampo
         + "_conf");
     String sGestore = UtilityStruts.getParametroString(request, nomeCampo
@@ -590,23 +589,23 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
             + "_computed");
 
     // Aggiungo la where solo se è stato settato un valore
-    if (valore == null && !("IS NULL".equals(sConf) || "IS NOT NULL".equals(sConf)))
+    if (valore == null && !("IS NULL".equals(sConf) || "IS NOT NULL".equals(sConf))) {
       esito = false;
-    else {
+    } else {
       JdbcColumn col = new JdbcColumn(null,
           UtilityDefinizioneCampo.getNomeFisicoFromDef(definizioneCampo));
       Object par = null;
       // controllo aggiunto per evitare problemi nei casi IS NULL e IS NOT NULL
       // (non hanno argomento)
       if (valore != null
-          && !("IS NULL".equals(sConf) || "IS NOT NULL".equals(sConf)))
+          && !("IS NULL".equals(sConf) || "IS NOT NULL".equals(sConf))) {
         par = UtilityStruts.getParameter(valore,
             UtilityDefinizioneCampo.getTipoFromDef(definizioneCampo));
+      }
       char tipo = UtilityStruts.getTipo(UtilityDefinizioneCampo.getTipoFromDef(definizioneCampo));
       //if ((col.getName() != null) || (col.getTable() != null && entita.compareToIgnoreCase(col.getTable().toString()) == 0)) {
       if (col.getTable() == null || entita.compareToIgnoreCase(col.getTable().toString()) == 0) {
-        addExpressionToWhere(where, col, sConf, par, tipo, caseSensitive, sql,
-            gestore, sGestore);
+        addExpressionToWhere(where, col, sConf, par, tipo, caseSensitive, sql, sGestore);
       } else {
         // se è un filtro non sull'entità principale provo a estrarlo dalla
         // hash, e se non lo trovo creo l'occorrenza corrispondente con la parte
@@ -644,7 +643,7 @@ public class CampoTrovaTag extends AbstractCampoBodyTag {
         // a questo punto si aggiunge la specifica condizione di filtro
         // impostata sul campo
         addExpressionToWhere(select.getWhere(), col, sConf, par, tipo,
-            caseSensitive, sql, gestore, sGestore);
+            caseSensitive, sql, sGestore);
       }
     }
 

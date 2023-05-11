@@ -10,16 +10,16 @@
  */
 package it.eldasoft.gene.db.dao.ibatis;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.dao.DataAccessException;
+
 import it.eldasoft.gene.bl.TabellatiManager;
 import it.eldasoft.gene.commons.web.spring.SqlMapClientDaoSupportBase;
 import it.eldasoft.gene.db.dao.TabellatiDao;
 import it.eldasoft.gene.db.domain.Tabellato;
 import it.eldasoft.gene.db.domain.TabellatoWsdm;
-
-import java.util.HashMap;
-import java.util.List;
-
-import org.springframework.dao.DataAccessException;
 
 /**
  * Classe di appoggio per l'esecuzione tramite estensione del framework Spring
@@ -37,6 +37,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
    *        Codice del tabellato da estrarre
    * @return Lista con codice
    */
+  @Override
   public List<Tabellato> getTabellati(String codiceTabellato) {
     return getTabellati(codiceTabellato,
         TabellatiManager.getNumeroTabellaByCodice(codiceTabellato));
@@ -52,6 +53,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
    *        Numero della tabella. Di default è la tabella 1
    * @return Lista con l'estrazione dei dati sul tabellato
    */
+  @Override
   @SuppressWarnings("unchecked")
   public List<Tabellato> getTabellati(String codiceTabellato, int numeroTabella) {
     switch (numeroTabella) {
@@ -77,6 +79,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
    * @see it.eldasoft.gene.db.dao.TabellatiDao#getTabellato(java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public Tabellato getTabellato(String codiceTabellato, String valoreTabellato) {
     @SuppressWarnings("rawtypes")
     HashMap<String, Comparable> map = new HashMap<String, Comparable>();
@@ -112,6 +115,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
    * @see it.eldasoft.gene.db.dao.TabellatiDao#getTabellato(java.lang.String,
    *      java.lang.String)
    */
+  @Override
   public String getDescrTabellato(String codiceTabellato, String valoreTabellato) {
     String descrizione = null;
 
@@ -121,9 +125,20 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
     return descrizione;
   }
 
+  @Override
+  public String getDescrSupplementare(String codiceTabellato, String valoreTabellato) {
+    String descrizione = null;
+
+    Tabellato tab = this.getTabellato(codiceTabellato, valoreTabellato);
+    if (tab != null) descrizione = tab.getDatoSupplementare();
+
+    return descrizione;
+  }
+
   /*
    * @see it.eldasoft.gene.db.dao.TabellatiDao#getElencoTabellati(java.lang.String)
    */
+  @Override
   @SuppressWarnings("unchecked")
   public List<Tabellato> getElencoTabellati(String codiceTabellato)
       throws DataAccessException {
@@ -133,6 +148,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
         hash);
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<String> getCampiTabellati(String schemaViste,String entita) throws DataAccessException {
     HashMap<String, Object> hash = new HashMap<String, Object>();
@@ -143,6 +159,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
     return getSqlMapClientTemplate().queryForList("getCampiTabellati", hash);
   }
 
+  @Override
   public void updateDescTabellato(String valoreCampo,String valoreChiave1,String valoreChiave2,String tabellato)throws DataAccessException {
     HashMap<String, String> hash = new HashMap<String, String>();
     if (tabellato.equals("TAB1")) {
@@ -154,6 +171,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
     }
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<TabellatoWsdm> getTabellatiWsdm(Long idconfi, String sistema, String codice) throws DataAccessException {
     HashMap<String, Object> hash = new HashMap<String, Object>();
@@ -163,6 +181,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
     return getSqlMapClientTemplate().queryForList("getTabellatiWsdm", hash);
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<TabellatoWsdm> getTabellatiFromIdconfiCftab(Long idconfi, String cftab) throws DataAccessException {
     HashMap<String, Object> hash = new HashMap<String, Object>();
@@ -171,6 +190,7 @@ public class SqlMapTabellatiDao extends SqlMapClientDaoSupportBase implements
     return getSqlMapClientTemplate().queryForList("getTabellatiFromIdconfiCftab", hash);
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<Tabellato> getElencoTabellatiWsdm(String codapp, String sistema, Long idconfi) throws DataAccessException {
     HashMap<String, Object> hash = new HashMap<String, Object>();

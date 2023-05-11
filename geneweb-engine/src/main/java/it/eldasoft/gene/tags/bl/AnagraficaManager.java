@@ -10,6 +10,13 @@
  */
 package it.eldasoft.gene.tags.bl;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Vector;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import it.eldasoft.gene.bl.GeneManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.bl.TabellatiManager;
@@ -18,13 +25,6 @@ import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.utility.UtilityFiscali;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Vector;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 
 /**
@@ -279,7 +279,7 @@ public class AnagraficaManager {
     if (messaggiHtml)
       messaggio = "Non è possibile procedere con la registrazione sul portale Appalti.";
 
-    String select = "select nomest,natgiui,tipimp,cfimp,pivimp,indimp,nciimp,proimp,capimp,locimp,nazimp,mgsflg,emaiip,emai2ip"
+    String select = "select nomest,natgiui,tipimp,cfimp,pivimp,indimp,nciimp,proimp,capimp,locimp,nazimp,mgsflg,emaiip,emai2ip,isgruppoiva"
         + " from impr where codimp = ?";
     Vector<?> datiIMPR = sqlManager.getVector(select, new Object[] { codimp });
 
@@ -318,8 +318,9 @@ public class AnagraficaManager {
 
       // Controllo Partita IVA
       valore = ((JdbcParametro) datiIMPR.get(4)).getStringValue();
+      String isGruppoIva = ((JdbcParametro) datiIMPR.get(14)).getStringValue();
       if ((valore == null || "".equals(valore))
-          && !this.saltareControlloObbligPiva(tipimp)) {
+          && ("1".equals(isGruppoIva) || !this.saltareControlloObbligPiva(tipimp))) {
         controlloSuperato = "NO";
         if (messaggiHtml)
           messaggio += "<br>Il campo Partita I.V.A. o V.A.T. non è valorizzato.";

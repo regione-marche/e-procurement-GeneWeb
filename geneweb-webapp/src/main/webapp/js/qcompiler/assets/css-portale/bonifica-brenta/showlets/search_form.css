@@ -1,0 +1,11 @@
+#search-form .text {
+	color: #004F7E;
+	border-radius: 4px 4px 4px 4px;
+}
+
+#search-form .button {
+	color: #fff;
+    border-radius: 4px 4px 4px 4px;
+	border: 1px solid #CCCCCC;
+}
+

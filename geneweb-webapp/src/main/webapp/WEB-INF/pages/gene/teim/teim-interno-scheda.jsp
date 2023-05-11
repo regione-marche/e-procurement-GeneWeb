@@ -50,14 +50,20 @@
 		</gene:campoScheda>
 		<gene:campoScheda campo="INDTIM"/>
 		<gene:campoScheda campo="NCITIM"/>
-		<gene:campoScheda campo="PROTIM"/>
+		<gene:campoScheda campo="PROTIM">
+			<c:set var="protimFunctionId" value="default_${!empty datiRiga.TEIM_PROTIM}" />
+			<c:if test="${!empty datiRiga.TEIM_PROTIM}">
+				<c:set var="protimParametriWhere" value="T:${datiRiga.TEIM_PROTIM}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.CAPTIM") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.PROTIM") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.LOCTIM") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.CITTEC"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT" 
+				functionId="${protimFunctionId}"
+				parametriWhere="${protimParametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty datiRiga.TEIM_PROTIM, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.TEIM_PROTIM), "\'"), "")}'  
 				formName="formIstat" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_PROTIM" definizione="T9" visibile="false"/>
@@ -67,14 +73,20 @@
 		</gene:archivio>
 		<gene:campoScheda campo="NAZTIM"/>
 		<gene:campoScheda campo="SEXTIM" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoSesso" />
-		<gene:campoScheda campo="PRONAS"/>
+		<gene:campoScheda campo="PRONAS">
+			<c:set var="pronasFunctionId" value="default_${!empty datiRiga.TEIM_PRONAS}" />
+			<c:if test="${!empty datiRiga.TEIM_PRONAS}">
+				<c:set var="pronasParametriWhere" value="T:${datiRiga.TEIM_PRONAS}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.PRONAS") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.CNATIM"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABDESC" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.DESCRI"
+				functionId="${pronasFunctionId}"
+				parametriWhere="${pronasParametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty datiRiga.TEIM_PRONAS, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.TEIM_PRONAS), "\'"), "")}'  
 				formName="formNascita" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="CNA_PNATIM" definizione="T9" visibile="false"/>
@@ -108,8 +120,8 @@
 				scheda="" 
 				schedaPopUp="" 
 				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC" 
+				functionId="skip"
 				chiave="" 
-				where=''  
 				formName="formAlbo" 
 				inseribile="false" >
 			<gene:campoScheda campo="PROALB"/>

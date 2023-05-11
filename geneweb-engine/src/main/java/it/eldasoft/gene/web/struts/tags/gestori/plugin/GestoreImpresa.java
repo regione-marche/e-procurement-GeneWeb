@@ -10,18 +10,6 @@
  */
 package it.eldasoft.gene.web.struts.tags.gestori.plugin;
 
-import it.eldasoft.gene.bl.GeneManager;
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
-import it.eldasoft.gene.tags.BodyTagSupportGene;
-import it.eldasoft.gene.tags.utils.SqlSelectTag;
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload;
-import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
-import it.eldasoft.utils.spring.UtilitySpring;
-
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -31,6 +19,19 @@ import java.util.Vector;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import it.eldasoft.gene.bl.GeneManager;
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.bl.TabellatiManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import it.eldasoft.gene.tags.BodyTagSupportGene;
+import it.eldasoft.gene.tags.utils.SqlSelectTag;
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload;
+import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
+import it.eldasoft.utils.spring.UtilitySpring;
 
 /**
  * Plugin per gestire il caricamento dei dati dinamici dell'impresa
@@ -73,6 +74,9 @@ public class GestoreImpresa extends AbstractGestorePreload {
     SqlManager sqlManager = (SqlManager) UtilitySpring.getBean("sqlManager",
         page, SqlManager.class);
 
+    TabellatiManager tabellatiManager = (TabellatiManager) UtilitySpring.getBean("tabellatiManager",
+        page, TabellatiManager.class);
+
     try {
 
       // si ottiene la chiave dell'entità padre, ovvero la IMPR
@@ -88,6 +92,23 @@ public class GestoreImpresa extends AbstractGestorePreload {
         pulisciPageContext(page);
       }
 
+      //Lettura del tabellato G_072 per l'abilitazione della gestione gruppo iva
+      String descTab = tabellatiManager.getDescrTabellato("G_072", "1");
+      if(descTab!=null && !"".equals(descTab)) {
+        descTab=descTab.substring(0, 1);
+        boolean gestioneGruppoIva=false;
+        if("1".equals(descTab))
+          gestioneGruppoIva=true;
+        page.setAttribute("isAttivaGestioneGruppoIva", gestioneGruppoIva, PageContext.REQUEST_SCOPE);
+      }
+
+      //Lettura del tabellato G_z13 per l'abilitazione della società cooperativa
+      descTab = (String) sqlManager.getObject(
+          "select tab2d1 from tab2 where tab2cod = ? and tab2tip = ? and (tab2arc is null or tab2arc = '2')",
+          new Object[] { "G_z13", "1" });
+      if(descTab!=null && !"".equals(descTab)) {
+        page.setAttribute("valoreSocCooperativa", descTab, PageContext.REQUEST_SCOPE);
+      }
 
       if ("VISUALIZZA".equals(modoAperturaScheda) || "MODIFICA".equals(modoAperturaScheda)) {
         //Per una ATI, nel caso di integrazione con portale alice e di ATI si deve ricavare

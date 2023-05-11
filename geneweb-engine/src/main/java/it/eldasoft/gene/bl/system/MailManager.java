@@ -111,6 +111,9 @@ public class MailManager {
    */
   public void updateConfigurazione(ConfigurazioneMail config) {
     ConfigurazioneMail configMail = this.ConfigurazioneMailManager.getConfigurazioneMailByCodappIdcfg(config.getCodapp(), config.getIdcfg());
+    if (config.getServerIMAP() != null && !config.getServerIMAP().isEmpty()
+        && (config.getPortaIMAP() == null || config.getPortaIMAP().isEmpty()))
+      config.setPortaIMAP("993");
     if (configMail != null){
       // si resetta la password se cambia il mittente, oppure si lascia quella presente in db
       if (configMail.getMailMitt() != null

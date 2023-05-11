@@ -342,42 +342,31 @@
 		
 	</tag>
 	
-	
 	<tag>
 		<name>formTrova</name>
 		<tag-class>it.eldasoft.gene.tags.decorators.trova.FormTrovaTag</tag-class>
 		<body-content>JSP</body-content>
-		<description>
-			Tag per la creazione di un form di ricerca
-			Parametri:
-				entita
-					Obblig. Nome dell'entita in cui eseguire il filtro
-				filtro
-					Eventuale filtro da aggiungere alla maschera di trova
-				where 
-					Eventuale filtro da aggiungere (se si tratta di un'altra tabella)
-				from
-					Eventuale from da aggiungere se percorso in piu' tabelle
-				lista
-					Eventuale lista di apertura. Se non settata apre la lista di default con nomeEntita-lista.jsp
-		</description>
+		<description>Tag per la creazione di un form di ricerca</description>
 
 		<attribute>
 			<name>entita</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
+			<description>Obblig. Nome dell'entita in cui eseguire il filtro</description>
 		</attribute>
 		
 		<attribute>
 			<name>filtro</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<description>Filtro di ricerca</description>
 		</attribute>
 		
 		<attribute>
 			<name>lista</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<description>Eventuale lista di apertura. Se non settata apre la lista di default con nomeEntita-lista.jsp</description>
 		</attribute>
 		
 		<attribute>
@@ -388,27 +377,25 @@
 		</attribute>
 		
 		<attribute>
-      <name>gestisciProtezioni</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.Boolean</type>
-      <description>
+      		<name>gestisciProtezioni</name>
+      		<required>false</required>
+      		<rtexprvalue>true</rtexprvalue>
+      		<type>java.lang.Boolean</type>
+      		<description>
 				Flag che dice se gestire o meno le protezioni sul campo. (true di default)
-      </description>
-    </attribute>
+      		</description>
+    	</attribute>
 		
 		<attribute>
 			<name>gestore</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
-        Gestore utilizzato per personalizzare le procedura di creazione delle where sui campi
-				Questo gestore deve estendere la classe: it.eldasoft.gene.tags.decorators.trova.AbstractGestoreTrova
-      </description>
+        		Gestore utilizzato per personalizzare le procedura di creazione delle where sui campi
+        		Questo gestore deve estendere la classe: it.eldasoft.gene.tags.decorators.trova.gestori.AbstractGestoreTrova
+      		</description>
 		</attribute>
-		
 	</tag>
-	
 	
 	<tag>
 		<name>campoTrova</name>
@@ -827,6 +814,15 @@
 				Flag che dice che si devono gestire i filtri sulle proprieta' delle righe
       </description>
     </attribute>
+	<attribute>
+		<name>plugin</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+		<description>
+        Gestore utilizzato per personalizzare il caricamento della pagina introducendo attributi negli oggetti impliciti ed eseguendo query
+				Questo gestore deve estendere la classe: it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload
+		</description>
+	</attribute>
   </tag>
 	
 	<!-- Campo della lista -->
@@ -1969,12 +1965,21 @@
       </description>
 		</attribute>
 		<attribute>
-			<name>where</name>
+			<name>parametriWhere</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 			<description>
-        Eventuale where da aggiungere alla lista dell'archivio.
+        Eventuali parametri necessari alla where da aggiungere alla lista dell'archivio (usare formato ENTITA.CAMPO=FORMATO:VALORE[;ENTITA.CAMPO=FORMATO:VALORE]).
+      </description>
+		</attribute>
+		<attribute>
+			<name>functionId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+			<description>
+        Eventuali discriminante per decidere come popolare la where ed i parametri nella sessione.
       </description>
 		</attribute>
 		<attribute>
@@ -2475,6 +2480,17 @@
 		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
 		<function-signature>
 			java.lang.String concat(java.lang.Object, java.lang.Object)
+		</function-signature>
+	</function>
+	
+	<function>
+		<name>matches</name>
+		<description>
+			Applica una regex ad una stringa
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.Boolean matches(java.lang.String, java.lang.String, java.lang.Boolean)
 		</function-signature>
 	</function>
 	

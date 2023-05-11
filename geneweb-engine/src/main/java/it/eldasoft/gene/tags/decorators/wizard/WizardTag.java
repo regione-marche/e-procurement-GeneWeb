@@ -13,7 +13,9 @@ package it.eldasoft.gene.tags.decorators.wizard;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.tags.BodyTagSupportGene;
 import it.eldasoft.gene.tags.templates.JspTemplateTag;
+import it.eldasoft.gene.tags.utils.KeyParamValidator;
 import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.metadata.cache.DizionarioTabelle;
 import it.eldasoft.utils.metadata.domain.Tabella;
 import it.eldasoft.utils.utility.UtilityStringhe;
@@ -25,6 +27,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Tag principale per la gestione di una creazione guidata. Al suo interno si
@@ -155,6 +159,14 @@ public class WizardTag extends BodyTagSupportGene {
   public int doStartTag() throws JspException {
     super.doStartTag();
 
+    final String key = UtilityTags.getParametro(pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA);
+    if (StringUtils.isNotBlank(key))
+    	KeyParamValidator.validate(key);
+    
+    final String keyParent = UtilityTags.getParametro(pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT);
+    if (StringUtils.isNotBlank(keyParent))
+    	KeyParamValidator.validate(keyParent);
+    
     // si verifica che l'entità principale indicata esista nei metadati
     Tabella tab = DizionarioTabelle.getInstance().getDaNomeTabella(
         this.entitaPrincipale);

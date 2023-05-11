@@ -190,6 +190,8 @@ public class VerificheInterneManager {
                                 new Object[] {"PG"} );
                       if (maxIDDOCDIG != null && maxIDDOCDIG.longValue()>0){
                         iddocdg  = maxIDDOCDIG.longValue() + 1;
+                      }else {
+                    	iddocdg = Long.valueOf(1);
                       }
                       impl.addColumn("W_DOCDIG.IDPRG", JdbcParametro.TIPO_TESTO,"PG");
                       impl.addColumn("W_DOCDIG.IDDOCDIG", JdbcParametro.TIPO_NUMERICO,iddocdg);

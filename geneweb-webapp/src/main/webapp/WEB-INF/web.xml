@@ -276,10 +276,6 @@
 		<filter-class>
 			it.eldasoft.gene.commons.web.XSSRequestFilter
 		</filter-class>
-		<init-param>
-		   <param-name>exclusionFields</param-name>
-		  <param-value>W_NOTE_NOTA1,W_NOTE_NOTA2,W_NOTE_NOTA3</param-value>
-		</init-param>
 	</filter>
 	
 	<filter-mapping>

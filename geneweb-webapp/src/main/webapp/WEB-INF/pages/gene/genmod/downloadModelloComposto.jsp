@@ -26,7 +26,7 @@
 <gene:setIdPagina schema="GENE" maschera="C0OGGASS-AssociaModelloComposto" />
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 
@@ -70,6 +70,9 @@
 	<tr>
 		<TD align="center">
 		<div class="titolomaschera">Composizione modello ${componiModelloForm.nomeModello} avvenuta con successo</div>
+		<div class="contenitore-errori-arealavoro">
+		<jsp:include page="/WEB-INF/pages/commons/serverMsg.jsp" />
+		</div>
 		<div class="contenitore-dettaglio">
 
 		<table class="lista">
@@ -116,7 +119,6 @@
 	<html:hidden property="valori"/>
 	<html:hidden property="paginaSorgente"/>
 	<html:hidden property="noFiltroEntitaPrincipale"/>
-	<html:hidden property="exportPdf"/>
 	<c:forEach items="${componiModelloForm.valChiavi}" var="chiave">
 		<input type="hidden" name="valChiavi" value="${chiave}"/>
 	</c:forEach>

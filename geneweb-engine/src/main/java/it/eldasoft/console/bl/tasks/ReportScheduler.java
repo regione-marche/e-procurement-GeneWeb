@@ -34,6 +34,7 @@ import it.eldasoft.gene.db.dao.QueryDaoException;
 import it.eldasoft.gene.db.dao.jdbc.ParametroStmt;
 import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.db.domain.admin.Account;
+import it.eldasoft.gene.db.domain.genmod.DatiModello;
 import it.eldasoft.gene.db.domain.genmod.ParametroComposizione;
 import it.eldasoft.gene.db.domain.genmod.ParametroModello;
 import it.eldasoft.gene.db.domain.genric.CampoRicerca;
@@ -45,6 +46,7 @@ import it.eldasoft.gene.db.domain.genric.RigaRisultato;
 import it.eldasoft.gene.db.domain.genric.TabellaRicerca;
 import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.utils.MailUtils;
+import it.eldasoft.gene.web.struts.genmod.ComponiModelloForm;
 import it.eldasoft.gene.web.struts.genmod.CostantiGenModelli;
 import it.eldasoft.gene.web.struts.genric.CostantiGenRicerche;
 import it.eldasoft.utils.io.export.DatiExport;
@@ -885,6 +887,8 @@ public class ReportScheduler {
                 } else {
                   if (CostantiSchedRic.FORMATO_EXCEL.equalsIgnoreCase(strFormato))
                     strFormato = CostantiSchedRic.ESTENSIONE_EXCEL;
+                  if(CostantiSchedRic.FORMATO_XLSX.equalsIgnoreCase(strFormato))
+                    strFormato = CostantiSchedRic.ESTENSIONE_XLSX;
                   nomeFileComposto = exportRisultato(formato.intValue(),
                       strFormato, idCodaSched, datiRisultato, contenitore);
                 }
@@ -961,6 +965,8 @@ public class ReportScheduler {
                 } else {
                   if (CostantiSchedRic.FORMATO_EXCEL.equalsIgnoreCase(strFormato))
                     strFormato = CostantiSchedRic.ESTENSIONE_EXCEL;
+                  if(CostantiSchedRic.FORMATO_XLSX.equalsIgnoreCase(strFormato))
+                    strFormato = CostantiSchedRic.ESTENSIONE_XLSX;
                   nomeFileComposto = exportRisultato(formato.intValue(),
                       strFormato, idCodaSched, datiRisultato, contenitore);
                 }
@@ -1076,6 +1082,8 @@ public class ReportScheduler {
               } else {
                 if (CostantiSchedRic.FORMATO_EXCEL.equalsIgnoreCase(strFormato))
                   strFormato = CostantiSchedRic.ESTENSIONE_EXCEL;
+                if(CostantiSchedRic.FORMATO_XLSX.equalsIgnoreCase(strFormato))
+                  strFormato = CostantiSchedRic.ESTENSIONE_XLSX;
                 nomeFileComposto = exportRisultato(formato.intValue(),
                     strFormato, idCodaSched, datiRisultato, contenitore);
               }
@@ -1117,6 +1125,10 @@ public class ReportScheduler {
       logger.error("Report eseguito con errori");
     } else if (stato == CostantiCodaSched.STATO_ESEGUITO_CON_WARNING) {
       logger.warn("Report eseguito con segnalazioni");
+      if (!bloccaReportVuoto) {
+    	  fileComposto = zippaESpostaFile(nomeFileComposto, pathSchedulazioni,
+    	          idCodaSched, pathFileReport, codiceApplicazione);
+      }
      } else {
       fileComposto = zippaESpostaFile(nomeFileComposto, pathSchedulazioni,
           idCodaSched, pathFileReport, codiceApplicazione);
@@ -1188,6 +1200,31 @@ public class ReportScheduler {
             contesto = account.getUfficioAppartenenza().toString();
 
           int idSessione = 0;
+			String logMessageKey = null;
+
+			// Nel caso il modello sia da convertire in PDF
+			if (datiProspetto.getDatiModello().getPdf() == 1) {
+				String[] listaEstPdf;
+				String nomeFile;
+				String estensione;
+
+				// Estraggo lista estensioni pdf per cui il modello puo' essere convertito in
+				// PDF
+				listaEstPdf = prospettoManager.getEstensioniModelloOutputPDF();
+				nomeFile = datiProspetto.getDatiModello().getNomeFile();
+				estensione = nomeFile.substring(nomeFile.lastIndexOf(".") + 1).toUpperCase();
+
+				// Verifico se l'estensione del modello è compatibile con
+				if (!Arrays.asList(listaEstPdf).contains(estensione) && !(listaEstPdf.length == 1 && "*".equals(listaEstPdf[0]))) {
+					stato = CostantiCodaSched.STATO_ESEGUITO_CON_WARNING;
+					logMessageKey = "warnings.prospetto.caricaProspetto.modelloNonConvertibilePDF";
+					msg = resBundleGenerale.getString(logMessageKey);
+
+					// messageKey = "warnings.modelli.componiModello.modelloNonConvertibilePDF";
+					// logger.warn(this.resBundleGenerale.getString(messageKey));
+					// ActionBase.aggiungiMessaggioInSessione(request, messageKey, null);
+				}
+			}
           // Verifica che il report con modello abbia o meno come parametro
           // l'idUtente. In caso positivo si effettua l'inserimento del parametro
           // nella W_COMPARAM e si invoca la composizione con parametri.

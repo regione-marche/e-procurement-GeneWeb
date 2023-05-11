@@ -17,6 +17,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereUFFINTFunction" />
+
 <c:set var="archiviFiltrati" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "it.eldasoft.associazioneUffintAbilitata.archiviFiltrati")}'/>
 
 <c:set var="filtroUffint" value=""/> 
@@ -31,7 +33,8 @@
 
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
 
-<c:set var="tmp" value='${trovaAddWhere}' /> 
+<c:set var="nomeContainerFiltri" value="deftrovaUFFINT-${empty param.numeroPopUp ? 0 : param.numeroPopUp}"/> 
+<c:set var="tmp" value="${sessionScope[nomeContainerFiltri].trovaAddFilter}" /> 
 
 <c:choose>
 	<c:when test='${(!empty tmp) and fn:contains(tmp, "IS NOT NULL")}' >
@@ -82,27 +85,13 @@
   <gene:javaScript>
   
 	function cambiaAbilitazione(abilitazione){
-					
-		var condizioneWhere = "";
-		if(abilitazione == 2){
-			condizioneWhere = "UFFINT.DATFIN IS NOT NULL";
-		}else{
-			condizioneWhere = "UFFINT.DATFIN IS NULL";
-		}
 		var parentFormName = eval('window.opener.activeArchivioForm');
-		if(parentFormName =="formUFFINTTORNAltriSogg" || parentFormName =="formUFFINTGareAltriSogg")
-			condizioneWhere += " and (UFFINT.ISCUC is null or UFFINT.ISCUC <>'1')";
-			
-		if(parentFormName =="formUFFINTG1AQSPESA"){
-			var condizioneWhereOriginale = eval("window.opener.document." + parentFormName + ".archWhereLista").value;
-			var posFiltroGARALTSOG = condizioneWhereOriginale.indexOf("and UFFINT.CODEIN IN");
-			if(posFiltroGARALTSOG > 0) {
-				condizioneWhere += " " + condizioneWhereOriginale.substring(posFiltroGARALTSOG);
-			}
-		}
+
+        var functionId = '${param.archFunctionId}'.split('|')[0];
+		functionId += "|abilitazione:" + abilitazione;
+		functionId += "_parentFormName:" + parentFormName.replace('formUFFINT', '');
 		
-		eval("window.opener.document." + parentFormName + ".archWhereLista").value = condizioneWhere;
-    	
+		eval('window.opener.document.' + parentFormName + '.archFunctionId').value = functionId;
     	
     	var nomeCampoArchivio = null;
 		if(parentFormName == "formUFFINTGare"){

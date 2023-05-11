@@ -138,6 +138,26 @@
 		    </td>
 		  </tr>
 		  <tr>
+		    <td class="etichetta-dato">Server IMAP</td>
+		    <td class="valore-dato">${cfgMailForm.serverIMAP}
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="etichetta-dato">Porta IMAP</td>
+		    <td class="valore-dato">${cfgMailForm.portaIMAP}</td>
+		  </tr>
+		  <% /*
+          <tr>
+		  	<td class="etichetta-dato">Protocollo IMAP</td>
+		  	<td class="valore-dato">
+		  		<c:choose>
+		  			<c:when test='${cfgMailForm.protocolloIMAP eq 0}'>Standard</c:when>
+		  			<c:when test='${cfgMailForm.protocolloIMAP eq 1}'>SSL</c:when>
+		  		</c:choose>
+		  	</td>
+          </tr>
+          */ %>
+		  <tr>
 		    <td class="etichetta-dato">Timeout attesa server (in millisecondi)</td>
 		    <td class="valore-dato">
 			    <c:if test='${!empty cfgMailForm.server}'>

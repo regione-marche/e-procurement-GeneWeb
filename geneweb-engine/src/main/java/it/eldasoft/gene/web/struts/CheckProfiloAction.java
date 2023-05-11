@@ -130,7 +130,7 @@ public class CheckProfiloAction extends ActionBaseNoOpzioni {
         // Rimozione dalla lista dei profili non validi (cioe' corrotti)
         if(profiliDaCancellare.size() > 0)
           for(int j = profiliDaCancellare.size() - 1; j >= 0; j--)
-            listaProfiliAccountByCodApp.remove(j);
+            listaProfiliAccountByCodApp.remove(profiliDaCancellare.get(j));
 
         if(listaProfiliAccountByCodApp.size() > 0){
           if(listaProfiliAccountByCodApp.size() == 1){

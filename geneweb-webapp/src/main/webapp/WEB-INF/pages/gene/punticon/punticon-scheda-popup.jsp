@@ -35,9 +35,10 @@
 						lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CAPEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.PROEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CITEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 						scheda="" 
 						schedaPopUp="" 
-						campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+						campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT" 
+						functionId="default_${!empty datiRiga.PUNTICON_PROEIN}"
+						parametriWhere="T:${datiRiga.PUNTICON_PROEIN}"
 						chiave="" 
-						where='${gene:if(!empty datiRiga.PUNTICON_PROEIN, gene:concat(gene:concat("TB1.TABCOD3 = \'", datiRiga.PUNTICON_PROEIN), "\'"), "")}'  
 						formName="formIstat" 
 						inseribile="false" >
 					<gene:campoScheda campoFittizio="true" campo="COM_PROEIN" definizione="T9" visibile="false"/>
@@ -58,6 +59,7 @@
 					schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
 					campi="TECNI.CODTEC;TECNI.NOMTEC" 
 					chiave="PUNTICON_CODRES"
+					functionId="skip"
 					formName="formResponsabile"
 					inseribile="false">
 						<gene:campoScheda campo="CODRES" />

@@ -29,6 +29,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda-popup.jsp","")}'
 			campi="TEIM.CODTIM;TEIM.NOMTIM"
+			functionId="skip"
 			chiave="G_IMPCOL_CODTEC_${param.contatore}"
 			formName="formTeimColl${param.contatore}">
 			<gene:campoScheda entita="G_IMPCOL" where="IMPR.CODIMP = G_IMPCOL.CODIMP" campo="CODTEC_${param.contatore}" campoFittizio="true" definizione="T10;0;;;G_CODTEC_C" value="${item[2]}" obbligatorio="true"/>
@@ -48,6 +49,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda-popup.jsp","")}'
 			campi="TEIM.CODTIM;TEIM.NOMTIM"
+			functionId="skip"
 			chiave="G_IMPCOL_CODTEC${param.contatore}"
 			formName="formTeimColl${param.contatore}">
 			<gene:campoScheda entita="G_IMPCOL" where="IMPR.CODIMP = G_IMPCOL.CODIMP" campo="CODTEC_${param.contatore}" campoFittizio="true" definizione="T10;0;;;G_CODTEC_C" obbligatorio="true" />

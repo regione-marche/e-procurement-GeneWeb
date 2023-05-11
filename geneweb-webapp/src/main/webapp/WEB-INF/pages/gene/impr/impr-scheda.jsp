@@ -55,7 +55,7 @@
 			<gene:pagina title="Attestazioni SOA" idProtezioni="CATE" selezionabile='${tipoImpresa[0] ne "3" and tipoImpresa[0] ne "10"}'>
 				<jsp:include page="impr-categorieIscrizione.jsp" />
 			</gene:pagina>
-			<gene:pagina title="${titleRaggruppamento}" idProtezioni="RAGIMP" selezionabile='${tipoImpresa[0]=="2" or tipoImpresa[0]== "3" or tipoImpresa[0]=="4" or tipoImpresa[0]=="10" or tipoImpresa[0]=="11" or (tipoImpresa[0]=="7" && ag0087raggr=="1") or (tipoImpresa[0]=="8" && ag0088raggr=="1") or (tipoImpresa[0]=="12" && ag00812raggr=="1")}'>
+			<gene:pagina title="${titleRaggruppamento}" idProtezioni="RAGIMP" visibile='${tipoImpresa[0]=="2" or tipoImpresa[0]== "3" or tipoImpresa[0]=="4" or tipoImpresa[0]=="10" or tipoImpresa[0]=="11" or (tipoImpresa[0]=="7" && ag0087raggr=="1") or (tipoImpresa[0]=="8" && ag0088raggr=="1") or (tipoImpresa[0]=="12" && ag00812raggr=="1")}'>
 				<jsp:include page="impr-raggruppamento.jsp" />
 			</gene:pagina>
 			<gene:pagina title="DURC on line" idProtezioni="DURC" selezionabile='${flagSoggdurc[0] eq "1" and tipoImpresa[0] ne "3" and tipoImpresa[0] ne "10"}'>

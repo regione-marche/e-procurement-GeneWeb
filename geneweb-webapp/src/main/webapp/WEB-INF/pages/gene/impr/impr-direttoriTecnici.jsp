@@ -28,6 +28,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda-popup.jsp","")}'
 			campi="TEIM.CODTIM;TEIM.NOMTIM"
+			functionId="skip"
 			chiave="IMPDTE_CODDTE_${param.contatore}"
 			formName="formTeim${param.contatore}">
 			<gene:campoScheda entita="IMPDTE" where="IMPR.CODIMP = IMPDTE.CODIMP3" campo="CODDTE_${param.contatore}" campoFittizio="true" definizione="T10;0;;;CODDTE" value="${item[1]}" obbligatorio="true" />
@@ -46,6 +47,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTeim"),"gene/teim/teim-scheda-popup.jsp","")}'
 			campi="TEIM.CODTIM;TEIM.NOMTIM"
+			functionId="skip"
 			chiave="IMPDTE_CODDTE_${param.contatore}"
 			formName="formTeim${param.contatore}">
 			<gene:campoScheda entita="IMPDTE" where="IMPR.CODIMP = IMPDTE.CODIMP3" campo="CODDTE_${param.contatore}" campoFittizio="true" definizione="T10;0;;;CODDTE" obbligatorio="true" />

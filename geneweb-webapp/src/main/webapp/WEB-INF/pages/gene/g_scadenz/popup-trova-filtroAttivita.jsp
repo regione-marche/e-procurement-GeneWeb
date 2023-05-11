@@ -33,7 +33,7 @@
 	<c:set var="modo" value="MODIFICA" scope="request" />
 	
 	<gene:redefineInsert name="corpo">
-  		<gene:formTrova entita="G_SCADENZ"  >
+  		<gene:formTrova entita="G_SCADENZ" gestore="it.eldasoft.gene.tags.decorators.trova.gestori.G_SCADENZGestoreTrova" >
   			<gene:campoTrova campo="TIPOEV" />
 			<gene:campoTrova campo="DATAFI" />
 			<gene:campoTrova campo="DATACONS" />
@@ -41,7 +41,7 @@
 				<td class="etichetta-dato">Stato</td>
 				<td class="operatore-trova"/>
 				<td class="valore-dato-trova">
-					<select id="CampoFitt" name="CampoFitt" title="Stato" onchange="javascript:impostaFiltro(this.options[this.selectedIndex].value);"   >
+					<select id="CampoFitt" name="CampoFitt" title="Stato">
 						<option value="0" selected="selected"></option>
 						<option value="1" >Completata</option>
 						<option value="2" >Da svolgere</option>
@@ -63,19 +63,6 @@
             document.getElementById("risultatiPerPagina").options[indiceSelezionato].value = attivitaPerPagina;
             document.getElementById("risultatiPerPagina").options[indiceSelezionato].innerHTML = attivitaPerPagina;
 			document.getElementById("risultatiPerPagina").disabled=true
-			
-			
-			function impostaFiltro(valore){
-								
-				if(valore==1)
-					document.forms[0].filtro.value = "G_SCADENZ.DATACONS is not null";
-				else if(valore==2)
-					document.forms[0].filtro.value = "G_SCADENZ.DATACONS is null";
-				else
-					document.forms[0].filtro.value ="";
-				
-			}
-			
 		</gene:javaScript>
 		
 	</gene:redefineInsert>

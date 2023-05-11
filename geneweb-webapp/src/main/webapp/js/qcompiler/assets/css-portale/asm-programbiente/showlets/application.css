@@ -1,0 +1,232 @@
+/* =ERRORS-AND-MESSAGES */
+
+.error,
+.errors, 
+.required-field {
+	color: #FF0000;
+}
+
+.warnings {
+	color: #0000FF;
+}
+
+/* =BALLOON */
+
+.balloon {
+	background-color: #D7DFE8;
+	border: 1px solid #2168B1;
+}
+
+/* =TABLES */
+
+.wizard-table .button {
+	font-size: 1.1em;
+}
+
+.wizard-table td,
+.info-table td {
+	padding: 4px 8px;
+}
+
+.info-table th {
+	font-size: .9em;
+}
+
+.light-table,
+.light-table th,
+.light-table td {
+	border: 0;
+	color: #000;
+}
+
+.light-table th {
+	background-color: #FFF;
+	font-size: .9em;
+}
+
+.light-table td {
+	background: none;
+}
+
+.balloon a {
+	color: #043F56;
+}
+
+/* =DETAIL-FORM */
+
+.instructions {
+	padding: 0 0 10px 20px;	
+}
+
+fieldset {
+	border: 1px solid #2168B1;
+}
+
+legend {
+	background-color: #EAEAEA;
+	border: 1px solid #2168B1;
+	color: #2168B1;
+	padding: 5px;
+}
+
+.element input, 
+.element select,
+.element textarea {
+	background-color: #FAFAFA;
+	border: 1px solid #DFDFDF;
+}
+
+.element .no-editable {
+	background: none;
+	border: 0;	
+}
+
+.fieldset-row {
+	border:1px dotted #CCC;
+}
+
+.fieldset-row:hover {
+	border: 1px solid #2168B1;
+}
+
+.portgare-list label, 
+.portgare-view label {
+	font-weight: bold;
+	line-height: 1.8em;
+	padding: 4px 8px;
+}
+
+.label {
+	border-right: 1px dotted #CCC;
+	font-weight: bold;
+}
+
+.element label {
+	color: #333;
+	font-weight: bold;
+}
+
+div div.note {
+	background-color: #CCDDFF;
+	border: 1px dotted silver;
+}
+
+.portgare-view .button,
+.portgare-list .button{
+	font-size: 1em;
+}
+
+.detail-section {
+	padding: 0 20px;
+}
+
+.detail-section-title {
+	color: #1C1C1C;
+	font-size: 1em;
+	font-weight: bold;
+	letter-spacing: .5px;
+	padding-top: 20px;
+	text-decoration: underline;	
+}
+
+.detail-row {
+	padding: .7em 0;
+}
+
+.back-link {
+	padding-right: 10px;
+}
+
+/* =LIST-FORM */
+
+.list-item {
+	background: linear-gradient(to bottom, #FEFEFE 0%, #F9F9F9 100%) repeat scroll 0 0 #FEFEFE;
+	border: 1px solid #E1E1E1;
+	border-radius: 8px;
+	padding-left: .6em;
+}
+
+/* =SIGN-AND-SEND-FORM */
+
+#sign_and_send {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+/* =MENU-FORM */
+
+.menu-gestione {
+	background-color: #FFF;
+	border: 1px solid #D4D4D4;
+}
+
+.menu-gestione li {
+	border-bottom: 1px solid #D4D4D4;
+}
+
+.menu-gestione li:hover {
+	background-color: #0073A8;
+}
+
+.menu-gestione li:hover a, 
+.menu-gestione li:focus a {
+	color: #FFF;
+	text-decoration: none;
+}
+
+.menu-gestione li.disabled a {
+	color: #C4C4C4;
+}
+
+.menu-gestione li.disabled:hover, 
+.menu-gestione li.disabled:focus {
+	background-color: #FFF;
+}
+
+.menu-gestione li.disabled:hover a, 
+.menu-gestione li.disabled:focus a {
+	color: #C4C4C4;
+}
+
+.menu-gestione .info {
+	color: #444;
+}
+
+/* =CHANGE-PASSWORD-FORM */
+
+#change_password_form input.text {
+	background: url("../../../img/asm-programbiente/protected-input-bg.png") repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+	border: 1px solid #DADADA;
+	color: #4E4E4E;
+	padding: 4px 8px;
+}
+
+#change_password_form label.error {
+	color: #B70039;
+}
+
+/* =WIZARD-STEPS */
+
+.steps {
+	border-bottom-color: #2168B1;
+}
+
+.current-step {
+	background-color: #2168B1;
+	padding: 4px 4px 6px;
+	color: #FFF;
+}
+
+/* =PAGINATION */
+
+#pagination-navi .nav-page-button {
+	background: #FFF;
+	border: 1px solid #2168B1;
+	border-radius: 6px;
+	color: #2168B1;
+}
+
+#pagination-navi .selected {
+	background-color: #2168B1;
+	color: #FFF;
+}

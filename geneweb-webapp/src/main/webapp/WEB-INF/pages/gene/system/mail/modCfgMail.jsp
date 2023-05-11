@@ -22,56 +22,57 @@
 	<tiles:put name="head" type="string">
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/controlliFormali.js"></script>
 <script type="text/javascript">
-<!--
-function gestisciSubmit(){
-	var continua = true;
-	if(continua && !controllaCampoInputObbligatorio(document.cfgMailForm.idcfg, 'Configurazione')){
-		continua = false;
-	}
-	if(continua && !controllaCampoInputObbligatorio(document.cfgMailForm.server, 'Server')){
-		continua = false;
-	}
-	if(continua && !isIntero(document.cfgMailForm.porta.value, false)){
-		alert("Il campo 'Porta' prevede un valore intero");
-		document.cfgMailForm.porta.focus();
-	    continua = false;
-	}
-	if(continua && !isIntero(document.cfgMailForm.timeout.value, true, false)){
-		alert("Il campo 'Timeout attesa server (in millisecondi)' prevede un valore intero");
-		document.cfgMailForm.timeout.focus();
-	    continua = false;
-	}
-	if(continua && !isIntero(document.cfgMailForm.delay.value, true, false)){
-		alert("Il campo 'Delay tra invii ripetuti di email (in millisecondi)' prevede un valore intero");
-		document.cfgMailForm.delay.focus();
-	    continua = false;
-	}
-	if(continua && !controllaCampoInputObbligatorio(document.cfgMailForm.mail, 'Mail mittente')){
-		continua = false;
-	}
-	if(continua && !isEmailFormatoValido(document.cfgMailForm.mail)){
-		continua = false;
-	}
-	if(continua && !isIntero(document.cfgMailForm.maxMb.value,false)){
-		alert("Il campo 'Limite dimensione totale allegati' prevede un valore intero");
-		document.cfgMailForm.maxMb.focus();
-		continua = false;
-	}
-		
-	if(continua)
-		document.cfgMailForm.submit();
-}
-
-function annulla(){
-	if(document.getElementById('idcfgPar')!=null && document.getElementById('idcfgPar').value != ''){
-		document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=visualizza&idcfg=${param.idcfg}';
-	}else{
-		document.location.href='ListaConfigurazioniMail.do?'+csrfToken+'&metodo=lista';
+	function gestisciSubmit(){
+		var continua = true;
+		if(continua && !controllaCampoInputObbligatorio(document.cfgMailForm.idcfg, 'Configurazione')){
+			continua = false;
+		}
+		if(continua && !controllaCampoInputObbligatorio(document.cfgMailForm.server, 'Server')){
+			continua = false;
+		}
+		if(continua && !isIntero(document.cfgMailForm.porta.value, false)){
+			alert("Il campo 'Porta' prevede un valore intero");
+			document.cfgMailForm.porta.focus();
+		    continua = false;
+		}
+		if(continua && !isIntero(document.cfgMailForm.portaIMAP.value, false)) {
+			alert("Il campo 'Porta IMAP' prevede un valore intero")
+			document.cfgMailForm.portaIMAP.focus();
+			continua = false;
+		}
+		if(continua && !isIntero(document.cfgMailForm.timeout.value, true, false)){
+			alert("Il campo 'Timeout attesa server (in millisecondi)' prevede un valore intero");
+			document.cfgMailForm.timeout.focus();
+		    continua = false;
+		}
+		if(continua && !isIntero(document.cfgMailForm.delay.value, true, false)){
+			alert("Il campo 'Delay tra invii ripetuti di email (in millisecondi)' prevede un valore intero");
+			document.cfgMailForm.delay.focus();
+		    continua = false;
+		}
+		if(continua && !controllaCampoInputObbligatorio(document.cfgMailForm.mail, 'Mail mittente')){
+			continua = false;
+		}
+		if(continua && !isEmailFormatoValido(document.cfgMailForm.mail)){
+			continua = false;
+		}
+		if(continua && !isIntero(document.cfgMailForm.maxMb.value,false)){
+			alert("Il campo 'Limite dimensione totale allegati' prevede un valore intero");
+			document.cfgMailForm.maxMb.focus();
+			continua = false;
+		}
+			
+		if(continua)
+			document.cfgMailForm.submit();
 	}
 	
-	
-}
--->
+	function annulla(){
+		if(document.getElementById('idcfgPar')!=null && document.getElementById('idcfgPar').value != ''){
+			document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=visualizza&idcfg=${param.idcfg}';
+		}else{
+			document.location.href='ListaConfigurazioniMail.do?'+csrfToken+'&metodo=lista';
+		}
+	}
 </script>
 	</tiles:put>
 
@@ -142,6 +143,29 @@ function annulla(){
 				</select>
 		    </td>
 		  </tr>
+		  <tr>
+		    <td class="etichetta-dato">Server IMAP</td>
+		    <td class="valore-dato">
+				<html:text property="serverIMAP" size="20" maxlength="40" />
+		    </td>
+		  </tr>
+		  <tr>
+		    <td class="etichetta-dato">Porta IMAP</td>
+		    <td class="valore-dato">
+		    	<html:text property="portaIMAP" size="10" maxlength="10" /> (vale 993 se non valorizzato)
+		    </td>
+		  </tr>
+          <% /*
+		  <tr>
+		    <td class="etichetta-dato">Protocollo IMAP</td>
+		    <td class="valore-dato">
+				<select name="protocolloIMAP">
+					<option value="0" <c:if test="${cfgMailForm.protocolloIMAP eq '0'}">selected="selected"</c:if>>IMAP</option>
+					<option value="1" <c:if test="${cfgMailForm.protocolloIMAP eq '1'}">selected="selected"</c:if>>IMAP + SSL (IMAPS)</option>
+				</select>
+		    </td>
+		  </tr>
+          */ %>
 		  <tr>
 		    <td class="etichetta-dato">Timeout attesa server (in millisecondi)</td>
 		    <td class="valore-dato">

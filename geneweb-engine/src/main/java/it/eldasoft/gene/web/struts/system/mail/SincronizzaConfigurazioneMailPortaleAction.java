@@ -10,18 +10,6 @@
  */
 package it.eldasoft.gene.web.struts.system.mail;
 
-import it.eldasoft.gene.bl.system.MailManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
-import it.eldasoft.gene.commons.web.struts.ActionBase;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.system.ConfigurazioneMail;
-import it.eldasoft.utils.profiles.CheckOpzioniUtente;
-import it.eldasoft.utils.properties.ConfigManager;
-import it.eldasoft.www.PortaleAlice.EsitoOutType;
-import it.eldasoft.www.PortaleAlice.PortaleAliceProxy;
-import it.eldasoft.www.PortaleAlice.ProtocolloMail;
-
 import java.io.IOException;
 import java.rmi.RemoteException;
 
@@ -35,6 +23,18 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.dao.DataAccessException;
 
+import it.eldasoft.gene.bl.system.MailManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
+import it.eldasoft.gene.commons.web.struts.ActionBase;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.system.ConfigurazioneMail;
+import it.eldasoft.utils.profiles.CheckOpzioniUtente;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.www.PortaleAlice.EsitoOutType;
+import it.eldasoft.www.PortaleAlice.PortaleAliceProxy;
+import it.eldasoft.www.PortaleAlice.ProtocolloMail;
+
 /**
  * Action per la gestione della sincronizzazione dei parametri di posta sul
  * Portale.
@@ -44,6 +44,8 @@ import org.springframework.dao.DataAccessException;
 public class SincronizzaConfigurazioneMailPortaleAction extends ActionBase {
 
   static Logger               logger                            = Logger.getLogger(ConfigurazioneMailAction.class);
+
+  private final static String COD_ERRORE_SYNC                   = "SYNC-DENIED";
 
   private MailManager         mailManager;
 
@@ -127,7 +129,11 @@ public class SincronizzaConfigurazioneMailPortaleAction extends ActionBase {
       if(risultato.isEsitoOk()){
         this.aggiungiMessaggio(request, "info.mail.sync.portale.ok");
       } else {
-        this.aggiungiMessaggio(request, "errors.mail.sync.portale.inaspettato", risultato.getCodiceErrore());
+        String codErrore= risultato.getCodiceErrore();
+        if(COD_ERRORE_SYNC.equals(codErrore))
+          this.aggiungiMessaggio(request, "errors.mail.sync.portale.noAutomatica", null);
+        else
+          this.aggiungiMessaggio(request, "errors.mail.sync.portale.inaspettato", risultato.getCodiceErrore());
       }
 
     } catch (DataAccessException e) {

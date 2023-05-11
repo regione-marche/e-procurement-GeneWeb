@@ -80,6 +80,7 @@ public class AccediAltroApplicativoAction extends ActionBaseNoOpzioni {
     html.append("<head>");
     html.append("<META http-equiv=\"Pragma\" content=\"no-cache\">");
     html.append("<META http-equiv=\"Expires\" content=\"-1\">");
+    html.append("<script src=\"").append(url).append("/csrfguard\"></script>");
     html.append("</head>");
     html.append("<body onload=\"javascript:document.forms[0].submit();\">");
     html.append("  <form action=\"").append(url).append(

@@ -18,7 +18,8 @@
 
 
 	<c:set var="contextPath" value="${pageContext.request.contextPath}" />
-
+	<c:set var="opreload" value="${param.opreload}" />
+	
 	<gene:redefineInsert name="head" >
 		<link rel="stylesheet" href="${contextPath}/css/jquery/treeview/jquery.treeview.css">
 		<script type="text/javascript" src="${contextPath}/js/jquery.cookie.js"></script>
@@ -110,6 +111,40 @@
 					</tr>
 				</c:when>
 				<c:otherwise>
+	
+					<tr>
+						<td colspan="2"><b><br>Download dei documenti<b></td>
+					</tr>
+					<c:if test="${!empty dignomdoc_tsd}">
+						<tr>
+							<td class="etichetta-dato">Documento marcato</td>
+							<td class="valore-dato">
+								<a href="javascript:downloadDocumentoFirmato('${idprg}', '${iddocdig}', 'tsd');">
+									${dignomdoc_tsd}	
+								</a>
+							</td>
+						</tr>
+					</c:if>
+					<c:if test="${!empty dignomdoc_p7m}">
+						<tr>
+							<td class="etichetta-dato">Documento firmato</td>
+							<td class="valore-dato">
+								<a href="javascript:downloadDocumentoFirmato('${idprg}', '${iddocdig}', 'p7m');">
+									${dignomdoc_p7m}	
+								</a>
+							</td>
+						</tr>
+					</c:if>
+					<tr>
+						<td class="etichetta-dato">Documento contenuto</td>
+						<td class="valore-dato">
+							<a href="javascript:downloadDocumentoFirmato('${idprg}', '${iddocdig}', 'doc');">
+								${dignomdoc_doc}
+							</a>
+						</td>
+					</tr>
+
+					<c:if test="${! empty verificaFirmaDigitaleXML}">
 					<x:parse var="xverificaFirmaDigitale" xml="${verificaFirmaDigitaleXML}" />
 					<x:if select='count($xverificaFirmaDigitale) > 0'>
 					
@@ -144,39 +179,7 @@
 								</td>
 							</tr>	
 						</c:if>
-					
-						<tr>
-							<td colspan="2"><b><br>Download dei documenti<b></td>
-						</tr>
-						<c:if test="${!empty dignomdoc_tsd}">
-							<tr>
-								<td class="etichetta-dato">Documento marcato</td>
-								<td class="valore-dato">
-									<a href="javascript:downloadDocumentoFirmato('${idprg}', '${iddocdig}', 'tsd');">
-										${dignomdoc_tsd}	
-									</a>
-								</td>
-							</tr>
-						</c:if>
-						<c:if test="${!empty dignomdoc_p7m}">
-							<tr>
-								<td class="etichetta-dato">Documento firmato</td>
-								<td class="valore-dato">
-									<a href="javascript:downloadDocumentoFirmato('${idprg}', '${iddocdig}', 'p7m');">
-										${dignomdoc_p7m}	
-									</a>
-								</td>
-							</tr>
-						</c:if>
-						<tr>
-							<td class="etichetta-dato">Documento contenuto</td>
-							<td class="valore-dato">
-								<a href="javascript:downloadDocumentoFirmato('${idprg}', '${iddocdig}', 'doc');">
-									${dignomdoc_doc}
-								</a>
-							</td>
-						</tr>
-					
+
 						<tr>
 							<td colspan="2">
 								<b><br>Lista delle firme</b>
@@ -419,8 +422,9 @@
 							</td>
 						</tr>
 					</x:if>
-					<c:if test="${! empty verificaMarcheTemporaliXML}">
+					</c:if>
 					
+					<c:if test="${! empty verificaMarcheTemporaliXML}">
 					<x:parse var="xverificaMarcheTemporali" xml="${verificaMarcheTemporaliXML}" />
 					<x:if select='count($xverificaMarcheTemporali) > 0'>
 						<tr>
@@ -489,6 +493,12 @@
 	</gene:redefineInsert>
 
 	<gene:javaScript>
+	
+		window.onload = function () { 
+			if(${opreload == '1'}){
+				window.opener.historyReloadWithoutPopUps();
+			}
+		};
 	
 		$("#gray").treeview({
 			animated: "slow",

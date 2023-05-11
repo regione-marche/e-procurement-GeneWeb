@@ -50,20 +50,18 @@ public class GestoreCampoCodEvento extends AbstractGestoreCampoTabellato {
       List<?> tab = sqlManager.getListVector(selectQuery,new Object[]{moduloAttivo} );
       //eseguo la query sulla tabella w_profili per ottenere tutti i valori che poi scriverò nel file
       if (tab != null && tab.size() > 0) {
-        logger.info("QUERY SIZE "+ tab.size());
-        logger.info("TROVATO: "+tab.get(0).toString());
+        logger.debug("QUERY SIZE "+ tab.size());
+        logger.debug("TROVATO: "+tab.get(0).toString());
         for (int i = 0; i < tab.size(); i++) {
           cod = (String) SqlManager.getValueFromVectorParam(
               tab.get(i), 0).getValue();
-          logger.info("QUERY OK : "+ cod);
+          logger.debug("QUERY OK : "+ cod);
           this.getCampo().addValore(cod, cod);
         }
     } 
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      logger.info("ERRORE NELLA QUERY");
-      e.printStackTrace();
-    }
+      logger.error("Errore nell'estrazione dei codici evento", e);
+     }
   }
 
   @Override

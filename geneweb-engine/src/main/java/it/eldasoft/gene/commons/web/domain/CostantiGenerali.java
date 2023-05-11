@@ -191,6 +191,11 @@ public class CostantiGenerali {
   public static final String   SENTINELLA_UNICO_CODICE_PROFILO                    = "sentinellaCodProfiloUnico";
   
   /**
+   * Individua l'oggetto da verificare in sessione per capire se è necessario che esegua una doppia autenticazione
+   */
+  public static final String   SENTINELLA_DOPPIA_AUTENTICAZIONE                    = "sentinellaDoppiaAutenticazione";
+  
+  /**
    * Individua l'oggetto da verificare in sessione per capire se l'utente può utilizzare un unico profilo
    */
   public static final String   SENTINELLA_ACCESSO_AMMINISTRATORE                    = "sentinellaAccessoAmministratore";
@@ -686,10 +691,14 @@ public class CostantiGenerali {
 
   public static final String   PROP_SSO_SPID_AUTHLEVEL_URL                        = "sso.spid.authlevel.url";
 
+  /** property Gateway */
+  public static final String   PROP_SSO_GATEWAY_WS_AUTHSERVICE_URL                = "sso.gateway.ws.auth.url";
+  
+  public static final String   PROP_SSO_GATEWAY_ENDPOINT                          = "sso.gateway.endpoint";
 
+  public static final String   PROP_SSO_GATEWAY_CLIENTID                          = "sso.gateway.clientId";
 
-
-
+  public static final String   PROP_SSO_GATEWAY_PASSPHRASE                        = "sso.gateway.passphrase";
 
   /**
    * Chiave per attivare il link alla registrazione degli utenti
@@ -747,11 +756,6 @@ public class CostantiGenerali {
   public static final String   PROP_ACCESSO_ALTRO_APPLICATIVO_CODICE              = "it.eldasoft.accessoAltroApplicativo.codiceApplicativo";
 
   public static final String   SENTINELLA_ACCESSO_ALTRO_APPLICATIVO               = "sentinellaAccessoAltroApplicativo";
-
-  /*
-   * Property per la gestione della conversione a PDF di documenti
-   */
-  public static final String   ATTR_ATTIVA_CONVERSIONE_PDF                        = "attivaConversionePdf";
 
   /*
    * Properties per la gestione della lettura dei feed RSS

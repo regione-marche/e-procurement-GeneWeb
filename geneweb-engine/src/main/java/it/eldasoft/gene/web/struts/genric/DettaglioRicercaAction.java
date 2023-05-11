@@ -473,7 +473,7 @@ public class DettaglioRicercaAction extends AbstractDispatchActionBaseGenRicerch
         actForward = mapping.findForward(TORNA_A_LISTA_RICERCHE);
         // Dall'history si va a rimuovere l'ultimo elemento in modo da non
         // visualizzare voci che non hanno più significato
-        history.removeAttribute(0, history.size(0)-1);
+        history.removeAttribute(0);
       }
       break;
     }

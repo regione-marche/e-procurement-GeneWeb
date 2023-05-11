@@ -70,7 +70,8 @@
 						schedaPopUp=""
 						campi="V_CAIS_TIT.CAISIM;V_CAIS_TIT.DESCAT;V_CAIS_TIT.ACONTEC;V_CAIS_TIT.QUAOBB;V_CAIS_TIT.TIPLAVG"
 						chiave=""
-						where="V_CAIS_TIT.TIPLAVG=1"
+						functionId="default"
+						parametriWhere="N:1"
 						formName="formCategoriaImpresa${contatore}"
 						inseribile="false" >
 						<gene:campoScheda title="Codice categoria" keyCheck="true" campo="CATISC_${contatore}" entita="CATE" obbligatorio="true" campoFittizio="true" definizione="T30;1;;;CATISC" value="${item[1]}" />
@@ -160,7 +161,8 @@
 						schedaPopUp=""
 						campi="V_CAIS_TIT.CAISIM;V_CAIS_TIT.DESCAT;V_CAIS_TIT.ACONTEC;V_CAIS_TIT.QUAOBB;V_CAIS_TIT.TIPLAVG"
 						chiave=""
-						where="V_CAIS_TIT.TIPLAVG=1"
+						functionId="default"
+						parametriWhere="N:1"
 						formName="formCategoriaImpresa${contatore}"
 						inseribile="false" >
 						<gene:campoScheda title="Codice categoria" keyCheck="true" campo="CATISC_${contatore}" entita="CATE" obbligatorio="true" campoFittizio="true" definizione="T30;1;;;CATISC" />
@@ -242,7 +244,8 @@
 				schedaPopUp=""
 				campi="V_CAIS_TIT.CAISIM;V_CAIS_TIT.DESCAT;V_CAIS_TIT.ACONTEC;V_CAIS_TIT.QUAOBB;V_CAIS_TIT.TIPLAVG"
 				chiave=""
-				where="V_CAIS_TIT.TIPLAVG=1"
+				functionId="default"
+				parametriWhere="N:1"
 				formName="formCategoriaImpresa${contatore}"
 				inseribile="false" >
 				<gene:campoScheda title="Codice categoria" keyCheck="true" entita="CATE" campo="CATISC_${contatore}" obbligatorio="true" campoFittizio="true" definizione="T30;1;;;CATISC" value="" />

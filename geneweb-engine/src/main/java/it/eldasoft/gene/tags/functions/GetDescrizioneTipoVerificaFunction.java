@@ -41,8 +41,8 @@ public class GetDescrizioneTipoVerificaFunction extends AbstractFunzioneTag {
     String id = chiave.substring(chiave.indexOf(':') + 1);
     try{
       desc = (String)sqlManager.getObject("select tab2d2 from verifiche,tab2" +
-      		" where id = ? and tab2cod = ? and tab2tip = tipo_verifica",
-          new Object[]{id,"G_z24"});
+      		" where id = ? and tab2cod = ? and tab2tip = " + sqlManager.getDBFunction("inttostr",  new String[] {"tipo_verifica"}),
+          new Object[]{new Long(id),"G_z24"});
 
     }catch (SQLException e) {
       throw new JspException("Errore nella lettura della tipologia di richiesta/certificazione",e);

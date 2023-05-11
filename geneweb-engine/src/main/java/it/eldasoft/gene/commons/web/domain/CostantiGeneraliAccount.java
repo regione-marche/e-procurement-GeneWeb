@@ -94,6 +94,24 @@ public class CostantiGeneraliAccount {
   public static final String   ABILITAZIONE_REPORT_CON_PROSPETTO =
     "(" + GESTIONE_COMPLETA_GENRIC + "|(" + SOLO_REPORT_PERSONALI_GENRIC + "&" + OPZIONI_REPORT_PROSPETTO + "))&(" + GESTIONE_COMPLETA_GENMOD + "|" + SOLO_MODELLI_PERSONALI_GENMOD + ")";
 
+
+  /**
+   * condizione per la gestione completa dei qform
+   */
+  public static final String   GESTIONE_COMPLETA_QFORM          = "ou232";
+
+  /**
+   * condizione per la gestione in gare /elenchi dei qform
+   */
+  public static final String   SOLO_GARE_ELENCHI_QFORM      = "ou231";
+
+  /**
+   * condizione di accesso in scrittura al generatore ricerche
+   */
+  public static final String   CONDIZIONE_SCRITTURA_QFORM       =
+      GESTIONE_COMPLETA_QFORM + "|" + SOLO_GARE_ELENCHI_QFORM;
+
+
   /**
    * Opzioni utente menù Strumenti
    */
@@ -179,6 +197,20 @@ public class CostantiGeneraliAccount {
    */
   public static final String[] LISTA_VALUE_GENMOD                = { "",
       SOLO_MODELLI_PERSONALI_GENMOD, GESTIONE_COMPLETA_GENMOD };
+
+
+  /**
+   * lista testo per DropDownList opzioni qform
+   */
+  public static final String[] LISTA_TEXT_QFORM                 = {
+      "Non abilitata", "Gestione in gare o elenchi", "Gestione completa" };
+
+
+  /**
+   * lista valori per DropDownList opzioni qform
+   */
+  public static final String[] LISTA_VALUE_QFORM                = { "",
+      SOLO_GARE_ELENCHI_QFORM, GESTIONE_COMPLETA_QFORM };
 
   /**
    * lista testo per DropDownList opzioni abilitazione lavori
@@ -266,5 +298,33 @@ public class CostantiGeneraliAccount {
 
   /**   Valore di default del campo SYSAB3  */
   public static final String  DEFAULT_ABILITAZIONE_AP    = "U";
+
+  /**
+   * condizione per la selezione automatica degli operatori da elenco
+   */
+  public static final String   SELEZIONE_AUTOMATICA_OPERATORE_ELENCO         = "ou235";
+
+  /**
+   * condizione per la selezione manuale degli operatori da elenco
+   */
+  public static final String   SELEZIONE_MANUALE_OPERATORE_ELENCO      = "ou236";
+
+  /**
+   * condizione per la selezione automatica e manuale degli operatori da elenco
+   */
+  public static final String   SELEZIONE_AUTOMATICA_MANUALE_OPERATORE_ELENCO      = "ou237";
+
+  /**
+   * lista testo per DropDownList opzioni selezione da elenco operatori
+   */
+  public static final String[] LISTA_TEXT_SELOP                 = {
+      "Applica configurazione generale", "Selezione automatica", "Selezione manuale", "Selezione automatica e manuale" };
+
+
+  /**
+   * lista valori per DropDownList opzioni selezione da elenco operatori
+   */
+  public static final String[] LISTA_VALUE_SELOP                = { "",
+      SELEZIONE_AUTOMATICA_OPERATORE_ELENCO, SELEZIONE_MANUALE_OPERATORE_ELENCO, SELEZIONE_AUTOMATICA_MANUALE_OPERATORE_ELENCO };
 
 }

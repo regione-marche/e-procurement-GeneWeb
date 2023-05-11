@@ -25,33 +25,30 @@
 		<gene:set name="titoloMenu">
 			<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
 		</gene:set>
-		
-	<c:if test='${not empty param.chiave}'>
-		<c:set var="campiKey" value='${fn:split(param.chiave,";")}' />
-		<c:set var="addKeyRiga" value="" />
-		<c:forEach begin="1" end="${fn:length(campiKey)}" step="1" varStatus="indicekey">
-			<c:set var="strTmp" value='${fn:substringAfter(campiKey[indicekey.index-1], ":")}' />
-			<c:choose>
-				<c:when test="${indicekey.last}">
-					<c:set var="addKeyRiga" value='${addKeyRiga}G_NOTEAVVISI.NOTEKEY${indicekey.index}=T:${strTmp}' />
-					<c:set var="whereKey" value='${whereKey} G_NOTEAVVISI.NOTEKEY${indicekey.index}=${gene:concat(gene:concat("\'", strTmp), "\'")}' />
-				</c:when>
-				<c:otherwise>
-					<c:set var="addKeyRiga" value='${addKeyRiga}G_NOTEAVVISI.NOTEKEY${indicekey.index}=T:${strTmp};' />
-					<c:set var="whereKey" value='${whereKey} G_NOTEAVVISI.NOTEKEY${indicekey.index}=${gene:concat(gene:concat("\'", strTmp), "\'")} AND ' />
-				</c:otherwise>
-			</c:choose>
-		</c:forEach>
 
-		<c:set var="whereKey" value="${whereKey} AND G_NOTEAVVISI.NOTEENT='${param.entita}' " />
-	</c:if>
+        <c:if test='${not empty param.chiave}'>
+    		<c:set var="campiKey" value='${fn:split(param.chiave,";")}' />
+    		<c:set var="addKeyRiga" value="" />
+    		<c:forEach begin="1" end="${fn:length(campiKey)}" step="1" varStatus="indicekey">
+    			<c:set var="strTmp" value='${fn:substringAfter(campiKey[indicekey.index-1], ":")}' />
+    			<c:choose>
+    				<c:when test="${indicekey.last}">
+    					<c:set var="addKeyRiga" value='${addKeyRiga}G_NOTEAVVISI.NOTEKEY${indicekey.index}=T:${strTmp}' />
+    				</c:when>
+    				<c:otherwise>
+    					<c:set var="addKeyRiga" value='${addKeyRiga}G_NOTEAVVISI.NOTEKEY${indicekey.index}=T:${strTmp};' />
+    				</c:otherwise>
+    			</c:choose>
+    		</c:forEach>
+    	</c:if>
 
 		<table class="lista">
 			<tr>
 				<td>
 
 		<gene:formLista entita="G_NOTEAVVISI" pagesize="20" tableclass="datilista" sortColumn="-7" gestisciProtezioni="true"
-				where="${whereKey}" gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreG_NOTEAVVISI" >
+				gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreG_NOTEAVVISI" 
+				plugin="it.eldasoft.gene.tags.gestori.plugin.GestoreNoteAvvisiPlugin" >
 		<c:if test='${not empty param.chiave}'>
 			<c:set var="key" value="${param.chiave}" />
 			<c:set var="keyParent" value="${param.chiave}" />
@@ -75,8 +72,8 @@
 					</gene:PopUp>
 				</c:if>
 			</gene:campoLista>
-			<input type="hidden" name="keyAdd" value="${addKeyRiga}" />
 			
+			<input type="hidden" name="keyAdd" value="${param.keyAdd}" />
 			<% // Campi veri e propri %>
 			<gene:campoLista campo="NOTECOD" visibile="false" />
 			<gene:campoLista campo="NOTEPRG" visibile="false" />
@@ -102,7 +99,7 @@
 	<gene:javaScript>
 	<c:if test='${not empty param.chiave}'>
 		document.forms[0].keyParent.value="${param.chiave}";
-		document.forms[0].trovaAddWhere.value="${whereKey}";
+		document.forms[0].keyAdd.value="${sessionScope['addKeyRiga']}";
 	</c:if>
 	</gene:javaScript>
 </gene:template>

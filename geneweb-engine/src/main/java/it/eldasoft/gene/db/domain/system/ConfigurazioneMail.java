@@ -56,6 +56,21 @@ public class ConfigurazioneMail implements Serializable {
   /** Ritardo in secondi tra un invio ed il successivo in caso di uso massivo della funzione di invio mail. */
   private String            delay;
 
+  /**
+   * Server di posta IMAP
+   */
+  private String            serverIMAP;
+  
+  /**
+   * Porta del server di posta IMAP
+   */
+  private String            portaIMAP;
+  
+  /**
+   * Protocollo IMAP utilizzato (Standard o SSL)
+   */
+  //private String            protocolloIMAP;
+  
   /** Inizializza tutti i campi a null.  */
   public ConfigurazioneMail() {
     this.codapp = null;
@@ -71,6 +86,9 @@ public class ConfigurazioneMail implements Serializable {
     this.userId = null;
     this.dimTotAll = null;
     this.delay = null;
+    this.serverIMAP = null;
+    this.portaIMAP = null;
+//    this.protocolloIMAP = null;
   }
 
   /**
@@ -260,6 +278,26 @@ public class ConfigurazioneMail implements Serializable {
    */
   public void setDelay(String delay) {
     this.delay = delay;
+  }
+  
+  public String getServerIMAP() {
+    return serverIMAP;
+  }
+  
+  public void setServerIMAP(String serverIMAP) {
+    this.serverIMAP = serverIMAP;
+  }
+  
+  public String getPortaIMAP() {
+    return portaIMAP;
+  }
+  
+  public void setPortaIMAP(String portaIMAP) {
+    this.portaIMAP = portaIMAP;
+  }
+  
+  public boolean isIMAPConfigurato() {
+    return getServerIMAP() != null && !getServerIMAP().isEmpty();
   }
 
 }

@@ -22,6 +22,64 @@
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#" />
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
 
+<script type="text/javascript">   
+<%
+   /* Generazione array delle estensioni ammesse per la composizione in PDF */
+   String[] listaEstPdf = (String[]) request.getAttribute("listaEstPdf");
+   String   elemlistaEstPdf = "";
+   String dichiarazioneArrayPdf = "var listaEstPdf =  [";
+   for (int i = 0; i< listaEstPdf.length; i++){
+     if (i != 0) {
+	   dichiarazioneArrayPdf += ",";
+	 }
+	 elemlistaEstPdf = listaEstPdf[i];
+	 dichiarazioneArrayPdf += '\"' + elemlistaEstPdf + '\"';
+   }
+   dichiarazioneArrayPdf += "];";
+%>
+
+<%=dichiarazioneArrayPdf%>
+	
+	function estensionePdfValida(estensione){
+		var res = false;
+		if (listaEstPdf.indexOf(estensione)!=-1 || (listaEstPdf.length == 1 && "*".equals(listaEstPdf[0]))){
+			res = true;
+		}
+		return res;
+	}
+	
+	function estensioneFile(file){
+		var fileName = file;
+		if(file.indexOf("#")!=-1){
+			fileName = $(file).val().replace(/C:\\fakepath\\/i, '');
+		}
+		var n = fileName.lastIndexOf(".");
+		var estensione = fileName.substring(n+1).toUpperCase();
+		return estensione;
+	}
+
+	function ctrCheckPdf(){
+		var estensione= estensioneFile('#fileInput');
+		var cbObj = document.datiGenProspettoForm.pdf;
+		if(estensione == ""){
+			estensione=estensioneFile("${datiGenProspettoForm.nomeFile}");
+		}
+		if (cbObj.checked){
+			if(estensione==""){
+				alert("Per procedere allegare prima un file");
+				cbObj.checked = false;
+			}
+			else{
+				if(!estensionePdfValida(estensione)){
+				alert("Estensione non valida per compositore PDF");
+				cbObj.checked = false;
+				}
+			}
+			}
+	    }
+
+</script>
+
 <html:form action="/SalvaDatiGenProspetto" method="post" enctype="multipart/form-data" >
 	<table class="dettaglio-tab">
 	  <tr>
@@ -92,7 +150,7 @@
 		  <c:if test="${not empty datiGenProspettoForm.idModello}">
 				<!-- a href="DettaglioProspetto.do?metodo=downloadModello&nomeFile=${datiGenProspettoForm.nomeFile}&idProspetto=${datiGenProspettoForm.idRicerca}" title="Download modello" --><c:out value="${datiGenProspettoForm.nomeFile}" /><!-- /a -->
 		  </c:if>
-		    <html:file property="selezioneFile" styleClass="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);"/>
+		    <html:file property="selezioneFile" styleId="fileInput" styleClass="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange="javascript:ctrCheckPdf()"/>
 				<% //Campi hidden per l'update %>
  				<html:hidden property="idProspetto"/>
 				<html:hidden property="codApp"/>
@@ -109,7 +167,13 @@
 			</c:if>
 		  </td>
     </tr>
-	<tr>
+		<tr>
+
+			<td class="etichetta-dato">Componi in formato PDF</td>
+			<td class="valore-dato"><html:checkbox property="pdf"
+					onclick="javascript:ctrCheckPdf()" /></td>
+		</tr>
+		<tr>
 		<td colspan="2"><b>Sorgente dati</b></td>
   </tr>
 	<tr>

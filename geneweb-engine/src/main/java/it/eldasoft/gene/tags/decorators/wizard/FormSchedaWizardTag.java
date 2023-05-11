@@ -18,6 +18,7 @@ import it.eldasoft.gene.tags.decorators.archivi.ArchivioTagImpl;
 import it.eldasoft.gene.tags.decorators.scheda.CampoSchedaTag;
 import it.eldasoft.gene.tags.decorators.scheda.CampoSchedaTagImpl;
 import it.eldasoft.gene.tags.decorators.scheda.IFormScheda;
+import it.eldasoft.gene.tags.utils.KeyParamValidator;
 import it.eldasoft.gene.tags.utils.UtilityTags;
 import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestorePreload;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
@@ -30,6 +31,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyContent;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -136,6 +138,15 @@ public class FormSchedaWizardTag extends BodyTagSupportGene implements
 
   public int doStartTag() throws JspException {
     int ret = super.doStartTag();
+    
+    final String key = UtilityTags.getParametro(pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA);
+    if (StringUtils.isNotBlank(key))
+    	KeyParamValidator.validate(key);
+    
+    final String keyParent = UtilityTags.getParametro(pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT);
+    if (StringUtils.isNotBlank(keyParent))
+    	KeyParamValidator.validate(keyParent);
+    
     String modo = UtilityTags.getParametro(this.pageContext,
         UtilityTags.DEFAULT_HIDDEN_PARAMETRO_MODO);
     if (modo == null) modo = UtilityTags.SCHEDA_MODO_INSERIMENTO;

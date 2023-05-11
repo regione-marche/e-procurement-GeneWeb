@@ -75,5 +75,9 @@ public class CostantiSchedRic {
   public static final String   ESTENSIONE_EXCEL                     = "xls";
   
   public static final String   FORMATO_EXCEL                     = "Excel";
+  
+  public static final String   ESTENSIONE_XLSX                    = "xlsx";
+  
+  public static final String   FORMATO_XLSX                     = "XLSX";
 
 }

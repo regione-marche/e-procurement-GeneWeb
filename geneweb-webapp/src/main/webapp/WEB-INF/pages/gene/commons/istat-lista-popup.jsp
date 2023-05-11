@@ -21,6 +21,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereTABSCHEFunction" />
+
 <gene:template file="popup-template.jsp">
 	<c:set var="entita" value="TABSCHE" />
 	<gene:setString name="titoloMaschera" value="Seleziona comune"/>

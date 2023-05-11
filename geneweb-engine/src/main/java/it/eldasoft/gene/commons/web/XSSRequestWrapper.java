@@ -22,13 +22,13 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
   
   private static Pattern[] patterns = new Pattern[] {
     // Script fragments
-    Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE),
+    Pattern.compile("(<|&lt;) *?(\\r\\n|\\r|\\n)*? *?script *?(\\r\\n|\\r|\\n)*? *?(>|&gt;).*?(<|&lt;) *?(\\r\\n|\\r|\\n)*? *?/ *?(\\r\\n|\\r|\\n)*? *?script *?(\\r\\n|\\r|\\n)*? *?(>|&gt;)", Pattern.CASE_INSENSITIVE),
     // src='...'
     Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
     Pattern.compile("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
     // lonely script tags
-    Pattern.compile("</script>", Pattern.CASE_INSENSITIVE),
-    Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+    Pattern.compile("(<|&lt;) *?(\\r\\n|\\r|\\n)*? *?/ *?(\\r\\n|\\r|\\n)*? *?script *?(\\r\\n|\\r|\\n)*? *?(>|&gt;)", Pattern.CASE_INSENSITIVE),
+    Pattern.compile("(<|&lt;) *?(\\r\\n|\\r|\\n)*? *?script.*? *?(\\r\\n|\\r|\\n)*? *?(>|&gt;)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
     // eval(...)
     Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
     // expression(...)
@@ -76,8 +76,10 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     Pattern.compile("onmouseover(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
     // onmouseup(...)=...
     Pattern.compile("onmouseup(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
+    // onevent(...)=...
+    Pattern.compile("onevent(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
     // unexpected end of tag ">...
-    Pattern.compile("\">.*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL)
+    // Pattern.compile("\"(>|&gt;).*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL),
 };
 
 

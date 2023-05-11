@@ -330,14 +330,19 @@
 		}
 		
 		/** iterate over all elements and injection token **/
-		var all = document.all ? document.all : document.getElementsByTagName('*');
+		// Dato che alcune pagine contengono molti tag, si è deciso di cercare solo i tag 'form', in modo
+		// da non sovraccaricare la memoria
+		// var all = document.all ? document.all : document.getElementsByTagName('*');
+		var all = document.all ? document.all : document.getElementsByTagName('form');
 		var len = all.length;
 
 		//these are read from the csrf guard config file(s)
 		var injectForms = %INJECT_FORMS%;
 		var injectGetForms = %INJECT_GET_FORMS%;
 		var injectFormAttributes = %INJECT_FORM_ATTRIBUTES%;
-		var injectAttributes = %INJECT_ATTRIBUTES%;
+		// Non c'è bisogno di iniettare il token negli attributi di tag che non siano dei form
+		// var injectAttributes = %INJECT_ATTRIBUTES%;
+		var injectAttributes = false;
 		
 		for(var i=0; i<len; i++) {
 			var element = all[i];

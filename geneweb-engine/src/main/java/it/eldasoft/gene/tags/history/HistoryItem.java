@@ -1,14 +1,14 @@
 package it.eldasoft.gene.tags.history;
 
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.gene.web.struts.tags.UtilityStruts;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +20,9 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.action.ActionRedirect;
 import org.owasp.csrfguard.CsrfGuard;
+
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 
 public class HistoryItem implements Serializable {
 
@@ -38,7 +41,7 @@ public class HistoryItem implements Serializable {
    * contenitore delle chiavi dei parametri che non sono memorizzate con un
    * unico valore bensì con un array di valori
    */
-  private ArrayList<String>   parametriMultipli;
+  private List<String>   parametriMultipli;
 
 //  private HttpSession session = null;
 
@@ -105,7 +108,7 @@ public class HistoryItem implements Serializable {
     String lNumeroPopUp = UtilityStruts.getParametroString(req,
         UtilityTags.DEFAULT_HIDDEN_NUMERO_POPUP);
     if (lNumeroPopUp != null && lNumeroPopUp.length() > 0)
-      this.numeroPopUp = new Integer(lNumeroPopUp).intValue();
+      this.numeroPopUp = Integer.parseInt(lNumeroPopUp);
     if (this.numeroPopUp < 0) this.numeroPopUp = 0;
     // Aggiunta di tutti i parametri di default ridirezionati nelle azioni come
     // parametri
@@ -307,6 +310,35 @@ public class HistoryItem implements Serializable {
     buf.append(numeroPopUp);
     buf.append(" }");
     return buf.toString();
+  }
+  
+  private Set<String> createdDeftrova = new HashSet<String>();
+  
+  public void addCreatedDeftrova(final String entity) {
+	  createdDeftrova.add(entity);
+  }
+  
+  /**
+   * Aggiunge una o più entità le quali mappe deftrova devono essere eliminate quando lo stesso
+   * item viene eliminato dall'history.
+   * 
+   * @param createdDeftrova
+   * 				Lista di entità da aggiungere
+   */
+  public void setCreatedDeftrova(final Set<String> createdDeftrova) {
+	  for (final String deftrova : createdDeftrova)
+		  this.createdDeftrova.add(deftrova);
+  }
+  
+  /**
+   * Elimina tutte le mappe deftrova delle entità precedentemente caricate dalla sessione.
+   * 
+   * @param session
+   */
+  public void clearDeftrova(final HttpSession session) {
+	  for (final String entity : createdDeftrova) {
+		  UtilityTags.deleteHashAttributesForSqlBuild(session, entity, numeroPopUp);
+	  }
   }
 
 }

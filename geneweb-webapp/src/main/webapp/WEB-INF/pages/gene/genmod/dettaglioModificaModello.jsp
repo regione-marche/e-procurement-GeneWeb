@@ -25,13 +25,13 @@
                 it.eldasoft.utils.metadata.domain.Schema,
                 it.eldasoft.utils.metadata.domain.Tabella" %>
 
-<script type="text/javascript">
+<script type="text/javascript">   
 <%
   /* 
    *Generazione degli array javascript contenenti elenco schemi e 
    * elenco tabelle relative a ciascuno schema.		
    */
-  
+   
    List<Schema> elencoSchemi = (List<Schema>) request.getAttribute("elencoSchemi");
 
 		String listaSchemi = "var listaSchemi = new Array (";
@@ -69,8 +69,25 @@
 	<%=dichiarazioneValueSelect%>
 	<%
 	    }
-  %>
+%>
 	<%=listaSchemi%>
+	
+<%
+   /* Generazione array delle estensioni ammesse per la composizione in PDF */
+   String[] listaEstPdf = (String[]) request.getAttribute("listaEstPdf");
+   String elemlistaEstPdf = "";
+   String dichiarazioneArrayPdf = "var listaEstPdf =  [";
+   for (int i = 0; i< listaEstPdf.length; i++){
+     if (i != 0) {
+	   dichiarazioneArrayPdf += ",";
+	 }
+	 elemlistaEstPdf = listaEstPdf[i];
+	 dichiarazioneArrayPdf += '\"' + elemlistaEstPdf + '\"';
+   }
+   dichiarazioneArrayPdf += "];";
+%>
+
+<%=dichiarazioneArrayPdf%>
 
 	function aggiornaOpzioniSelectTabella(indice) {
 		var nomeArrayValue = 'valoriTabelle' + (indice-1);
@@ -113,6 +130,44 @@
 				if(arrayValori[index] == "<c:out value='${modelliForm.entPrinc}'/>"){
 					document.modelliForm.entPrinc.value = arrayValori[index];
 					break;
+				}
+			}
+		}
+	}
+	
+	function estensionePdfValida(estensione){
+		var res = false;
+		if (listaEstPdf.indexOf(estensione)!=-1 || (listaEstPdf.length == 1 && "*".equals(listaEstPdf[0]))){
+			res = true;
+		}
+		return res;
+	}
+	
+	function estensioneFile(file){
+		var fileName = file;
+		if(file.indexOf("#")!=-1){
+			fileName = $(file).val().replace(/C:\\fakepath\\/i, '');
+		}
+		var n = fileName.lastIndexOf(".");
+		var estensione = fileName.substring(n+1).toUpperCase();
+		return estensione;
+	}
+	
+	function ctrCheckPdf(){
+		var estensione= estensioneFile('#fileInput');
+		var cbObj = document.modelliForm.pdf;
+		if(estensione == ""){
+			estensione=estensioneFile("${modelliForm.nomeFile}");
+		}
+		if (cbObj.checked){
+			if(estensione==""){
+				alert("Per procedere allegare prima un file");
+				cbObj.checked = false;
+			}
+			else{
+				if(!estensionePdfValida(estensione)){
+				alert("Estensione non valida per compositore PDF");
+				cbObj.checked = false;
 				}
 			}
 		}
@@ -161,12 +216,19 @@
 	  <c:if test="${modelliForm.idModello ne 0}">
 			<!-- a href="Modello.do?idModello=${idModello}&da=modifica&metodo=downloadModello&nomeFile=${modelliForm.nomeFile}" title="Download modello" --><c:out value="${modelliForm.nomeFile}" /><!-- /a -->
 	  </c:if>
-	    <html:file property="selezioneFile" styleClass="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);"/>
+	    <html:file styleId="fileInput" property="selezioneFile" styleClass="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange="javascript:ctrCheckPdf()"/>
 		<html:hidden property="nomeFile"/>
 		<html:hidden property="codiceApplicativo"/>
 		<html:hidden property="owner"/>
 	  </td>
   </tr>
+  	<tr>
+  	
+      <td class="etichetta-dato" >Componi in formato PDF</td>
+      <td class="valore-dato">
+      	<html:checkbox property="pdf" onclick="javascript:ctrCheckPdf()"/>
+      </td>
+    </tr>
 	<tr>
       <td class="etichetta-dato" >Modello riepilogativo ?</td>
       <td class="valore-dato">

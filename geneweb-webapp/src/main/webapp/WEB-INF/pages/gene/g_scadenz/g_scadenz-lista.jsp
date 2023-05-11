@@ -120,7 +120,7 @@
 				<td>
 
 		<gene:formLista entita="G_SCADENZ" pagesize="50" tableclass="datilista" sortColumn="3" gestisciProtezioni="true"
-				where="${whereKey}${filtroAttivita }" >
+				where="${whereKey}" >
 		<c:if test='${not empty chiave}'>
 			<c:set var="key" value="${chiave}" />
 			<c:set var="keyParent" value="${chiave}" />
@@ -271,7 +271,7 @@
 	<gene:javaScript>
 	<c:if test='${not empty chiave}'>
 		document.forms[0].keyParent.value="${chiave}";
-		document.forms[0].trovaAddWhere.value="${whereKey}";
+		//document.forms[0].trovaAddWhere.value="${whereKey}";
 	</c:if>
 	
 	function eliminaAttivita(chiave){

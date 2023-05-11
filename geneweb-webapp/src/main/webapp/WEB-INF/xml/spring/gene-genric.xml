@@ -273,6 +273,7 @@
     class="it.eldasoft.gene.web.struts.genric.prospetto.EditDatiGenProspettoAction">
 		<property name="prospettoManager" ref="prospettoManager" />
 		<property name="tabellatiManager" ref="tabellatiManager" />
+		 <property name="modelliManager"   ref="modelliManager" />
 		<property name="geneManager"   ref="geneManager" />
 		<property name="ricercheManager" ref="ricercheManager"/>
 	</bean>

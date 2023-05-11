@@ -1,20 +1,22 @@
 package it.eldasoft.gene.tags.functions;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.tags.utils.AbstractFunzioneTag;
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.utils.spring.UtilitySpring;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
+
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.tags.utils.AbstractFunzioneTag;
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.utils.spring.UtilitySpring;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Classe che gestisce altre funzioni generali sui tags
@@ -309,6 +311,30 @@ public class GeneralTagsFunction {
           + tipo);
     }
     return null;
+  }
+  
+  /**
+   * Applica una regular expression ad una stringa in input
+   * 
+   * @param input
+   * 			Stringa in input
+   * @param regex
+   * 			Regular expression da applicare
+   * 
+   * @return True se sono presenti dei match
+   * @throws JspException
+   */
+  public static Boolean matches(String input, String regex, Boolean exceptionOnFalse) {
+	  try {
+		  if (Pattern.matches(regex, input))
+			  return true;
+		  else if (!exceptionOnFalse)
+			  return false;
+	  } catch (PatternSyntaxException e) {
+		  throw new RuntimeException(e);
+	  }
+	  
+	  throw new RuntimeException("gene:matches la stringa in input \"" + input + "\" non è stata validata correttamente.");
   }
 
 }

@@ -10,7 +10,15 @@
  */
 package it.eldasoft.gene.web.struts.tags.gestori;
 
-import it.cineca.u_gov.ac.sc.ws.WsdtoSoggettoCollettivoResponse;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.transaction.TransactionStatus;
+
 import it.eldasoft.gene.bl.GeneManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.bl.integrazioni.CinecaAnagraficaComuneManager;
@@ -29,26 +37,9 @@ import it.eldasoft.utils.utility.UtilityNumeri;
 import it.eldasoft.utils.utility.UtilityStringhe;
 import it.eldasoft.www.PortaleAlice.EsitoOutType;
 import it.eldasoft.www.PortaleAlice.PortaleAliceProxy;
-import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaResType;
 import it.maggioli.eldasoft.ws.erp.WSERPUgovAnagraficaType;
 import it.maggioli.eldasoft.ws.erp.WSERPUgovResType;
 import it.maggioli.eldasoft.ws.erp.WSERP_PortType;
-
-import java.rmi.RemoteException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Vector;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.rpc.ServiceException;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.transaction.TransactionStatus;
 
 public class GestoreIMPR extends AbstractGestoreEntita {
 
@@ -141,7 +132,7 @@ public class GestoreIMPR extends AbstractGestoreEntita {
      try {
       String usernome = (String)this.getSqlManager().getObject(select, new Object[]{userent, codiceImpresa});
       if(usernome!=null && !"".equals(usernome)){
-        
+
         Long count = (Long) this.getSqlManager().getObject("select count(*) from w_invcom where IDPRG = ? and COMKEY1 = ? and COMSTATO = ?", new Object[]{"PA",usernome,5});
         if(count > 0){
           String msg = "Impossibile eliminare l'impresa in quanto sono presenti offerte non ancora acquisite";
@@ -194,13 +185,13 @@ public class GestoreIMPR extends AbstractGestoreEntita {
    integrazioneCineca = UtilityStringhe.convertiNullInStringaVuota(integrazioneCineca);
 
    if("1".equals(integrazioneCineca)){
-	   
+
     try {
     	WSERP_PortType wserp = cinecaAnagraficaComuneManager.getWSERP("WSERP");
         String[] credenziali = cinecaAnagraficaComuneManager.getWSLogin(new Long(50), "CINECA");
         String username = credenziali[0];
         String password = credenziali[1];
-   	
+
       Vector<?> naturaImprVect = this.sqlManager.getVector("select TIPIMP,NATGIUI from IMPR where CODIMP = ?", new Object[] { codiceImpresa });
       Long tipimp= null;
       Long natgiui = null;
@@ -297,7 +288,7 @@ public class GestoreIMPR extends AbstractGestoreEntita {
           "Errore nel controllo della tipologia dell'impresa " + codiceImpresa,null, e);
     }
    }
-   
+
      LogEvento logevento = LogEventiUtils.createLogEvento(this.getRequest());
      logevento.setLivEvento(1);
      logevento.setOggEvento(codiceImpresa);
@@ -305,7 +296,7 @@ public class GestoreIMPR extends AbstractGestoreEntita {
      logevento.setDescr("Eliminazione impresa da anagrafica");
      logevento.setErrmsg("");
      LogEventiUtils.insertLogEventi(logevento);
-   
+
   }
 
   @Override
@@ -542,28 +533,36 @@ public class GestoreIMPR extends AbstractGestoreEntita {
 
         if (impl.isModifiedColumn("IMPR.LOCIMP")) {
           String localitaPrincipale = UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.LOCIMP"));
-          if(!"".equals(localitaPrincipale)){
-            //prima la provo secca, altrimenti con il like
-            String codComuneSede;
-            try {
-              codComuneSede = (String) this.sqlManager.getObject("select tabcod5 from tabsche where tabcod='S2003' and tabcod1='09' and tabdesc = ? ", new Object[]{localitaPrincipale});
-              codComuneSede = UtilityStringhe.convertiNullInStringaVuota(codComuneSede);
-              if("".equals(codComuneSede)){
-                codComuneSede = (String) this.sqlManager.getObject("select tabcod5 from tabsche where tabcod='S2003' and tabcod1='09' and tabdesc like ? ", new Object[]{"%" + localitaPrincipale + "%"});
-              }
-              codComuneSede = UtilityStringhe.convertiNullInStringaVuota(codComuneSede);
-              if(!"".equals(codComuneSede)){
-                soggettoCollettivo.put("codComuneSede", UtilityStringhe.convertiNullInStringaVuota(codComuneSede));
-                soggettoCollettivo.put("codComuneDomFiscale", UtilityStringhe.convertiNullInStringaVuota(codComuneSede));
-              }
-            } catch (SQLException e) {
-              throw new GestoreException(
-                  "Errore durante la determinazione del codice Comune dell'impresa ",null, e);
-            }
-          }else{
-            soggettoCollettivo.put("codComuneSede", null);
-            soggettoCollettivo.put("codComuneDomFiscale", null);
-          }
+          Long nazionePrincipale = impl.getLong("IMPR.NAZIMP");
+       	  if(nazionePrincipale != null && !Long.valueOf(1).equals(nazionePrincipale)){
+       		  //straniera
+       		soggettoCollettivo.put("localitaPrincipale", localitaPrincipale);
+       	  }else {
+       		  //italiana
+              if(!"".equals(localitaPrincipale)){
+
+                  //prima la provo secca, altrimenti con il like
+                  String codComuneSede;
+                  try {
+                    codComuneSede = (String) this.sqlManager.getObject("select tabcod5 from tabsche where tabcod='S2003' and tabcod1='09' and tabdesc = ? ", new Object[]{localitaPrincipale});
+                    codComuneSede = UtilityStringhe.convertiNullInStringaVuota(codComuneSede);
+                    if("".equals(codComuneSede)){
+                      codComuneSede = (String) this.sqlManager.getObject("select tabcod5 from tabsche where tabcod='S2003' and tabcod1='09' and tabdesc like ? ", new Object[]{"%" + localitaPrincipale + "%"});
+                    }
+                    codComuneSede = UtilityStringhe.convertiNullInStringaVuota(codComuneSede);
+                    if(!"".equals(codComuneSede)){
+                      soggettoCollettivo.put("codComuneSede", UtilityStringhe.convertiNullInStringaVuota(codComuneSede));
+                      soggettoCollettivo.put("codComuneDomFiscale", UtilityStringhe.convertiNullInStringaVuota(codComuneSede));
+                    }
+                  } catch (SQLException e) {
+                    throw new GestoreException(
+                        "Errore durante la determinazione del codice Comune dell'impresa ",null, e);
+                  }
+                }else{
+                  soggettoCollettivo.put("codComuneSede", null);
+                  soggettoCollettivo.put("codComuneDomFiscale", null);
+                }
+       	  }
           modificaPrincipale = true;
         }
         if (impl.isModifiedColumn("IMPR.FAXIMP")) {
@@ -725,7 +724,7 @@ public class GestoreIMPR extends AbstractGestoreEntita {
 			                "cineca.personaFisica.remote.error", new Object[] {re.getMessage()}, re);
 				}
               }else{
-            	  
+
   				try {
 	                WSERPUgovAnagraficaType anagrafica = cinecaAnagraficaComuneManager.setAnagraficaUgov(soggettoCollettivo);
 	                WSERPUgovResType resDI = wserp.WSERPDittaIndividuale(username,password, "MODIFICA", anagrafica);
@@ -874,13 +873,18 @@ public class GestoreIMPR extends AbstractGestoreEntita {
             impl.getString("IMPR.CGENIMP"), (String) this.getRequest().getSession().getAttribute(CostantiGenerali.ATTR_UFFINT_ABILITATI), true);
 
         if(msgControlloPiva!=null && !"".equals(msgControlloPiva)){
-          if(!controlloUnicitaAbilitato){
-            UtilityStruts.addMessage(this.getRequest(), "warning",
-                "warnings.imprese.partitaIvaDuplicata",
-                new Object[] {msgControlloPiva });
-          }else{
-            if(this.anagraficaManager.campoVisibileModificabile("IMPR", "PIVIMP", profiloAttivo))
-                controlloBloccantePiva = true;
+          String gruppoIva = null;
+          if (impl.isColumn("IMPR.ISGRUPPOIVA") && impl.getString("IMPR.ISGRUPPOIVA") != null)
+            gruppoIva = impl.getString("IMPR.ISGRUPPOIVA");
+          if(!"1".equals(gruppoIva)){
+            if(!controlloUnicitaAbilitato){
+              UtilityStruts.addMessage(this.getRequest(), "warning",
+                  "warnings.imprese.partitaIvaDuplicata",
+                  new Object[] {msgControlloPiva });
+            }else{
+              if(this.anagraficaManager.campoVisibileModificabile("IMPR", "PIVIMP", profiloAttivo))
+                  controlloBloccantePiva = true;
+            }
           }
         }
 
@@ -891,11 +895,19 @@ public class GestoreIMPR extends AbstractGestoreEntita {
       }
     }else{
       boolean saltareControllo=false;
-      if(impl.isColumn("IMPR.TIPIMP")){
-        Long tipimp = impl.getLong("IMPR.TIPIMP");
-        if(this.anagraficaManager.saltareControlloObbligPiva(tipimp))
-          saltareControllo=true;
+      String gruppoIva = null;
+      if (impl.isColumn("IMPR.ISGRUPPOIVA") && impl.getString("IMPR.ISGRUPPOIVA") != null)
+        gruppoIva = impl.getString("IMPR.ISGRUPPOIVA");
+      if(!"1".equals(gruppoIva)) {
+        if(impl.isColumn("IMPR.TIPIMP")){
+          Long tipimp = impl.getLong("IMPR.TIPIMP");
+
+          if(this.anagraficaManager.saltareControlloObbligPiva(tipimp))
+            saltareControllo=true;
+
+        }
       }
+
       if ("true".equals(isModificaDatiRegistrati) && !saltareControllo){
         throw new GestoreException("Errore durante la variazione dei dati registrati dell'impresa: non risulta valorizzata la partita iva!","variazioneDatiRegistrati.noPIVA");
       }

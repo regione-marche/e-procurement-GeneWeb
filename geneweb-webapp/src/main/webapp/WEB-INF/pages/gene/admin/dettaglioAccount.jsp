@@ -217,8 +217,27 @@
 	 			</c:choose>
 			</td>
    	</tr>	  
- 	</c:if>	    	
+ 	</c:if>
+ 	<c:if test='${gene:checkProt(pageContext,"FUNZ.VIS.ALT.GENEWEB.QuestionariQForm") && (fn:contains(listaOpzioniDisponibili, "OP135#") || fn:contains(listaOpzioniDisponibili, "OP136#"))}'>
+		<tr id="rQform">
+				<td class="etichetta-dato" >Gestione Q-Form</td>
+   			<td class="valore-dato"> 
+	 				<c:choose>
+	 					<c:when test='${fn:contains(listaOpzioniUtenteSys, "ou232#")}'>
+	 						${account.listaTextQform[2]}
+	 					</c:when>
+	 					<c:when test='${fn:contains(listaOpzioniUtenteSys, "ou231#")}'>
+	 						${account.listaTextQform[1]}
+ 						</c:when>
+	 					<c:otherwise>
+	 						${account.listaTextQform[0]}
+	 					</c:otherwise>
+	 				</c:choose>
+			</td>
+   		</tr>
+   	</c:if>	    	
 </c:if>
+
 <c:if test='${fn:contains(listaOpzioniDisponibili, "OP2#")}'>
 	<tr id="rowSchedulazioni">
 		<td class="etichetta-dato">Amministrazione schedulazioni di report</td>
@@ -256,6 +275,9 @@
    			<c:choose>
    				<c:when test='${fn:contains(listaOpzioniUtenteSys, "ou59#")}'>
 						<c:out value="Si"/>
+						<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou89#")}'>
+							<div class="info-wizard">ATTENZIONE: funzionalità deprecata per rischi di sicurezza! Attivando questa opzione potrebbe essere iniettato codice malevolo attraverso il testo delle note.</div>
+						</c:if>
 					</c:when>
 					<c:otherwise>
 						<c:out value="No"/>

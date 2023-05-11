@@ -19,7 +19,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 
@@ -51,12 +51,6 @@
     document.componiModelloForm.submit();
   }
 
-  function impostaPdf(oggettoCheck) {
-    if(oggettoCheck.checked)
-      document.componiModelloForm.exportPdf.value = 1;
-    else 
-      document.componiModelloForm.exportPdf.value = 0;
-  }
   -->
 </script>
 </HEAD>
@@ -91,15 +85,12 @@
             </display:table>
             </td>
         </tr>
-			<c:if test='${not empty componiModelloForm.paginaSorgente || attivaConversionePdf eq "1"}'>
+			<c:if test='${not empty componiModelloForm.paginaSorgente}'>
 				<tr>
 					<td class="comandi-dettaglio-sx">
 					<c:if test='${not empty componiModelloForm.paginaSorgente}'>
 					<input type="checkbox" id="eliminaFiltro" <c:if test="${componiModelloForm.noFiltroEntitaPrincipale eq 1}" >checked</c:if> value="true" onclick="javascript:impostaFiltro(this);">&nbsp;Visualizza tutti i modelli
 					&nbsp;&nbsp;&nbsp;
-					</c:if>
-					<c:if test='${attivaConversionePdf eq "1"}'>
-					<input type="checkbox" id="creaPdf" <c:if test="${componiModelloForm.exportPdf eq 1}">checked</c:if> value="true" onclick="javascript:impostaPdf(this);">&nbsp;Componi in formato PDF
 					</c:if>
 					</td>
 				</tr>
@@ -129,7 +120,6 @@
 	</c:forEach>
 	<input type="hidden" name="metodo" value="apriElenco" />
 	<html:hidden property="riepilogativo"/>
-	<html:hidden property="exportPdf"/>
 </html:form>
 
 <!-- INIZIO SQL PER CONDIZIONE DI FILTRO DEI MODELLI RISPETTO ALLA SCHEDA DI PARTENZA -->

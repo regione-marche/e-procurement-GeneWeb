@@ -30,6 +30,7 @@ import it.eldasoft.utils.utility.UtilityStringhe;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -132,6 +133,16 @@ public class UffintManager {
    */
   public UfficioIntestatario getUfficioIntestatarioByPKWithAddressAndNation(String codice) {
     return this.uffintDao.getUfficioIntestatarioByPKWithAddressAndNation(codice);
+  }
+  
+  /**
+   * Estrazione dell'ufficio intestatario associato alla chiave in input 
+   * con tutti i dati aggiuntivi
+   * @param codice
+   * @return restituisce l'ufficio intestatario associato alla chiave in input
+   */
+  public UfficioIntestatario getUfficioIntestatarioFullByPKWithNation(String codice) {
+    return this.uffintDao.getUfficioIntestatarioFullByPKWithNation(codice);
   }
   
   /**
@@ -399,4 +410,20 @@ public class UffintManager {
 
 	    }
 	  }
+  
+  /**
+   * Restituisce la lista dei codici degli uffici intestatari legati all'account
+   * @param idAccount l'id dell'account
+   * @return restituisce una lista, eventualmente vuota, con i codici
+   */
+  public List<String> getCodiciUfficiIntestatariAccount(int idAccount) {
+    try {
+      List<String> res = this.uffintDao.getCodiciUfficiIntestatariAccount(idAccount);
+      if(res != null) return res;
+      logger.debug("Nessun ufficio intestatario legato all'account "+idAccount);
+    } catch(Exception e) {
+      logger.error("Errore nel trovare la lista degli uffici intestatari legati ad un account["+idAccount+"]",e);
+    }
+    return Collections.emptyList();
+  }
 }

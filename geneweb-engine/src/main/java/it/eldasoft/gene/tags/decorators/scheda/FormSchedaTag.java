@@ -1,5 +1,19 @@
 package it.eldasoft.gene.tags.decorators.scheda;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyContent;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
 import it.eldasoft.gene.bl.GeneManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
@@ -18,6 +32,7 @@ import it.eldasoft.gene.tags.decorators.archivi.ArchivioRequest;
 import it.eldasoft.gene.tags.decorators.archivi.ArchivioTagImpl;
 import it.eldasoft.gene.tags.decorators.campi.UtilityDefinizioneCampo;
 import it.eldasoft.gene.tags.decorators.scheda.CampiNonDiEntita.EntitaLocal;
+import it.eldasoft.gene.tags.utils.KeyParamValidator;
 import it.eldasoft.gene.tags.utils.UtilityTags;
 import it.eldasoft.gene.web.struts.tags.SchedaAction;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
@@ -27,20 +42,6 @@ import it.eldasoft.utils.profiles.FiltroLivelloUtente;
 import it.eldasoft.utils.profiles.cache.DizionarioLivelli;
 import it.eldasoft.utils.profiles.domain.Livello;
 import it.eldasoft.utils.spring.UtilitySpring;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyContent;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 /**
  * Gestore del tag per la scheda
@@ -139,6 +140,10 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
   @Override
   public int doAfterBody() throws JspException {
     boolean modifica = UtilityTags.isInModifica(this.pageContext.getRequest());
+    
+    // Recupero le chiavi e le valido
+    final String key = UtilityTags.getParametro(this.pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA);
+    final String keyParent = UtilityTags.getParametro(this.pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT);
 
     SqlManager sql = (SqlManager) UtilitySpring.getBean("sqlManager",
         this.pageContext, SqlManager.class);
@@ -147,6 +152,12 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
     // CostantiGenerali.ENTITA_PRINCIPALE_MODIFICABILE:
     // "1" -> entita' modificabile, "0" entita' non modificabile.
     if (!modifica && this.isFirstIteration()) {
+    	// Valido le eventuali chiavi ricevute nella request
+    	if (StringUtils.isNotBlank(key))
+    		KeyParamValidator.validate(key);
+    	if (StringUtils.isNotBlank(keyParent))
+    		KeyParamValidator.validate(keyParent);
+    	
       // per prima cosa si rimuove l'attributo in sessione relativo ad un
       // precedente dettaglio
       if (this.pageContext.getSession().getAttribute(
@@ -212,8 +223,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
           UtilityTags.addWhereSelezionata(pageContext, filtroRiga,
               this.getAttributes().getWhere());
         } else
-          UtilityTags.jdbcAddKeyWhere(filtroRiga, UtilityTags.getParametro(
-              this.pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA));
+          UtilityTags.jdbcAddKeyWhere(filtroRiga, key);
 
         int nCampo = 0;
         // Come prima cosa aggiungo tutti i campi chiave
@@ -428,8 +438,6 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
     // Aggiungo gli hidden di default
     buf.append(UtilityTags.getHtmlDefaultHidden(this.pageContext));
     // Aggiungo la chiave pel parent alla scheda
-    String keyParent = UtilityTags.getParametro(this.pageContext,
-        UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT);
     buf.append(UtilityTags.getHtmlHideInput(
         UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT,
         keyParent));
@@ -455,7 +463,6 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
       buf.append(UtilityTags.getHtmlHideInputFromParam(this.pageContext,
         UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA));
 
-    String key = (UtilityTags.getParametro(this.pageContext, UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA));
     if (profiloApplicativo != null && StringUtils.isNotBlank(key)) {
       // si aggiunge il key acceduto tra quelli navigati nel profilo in uso
       HashMap<String, HashSet<String>> hashProfiliKeys = (HashMap<String, HashSet<String>>) this.pageContext.getAttribute(CostantiGenerali.PROFILI_KEYS, PageContext.SESSION_SCOPE);
@@ -592,6 +599,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
   /**
    * @return Returns the entita.
    */
+  @Override
   public String getEntita() {
     return getAttributes().getEntita();
   }
@@ -648,6 +656,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
    * @return true Se si è alla perima iterazione. false Non è la prima
    *         iterazione
    */
+  @Override
   public boolean isFirstIteration() {
     return this.getNumIteration() == 0;
   }
@@ -670,14 +679,17 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
     return ret;
   }
 
+  @Override
   public String getFormName() {
     return "local" + this.getId();
   }
 
+  @Override
   public void addArchivio(ArchivioTagImpl archivio) {
     this.getAttributes().getArchivi().add(archivio);
   }
 
+  @Override
   public CampoSchedaTagImpl getDecoratore(CampoSchedaTag tag) {
     CampoSchedaTagImpl ret = null;
     if (tag.getNCampo() < 0) tag.setNCampo(this.getNCampo());
@@ -716,6 +728,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
     return new FormSchedaAttributes(this.getTipoVar());
   }
 
+  @Override
   public boolean isGestisciProtezioni() {
     return this.getAttributes().isGestisciProtezioni();
   }
@@ -745,6 +758,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
    * @param string
    * @return
    */
+  @Override
   public boolean isCampo(String nomeCampoFisico) {
     for (int i = 0; i < getAttributes().getElencoCampi().size(); i++) {
       CampoSchedaTagImpl campo = (CampoSchedaTagImpl) getAttributes().getElencoCampi().get(
@@ -857,7 +871,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
         java.lang.reflect.Constructor constructor = cl.getConstructor(new Class[] { BodyTagSupportGene.class });
         o = constructor.newInstance(new Object[] { this });
       } catch (Exception e) {
-        logger.warn("Errore durante l'istanziazione del plugin, si considera la definizione come assente", e);
+        logger.warn("Errore durante l'istanziazione del plugin " + this.getAttributes().getPlugin() + ", si considera la definizione come assente", e);
         o = null;
       }
     }

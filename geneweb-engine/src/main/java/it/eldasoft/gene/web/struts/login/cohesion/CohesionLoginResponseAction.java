@@ -26,6 +26,7 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -88,11 +89,14 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
         // lettura dei dati ricevuti e significativi
         Document cohesionResponseXML = getXmlDocFromString(cohesionResponse);
         cohesionResponseXML.getDocumentElement().normalize();
-        String login = cohesionResponseXML.getElementsByTagName(attributeKeyLogin).item(0).getTextContent();
-        String nome = cohesionResponseXML.getElementsByTagName(attributeKeyFirstName).item(0).getTextContent();
-        String cognome = cohesionResponseXML.getElementsByTagName(attributeKeyLastName).item(0).getTextContent();
-        String email = cohesionResponseXML.getElementsByTagName(attributeKeyMail).item(0).getTextContent();
-        String tipoAutenticazione = cohesionResponseXML.getElementsByTagName("tipo_autenticazione").item(0).getTextContent();
+        String login = getCohesionElement(cohesionResponseXML, attributeKeyLogin);
+        String nome = getCohesionElement(cohesionResponseXML, attributeKeyFirstName);
+        String cognome = getCohesionElement(cohesionResponseXML, attributeKeyLastName);
+        String email = getCohesionElement(cohesionResponseXML, attributeKeyMail);
+        String tipoAutenticazione = getCohesionElement(cohesionResponseXML, "tipo_autenticazione");
+        
+		logger.info("Autenticazione Cohesion: login=" + login + ", nome=" + nome + ", cognome=" + cognome + ", email="
+				+ email + ", tipoAutenticazione=" + tipoAutenticazione);
 
         // l'utente e' gia' presente e abilitato, quindi lo mando alla homepase dell'applicazione,
         // prima pero' setto l'attributo accountCohesion in sessione
@@ -142,6 +146,7 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
         }
       }
     } catch (Exception ex) {
+    	logger.error("Errore durante l'autenticazione Cohesion", ex);
       if (ex instanceof RemoteException && ((RemoteException) ex).getMessage().equals("USER-UNKNOWN")) {
         //this.addActionError(this.getText("errors.login.unknownUser"));
         this.aggiungiMessaggio(request, "errors.login.unknownUser");
@@ -222,5 +227,17 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
     }
     return cipher;
   }
+  
+	private String getCohesionElement(Document doc, String name) {
+		String value = null;
+		try {
+			value = StringUtils.stripToNull(doc.getElementsByTagName(name)
+					.item(0).getTextContent());
+		} catch (Exception e) {
+			value = null;
+		}
+		return value;
+	}
+
 
 }

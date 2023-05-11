@@ -17,7 +17,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 </HEAD>
@@ -30,7 +30,7 @@
 				<table class="logo-datiUtente">
 					<tr>
 						<td width="400">
-									<img src="${pageContext.request.contextPath}/img/banner_logo.png" alt="Torna alla homepage" title="Torna alla homepage">
+									<img src="${pageContext.request.contextPath}/img/banner_logo.png" alt="Torna alla homepage di ${applicationScope.appTitle}" title="Torna alla homepage">
 						</td>
 						<td align="left">
 							<span class="titoloApplicativo">&nbsp;</span>

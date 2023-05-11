@@ -56,6 +56,21 @@ public class ConfigurazioneMailForm extends DispatchForm {
   private String            maxMb;
   /** Ritardo in secondi tra un invio ed il successivo in caso di uso massivo della funzione di invio mail. */
   private String            delay;
+  
+  /**
+   * Server di posta IMAP
+   */
+  private String            serverIMAP;
+  
+  /**
+   * Porta del server di posta IMAP
+   */
+  private String            portaIMAP;
+  
+  /**
+   * Protocollo IMAP utilizzato (Standard o SSL)
+   */
+//  private String            protocolloIMAP;
 
 
   public ConfigurazioneMailForm() {
@@ -73,6 +88,9 @@ public class ConfigurazioneMailForm extends DispatchForm {
     this.userId = null;
     this.maxMb = null;
     this.delay = null;
+    this.serverIMAP = null;
+    this.portaIMAP = null;
+//    this.protocolloIMAP = null;
   }
 
   /**
@@ -96,6 +114,9 @@ public class ConfigurazioneMailForm extends DispatchForm {
     this.userId = cfg.getUserId();
     this.maxMb = cfg.getDimTotAll();
     this.delay = cfg.getDelay();
+    this.serverIMAP = cfg.getServerIMAP();
+    this.portaIMAP = cfg.getPortaIMAP();
+//    this.protocolloIMAP = cfg.getProtocolloIMAP();
   }
 
   /**
@@ -118,6 +139,9 @@ public class ConfigurazioneMailForm extends DispatchForm {
     cfg.setUserId(StringUtils.stripToNull(this.userId));
     cfg.setDimTotAll(StringUtils.stripToNull(this.maxMb));
     cfg.setDelay(StringUtils.stripToNull(this.delay));
+    cfg.setServerIMAP(this.serverIMAP);
+    cfg.setPortaIMAP(this.portaIMAP);
+//    cfg.setProtocolloIMAP(this.protocolloIMAP);
 
     return cfg;
 
@@ -311,4 +335,29 @@ public class ConfigurazioneMailForm extends DispatchForm {
   public void setDelay(String delay) {
     this.delay = delay;
   }
+  
+  public String getServerIMAP() {
+    return serverIMAP;
+  }
+  
+  public void setServerIMAP(final String serverIMAP) {
+    this.serverIMAP = serverIMAP;
+  }
+  
+  public String getPortaIMAP() {
+    return portaIMAP;
+  }
+  
+  public void setPortaIMAP(final String portaIMAP) {
+    this.portaIMAP = portaIMAP;
+  }
+  
+//  public String getProtocolloIMAP() {
+//    return protocolloIMAP;
+//  }
+
+//  public void setProtocolloIMAP(final String protocolloIMAP) {
+//    this.protocolloIMAP = protocolloIMAP;
+//  }
+  
 }

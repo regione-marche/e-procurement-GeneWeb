@@ -15,11 +15,14 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereTEIMFunction" />
+
 <gene:template file="popup-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="ListaTeim">
 	<gene:setString name="titoloMaschera" value="Selezione del tecnico"/>
-	<c:set var="tmp" value='${trovaAddWhere}' /> 
+	<c:set var="nomeContainerFiltri" value="deftrovaTEIM-${empty param.numeroPopUp ? 0 : param.numeroPopUp}"/> 
+	<c:set var="tmp" value="${sessionScope[nomeContainerFiltri].trovaAddWhere}" /> 
 	<c:choose>
-		<c:when test='${(!empty tmp) and (fn:contains(tmp, "TEIM.CODTIM IN"))}' >
+		<c:when test='${(!empty tmp) and (fn:contains(tmp, "teim.codtim IN"))}' >
 			<c:set var="tipoFiltro" value="1" />
 		</c:when>
 		<c:otherwise>
@@ -64,7 +67,8 @@
 	
 	function cambiaFiltro(tipoCategoria){
 	
-		var condizioneWhere = "";
+		var functionId = "skip";
+		var parametriWhere = "";
 		var nomeCampoArchivio = null;
 		
 		if(parentFormName == "formTeimLeg"){
@@ -79,13 +83,18 @@
 				nomeCampoArchivio = "APPA_APNDTE";
 		}
 		
-		if (parentFormName == "formTeimLeg" && tipoCategoria == 1)
-			condizioneWhere = window.opener.activeForm.getValue("WLEGFILTRATI");
+		if (parentFormName == "formTeimLeg" && tipoCategoria == 1) {
+			functionId = "filteredWleg";
+			parametriWhere = 'T:${param.ncodim}';
+		}
 		
-		if (parentFormName == "formTeimDte" && tipoCategoria == 1)
-			condizioneWhere = window.opener.activeForm.getValue("WDTEFILTRATI");
+		if (parentFormName == "formTeimDte" && tipoCategoria == 1) {
+			functionId = "filteredWdte";
+			parametriWhere = 'T:${param.ncodim}';
+		}
 		
-		eval("window.opener.document." + parentFormName + ".archWhereLista").value = condizioneWhere;
+		eval("window.opener.document." + parentFormName + ".archFunctionId").value = functionId;
+		eval("window.opener.document." + parentFormName + ".archWhereParametriLista").value = parametriWhere;
 		
 		if(nomeCampoArchivio != null){
 			eval("window.opener.document.forms[0]." + nomeCampoArchivio).value = document.archivioSchedaForm.archValueCampoChanged.value.replace("%", "");
@@ -93,8 +102,8 @@
 		
 		// la seguente riga serve a modificare il nome della popup, in modo da
 		// gestire la chiusura della presente e la riapertura della stessa in un'altra
-		// popup in modo indipendente, evitando un problema di sequenzialit‡ in IE per cui
-		// con tale browser la close di una popup non Ë nel momento atteso 
+		// popup in modo indipendente, evitando un problema di sequenzialit√† in IE per cui
+		// con tale browser la close di una popup non √® nel momento atteso 
 		window.name = parentFormName + "Old";
 				
 		window.opener.arch = window.opener.getArchivio(parentFormName);

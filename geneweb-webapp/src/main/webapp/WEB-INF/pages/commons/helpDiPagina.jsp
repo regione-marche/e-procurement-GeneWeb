@@ -26,6 +26,9 @@
 
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
 
+<% // Validazione parametri tramite regex %>
+<c:if test='${not empty param.idPagina and gene:matches(param.idPagina, "^[a-zA-Z0-9-_\\\.]+$", true)}' />
+
 <c:choose>
 	<c:when test="${modo eq 'VISUALIZZA' }">
 		<c:set var="modoVisNota" value="1"/>

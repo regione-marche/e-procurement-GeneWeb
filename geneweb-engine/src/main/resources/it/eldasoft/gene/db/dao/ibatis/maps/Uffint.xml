@@ -10,12 +10,7 @@
 	  <result property="dataTermineValidita" column="datfin" columnIndex="5"/>
 	</resultMap>
 	
-	<resultMap id="resultUffintConAddressAndNation" class="it.eldasoft.gene.db.domain.UfficioIntestatario">
-	  <result property="codice" column="codein" columnIndex="1"/>
-	  <result property="nome" column="nomein" columnIndex="2"/>
-	  <result property="codFiscale" column="cfein" columnIndex="3"/>
-	  <result property="partitaIVA" column="ivaein" columnIndex="4"/>
-	  <result property="dataTermineValidita" column="datfin" columnIndex="5"/>
+	<resultMap id="resultUffintWithAddressAndNation" class="it.eldasoft.gene.db.domain.UfficioIntestatario" extends="resultUffint">
 	  <result property="viaein" column="viaein" />
 	  <result property="nciein" column="nciein" />
 	  <result property="citein" column="citein" />
@@ -23,31 +18,83 @@
 	  <result property="capein" column="capein" />
 	  <result property="codnaz" column="codnaz" />
 	</resultMap>
+	<resultMap id="resultUffintFullWithNation" class="it.eldasoft.gene.db.domain.UfficioIntestatario" extends="resultUffintWithAddressAndNation">
+		<result property="telein" column="telein" />
+		<result property="faxein" column="faxein" />
+		<result property="dofein" column="dofein" />
+		<result property="lnaein" column="lnaein" />
+		<result property="dnaein" column="dnaein" />
+		<result property="notein" column="notein" />
+		<result property="codsta" column="codsta" />
+		<result property="natgiu" column="natgiu" />
+		<result property="tipoin" column="tipoin" />
+		<result property="numicc" column="numicc" />
+		<result property="daticc" column="daticc" />
+		<result property="proicc" column="proicc" />
+		<result property="codcit" column="codcit" />
+		<result property="emaiin" column="emaiin" />
+		<result property="codres" column="codres" />
+		<result property="nomres" column="nomres" />
+		<result property="resini" column="resini" />
+		<result property="resfin" column="resfin" />
+		<result property="prouff" column="prouff" />
+		<result property="indweb" column="indweb" />
+		<result property="profco" column="profco" />
+		<result property="idammin" column="idammin" />
+		<result property="userid" column="userid" />
+		<result property="pronas" column="pronas" />
+		<result property="emailpec" column="emailpec" />
+		<result property="emai2in" column="emai2in" />
+		<result property="codfe" column="codfe" />
+		<result property="iscuc" column="iscuc" />
+		<result property="cfanac" column="cfanac" />
+		<result property="codipa" column="codipa" />
+		<result property="endpoint_nso" column="endpoint_nso" />
+		<result property="codcons_nso" column="codcons_nso" />
+	</resultMap>
 
+	<sql id="uffintBaseSelect">
+		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN
+	</sql>
+	<sql id="uffintFullSelect">
+		SELECT UFFINT.CODEIN,UFFINT.NOMEIN,UFFINT.VIAEIN,UFFINT.NCIEIN,UFFINT.CITEIN,UFFINT.PROEIN,UFFINT.CAPEIN,
+		UFFINT.TELEIN,UFFINT.FAXEIN,UFFINT.CFEIN,UFFINT.DOFEIN,UFFINT.LNAEIN,UFFINT.DNAEIN,UFFINT.IVAEIN,
+		UFFINT.NOTEIN,UFFINT.CODSTA,UFFINT.NATGIU,UFFINT.TIPOIN,UFFINT.NUMICC,UFFINT.DATICC,UFFINT.PROICC,
+		UFFINT.CODCIT,UFFINT.EMAIIN,UFFINT.CODRES,UFFINT.NOMRES,UFFINT.RESINI,UFFINT.RESFIN,
+		UFFINT.PROUFF,UFFINT.INDWEB,UFFINT.PROFCO,UFFINT.IDAMMIN,UFFINT.USERID,UFFINT.PRONAS,UFFINT.EMAILPEC,
+		UFFINT.EMAI2IN,UFFINT.DATFIN,UFFINT.CODFE,UFFINT.ISCUC,UFFINT.CFANAC,UFFINT.CODIPA,UFFINT.ENDPOINT_NSO,
+		UFFINT.CODCONS_NSO
+	</sql>
+	<sql id="uffintBaseFrom">
+		FROM UFFINT
+	</sql>
+	<sql id="uffintBaseWherePk" >
+		WHERE UFFINT.CODEIN = #codice#
+	</sql>
+	<sql id="uffintFromWithNationAndWherePk">
+		FROM UFFINT LEFT JOIN TAB2 on TAB2.TAB2TIP = CAST(UFFINT.CODNAZ AS VARCHAR(5)) AND TAB2.TAB2COD = 'G_z23'
+		<include refid="uffintBaseWherePk"/>
+	</sql>
 	<select id="getUfficiIntestatari" resultMap="resultUffint">
-		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN   
-		  FROM UFFINT
+		<include refid="uffintBaseSelect"/>
+		<include refid="uffintBaseFrom"/>
 	ORDER BY UFFINT.NOMEIN ASC
 	</select>
-
-	<select id="getUfficioIntestatarioByPK" resultMap="resultUffint" parameterClass="java.lang.String">
-		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN
-		  FROM UFFINT
-	   WHERE UFFINT.CODEIN = #codice#
+	<select  id="getUfficioIntestatarioByPK" resultMap="resultUffint" parameterClass="java.lang.String">
+		<include refid="uffintBaseSelect"/>
+		<include refid="uffintBaseFrom"/>
+		<include refid="uffintBaseWherePk"/>
 	</select>
 	
-	<select id="getUfficioIntestatarioByPKWithAddressAndNation" resultMap="resultUffintConAddressAndNation" parameterClass="java.lang.String">
-		SELECT UFFINT.CODEIN, UFFINT.NOMEIN, UFFINT.CFEIN, UFFINT.IVAEIN, UFFINT.DATFIN,
-			UFFINT.VIAEIN,
-			UFFINT.NCIEIN,
-			UFFINT.CITEIN,
-			UFFINT.PROEIN,
-			UFFINT.CAPEIN,
-			TAB2.TAB2D1 as CODNAZ 
-		FROM UFFINT, TAB2
-		WHERE UFFINT.CODEIN = #codice#
-		   AND TAB2.TAB2TIP = UFFINT.CODNAZ
- 		   AND TAB2.TAB2COD = 'G_z23'
+	<select id="getUfficioIntestatarioByPKWithAddressAndNation" resultMap="resultUffintWithAddressAndNation" parameterClass="java.lang.String">
+		<include refid="uffintBaseSelect"/>
+			,TAB2.TAB2D1 as CODNAZ 
+		<include refid="uffintFromWithNationAndWherePk"/>
+	</select>
+	<select id="getUfficioIntestatarioFullByPKWithNation" resultMap="resultUffintFullWithNation" parameterClass="java.lang.String">
+		<include refid="uffintFullSelect"/>
+			,TAB2.TAB2D1 as CODNAZ 
+		<include refid="uffintFromWithNationAndWherePk"/>
 	</select>
 
 	<select id="getUfficiIntestatariAccount" resultMap="resultUffint" parameterClass="java.lang.Integer">
@@ -56,6 +103,13 @@
 		 WHERE USR_EIN.SYSCON = #idAccount#
 		   AND USR_EIN.CODEIN = UFFINT.CODEIN 
 	ORDER BY UFFINT.NOMEIN ASC
+	</select>
+	
+	<select id="getCodiciUfficiIntestatariAccount" resultClass="java.lang.String" parameterClass="java.lang.Integer">
+		SELECT USR_EIN.CODEIN   
+		  FROM USR_EIN
+		 WHERE USR_EIN.SYSCON = #idAccount#
+		ORDER BY USR_EIN.CODEIN ASC
 	</select>
 	
   <delete id="deleteUfficiAccount" parameterClass="java.lang.Integer">

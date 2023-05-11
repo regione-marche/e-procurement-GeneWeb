@@ -20,7 +20,7 @@
 
 
 
-<html>
+<html lang="it">
 	<head>
 		<jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 		

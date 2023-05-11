@@ -10,32 +10,8 @@
  */
 package it.eldasoft.gene.web.struts.login;
 
-import it.eldasoft.gene.bl.LoginManager;
-import it.eldasoft.gene.bl.admin.AccountManager;
-import it.eldasoft.gene.bl.system.LdapManager;
-import it.eldasoft.gene.commons.web.LimitatoreConnessioniUtenti;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
-import it.eldasoft.gene.commons.web.domain.CostantiIntegrazioneKronos;
-import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.LogEvento;
-import it.eldasoft.gene.db.domain.admin.Account;
-import it.eldasoft.gene.db.domain.admin.AccountLdap;
-import it.eldasoft.gene.utils.LogEventiUtils;
-import it.eldasoft.gene.web.struts.admin.CostantiDettaglioAccount;
-import it.eldasoft.gene.web.struts.login.cohesion.AccountCohesion;
-import it.eldasoft.utils.profiles.CheckOpzioniUtente;
-import it.eldasoft.utils.profiles.OpzioniUtente;
-import it.eldasoft.utils.properties.ConfigManager;
-import it.eldasoft.utils.sicurezza.CriptazioneException;
-import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
-import it.eldasoft.utils.sicurezza.ICriptazioneByte;
-import it.eldasoft.utils.sql.comp.SqlComposerException;
-import it.eldasoft.utils.utility.UtilityDate;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -61,6 +37,31 @@ import org.apache.struts.action.ActionMapping;
 import org.springframework.dao.DataAccessException;
 import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.CommunicationException;
+
+import it.eldasoft.gene.bl.LoginManager;
+import it.eldasoft.gene.bl.admin.AccountManager;
+import it.eldasoft.gene.bl.system.LdapManager;
+import it.eldasoft.gene.commons.web.LimitatoreConnessioniUtenti;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
+import it.eldasoft.gene.commons.web.domain.CostantiIntegrazioneKronos;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.domain.admin.Account;
+import it.eldasoft.gene.db.domain.admin.AccountLdap;
+import it.eldasoft.gene.utils.LogEventiUtils;
+import it.eldasoft.gene.web.struts.admin.CostantiDettaglioAccount;
+import it.eldasoft.gene.web.struts.login.cohesion.AccountCohesion;
+import it.eldasoft.utils.profiles.CheckOpzioniUtente;
+import it.eldasoft.utils.profiles.OpzioniUtente;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.sicurezza.CriptazioneException;
+import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
+import it.eldasoft.utils.sicurezza.ICriptazioneByte;
+import it.eldasoft.utils.sql.comp.SqlComposerException;
+import it.eldasoft.utils.utility.UtilityDate;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Azione Struts che consente l'autenticazione dell'utente all'inserimento dei
@@ -272,6 +273,11 @@ public class LoginAction extends IsUserLoggedAction {
             // F.D. 02/09/08 gestione login in lower per dati non case sensitive
             // estrazione dell'account
             account = this.getAccount(username, password);
+            if (autenticazioneSSO) {
+              // si esegue una forzatura del valore quando l'utenza viene autenticata esternamente e quindi agganciata.
+              // in questo modo si riesce ad effettuare una dopia autenticazione sia dall'esterno che ad esempio LDAP
+              account.setFlagLdap(3);
+            }
 
             // CF 29/03/16 nel caso non si estragga alcun account, si verifica se l'applicativo viene configurato con LDAP ed e' disponibile
             // la form di registrazione, in tal caso si controlla se l'utente si autentica su LDAP e deve essere redirezionato alla form di
@@ -366,7 +372,7 @@ public class LoginAction extends IsUserLoggedAction {
                 Map<String, String> hash = null;
                 if (CostantiIntegrazioneKronos.INTEGRAZIONE_KRONOS.equals(ConfigManager.getValore(CostantiGenerali.PROP_INTEGRAZIONE))) {
                   // se l'accesso diretto e' dovuto all'integrazione con Kronos, i parametri si prendono dal DB
-                  hash = this.loginManager.getDatiUtenteKronos(new Integer(request.getParameter("id")));
+                  hash = this.loginManager.getDatiUtenteKronos(Integer.parseInt(request.getParameter("id")));
                 } else {
                   // altrimenti i parametri si prendono direttamente dal request
                   hash = new HashMap<String, String>();
@@ -416,8 +422,7 @@ public class LoginAction extends IsUserLoggedAction {
                     data.setTime(dataUltimoCambioPsw);
                     int giorniAnno = data.get(Calendar.DAY_OF_YEAR);
                     try {
-                      int durata = new Integer(
-                          ConfigManager.getValore(CostantiGenerali.PROP_DURATA_PASSWORD)).intValue();
+                      int durata = Integer.parseInt(ConfigManager.getValore(CostantiGenerali.PROP_DURATA_PASSWORD));
                       data.set(Calendar.DAY_OF_YEAR, giorniAnno + durata);
                     } catch (Throwable t) {
                       continuaControlli = false;
@@ -569,6 +574,7 @@ public class LoginAction extends IsUserLoggedAction {
               target = "successAdmin";
             }
             request.getSession().setAttribute(CostantiGenerali.SENTINELLA_ACCESSO_AMMINISTRATORE, "1");
+            request.getSession().setAttribute(CostantiGenerali.SENTINELLA_DOPPIA_AUTENTICAZIONE, "1");
           }else if (!CostantiGeneraliStruts.FORWARD_REGISTRAZIONE.equals(target) && tracciaEventoLogin) {
             // nel caso di accesso di un utente LDAP con redirect alla form di registrazione non si traccia l'aute
             LogEvento logEvento = LogEventiUtils.createLogEvento(request);
@@ -577,6 +583,32 @@ public class LoginAction extends IsUserLoggedAction {
             logEvento.setDescr("Login id sessione = " + request.getSession().getId());
             logEvento.setErrmsg(errMsgEvento);
             LogEventiUtils.insertLogEventi(logEvento);
+            
+            //JIRA GENEWEB-159: controllo accessi multipli 
+            HashMap<String, String[]> sessioni = LimitatoreConnessioniUtenti.getInstance().getDatiSessioniUtentiConnessi();
+            List<String> ipList= new ArrayList<String>();
+            
+            if (account != null) {
+	            for(String key :sessioni.keySet()) {
+	              if(account.getLogin().equalsIgnoreCase(sessioni.get(key)[1])){ 
+	                ipList.add(sessioni.get(key)[0]);   
+	              }
+	            }  
+	            if(ipList.size()>1) {
+	              List<String> ipListUnique= new ArrayList<String>();
+	              for(String ip : ipList) {
+	                if(!ipListUnique.contains(ip)) {
+	                  ipListUnique.add(ip);
+	                }
+	              }
+	              LogEvento eventoLoginMultipli = LogEventiUtils.createLogEvento(request);
+	               eventoLoginMultipli.setLivEvento(LogEvento.LIVELLO_WARNING);
+	               eventoLoginMultipli.setCodEvento(LogEventiUtils.COD_EVENTO_ACCESSO_SIMULTANEO);
+	               eventoLoginMultipli.setDescr("Sessioni attive: "+ipList.size()+" | Ip connessi: "+String.join(", ", ipListUnique));
+	               eventoLoginMultipli.setErrmsg(errMsgEvento);
+	               LogEventiUtils.insertLogEventi(eventoLoginMultipli);
+	            }           
+            }
           }
           
         }

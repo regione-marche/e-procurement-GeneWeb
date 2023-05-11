@@ -17,6 +17,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<gene:callFunction obj="it.eldasoft.gene.tags.functions.archWhereFunctions.ComponiWhereG_EVENTISCADENZFunction" />
 
 <gene:template file="popup-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="G_EVENTISCADENZ-lista-popup">
 	<gene:setString name="titoloMaschera" value="Selezione dell'evento per attività scadenzario"/>

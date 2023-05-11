@@ -26,7 +26,7 @@
 <c:set var="entita" value="${componiModelloForm.entita}"/>
 <c:set var="documentiAssociatiDB" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "it.eldasoft.documentiAssociatiDB")}'/>
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 <script type="text/javascript" src="${contextPath}/js/general.js"></script>

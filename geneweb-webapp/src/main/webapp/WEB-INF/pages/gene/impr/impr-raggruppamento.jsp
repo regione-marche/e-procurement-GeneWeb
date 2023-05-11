@@ -15,6 +15,7 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <fmt:setBundle basename="AliceResources" />
 
@@ -36,7 +37,7 @@
 		<jsp:param name="nomeAttributoLista" value='listaRaggruppamenti' />
 		<jsp:param name="idProtezioni" value="RAGIMP" />
 		<jsp:param name="jspDettaglioSingolo" value="/WEB-INF/pages/gene/impr/impr-dettaglioRaggruppamento.jsp" />
-		<jsp:param name="arrayCampi" value="'RAGIMP_CODDIC_', 'RAGIMP_NOMDIC_','RAGIMP_QUODIC_', 'RAGIMP_IMPMAN_','IMPR_CGENIMP_','IMPR_CFIMP_','IMPR_PIVIMP_','IMPR_ART80_STATO_','IMPR_ART80_DATA_RICHIESTA_','IMPR_ART80_DATA_LETTURA_'" />
+		<jsp:param name="arrayCampi" value="'RAGIMP_CODDIC_', 'RAGIMP_NOMDIC_','RAGIMP_QUODIC_', 'RAGIMP_IMPMAN_','IMPR_CGENIMP_','IMPR_CFIMP_','IMPR_PIVIMP_','IMPR_ART80_STATO_','IMPR_ART80_DATA_RICHIESTA_','IMPR_ART80_DATA_LETTURA_','IMPR_ART80_SERVICE_'" />
 		<jsp:param name="titoloSezione" value="Impresa" />
 		<jsp:param name="titoloNuovaSezione" value="Nuova impresa" />
 		<jsp:param name="descEntitaVociLink" value="impresa" />
@@ -118,6 +119,8 @@ function art80submit(codimp,operazione) {
 		href = "gene/impr/impr-art80-crea-oe.jsp";
 	} else if (operazione == 'consulta') {
 		href = "gene/impr/impr-art80-consulta-oe.jsp";
+	} else if (operazione == 'aggiorna') {
+		href = "gene/impr/impr-art80-setservice-oe.jsp";
 	}
 	
 	bloccaRichiesteServer();
@@ -134,8 +137,8 @@ function art80submit(codimp,operazione) {
         "value": codimp,
         "type": "hidden"
     })).append($('<input>', {
-        "name": "_csrf",
-        "value": "${param._csrf}",
+        "name": "<csrf:tokenname />",
+        "value": "<csrf:tokenvalue />",
         "type": "hidden"
     }));
     $("body").append(_form);

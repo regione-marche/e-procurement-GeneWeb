@@ -1,23 +1,28 @@
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetWTagsProfiloAction extends Action {
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+public class GetWTagsProfiloAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetWTagsProfiloAction.class);
 
   private SqlManager sqlManager;
 
@@ -25,8 +30,11 @@ public class GetWTagsProfiloAction extends Action {
     this.sqlManager = sqlManager;
   }
 
-  public final ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-      final HttpServletResponse response) throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -39,40 +47,53 @@ public class GetWTagsProfiloAction extends Action {
     String codapp = request.getParameter("codapp");
     String tagprofili = request.getParameter("tagprofili");
 
-    List<?> datiW_PROFILI = sqlManager.getListVector(
-        "select cod_profilo, nome, descrizione from w_profili where codapp = ? order by cod_profilo", new Object[] { codapp });
+    try {
 
-    if (datiW_PROFILI != null && datiW_PROFILI.size() > 0) {
-      for (int p = 0; p < datiW_PROFILI.size(); p++) {
+      List<?> datiW_PROFILI = sqlManager.getListVector(
+          "select cod_profilo, nome, descrizione from w_profili where codapp = ? order by cod_profilo", new Object[] { codapp });
 
-        String cod_profilo = (String) SqlManager.getValueFromVectorParam(datiW_PROFILI.get(p), 0).getValue();
-        String nome = (String) SqlManager.getValueFromVectorParam(datiW_PROFILI.get(p), 1).getValue();
-        String descrizione = (String) SqlManager.getValueFromVectorParam(datiW_PROFILI.get(p), 2).getValue();
+      if (datiW_PROFILI != null && datiW_PROFILI.size() > 0) {
+        for (int p = 0; p < datiW_PROFILI.size(); p++) {
 
-        JSONObject _oW_PROFILI = new JSONObject();
-        _oW_PROFILI.accumulate("cod_profilo", cod_profilo);
-        _oW_PROFILI.accumulate("nome", nome);
-        _oW_PROFILI.accumulate("descrizione", descrizione);
+          String cod_profilo = (String) SqlManager.getValueFromVectorParam(datiW_PROFILI.get(p), 0).getValue();
+          String nome = (String) SqlManager.getValueFromVectorParam(datiW_PROFILI.get(p), 1).getValue();
+          String descrizione = (String) SqlManager.getValueFromVectorParam(datiW_PROFILI.get(p), 2).getValue();
 
-        String associato = "false";
-        if (tagprofili != null && !"".equals(tagprofili.trim())) {
-          String[] arraytagprofili = tagprofili.split(",");
-          for (int a = 0; a < arraytagprofili.length; a++) {
-            if (cod_profilo.equals(arraytagprofili[a])) {
-              associato = "true";
+          JSONObject _oW_PROFILI = new JSONObject();
+          _oW_PROFILI.accumulate("cod_profilo", cod_profilo);
+          _oW_PROFILI.accumulate("nome", nome);
+          _oW_PROFILI.accumulate("descrizione", descrizione);
+
+          String associato = "false";
+          if (tagprofili != null && !"".equals(tagprofili.trim())) {
+            String[] arraytagprofili = tagprofili.split(",");
+            for (int a = 0; a < arraytagprofili.length; a++) {
+              if (cod_profilo.equals(arraytagprofili[a])) {
+                associato = "true";
+              }
             }
           }
-        }
-        _oW_PROFILI.accumulate("associato", associato);
+          _oW_PROFILI.accumulate("associato", associato);
 
-        jsonArray.add(_oW_PROFILI);
+          jsonArray.add(_oW_PROFILI);
+        }
       }
+
+      out.print(jsonArray);
+      out.flush();
+
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
     }
 
-    out.print(jsonArray);
-    out.flush();
-
-    return null;
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

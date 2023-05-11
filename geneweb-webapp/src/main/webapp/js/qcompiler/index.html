@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Q-Form Compiler</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+
+  <!-- VERSION APPALTI-CONTRATTI-->
+  <!-- <link type="text/css" rel="stylesheet" href="assets/css-portale/portale-agid.css" />
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/banner.css" />
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/appalti-contratti/portale.css" />
+
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/date_time.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/date_time.css" />
+
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/search_form.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/search_form.css" />
+
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/login_form.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/login_form.css" />
+
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/language_choose.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/language_choose.css" />
+
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/application.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/application.css" /> -->
+
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/normalize.css">
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/portale-agid.css">
+	<link type="text/css" rel="stylesheet" href="assets/css-portale/banner.css">
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/appalti-contratti/portale.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/date_time.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/date_time.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/search_form.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/search_form.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/login_form.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/login_form.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/application.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/application.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/language_choose.css">
+	<link rel="stylesheet" type="text/css" href="assets/css-portale/appalti-contratti/showlets/language_choose.css">
+  <!-- END VERSION APPALTI-CONTRATTI-->
+
+  <!--LAYOUT RAI-->
+  <!-- <link rel="stylesheet" href="assets/css-portale/rai/portale-agid.css">
+  <link rel="stylesheet" href="assets/css-portale/rai/portale.css"> -->
+  <!--LAYOUT RAI END -->
+
+  <!-- <link rel="stylesheet" href="assets/css-portale/appalti-contratti/portale.css"> -->
+  <!-- <link rel="stylesheet" href="assets/css-portale/template-pa/portale.css"> -->
+  <!-- <link rel="stylesheet" href="assets/css-portale/mit/portale.css"> -->
+  <!-- <link rel="stylesheet" href="assets/css-portale/jcity-gov/portale.css"> -->
+
+  <!--LAYOUT 01-->
+  <!-- <link type="text/css" rel="stylesheet" href="assets/css-portale/portale-agid.css" />
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/banner.css" />
+  <link rel="stylesheet" type="text/css" href="assets/css-portale/showlets/application.css" />
+  <link rel="stylesheet" href="assets/css-portale/01/portale.css"> -->
+  <!--LAYOUT 01 END -->
+
+  <!--LAYOUT UNI PD-->
+  <!-- <link type="text/css" rel="stylesheet" href="assets/css-portale/portale-agid.css" />
+  <link type="text/css" rel="stylesheet" href="assets/css-portale/banner.css" />
+  <link rel="stylesheet" href="assets/css-portale/uni-pd/showlets/application.css">
+  <link rel="stylesheet" href="assets/css-portale/uni-pd/showlets/date_time.css">
+  <link rel="stylesheet" href="assets/css-portale/uni-pd/showlets/login_form.css">
+  <link rel="stylesheet" href="assets/css-portale/uni-pd/showlets/search_form.css">
+  <link rel="stylesheet" href="assets/css-portale/uni-pd/showlets/site_map.css">
+  <link rel="stylesheet" href="assets/css-portale/uni-pd/portale.css"> -->
+  <!--LAYOUT UNI PD END -->
+
+  <!-- <link rel="stylesheet" href="assets/css-portale/appalti/elda.css"> -->
+
+  <!-- <link rel="stylesheet" href="assets/css-portale/acquirenteunico/portale.css"> -->
+  <!-- <link rel="stylesheet" href="assets/css-portale/acque-congesi/portale.css"> -->
+  <!-- <link rel="stylesheet" href="assets/css-portale/asm-programbiente/portale.css"> -->
+  <!-- <link rel="stylesheet" href="assets/css-portale/bonifica-brenta/portale.css"> -->
+
+  <script type="text/javascript">
+
+    function setFormLocked(locked) {
+      //if(locked) showBlockUIMessage();
+      //else hideBlockUIMessage();
+    }
+
+  </script>
+
+  <script>
+
+    // Test Parameters, when deployed will contain the actual dynamic parameters
+    window.APP_DATA = {
+      modeDevLocal: true,
+      modePreview: false,
+      language: 'it',
+      idCom: '0',
+      methods: {
+        setFormLocked: setFormLocked
+      },
+      urls: {
+        assets: 'assets',
+        getUuid: 'GetUuid',
+        attachmentUpload: 'Upload',
+        attachmentDownload: 'Download',
+        attachmentDelete: 'Delete',
+        generatePDF: 'PDF',
+        saveForm: 'SaveForm',
+        loadForm: 'LoadForm',
+        actionNext: 'Next',
+        actionCancel: 'Cancel',
+        actionPrev: 'URLBACK',
+        mdgueLink1: 'http://www.google.it',
+        mdgueLink2: 'http://www.libero.it',
+        mdgueLink3: 'http://www.repubblica.it',
+      }
+    };
+
+    /* PRODUCTION
+
+    // App Parameters
+    window.APP_DATA = {
+      modeDevLocal: false,
+      language: 'it',
+      idCom: '<s:property value="%{#documenti.idComunicazione}" />',
+      methods: {
+        setFormLocked: setFormLocked
+      },
+      urls: {
+        assets: '<wp:resourceURL/>static/js/qcompiler/assets',
+        getUuid: '<s:property value="%{#urlGetUuid}" />',
+        attachmentUpload: '<s:property value="%{#urlAttachmentUpload}" />',
+        attachmentDownload: '<s:property value="%{#urlAttachmentDownload}" />',
+        attachmentDelete: '<s:property value="%{#urlAttachmentDelete}" />',
+        generatePDF: '<s:property value="%{#urlGeneratePDF}" />',
+        saveForm: '<s:property value="%{#urlSaveForm}" />',
+        loadForm: '<s:property value="%{#urlLoadForm}" />',
+        actionNext: '<s:property value="%{#urlActionNext}" />',
+        actionCancel: '<s:property value="%{#urlActionCancel}" />',
+        actionPrev: '<s:property value="%{#urlActionPrev}" />',
+      }
+    };
+
+    */
+
+  </script>
+
+<link rel="stylesheet" href="styles.css"></head>
+
+<body>
+  <app-root></app-root>
+<script src="runtime.js" defer></script><script src="polyfills.js" defer></script><script src="main.js" defer></script></body>
+
+</html>

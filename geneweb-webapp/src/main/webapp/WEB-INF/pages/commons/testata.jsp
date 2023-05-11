@@ -32,5 +32,5 @@
 	<c:if test='${(! empty moduloAttivo) and (! empty profiloUtente) and (isNavigazioneDisattiva ne "1")}' >
 		<a href="javascript:goHome('${moduloAttivo}');" title="Torna alla homepage" tabindex="10">
 	</c:if>
-			<img src="${contextPath}/img/banner_logo.png" alt="Torna alla homepage" title="Torna alla homepage"><c:if test='${(! empty moduloAttivo) and (! empty profiloUtente) and (isNavigazioneDisattiva ne "1")}' ></a></c:if>
+			<img src="${contextPath}/img/banner_logo.png" alt="Torna alla homepage di ${applicationScope.appTitle}" title="Torna alla homepage"><c:if test='${(! empty moduloAttivo) and (! empty profiloUtente) and (isNavigazioneDisattiva ne "1")}' ></a></c:if>
 	</div>

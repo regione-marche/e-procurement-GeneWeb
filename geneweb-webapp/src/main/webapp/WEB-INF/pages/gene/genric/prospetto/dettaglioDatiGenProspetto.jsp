@@ -75,6 +75,17 @@
     </td>
   </tr>
 	<tr>
+		<td class="etichetta-dato">Componi in formato PDF</td>
+		<td class="valore-dato"><c:choose>
+				<c:when test="${datiGenProspettoForm.pdf}">
+					<c:out value="Si" />
+				</c:when>
+				<c:otherwise>
+					<c:out value="No" />
+				</c:otherwise>
+			</c:choose></td>
+	</tr>
+	<tr>
     <td colspan="2"><b>Sorgente dati</b></td>
   </tr>
 	<tr>

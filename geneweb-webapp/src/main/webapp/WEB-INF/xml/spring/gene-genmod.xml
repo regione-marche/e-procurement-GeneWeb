@@ -113,7 +113,6 @@
 		<property name="documentiAssociatiManager" ref="documentiAssociatiManager" />
 		<property name="geneManager" ref="geneManager" />
 		<property name="ricercheManager" ref="ricercheManager" />
-		<property name="pdfManager" ref="pdfManager" />
 	</bean>
 
 	<bean name="/geneGenmod/InitTrovaModelliExport"

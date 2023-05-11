@@ -38,23 +38,33 @@
 	
 	<gene:redefineInsert name="corpo">
 	<gene:formScheda entita="IMPR" gestisciProtezioni="false"  gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreInsertVerifichePredefinite">
-																					
+													
 		<gene:campoScheda>
 			<td>&nbsp;&nbsp;</td>
 			<td>
-				<c:if test="${true}">
+			<c:choose>
+				<c:when test='${empty requestScope.verificheInserite}'>
 					<br>
 					Confermi l'inserimento delle verifiche predefinite per l'impresa ?<br>
 					<br>
-				</c:if>
-				<c:if test="${false}">
+			</c:when>
+			<c:otherwise>
+				<c:if test='${requestScope.verificheInserite eq "2"}'>
 					<br>
-					<b>Attenzione:</b> non ci sono verifiche predefinite per l'impresa'<br>
+					<b>Attenzione:</b> non risulta possibile inserire le verifiche predefinite per l'impresa<br>
+					<ul>
+					<c:forEach items="${requestScope.erroriBloccanti}" step="1" var="item">
+						<li>${item}
+					</c:forEach>
+					</ul>
+					
 					<gene:redefineInsert name="buttons">
 						<INPUT type="button" class="bottone-azione" value="Annulla" title="Annulla" onclick="javascript:annulla()">&nbsp;
 					</gene:redefineInsert>
 					<br>
 				</c:if>
+			</c:otherwise>
+			</c:choose>
 			</td>
 		</gene:campoScheda>
 

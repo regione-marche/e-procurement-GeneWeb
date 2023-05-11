@@ -15,9 +15,25 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <c:set var="richiestaFirma" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "documentiDb.richiestaFirma")}'/>
-<c:set var="firmaRemota" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "firmaremota.auto.url")}'/>
+<c:set var="firmaProvider" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-provider")}'/>
+<c:if test='${firmaProvider eq 2}'>
+	<c:set var="firmaRemota" value="true"/>
+</c:if>
+<c:set var="digitalSignatureUrlCheck" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-check-url")}'/>
+<c:set var="digitalSignatureProvider" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-provider")}'/>
+<c:choose>
+	<c:when test="${!empty digitalSignatureUrlCheck && !empty digitalSignatureProvider && (digitalSignatureProvider eq 1 || digitalSignatureProvider eq 2)}">
+		<c:set var="digitalSignatureWsCheck" value='1'/>
+	</c:when>
+	<c:otherwise>
+		<c:set var="digitalSignatureWsCheck" value='0'/>
+	</c:otherwise>
+</c:choose>
 
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="C0OGGASS-Scheda" >
+	<gene:redefineInsert name="head" >
+		<jsp:include page="/WEB-INF/pages/gene/c0oggass/librerieJS.jsp" />
+	</gene:redefineInsert>
 	
 	<c:set var="c0acod" value='${gene:getValCampo(key, "C0ACOD") }'/>
 	
@@ -33,10 +49,19 @@
 	<gene:redefineInsert name="corpo">
 		
 		
+		
 		<gene:formScheda entita="C0OGGASS" gestisciProtezioni="true" gestore="it.eldasoft.gene.tags.gestori.submit.GestoreC0OGGASS" >
+			
+			<jsp:include page="/WEB-INF/pages/gene/c0oggass/isAttivaFirmaDocumento.jsp" >
+					<jsp:param name="key1" value="${datiRiga.C0OGGASS_C0AKEY1}"/>
+				</jsp:include>
+				
 			<c:if test='${modo eq "VISUALIZZA"}'>
+				
+				
+				
 				<gene:redefineInsert name="addToAzioni" >
-					<c:if test='${richiestaFirma eq "1"}'>
+					<c:if test='${richiestaFirma eq "1" or firmaDocumento eq "1"}'>
 						<tr id="rileggiDatiRow"  style="display: none;">
 							<td class="vocemenulaterale" >
 								<a href="javascript:historyReload();" title='Rileggi dati' tabindex="1510">Rileggi dati</a>
@@ -45,7 +70,7 @@
 					</c:if>	
 				</gene:redefineInsert>
 			<gene:redefineInsert name="addPulsanti" >
-				<c:if test='${richiestaFirma eq "1"}'>
+				<c:if test='${richiestaFirma eq "1" or firmaDocumento eq "1"}'>
 					<INPUT type="button"  class="bottone-azione" value='Rileggi dati' title='Rileggi dati' onclick="javascript:historyReload();" style="display: none;" id="btnRileggiDati">
 				</c:if>
 			</gene:redefineInsert>
@@ -68,9 +93,7 @@
 			<c:set var="key1" value='${gene:getValCampo(param.keyAdd, "C0AKEY1")}' />
 			<gene:campoScheda campo="IDDOCDIG" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and CAST(W_DOCDIG.DIGKEY1 AS INT) = C0OGGASS.C0ACOD"  visibile='false'/>
 			<gene:campoScheda campo="DIGNOMDOC" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and CAST(W_DOCDIG.DIGKEY1 AS INT) = C0OGGASS.C0ACOD"  visibile='false'/>
-			<c:if test="${richiestaFirma eq '1'}">
-				<gene:campoScheda campo="DIGFIRMA" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1='${c0acod }'"  visibile='false'/>
-			</c:if>
+			<gene:campoScheda campo="DIGFIRMA" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1='${c0acod }'"  visibile='false'/>
 			<c:if test="${richiestaFirma eq '1' and modo eq 'NUOVO' and modo eq 'MODIFICA'}">
 				<gene:campoScheda title="Nome file in sostituzione" nome="selezioneFile">
 					<input type="file" name="selezioneFile" id="selezioneFile" class="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange='javascript:scegliFileDocumentoAssociato();'/>
@@ -80,14 +103,21 @@
 			<c:if test='${modo eq "VISUALIZZA"}'>
 				<gene:campoScheda campo="VISUALIZZA_FILE_${param.contatore}" title="Nome file"
 					campoFittizio="true" modificabile="false" definizione="T200;0" >		
-						<a href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', '${datiRiga.C0OGGASS_C0ANOMOGG}','${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');">${datiRiga.C0OGGASS_C0ANOMOGG}</a>
-						<c:if test="${richiestaFirma eq '1' and datiRiga.W_DOCDIG_DIGFIRMA eq '1'}">
+						<c:set var="nomDoc" value="${gene:string4Js(datiRiga.C0OGGASS_C0ANOMOGG)}"/>
+						<c:set var="nomDoc" value="${fn:replace(nomDoc,'\"','&#34;')}"/>
+						<a href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', ${nomDoc},'${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');">${datiRiga.C0OGGASS_C0ANOMOGG}</a>
+						<c:if test="${(richiestaFirma eq '1' or firmaDocumento eq '1') and datiRiga.W_DOCDIG_DIGFIRMA eq '1'}">
 							<span style="float:right;"><img width="16" height="16" src="${pageContext.request.contextPath}/img/isquantimod.png"/>&nbsp;In attesa di firma</span>
 						</c:if>
 						<c:if test='${modo eq "VISUALIZZA" and not empty firmaRemota and sessionScope.entitaPrincipaleModificabile eq "1" and gene:checkProt(pageContext,"FUNZ.VIS.ALT.GARE.FirmaRemotaDocumenti")}'>
 							<a style="float:right;" href="javascript:openModal('${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}','${datiRiga.C0OGGASS_C0ANOMOGG}','${pageContext.request.contextPath}','${c0acod}');">
 							<img src="${pageContext.request.contextPath}/img/firmaRemota.png" title="Firma digitale del documento" alt="Firma documento" width="16" height="16">
 							<span title="Firma digitale del documento">Firma documento</span></a>
+						</c:if>
+						<c:if test='${modo eq "VISUALIZZA" and (datiRiga.W_DOCDIG_DIGFIRMA eq "2" or empty datiRiga.W_DOCDIG_DIGFIRMA) and sessionScope.entitaPrincipaleModificabile eq "1" }'>
+							<jsp:include page="/WEB-INF/pages/gene/c0oggass/firmaDocumento.jsp" />
+							
+							<c:set var="titolo" value="${datiRiga.C0OGGASS_C0ATIT}"  scope="request"/>
 						</c:if>
 				</gene:campoScheda>			
 			</c:if>
@@ -104,7 +134,9 @@
 			<c:if test='${modo eq "MODIFICA"}'>
 				<gene:campoScheda campo="VISUALIZZA_FILE_${param.contatore}" title="Nome file"
 					campoFittizio="true" modificabile="false" definizione="T200;0" >		
-						<a href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', '${datiRiga.C0OGGASS_C0ANOMOGG}');">${datiRiga.C0OGGASS_C0ANOMOGG}</a>
+						<c:set var="nomDoc" value="${gene:string4Js(datiRiga.C0OGGASS_C0ANOMOGG)}"/>
+						<c:set var="nomDoc" value="${fn:replace(nomDoc,'\"','&#34;')}"/>
+						<a href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', ${nomDoc}, '${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');">${datiRiga.C0OGGASS_C0ANOMOGG}</a>
 				</gene:campoScheda>				
 				<gene:campoScheda title="Nome file in sostituzione" nome="selezioneFile">
 					<input type="file" name="selezioneFile" id="selezioneFile" class="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange='javascript:scegliFileDocumentoAssociato();'/>
@@ -143,7 +175,11 @@
 		<input type="hidden" name="idprg" id="idprg" value="" />
 		<input type="hidden" name="iddocdig" id="iddocdig" value="" />
 	</form>
-		
+	
+	<jsp:include page="/WEB-INF/pages/gene/c0oggass/forms.jsp" >
+		<jsp:param name="key1" value="${datiRiga.C0OGGASS_C0AKEY1}"/>
+	</jsp:include>	
+	
 	</gene:redefineInsert>
 	
 	<gene:javaScript>
@@ -153,6 +189,16 @@
 		</c:if>
 	
 		function scegliFileDocumentoAssociato() {
+			var firmaDocumento="${firmaDocumento}";
+			if(firmaDocumento=='1'){
+				var digfirma = getValue("W_DOCDIG_DIGFIRMA");
+				console.log("digfirma:" + digfirma);
+				if(digfirma==1){
+					alert("Il documento è in attesa di firma, non è possibile modificare il file");
+					document.getElementById("selezioneFile").value = "";
+					return;
+				}
+			}
 			var file = $("#selezioneFile").val();
 			var lunghezza_stringa = file.length;
 			var posizione_barra = file.lastIndexOf("\\");
@@ -163,23 +209,44 @@
 		}
 	
 		function visualizzaFileDIGOGG(c0acod, dignomdoc,idprg,iddocdig) {
-			var vet = dignomdoc.split(".");
-			var ext = vet[vet.length-1];
-			ext = ext.toUpperCase();
-			if(ext=='P7M' || ext=='TSD'){
-				document.formVisFirmaDigitale.idprg.value = idprg;
-				document.formVisFirmaDigitale.iddocdig.value = iddocdig;
-				document.formVisFirmaDigitale.submit();
-			}else{
-				if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
-				{
-					var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-					document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + dignomdoc;
-				}
-			}
+			<c:choose>
+				<c:when test="${digitalSignatureWsCheck eq 0}">
+					var vet = dignomdoc.split(".");
+					var ext = vet[vet.length-1];
+					ext = ext.toUpperCase();
+					if(ext=='P7M' || ext=='TSD'){
+						document.formVisFirmaDigitale.idprg.value = idprg;
+						document.formVisFirmaDigitale.iddocdig.value = iddocdig;
+						document.formVisFirmaDigitale.submit();
+					}else{
+						if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
+						{
+							var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
+							document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
+						}
+					}
+				</c:when>
+				<c:otherwise>
+					var vet = dignomdoc.split(".");
+					var ext = vet[vet.length-1];
+					ext = ext.toUpperCase();
+					if(ext=='P7M' || ext=='TSD' || ext=='XML' || ext=='PDF'){
+						document.formVisFirmaDigitale.idprg.value = idprg;
+						document.formVisFirmaDigitale.iddocdig.value = iddocdig;
+						document.formVisFirmaDigitale.submit();
+					}else{
+						if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
+						{
+							var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
+							document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
+						}
+					}
+					
+				</c:otherwise>
+			</c:choose>
 		}
 		
-		<c:if test='${richiestaFirma eq "1" and modo eq "VISUALIZZA"}'>
+		<c:if test='${(richiestaFirma eq "1" or firmaDocumento eq "1") and modo eq "VISUALIZZA"}'>
 			var digfirma= getValue("W_DOCDIG_DIGFIRMA");
 			if(digfirma==1){
 				$("#rileggiDatiRow").show();

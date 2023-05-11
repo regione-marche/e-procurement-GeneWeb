@@ -29,13 +29,20 @@
 		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="VIAEIN_${param.contatore}" campoFittizio="true" definizione="T60;;;;G_VIAEINPC" value="${item[3]}" />
 		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="NCIEIN_${param.contatore}" campoFittizio="true" definizione="T10;;;;G_NCIEINPC" value="${item[4]}" />
 		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="PROEIN_${param.contatore}" campoFittizio="true" definizione="T2;;Agx15;;G_PROEINPC" value="${item[6]}" />
+		<gene:campoScheda campoFittizio="true">
+			<c:set var="functionId" value="default_${!empty item[6]}" />
+			<c:if test="${!empty item[6]}">
+				<c:set var="parametriWhere" value="T:${item[6]}" />
+			</c:if>
+		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CAPEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.PROEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CITEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
+				functionId="${functionId}"
+				parametriWhere="${parametriWhere}"
 				chiave="" 
-				where='${gene:if(!empty item[6], gene:concat(gene:concat("TB1.TABCOD3 = \'", item[6]), "\'"), "")}'  
 				formName="formIstat${param.contatore}" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_PROEIN_${param.contatore}" definizione="T9" visibile="false"/>
@@ -56,6 +63,7 @@
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
 			campi="TECNI.CODTEC;TECNI.NOMTEC"
 			chiave="PUNTICON_CODRES_${param.contatore}"
+			functionId="skip"
 			formName="formTecniPunti${param.contatore}"
 			inseribile="${empty sessionScope.uffint or !fn:contains(archiviFiltrati,'TECNI')}">
 			<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="CODRES_${param.contatore}" campoFittizio="true" definizione="T10;;;;G_CODRESPC" value="${item[16]}" />
@@ -72,14 +80,14 @@
 		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="NOMPUN_${param.contatore}" campoFittizio="true" definizione="T254;;;NOTE;G_NOMPUN"  />
 		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="VIAEIN_${param.contatore}" campoFittizio="true" definizione="T60;;;;G_VIAEINPC"  />
 		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="NCIEIN_${param.contatore}" campoFittizio="true" definizione="T10;;;;G_NCIEINPC"  />
-		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="PROEIN_${param.contatore}" campoFittizio="true" definizione="T2;;Agx15;;G_PROEINPC"  />
+		<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="PROEIN_${param.contatore}" campoFittizio="true" definizione="T2;;Agx15;;G_PROEINPC" />
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
 				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CAPEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.PROEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CITEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.PUNTICON.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
 				scheda="" 
 				schedaPopUp="" 
-				campi="TB1.TABCOD3;TABSCHE.TABCOD4;TABSCHE.TABDESC;TABSCHE.TABCOD3" 
+				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
+				functionId="skip"
 				chiave="" 
-				where=""  
 				formName="formIstat${param.contatore}" 
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_PROEIN_${param.contatore}" definizione="T9" visibile="false"/>
@@ -101,6 +109,7 @@
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
 			campi="TECNI.CODTEC;TECNI.NOMTEC"
 			chiave="PUNTICON_CODRES_${param.contatore}"
+			functionId="skip"
 			formName="formTecniPunti${param.contatore}"
 			inseribile="${empty sessionScope.uffint or !fn:contains(archiviFiltrati,'TECNI')}">
 			<gene:campoScheda entita="PUNTICON" where="UFFINT.CODEIN = PUNTICON.CODEIN" campo="CODRES_${param.contatore}" campoFittizio="true" definizione="T10;;;;G_CODRESPC"  />
@@ -115,7 +124,8 @@
 
 <gene:javaScript>
 <c:if test='${! empty sessionScope.uffint && fn:contains(archiviFiltrati,"TECNI") && modoAperturaScheda eq "MODIFICA"}'>
-	document.formTecniPunti${param.contatore}.archWhereLista.value="TECNI.CGENTEI='${codiceUfficio}'";
+	document.formTecniPunti${param.contatore}.archFunctionId.value = "tecniUffintFilter";
+	document.formTecniPunti${param.contatore}.archWhereParametriLista.value = "T:${codiceUfficio}";
 </c:if>
 
 

@@ -29,23 +29,21 @@
 	</c:set>
 
 <script type="text/javascript">
-<!-- 
-  
  	var linksetSubMenuArchivi = "";
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-tecnici")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/tecni/tecni-trova.jsp", 1241, "Archivio tecnici");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/tecni/tecni-trova.jsp&deftrova=TECNI", 1241, "Archivio tecnici");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-imprese")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/impr/impr-trova.jsp", 1242, "Archivio imprese");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/impr/impr-trova.jsp&deftrova=IMPR", 1242, "Archivio imprese");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-tecnici-imprese")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/teim/teim-trova.jsp", 1243, "Archivio tecnici delle imprese");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/teim/teim-trova.jsp&deftrova=TEIM", 1243, "Archivio tecnici delle imprese");
 	</c:if>
 	 <c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-utenti")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/utent/utent-trova.jsp", 1244, "Archivio soggetti");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/utent/utent-trova.jsp&deftrova=UTENT", 1244, "Archivio soggetti");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-uffici-intestatari")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/uffint/uffint-trova.jsp", 1245, "Archivio ${fn:toLowerCase(nomeEntitaParametrizzata)}");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/uffint/uffint-trova.jsp&deftrova=UFFINT", 1245, "Archivio ${fn:toLowerCase(nomeEntitaParametrizzata)}");
 	</c:if>
   
   var linksetSubMenuDocUsoGenerale = "";
@@ -66,7 +64,10 @@
 	</c:if>
   <!-- F.D. 27/02/2007 cambia la gestione dei menù: vengono abilitati i menù in base alle opzioni utente (ou) -->  	  
   <c:if test='${fn:contains(listaOpzioniDisponibili, "OP1#") && (fn:contains(listaOpzioniUtenteAbilitate, "ou50#") || fn:contains(listaOpzioniUtenteAbilitate, "ou51#")) and gene:checkProt(pageContext,"SUBMENU.VIS.STRUMENTI.Generatore-modelli")}'>
-  	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/geneGenmod/InitTrovaModelli.do?"+csrfToken, 1262, "Generatore modelli");
+	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/geneGenmod/InitTrovaModelli.do?"+csrfToken, 1262, "Generatore modelli");
+  </c:if>
+  <c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou232#") and gene:checkProt(pageContext,"FUNZ.VIS.ALT.GENEWEB.QuestionariQForm") and (fn:contains(listaOpzioniDisponibili, "OP135#") or fn:contains(listaOpzioniDisponibili, "OP136#"))}'>
+	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=geneweb/qformlib/qformlib-trova.jsp&deftrova=QFORMLIB", 1263, "Generatore Q-form");
   </c:if>
   	
   var linksetSubMenuUtilita = "";
@@ -117,6 +118,4 @@
 		var t = Math.floor((screen.height-h)/2);
 		window.open(manuale, "manuale", "toolbar=no,menubar=no,width=" + w + ",height=" + h + ",top=" + t + ",left=" + l + ",resizable=yes,scrollbars=yes");
 	}
-
--->
 </script>

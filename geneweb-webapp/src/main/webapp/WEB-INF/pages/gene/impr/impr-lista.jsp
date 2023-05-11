@@ -93,12 +93,18 @@
 				<gene:campoLista campo="LOCIMP" headerClass="sortable" width="120"/>
 				<gene:campoLista campo="INTERD" headerClass="sortable" width="80"/>
 				<c:if test="${isPopolatatW_PUSER == 'SI'}">
-					<gene:campoLista title="&nbsp;" width="20" >
-						<c:if test="${impresaRegistrata == 'SI'}">
-							<img width="16" height="16" title="Impresa registrata su portale" alt="Impresa registrata su portale" src="${pageContext.request.contextPath}/img/ditta_acquisita.png"/>
-						</c:if>
-						
-					</gene:campoLista>
+				<gene:campoLista title="&nbsp;" width="20" >
+					<c:if test="${impresaRegistrata == 'SI'}">
+						<c:choose>
+						<c:when test="${requestScope.registrazioneImpPortaleNonCompleta == 'SI'}">
+							<img width="16" height="16" title="Impresa con registrazione non completa su portale" alt="Impresa con registrazione non completa su portale" src="${pageContext.request.contextPath}/img/ditta_acquisita_noncompleta.png"/>
+						</c:when>
+						<c:otherwise>
+							<img width="16" height="16" title="Impresa registrata su portale" alt="Impresa registrata su portale" src="${pageContext.request.contextPath}/img/ditta_acquisita.png"/>				
+						</c:otherwise>
+						</c:choose>
+					</c:if>
+				</gene:campoLista>
 				</c:if>
 			</gene:formLista>
 		</td></tr>

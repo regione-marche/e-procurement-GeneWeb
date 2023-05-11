@@ -90,7 +90,7 @@
 			<c:if test='${(param.archiviati ne 1) && (opzVerifiche eq "ou228")}'>
 				<gene:campoLista title="&nbsp;" width="20">
 					<a href="javascript:chiaveRiga='${chiaveRigaJava}';archiviaDocVerifica();" title="Archivia documento" >
-						<img width="16" height="16" title="Archivia documento verifica" alt="Archivia documento verifica" src="${pageContext.request.contextPath}/img/com_ric.png"/>
+						<img width="16" height="16" title="Archivia documento verifica" alt="Archivia documento verifica" src="${pageContext.request.contextPath}/img/archiviaDocumento.png"/>
 					</a>
 				</gene:campoLista>
 			</c:if>	

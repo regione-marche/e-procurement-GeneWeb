@@ -17,7 +17,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 
@@ -80,7 +80,6 @@
 	<html:hidden property="noFiltroEntitaPrincipale"/>
 	<html:hidden property="paginaSorgente"/>
 	<html:hidden property="riepilogativo"/>
-	<html:hidden property="exportPdf"/>
 	<c:forEach items="${componiModelloForm.valChiavi}" var="chiave">
 	<input type="hidden" name="valChiavi" value="${chiave}"/>
 	</c:forEach>

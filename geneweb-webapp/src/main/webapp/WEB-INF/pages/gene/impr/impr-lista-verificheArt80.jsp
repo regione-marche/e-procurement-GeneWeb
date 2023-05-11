@@ -104,68 +104,83 @@
 		</td>
 	</tr>
 	
+
+	<gene:redefineInsert name="addToAzioni" >
 		<c:choose>
-			<c:when test='${"ou228" eq opzVerifiche}'>
-					<gene:redefineInsert name="addToAzioni" >
-					<c:choose>
-						<c:when test='${updateLista eq 1 }'>
-							<tr>
-								<td class="vocemenulaterale" >
-									<a href="javascript:listaConferma();" title="Salva modifiche" >Salva modifiche</a>
-								</td>
-							</tr>
-							<tr>
-								<td class="vocemenulaterale" >
-									<a href="javascript:listaAnnullaModifica();" title="Annulla modifiche" >Annulla modifiche</a>
-								</td>
-							</tr>
-						</c:when>
-						<c:otherwise>
-							<tr>
-								<td class="vocemenulaterale" >
-									<a href="javascript:listaApriInModifica();" title="Modifica" tabindex="1501">Modifica</a>
-								</td>
-							</tr>
-						</c:otherwise>
-					</c:choose>
-					<c:if test='${"ou228" eq opzVerifiche}'>
-						<tr>
-							<td class="vocemenulaterale" >
-								<c:if test='${isNavigazioneDisattiva ne "1"}'>
-									<a href="javascript:apriPopupInsertPredefiniti('${codiceImpresa}')" title="Inserisci verifiche predefinite" tabindex="1502">
-								</c:if>
-									Inserisci verifiche predefinite
-								<c:if test='${isNavigazioneDisattiva ne "1"}'></a></c:if>
-							</td>
-						</tr>
-					</c:if>
-					</gene:redefineInsert>
-					
-					<tr>
-						<td class="comandi-dettaglio" colSpan="2">
-							<c:choose>
-								<c:when test='${updateLista eq 1  && "ou228" eq opzVerifiche}'>
-									<INPUT type="button" class="bottone-azione" value="Salva" title="Salva modifiche" onclick="listaConferma();">
-									<INPUT type="button" class="bottone-azione" value="Annulla" title="Annulla modifiche" onclick="javascript:listaAnnullaModifica();">
-								</c:when>
-								<c:otherwise>
-									<c:if test='${gene:checkProtFunz(pageContext, "MOD", "MOD") && "ou228" eq opzVerifiche}'>
-										<INPUT type="button"  class="bottone-azione" value="Modifica" title="Modifica" onclick="javascript:listaApriInModifica();">&nbsp;
-									</c:if>
-									<c:if test='${gene:checkProtFunz(pageContext,"DEL","LISTADELSEL") && "ou228" eq opzVerifiche}'>
-										<INPUT type="button"  class="bottone-azione" value='${gene:resource("label.tags.template.lista.listaEliminaSelezione")}' title='${gene:resource("label.tags.template.lista.listaEliminaSelezione")}' onclick="javascript:listaEliminaSelezione()">
-									</c:if>
-								</c:otherwise>
-							</c:choose>
-							&nbsp;
-						</td>
-					</tr>
-			
+			<c:when test='${updateLista eq 1 }'>
+				<c:if test='${"ou228" eq opzVerifiche}'>
+				<tr>
+					<td class="vocemenulaterale" >
+						<a href="javascript:listaConferma();" title="Salva modifiche" >Salva</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="vocemenulaterale" >
+						<a href="javascript:listaAnnullaModifica();" title="Annulla modifiche" >Annulla</a>
+					</td>
+				</tr>
+				</c:if>
 			</c:when>
 			<c:otherwise>
-					<gene:redefineInsert name="listaEliminaSelezione" />
+				<c:if test='${"ou228" eq opzVerifiche}'>
+				<tr>
+					<td class="vocemenulaterale" >
+						<a href="javascript:listaApriInModifica();" title="Modifica" tabindex="1501">Modifica</a>
+					</td>
+				</tr>	
+				<tr>
+					<td class="vocemenulaterale" >
+						<c:if test='${isNavigazioneDisattiva ne "1"}'>
+							<a href="javascript:apriPopupInsertPredefiniti('${codiceImpresa}')" title="Inserisci verifiche predefinite" tabindex="1502">
+						</c:if>
+							Inserisci verifiche predefinite
+						<c:if test='${isNavigazioneDisattiva ne "1"}'></a></c:if>
+					</td>
+				</tr>
+				</c:if>
+				<c:if test="${gene:checkProtFunz(pageContext,'ALT','EsportaDocumentiVeriche') and ('ou228' eq opzVerifiche or 'ou227' eq opzVerifiche)}">
+				<tr>
+					<td class="vocemenulaterale">
+						<a href='javascript:openModalDownloadDoc("${codiceImpresa}","${pageContext.request.contextPath}" );' title='Esporta su file zip' tabindex="1504">
+							Esporta su file zip
+						</a>
+					</td>
+				</tr>
+				</c:if>
 			</c:otherwise>
 		</c:choose>
+
+	</gene:redefineInsert>
+		
+	<jsp:include page="/WEB-INF/pages/gene/verifiche/modalPopupDownloadAllegatiVerificheImpr.jsp" />
+	
+	<c:if test='${"ou228" eq opzVerifiche}'>
+		<tr>
+			<td class="comandi-dettaglio" colSpan="2">
+				<c:choose>
+					<c:when test='${updateLista eq 1}'>
+						<INPUT type="button" class="bottone-azione" value="Salva" title="Salva modifiche" onclick="listaConferma();">
+						<INPUT type="button" class="bottone-azione" value="Annulla" title="Annulla modifiche" onclick="javascript:listaAnnullaModifica();">
+					</c:when>
+					<c:otherwise>
+						<c:if test='${gene:checkProtFunz(pageContext, "MOD", "MOD")}'>
+							<INPUT type="button"  class="bottone-azione" value="Modifica" title="Modifica" onclick="javascript:listaApriInModifica();">&nbsp;
+						</c:if>
+						<c:if test='${gene:checkProtFunz(pageContext,"DEL","LISTADELSEL")}'>
+							<INPUT type="button"  class="bottone-azione" value='${gene:resource("label.tags.template.lista.listaEliminaSelezione")}' title='${gene:resource("label.tags.template.lista.listaEliminaSelezione")}' onclick="javascript:listaEliminaSelezione()">
+						</c:if>
+					</c:otherwise>
+				</c:choose>
+				&nbsp;
+			</td>
+		</tr>
+	</c:if>
+
+
+	<c:if test='${"ou228" ne opzVerifiche || updateLista eq 1}'>
+		<gene:redefineInsert name="listaEliminaSelezione" />
+	</c:if>
+
 </table>
 
 <gene:javaScript>

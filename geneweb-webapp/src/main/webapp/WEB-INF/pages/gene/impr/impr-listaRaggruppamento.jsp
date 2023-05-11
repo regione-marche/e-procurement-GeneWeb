@@ -18,14 +18,6 @@
 <c:set var="archiviFiltrati" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "it.eldasoft.associazioneUffintAbilitata.archiviFiltrati")}'/>
 
 <c:choose>
-	<c:when test="${not empty param.filtroNomest}">
-		<c:set var="filtroNomest" value="${param.filtroNomest}"/>
-	</c:when>
-	<c:otherwise>
-		<c:set var="filtroNomest" value="${filtroNomest}"/>
-	</c:otherwise>
-</c:choose>
-<c:choose>
 	<c:when test="${not empty param.tipoRTI}">
 		<c:set var="tipoRTI" value="${param.tipoRTI}"/>
 	</c:when>
@@ -33,13 +25,6 @@
 		<c:set var="tipoRTI" value="${tipoRTI}"/>
 	</c:otherwise>
 </c:choose>
-<c:set var="filtro" value="IMPR.TIPIMP=${tipoRTI}"/>
-<c:if test="${! empty filtroNomest}">
-	<c:set var="filtro" value="${filtro} and ${filtroNomest }"/>
-</c:if>
-<c:if test="${! empty sessionScope.uffint && fn:contains(archiviFiltrati,'IMPR') }">
-	<c:set var="filtro" value="${filtro } and CGENIMP = '${sessionScope.uffint}'"/>
-</c:if>
 
 <c:set var="modo" value="MODIFICA" scope="request" />
 
@@ -50,7 +35,7 @@
 		<table class="lista">
 		<tr><td >
 			<gene:formLista entita="IMPR" sortColumn="3" pagesize="20" tableclass="datilista"
-			where="${filtro}" 
+			plugin="it.eldasoft.gene.tags.gestori.plugin.GestoreImprListaRaggruppamento" 
 			gestisciProtezioni="true" > 
 				<gene:redefineInsert name="listaNuovo" />
 				<gene:redefineInsert name="listaEliminaSelezione" />
@@ -76,7 +61,6 @@
 				<gene:campoLista campo="LOCIMP" headerClass="sortable" width="120"/>
 				<gene:campoLista campo="INTERD" headerClass="sortable" width="80"/>
 				<gene:campoLista campo="CODIMP_HIDDEN" visibile="false" edit="true" campoFittizio="true" definizione="T10"/>
-				<input type="hidden" name="filtroNomest" id="filtroNomest" value="${filtroNomest}" />
 				<input type="hidden" name="tipoRTI" id="tipoRTI" value="${tipoRTI}" />
 			</gene:formLista>
 		</td></tr>

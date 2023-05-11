@@ -10,26 +10,31 @@
  */
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-
+import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import net.sf.json.JSONArray;
 
 /**
  * @author Stefano.Cestaro
  *
  */
-public class GetDescrizioneC0EntitAction extends Action {
+public class GetDescrizioneC0EntitAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetDescrizioneC0EntitAction.class);
 
   private SqlManager sqlManager;
 
@@ -38,8 +43,11 @@ public class GetDescrizioneC0EntitAction extends Action {
   }
 
   @Override
-  public final ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-      final HttpServletResponse response) throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -47,16 +55,29 @@ public class GetDescrizioneC0EntitAction extends Action {
     response.setContentType("text/text;charset=utf-8");
     PrintWriter out = response.getWriter();
 
-    JSONArray jsonArray = new JSONArray();
+    try {
 
-    String selectC0ENTIT = "select c0e_des from c0entit where c0e_nom = ?";
-    String c0e_nom = request.getParameter("c0e_nom");
-    String c0e_des = (String) this.sqlManager.getObject(selectC0ENTIT, new Object[] { c0e_nom });
-    jsonArray.add(new Object[] { c0e_des });
-    out.println(jsonArray);
-    out.flush();
+      JSONArray jsonArray = new JSONArray();
 
-    return null;
+      String selectC0ENTIT = "select c0e_des from c0entit where c0e_nom = ?";
+      String c0e_nom = request.getParameter("c0e_nom");
+      String c0e_des = (String) this.sqlManager.getObject(selectC0ENTIT, new Object[] { c0e_nom });
+      jsonArray.add(new Object[] { c0e_des });
+      out.println(jsonArray);
+      out.flush();
+
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
+    }
+
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

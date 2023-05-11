@@ -36,6 +36,7 @@
 <c:set var="isTracciaturaEventiAbilitata" value='${fn:contains(listaOpzioniUtenteAbilitate, "ou89#") and IsTracciaturaEventiAbilitata eq 1 and gene:checkProt(pageContext,"SUBMENU.VIS.AMMINISTRAZIONE.LogEventi")}' scope="page" />
 
 <c:set var="isConfigCodificaAutomatica" value='${gene:checkProt(pageContext,"SUBMENU.VIS.AMMINISTRAZIONE.CodificaAutomatica")}' scope="page" />
+<c:set var="isCredenzialiServiziPubblicazioneAbilitata" value='${fn:contains(listaOpzioniUtenteAbilitate, "ou89#") and fn:contains(listaOpzioniDisponibili, "OP137#")}' scope="page"/>
 
 <tiles:insert definition=".listaNoAzioniDef" flush="true">
 
@@ -239,7 +240,27 @@
 					</b>
 				</p>
 			</c:if>
+			
+			  <c:if test='${isCredenzialiServiziPubblicazioneAbilitata}' >
+			  <p>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/g_confcod/g_confcod-lista.jsp';">
+					<img alt="Credenziali servizi di pubblicazione" src="${contextPath}/img/credenziali_pubb.png" ></a>
+					&nbsp;&nbsp;&nbsp;
+					<b>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_application_keys/w_application_keys-trova.jsp';">Credenziali servizi di pubblicazione</a>
+					</b>
+				</p>
+  			 </c:if>
 			<%-- Fine riga per la configurazione codifica automatica --%>
+			
+			<p>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/system/art80/art80formagiuridica.jsp';">
+				<img alt="Art.80 - Associazione tabellati forma giuridica" src="${contextPath}/img/Files-62.png"></a>
+				&nbsp;&nbsp;&nbsp;
+				<b>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/system/art80/art80formagiuridica.jsp';">Art.80 - Associazione tabellati forma giuridica</a>
+				</b>
+			</p>
 			
 		</div>
 		<%-- Fine quarta sezione --%>

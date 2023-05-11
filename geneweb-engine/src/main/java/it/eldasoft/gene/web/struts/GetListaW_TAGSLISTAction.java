@@ -10,28 +10,31 @@
  */
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
-
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetListaW_TAGSLISTAction extends Action {
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import net.sf.json.JSONObject;
+
+public class GetListaW_TAGSLISTAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetListaW_TAGSLISTAction.class);
 
   private SqlManager sqlManager;
 
@@ -40,8 +43,11 @@ public class GetListaW_TAGSLISTAction extends Action {
   }
 
   @Override
-  public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-      throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -136,7 +142,8 @@ public class GetListaW_TAGSLISTAction extends Action {
           }
         }
 
-        // Aggiunta dei tag non associati ad entita' (sono quelli per i titoli o
+        // Aggiunta dei tag non associati ad entita' (sono quelli per i titoli
+        // o
         // i campi dinamici)
         List<?> datiTAGSLIST_NULL = sqlManager.getListVector(selectW_TASGLIST_NULL, new Object[] { codapp, tagcod });
         if (datiTAGSLIST_NULL != null && datiTAGSLIST_NULL.size() > 0) {
@@ -160,14 +167,21 @@ public class GetListaW_TAGSLISTAction extends Action {
       result.put("iTotalDisplayRecords", total);
       result.put("data", hMapC0);
 
-    } catch (SQLException e) {
-      throw new JspException("Errore durante la lettura della lista delle etichette", e);
+      out.println(result);
+      out.flush();
+
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
     }
 
-    out.println(result);
-    out.flush();
-
-    return null;
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

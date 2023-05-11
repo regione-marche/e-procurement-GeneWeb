@@ -10,25 +10,28 @@
  */
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.SqlManager;
-import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
-
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.Action;
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class GetListaC0CAMPIAction extends Action {
+import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
+import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import net.sf.json.JSONObject;
+
+public class GetListaC0CAMPIAction extends ActionAjaxLogged {
+
+  static Logger      logger = Logger.getLogger(GetListaC0CAMPIAction.class);
 
   private SqlManager sqlManager;
 
@@ -37,8 +40,11 @@ public class GetListaC0CAMPIAction extends Action {
   }
 
   @Override
-  public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-      throws Exception {
+  protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+
+    String target = null;
+    String messageKey = null;
 
     DataSourceTransactionManagerBase.setRequest(request);
 
@@ -46,11 +52,11 @@ public class GetListaC0CAMPIAction extends Action {
     response.setContentType("text/text;charset=utf-8");
     PrintWriter out = response.getWriter();
 
-    JSONObject result = new JSONObject();
-    int total = 0;
-    int totalAfterFilter = 0;
-
     try {
+
+      JSONObject result = new JSONObject();
+      int total = 0;
+      int totalAfterFilter = 0;
 
       String selectC0 = "select coc_conta, c0c_tip, c0c_chi, coc_mne_uni, c0c_mne_ber, coc_des, coc_des_frm, c0c_fs, c0c_tab1, coc_dom, coc_des_web from c0campi";
 
@@ -64,14 +70,21 @@ public class GetListaC0CAMPIAction extends Action {
       result.put("iTotalDisplayRecords", totalAfterFilter);
       result.put("data", hmC0);
 
-    } catch (SQLException e) {
-      throw new JspException("Errore durante la lettura del C0CAMPI", e);
+      out.println(result);
+      out.flush();
+
+    } catch (Throwable e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
     }
 
-    out.println(result);
-    out.flush();
-
-    return null;
+    if (target != null) {
+      return mapping.findForward(target);
+    } else {
+      return null;
+    }
 
   }
 

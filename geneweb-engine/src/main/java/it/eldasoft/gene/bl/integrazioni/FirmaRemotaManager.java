@@ -50,12 +50,12 @@ public class FirmaRemotaManager {
 
   static Logger               logger                       = Logger.getLogger(FirmaRemotaManager.class);
 
-  private static final String PROP_PROVIDER                = "firmaremota.provider";
-  private static final String PROP_INFOCERT_AUTO_URL       = "firmaremota.auto.url";
-  private static final String PROP_INFOCERT_REMOTE_URL     = "firmaremota.remote.url";
-  private static final String PROP_INFOCERT_VERIFY_URL     = "firmaremota.verify.url";
+  private static final String PROP_PROVIDER                = "digital-signature-provider";
+  private static final String PROP_INFOCERT_AUTO_URL       = "digital-signature-auto-url";
+  private static final String PROP_INFOCERT_REMOTE_URL     = "digital-signature-remote-url";
+  private static final String PROP_INFOCERT_VERIFY_URL     = "digital-signature-check-url";
 
-  private static final String PROVIDER_INFOCERT            = "infocert";
+  private static final String PROVIDER_INFOCERT            = "2";
 
   private static final String INFOCERT_MODALITA_REMOTA     = "remota";
   private static final String INFOCERT_MODALITA_AUTOMATICA = "automatica";
@@ -531,16 +531,23 @@ public class FirmaRemotaManager {
       }
       if (!"/".equals(url.substring(url.length() - 1))) url += "/";
       url += "sign/" + format.toLowerCase() + "/" + alias;
-      conn = (HttpURLConnection) new URL(url).openConnection();
+      conn = (HttpURLConnection) new URL(url).openConnection(); 
       conn.setDoOutput(true);
       conn.setRequestMethod("POST");
 
       MultipartEntityBuilder mp = MultipartEntityBuilder.create();
       mp.setMode(HttpMultipartMode.STRICT);
       mp.addTextBody("pin", pin);
-
+      if (INFOCERT_MODALITA_REMOTA.equals(mode.toLowerCase())) {
+        mp.addTextBody("otp", otp);
+        mp.addTextBody("filename", bfToSign.getNome());
+      }
       ByteArrayBody contentToSignBody = new ByteArrayBody(bfToSign.getStream(), bfToSign.getNome());
-      mp.addPart("contentToSign-0", contentToSignBody);
+      if (INFOCERT_MODALITA_REMOTA.equals(mode.toLowerCase())) {
+        mp.addPart("contentToSign-1", contentToSignBody);
+      } else {
+        mp.addPart("contentToSign-0", contentToSignBody);
+      }
 
       HttpEntity httpEntity = mp.build();
 

@@ -32,13 +32,14 @@
 	<% // Variabili globali JS della pagina %>
 	var elemOpzGenRic = null;
 	var elemOpzGenMod = null;
-	
+		
 	function initVarGlobali(){
 		if(elemOpzGenRic == null)
 			elemOpzGenRic = document.getElementById("opzioniGenric");
 
 		if(elemOpzGenMod == null)
 			elemOpzGenMod = document.getElementById("opzioniGenmod");
+		
 	}
 	<% // Fine variabili globali della pagina %>
 	
@@ -330,12 +331,20 @@
 	      document.getElementById("opzioniGenricAvanzati").checked = false;
 	      document.getElementById("opzioniGenricProspetto").checked = false;
 			}
+			
+			if (document.getElementById("rQform")){
+				document.getElementById("rQform").style.display = "none";
+				opzioniQform.selectedIndex = 0;
+			}
 		}	else {
 			if (document.getElementById("rModelli"))
 				document.getElementById("rModelli").style.display = "";
 
 			if (document.getElementById("rReport"))
 				document.getElementById("rReport").style.display = "";
+			
+			if (document.getElementById("rQform"))
+				document.getElementById("rQform").style.display = "";
 		}
 		nascondiProspetto();
 	}

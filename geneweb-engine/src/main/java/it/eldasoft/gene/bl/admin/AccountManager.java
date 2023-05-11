@@ -13,10 +13,12 @@ package it.eldasoft.gene.bl.admin;
 import it.eldasoft.gene.bl.GenChiaviManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.dao.AccountDao;
+import it.eldasoft.gene.db.dao.LogEventiDao;
 import it.eldasoft.gene.db.dao.ModelliDao;
 import it.eldasoft.gene.db.dao.ProfiliDao;
 import it.eldasoft.gene.db.dao.RicercheDao;
 import it.eldasoft.gene.db.dao.UffintDao;
+import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.db.domain.admin.Account;
 import it.eldasoft.gene.db.domain.admin.AccountCodFiscDuplicati;
 import it.eldasoft.gene.db.domain.admin.AccountGruppo;
@@ -59,6 +61,9 @@ public class AccountManager {
   private RicercheDao      ricercheDao;
   private ModelliDao       modelliDao;
   private UffintDao        uffintDao;
+  
+
+  private LogEventiDao     logEventiDao;
 
 
   /** Logger Log4J di classe */
@@ -101,6 +106,13 @@ public class AccountManager {
    */
   public void setUffintDao(UffintDao uffintDao) {
     this.uffintDao = uffintDao;
+  }
+  
+  /**
+   * @param logEventiDao logEventiDao da settare internamente alla classe.
+   */
+  public void setLogEventiDao(LogEventiDao logEventiDao) {
+    this.logEventiDao = logEventiDao;
   }
 
   /**
@@ -991,6 +1003,15 @@ public class AccountManager {
     if (logger.isDebugEnabled()) logger.debug("deleteLoginFallite: inizio metodo");
     this.accountDao.deleteLoginFallite(username);
     if (logger.isDebugEnabled()) logger.debug("deleteLoginFallite: fine metodo");
+  }
+ /**
+  * 
+  * @param idUtente 
+  *         id dell'utente loggato
+  * @return la lista degli eventi di login/logout associati all'utente
+  */
+  public List<LogEvento> getUltimiAccessi(Long idUtente){
+    return this.logEventiDao.getUltimiAccessi(idUtente);
   }
 
 }

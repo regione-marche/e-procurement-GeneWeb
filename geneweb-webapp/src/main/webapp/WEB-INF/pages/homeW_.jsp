@@ -21,7 +21,7 @@
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#"/>
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
 
-<HTML>
+<HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />
 

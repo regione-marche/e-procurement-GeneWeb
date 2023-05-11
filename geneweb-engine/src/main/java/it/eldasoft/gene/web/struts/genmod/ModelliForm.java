@@ -65,6 +65,8 @@ public class ModelliForm extends ActionForm {
 
   private String            filtroEntPrinc;
   
+  private boolean           pdf;
+  
   public ModelliForm() {
     super();
     this.inizializzaOggetto();
@@ -100,6 +102,7 @@ public class ModelliForm extends ActionForm {
     this.personale = false;
     this.riepilogativo = false;
     this.filtroEntPrinc = null;
+    this.pdf = false;
   }
 
   public ModelliForm(DatiModello datiModel) {
@@ -119,6 +122,7 @@ public class ModelliForm extends ActionForm {
     this.personale = (datiModel.getPersonale() == 1 ? true : false);
     this.riepilogativo = (datiModel.getRiepilogativo() == 1 ? true : false);
     this.filtroEntPrinc = datiModel.getFiltroEntPrinc();
+    this.pdf = (datiModel.getPdf() == 1 ? true : false);
   }
 
   public DatiModello getDatiPerModel() {
@@ -139,6 +143,7 @@ public class ModelliForm extends ActionForm {
     datiModello.setPersonale(this.personale ? 1 : 0);
     datiModello.setRiepilogativo(this.riepilogativo ? 1 : 0);
     datiModello.setFiltroEntPrinc(UtilityStringhe.convertiStringaVuotaInNull(this.filtroEntPrinc));
+    datiModello.setPdf(this.pdf ? 1 : 0);
 
     return datiModello;
   }
@@ -447,6 +452,21 @@ public class ModelliForm extends ActionForm {
    */
   public void setFiltroEntPrinc(String filtroEntPrinc) {
     this.filtroEntPrinc = filtroEntPrinc;
+  }
+  
+  /**
+   * @return Ritorna pdf.
+   */
+  public boolean isPdf() {
+    return pdf;
+  }
+
+  /**
+   * @param pdf
+   *        pdf da settare internamente alla classe.
+   */
+  public void setPdf(boolean pdf) {
+    this.pdf = pdf;
   }
 
 }

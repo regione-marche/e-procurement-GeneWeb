@@ -15,6 +15,7 @@
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Profili.xml" />
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Gruppi.xml" />
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Uffint.xml" />
+	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Tecnici.xml" />
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Ricerche.xml" />
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/Modelli.xml" />
 	<sqlMap resource="it/eldasoft/gene/db/dao/ibatis/maps/PropsConfig.xml" />

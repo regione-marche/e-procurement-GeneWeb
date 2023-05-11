@@ -42,7 +42,6 @@ public class ComponiModelloForm extends ActionForm {
   private String            paginaSorgente;
   private int               riepilogativo;
   private Integer           idRicerca;
-  private int               exportPdf;
 
   public ComponiModelloForm() {
     super();
@@ -63,7 +62,6 @@ public class ComponiModelloForm extends ActionForm {
     this.paginaSorgente = null;
     this.riepilogativo = 0;
     this.idRicerca = null;
-    this.exportPdf = 0;
   }
 
   public void reset(ActionMapping mapping, HttpServletRequest request) {
@@ -275,20 +273,6 @@ public class ComponiModelloForm extends ActionForm {
    */
   public void setIdRicerca(Integer idRicerca) {
     this.idRicerca = idRicerca;
-  }
-  
-  /**
-   * @return Ritorna exportPdf.
-   */
-  public int getExportPdf() {
-    return exportPdf;
-  }
-
-  /**
-   * @param exportPdf exportPdf da settare internamente alla classe.
-   */
-  public void setExportPdf(int exportPdf) {
-    this.exportPdf = exportPdf;
   }
 
 }

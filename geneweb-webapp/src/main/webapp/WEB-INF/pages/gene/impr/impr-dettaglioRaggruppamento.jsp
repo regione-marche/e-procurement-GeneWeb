@@ -34,7 +34,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.ImprScheda"),"gene/impr/impr-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.ImprScheda"),"gene/impr/impr-scheda-popup.jsp","")}'
 			campi="IMPR.CODIMP;IMPR.NOMIMP;IMPR.CFIMP;IMPR.PIVIMP;IMPR.CGENIMP"
-			where="(IMPR.TIPIMP <>3 and IMPR.TIPIMP <>10) or IMPR.TIPIMP is null"
+			functionId="ditteDitg"
 			chiave="RAGIMP_CODDIC_${param.contatore}">
 			<gene:campoScheda title="Codice impresa" entita="RAGIMP" campo="CODDIC_${param.contatore}" campoFittizio="true" definizione="T10;1;;;CODDIC" value="${item[1]}" obbligatorio="true" />
 			<gene:campoScheda title="Ragione sociale" entita="RAGIMP" campo="NOMDIC_${param.contatore}" campoFittizio="true" definizione="T61;0;;;NOMDIC" value="${item[2]}" />
@@ -65,18 +65,38 @@
 					<c:otherwise>
 						<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou225#")}'>
 							<span style="float: right;">
+								&nbsp;&nbsp;
 								<a href="javascript:art80submit('${item[1]}','consulta');" 
 									title="Consulta il dettaglio dei documenti">
 									Consulta il dettaglio dei documenti
 								</a>
 							</span>
 						</c:if>
+						<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou225#")}'>
+							<c:if test="${item[11] eq 'one_shot'}">
+								<span style="float: right;">
+									<a href="javascript:art80submit('${item[1]}','aggiorna');" 
+										title="Aggiorna verifica art.80">
+										Richiedi aggiornamento verifica art.80
+									</a>
+								</span>
+							</c:if>
+						</c:if>
 					</c:otherwise>
 				</c:choose>
 			</c:if>
 		</gene:campoScheda>
 		
-		<gene:campoScheda title="Data invio anagrafica" entita="IMPR" campo="ART80_DATA_RICHIESTA_${param.contatore}" campoFittizio="true" definizione="D;0" value="${item[9]}"  modificabile="false" visibile="${!empty art80wsurl}"/>
+		<c:choose>
+			<c:when test="${item[11] eq 'one_shot'}">
+				<c:set value="One shot" var="service_desc"></c:set>
+			</c:when>
+			<c:when test="${item[11] eq 'monitoring'}">
+				<c:set value="Monitoraggio" var="service_desc"></c:set>
+			</c:when>
+		</c:choose>
+		<gene:campoScheda title="Tipo di controllo" entita="IMPR" campo="ART80_SERVICE_${param.contatore}" campoFittizio="true" definizione="A50;0" value="${service_desc}"  modificabile="false" visibile="${!empty art80wsurl}" />
+		<gene:campoScheda title="Data richiesta/aggiornamento" entita="IMPR" campo="ART80_DATA_RICHIESTA_${param.contatore}" campoFittizio="true" definizione="D;0" value="${item[9]}"  modificabile="false" visibile="${!empty art80wsurl}"/>
 		<gene:campoScheda title="Data ultima lettura stato" entita="IMPR" campo="ART80_DATA_LETTURA_${param.contatore}" campoFittizio="true" definizione="D;0" value="${item[10]}"  modificabile="false" visibile="${!empty art80wsurl}"/>
 		
 	</c:when>
@@ -87,7 +107,7 @@
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.ImprScheda"),"gene/impr/impr-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.ImprScheda"),"gene/impr/impr-scheda-popup.jsp","")}'
 			campi="IMPR.CODIMP;IMPR.NOMIMP;IMPR.CFIMP;IMPR.PIVIMP;IMPR.CGENIMP"
-			where="(IMPR.TIPIMP <>3 and IMPR.TIPIMP <>10) or IMPR.TIPIMP is null"
+			functionId="ditteDitg"
 			chiave="CODDIC_${param.contatore}">
 			<gene:campoScheda title="Codice impresa" entita="RAGIMP" campo="CODDIC_${param.contatore}" campoFittizio="true" definizione="T10;1;;;CODDIC" obbligatorio="true" />
 			<gene:campoScheda title="Ragione sociale" entita="RAGIMP" campo="NOMDIC_${param.contatore}" campoFittizio="true" definizione="T61;0;;;NOMDIC" />

@@ -557,8 +557,7 @@ public class SqlManager {
     }
   }
   
-  private static void tracciaStoricoModPostgres(ServletRequest req, SqlManager sql) throws UnknownHostException{
-    
+  private static void tracciaStoricoModPostgres(ServletRequest req, SqlManager sql) throws UnknownHostException, SQLException{
     if (req instanceof HttpServletRequest) {
       // si tratta di una modifica scatenata da un utente loggato, quindi traccio le informazioni dell'utente (dati utente e client
       // richiedente)
@@ -571,46 +570,48 @@ public class SqlManager {
         utente = UtilityTags.getProfileUtente(request.getSession());
       }
     
-      Map<String,String> valori = new HashMap<String,String>();
+      StringBuffer buf = new StringBuffer("select * from SET_ATTRIB(");
       if (utente != null) {
-        valori.put("v_syscon", ""+utente.getId());
-        valori.put("v_sysnom", utente.getLogin());
-        valori.put("v_sysute", StringUtils.replace(utente.getNome(), "'", "''"));
+        buf.append("'");
+        buf.append(utente.getId());
+        buf.append("', '");
+        buf.append(utente.getLogin());
+        buf.append("', '");
+        buf.append(StringUtils.replace(utente.getNome(), "'", "''"));
+        buf.append("')");
       } else {
-        valori.put("v_syscon", "null");
-        valori.put("v_sysnom", "null");
-        valori.put("v_sysute", "null");
+        buf.append("null");
+        buf.append(", ");
+        buf.append("null");
+        buf.append(", ");
+        buf.append("null");
+        buf.append(")");
       }
-      SqlParameter param_v_syscon = new SqlParameter("v_syscon",java.sql.Types.VARCHAR);
-      SqlParameter param_v_sysnom = new SqlParameter("v_sysnom",java.sql.Types.VARCHAR);
-      SqlParameter param_v_sysute = new SqlParameter("v_sysute",java.sql.Types.VARCHAR);
-      sql.callStoredProcedure("SET_ATTRIB", true, new SqlParameter[]{param_v_syscon,param_v_sysnom,param_v_sysute},valori);
-      valori.clear();
-      valori.put("v_user", req.getRemoteAddr());
-      valori.put("v_context", req.getRemoteHost());
-      SqlParameter param_v_user = new SqlParameter("v_user",java.sql.Types.VARCHAR);
-      SqlParameter param_v_context = new SqlParameter("v_context",java.sql.Types.VARCHAR);
-      sql.callStoredProcedure("SET_ATTRIB_WEB", true, new SqlParameter[]{param_v_user,param_v_context},valori);
-      valori.clear();
-    } else {
-        // si tratta di una modifica scatenata da un task in background
-        Map<String,String> valori = new HashMap<String,String>();
-        valori.put("v_syscon", "null");
-        valori.put("v_sysnom", "null");
-        valori.put("v_sysute", "null");
-        SqlParameter param_v_syscon = new SqlParameter("v_syscon",java.sql.Types.VARCHAR);
-        SqlParameter param_v_sysnom = new SqlParameter("v_sysnom",java.sql.Types.VARCHAR);
-        SqlParameter param_v_sysute = new SqlParameter("v_sysute",java.sql.Types.VARCHAR);
-        sql.callStoredProcedure("SET_ATTRIB", true, new SqlParameter[]{param_v_syscon,param_v_sysnom,param_v_sysute},valori);
-        valori.clear();
-        valori.put("v_user", InetAddress.getLocalHost().getHostAddress());
-        valori.put("v_context", InetAddress.getLocalHost().getHostName());
-        SqlParameter param_v_user = new SqlParameter("v_user",java.sql.Types.VARCHAR);
-        SqlParameter param_v_context = new SqlParameter("v_context",java.sql.Types.VARCHAR);
-        sql.callStoredProcedure("SET_ATTRIB_WEB", true, new SqlParameter[]{param_v_user,param_v_context},valori);
-       
-    }
+      sql.getObject(buf.toString(), null);
+      buf = new StringBuffer("select * from SET_ATTRIB_WEB( '");
+      buf.append(req.getRemoteAddr());
+      buf.append("', '");
+      buf.append(req.getRemoteHost());
+      buf.append("')");
+      sql.getObject(buf.toString(), null);
     
+    } else {
+      // si tratta di una modifica scatenata da un task in background
+      StringBuffer buf = new StringBuffer("select * from SET_ATTRIB(");
+      buf.append("null");
+      buf.append(", ");
+      buf.append("null");
+      buf.append(", ");
+      buf.append("null");
+      buf.append(")");
+      sql.getObject(buf.toString(), null);
+      buf = new StringBuffer("select * from SET_ATTRIB_WEB('");
+      buf.append(InetAddress.getLocalHost().getHostAddress());
+      buf.append("', '");
+      buf.append(InetAddress.getLocalHost().getHostName());
+      buf.append("')");
+      sql.getObject(buf.toString(), null);
+    }
   }
   
   /**

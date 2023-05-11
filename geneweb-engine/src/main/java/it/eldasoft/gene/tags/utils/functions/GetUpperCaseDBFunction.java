@@ -38,15 +38,16 @@ public class GetUpperCaseDBFunction extends AbstractFunzioneTag {
    */
   public String function(PageContext pageContext, Object[] params)
       throws JspException {
-    String funzione = null;
-    // si ritorna la funzione determinata dall'SqlComposer
+    return getUpperCaseDb();
+  }
+  
+  public static String getUpperCaseDb() throws JspException {
     try {
       SqlComposer composer = SqlManager.getComposer(ConfigManager.getValore(CostantiGenerali.PROP_DATABASE));
-      funzione = composer.getFunzioneUpperCase();
+      return composer.getFunzioneUpperCase();
     } catch (SqlComposerException e) {
       throw new JspException(e);
     }
-    return funzione;
   }
 
 }

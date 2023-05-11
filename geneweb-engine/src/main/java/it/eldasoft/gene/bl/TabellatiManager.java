@@ -10,6 +10,12 @@
  */
 package it.eldasoft.gene.bl;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.log4j.Logger;
+
 import it.eldasoft.gene.bl.genric.GestoreVisibilitaDati;
 import it.eldasoft.gene.db.dao.TabellatiDao;
 import it.eldasoft.gene.db.domain.Tabellato;
@@ -18,12 +24,6 @@ import it.eldasoft.utils.metadata.cache.DizionarioCampi;
 import it.eldasoft.utils.metadata.cache.DizionarioTabelle;
 import it.eldasoft.utils.metadata.domain.Campo;
 import it.eldasoft.utils.metadata.domain.Tabella;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
 
 /**
  * Manager che si occupa di gestire tutte le operazioni di business logic sulla
@@ -231,7 +231,7 @@ public class TabellatiManager {
 
     return isString;
   }
-  
+
   /**
    * Funzione che estrae l'elenco dei tabellati
    *
@@ -242,7 +242,7 @@ public class TabellatiManager {
   public List<TabellatoWsdm> getTabellatiFromIdconfiCftab(Long idconfi, String cftab) {
     return this.tabellatiDao.getTabellatiFromIdconfiCftab(idconfi, cftab);
   }
-  
+
   /**
    * Funzione che estrae l'elenco dei tabellati
    *
@@ -253,7 +253,7 @@ public class TabellatiManager {
   public List<TabellatoWsdm> getTabellatiWsdm(Long idconfi, String sistema, String codice) {
     return this.tabellatiDao.getTabellatiWsdm(idconfi, sistema, codice);
   }
-  
+
   /**
    * Funzione che estrae l'elenco dei tabellati
    *
@@ -271,5 +271,19 @@ public class TabellatiManager {
    */
   public void setGeneManager(GeneManager geneManager) {
     this.geneManager = geneManager;
+  }
+
+  /**
+   * Funzione che estrae la descrizione di un tabellato in funzione del codice e
+   * del valore del tabellato
+   *
+   * @param codiceTabellato
+   *        Codice del tabellato
+   * @param valoreTabellato
+   *        valore del tabellato
+   * @return Descrizione supplementare del tabellato nel database
+   */
+  public String getDescrSupplementare(String codiceTabellato, String valoreTabellato) {
+    return this.tabellatiDao.getDescrSupplementare(codiceTabellato, valoreTabellato);
   }
 }

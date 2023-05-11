@@ -1,0 +1,1973 @@
+/* ********************** FORMATTAZIONI GENERALI  ********************** */
+body {
+	background: #FFFFFF;
+	color: #000000;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	margin: 0px;
+}
+
+font.default-font {
+	background: #FFFFFF;
+	color: #000000;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	margin: 0px;
+}
+
+body.body-login {
+	background: #FFFFFF;
+	color: #000000;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	margin: 0px;
+}
+
+a.link-generico{
+	text-decoration: underline;
+	color: #000000;
+}
+
+a.link-generico:hover {
+	text-decoration: none;
+}
+
+div.breadcrumbs {
+	margin: 10px;
+	color: #545454;	
+	font-size: 10px;
+	width: 60%;
+	float: left;
+}
+
+div.breadcrumbs a.link-generico{
+	color: #545454;
+}
+
+img {
+	border: none;
+	vertical-align: middle;
+}
+
+iframe.gene {
+	border: 0;
+	position: absolute;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+	Z-INDEX: 99;
+}
+
+form {
+	margin: 0;
+	border: 0;
+	padding: 0;
+}
+
+fieldset div {
+	padding: 2px;
+}
+
+/* le presenti definizioni si ripetono anche nei class degli input per problemi di IE */
+input[type="text"], input[type="file"], input[type="password"], textarea, select {
+	border: 1px #808080 solid;
+}
+
+input.testo {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	vertical-align: middle;
+	border: 1px #808080 solid;
+}
+
+input.file {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	vertical-align: middle;
+	border: 1px #808080 solid;
+}
+
+input.importo {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	text-align: right;
+	vertical-align: middle;
+	border: 1px #808080 solid;
+}
+
+input.importoNoEdit {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #ECECEC;
+	color: #000000;
+	text-align: right;
+	vertical-align: middle;
+	border: 1px #808080 solid;
+}
+
+input.numero {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	text-align: right;
+	border: 1px #808080 solid;
+}
+
+input.percentuale {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	text-align: right;
+	vertical-align: middle;
+	border: 1px #808080 solid;
+}
+
+.formatoParametro {
+	font: 9px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+
+select {
+	background-color: #FFFFFF;
+	color: #000000;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+}
+
+input.bottone-azione {
+	background-color: #BE382D;
+	color: #FFFFFF;
+	font: 12px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+input.bottone-dettaglio {
+	padding-left: 2px;
+	padding-right: 2px;
+	background-color: #CDCDCD;
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+}
+
+.info-wizard {
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 2px 4px 2px 4px;
+	margin-top: 10px;
+	display: block;
+}
+
+/* CONTENITORE GENERALE */
+table.arealayout {
+	width: 100%;
+	margin: 0;
+	border-collapse: collapse;
+	padding: 0;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* CONTENITORE PARTE ALTA DELLA PAGINA */
+/* table.arealayout tr.testata spostato in elda-custom per personalizzazioni in altezza */
+
+table.arealayout tr.testata td {
+	background-color: #FFFFFF;
+	padding: 0;
+}
+
+.contenitore-arealavoro{
+      width: 1000px;
+      min-height:400px;
+      height:auto !important;
+      height:400px;
+}
+
+/*
+table.logo-datiUtente {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+*/
+
+span.titoloApplicativo {
+	font: 22px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #B42922;
+}
+
+table.arealayout tr.menuprincipale {
+	background-color: #FFFFFF;
+	color: #BE382D;
+	height: 20px;
+}
+
+table.arealayout tr.menuprincipale td {
+	BACKGROUND: url(../../img/prov-pavia/fondomenualto.gif) repeat-x #BE382D;
+}
+
+table.info-sblocco {
+	margin: 0 200px 0 200px;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+table.dati-sblocco {
+	width: 100%;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* PAGINA LOGIN */
+table.contenitore-login {
+	margin: 100px 0 0 0;
+	border: 0;
+	padding: 0;
+	background-color: #C3372A;
+}
+
+table.dati-login {
+	width: 0px;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.etichetta-login {
+	padding-right: 20px;
+	background: transparent;
+	color: #FFFFFF;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+.etichetta-login A {
+	padding-right: 20px;
+	background: transparent;
+	color: #FFFFFF;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.etichetta-login A:hover{
+	text-decoration: none;
+}
+
+input.bottone-login {
+	background-color: #dedff3;
+	color: #BE382D;
+	font: 12px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+table.contenitore-errori {
+	margin: 100px 0 0 0;
+	padding: 0;
+	background-color: #FFFFFF;
+}
+
+table.dati-errore {
+	width: 400px;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.errore-generale {
+	padding-right: 20px;
+	background: transparent;
+	color: #FF0000;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+.msg-admin {
+	margin: 10px;
+	width: 100%;
+	padding: 20px;
+	color: #FFFFFF;
+	background: #FF0000;
+	FONT-SIZE: 14px;
+	font-weight: bold;
+}
+
+/* HOMEPAGE SPECIALI / SCELTA PROFILI */
+TABLE.dettaglio-home {
+	width: 1000px;
+	border: 0;
+	border-collapse: collapse;
+	margin: 0;
+	FONT-SIZE: 11px;
+}
+TABLE.dettaglio-home TD.voce {
+	BORDER-BOTTOM: #dedff3 1px solid;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+TABLE.dettaglio-home TD.sotto-voce {
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+/* MENU DI NAVIGAZIONE IN ALTO */
+table.contenitore-navbar {
+	margin: 0;
+	border: 0;
+	padding: 0;
+	border-collapse: collapse;
+	font: 13px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-align: center;
+}
+
+table.contenitore-navbar td {
+	margin: 0;
+	padding: 0;
+	border-left: 1px #FFFFFF solid;
+	border-right: 1px #FFFFFF solid;
+}
+
+table.contenitore-navbar td a {
+	height: 20px;
+	padding: 2px 10px 2px 10px;
+	background: url(../../img/prov-pavia/fondomenualto.gif) repeat-x #BE382D;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+table.contenitore-navbar a:hover {
+	BACKGROUND: #dedff3;
+	color: #961309;
+}
+
+table.contenitore-navbar td span {
+	height: 20px;
+	padding: 2px 10px 2px 10px;
+	background: url(../../img/prov-pavia/fondomenualto.gif) repeat-x #BE382D;
+	color: #CDCDCD;
+}
+
+.subnavbarmenuskin {
+	WIDTH: 250px;
+	POSITION: absolute;
+	Z-INDEX: 100;
+	VISIBILITY: hidden;
+	BORDER: #961309 1px solid;
+	BACKGROUND-COLOR: #dedff3;
+	COLOR: #961309;
+	FONT: 11px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+.subnavbarmenuskin DIV.navsubmenuitems {
+	padding: 5px 2px 5px 2px;
+}
+
+.subnavbarmenuskin A {
+	WIDTH: 100%;
+	BACKGROUND-COLOR: transparent;
+	COLOR: #961309;
+	TEXT-DECORATION: none;
+}
+
+#mouseovernavbar {
+	BACKGROUND-COLOR: #BB1D12;
+}
+
+#mouseovernavbar A {
+	BACKGROUND-COLOR: transparent;
+	COLOR: #FFFFFF;
+}
+
+/* CONTENITORE PARTE SINISTRA DELLA PAGINA: MENU DI CONTESTO */
+table.arealayout td.menuazioni {
+	width: 150px;
+	padding: 2px;
+}
+
+div.menulaterale {
+	margin: 10px 0;
+	BORDER: #961309 1px solid;
+	/* MODIFICARE QUESTO VALORE IMPLICA UNA MODIFICA DEL FILE floating_menu.js */
+	position: absolute;
+	/*left: 0px;
+	top: 0px;*/
+	visibility: visible;
+	background: #dedff3;
+	z-index: 100;
+}
+
+div.menulaterale table {
+	table-layout: fixed;
+	width: 148px;
+}
+
+div.menulaterale td {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: #808080;
+	width: 148px;
+}
+
+div.menulaterale td.titolomenulaterale {
+	background-color: #FF9999;
+	color: #FFFFFF;
+	border-top: 1px #FF9999 solid;
+	border-bottom: 1px #FF9999 solid;
+}
+
+div.menulaterale td.separatoremenulaterale {
+	height: 8px;
+}
+
+div.menulaterale td.vocemenulaterale {
+	text-decoration: none;
+	padding: 0px;
+	BACKGROUND-COLOR: #dedff3;
+	padding: 1px 0 1px 0;
+}
+
+div.menulaterale td.vocemenulaterale a {
+	BACKGROUND-COLOR: transparent;
+	color: #BE382D;
+	text-decoration: none;
+	width: 100%;
+}
+
+div.menulaterale td.nolinkmenulaterale {
+	text-decoration: none;
+	padding: 0px;
+	color: #BE382D;
+	BACKGROUND-COLOR: #dedff3;
+	padding: 1px 0 1px 0;
+}
+
+#mouseovermenulaterale {
+	BACKGROUND-COLOR: #BB1D12;
+}
+
+#mouseovermenulaterale A {
+	BACKGROUND-COLOR: transparent;
+	COLOR: #FFFFFF;
+}
+
+/* AREA DI LAVORO: DEFINIZIONE */
+table.arealayout td.arealavoro {
+	padding: 2px;
+}
+
+/* AREA DI LAVORO: TITOLO SEZIONE STANDARD */
+.titolomaschera {
+	font-size: 13px;
+	font-weight: bold;
+	margin: 10px;
+	color: #C3372A;
+}
+
+.titoloInputGoogle {
+	color: #C3372A;
+}
+
+#balloon {
+	border-radius: 10px;
+	padding: 10px 10px 10px 30px;
+	margin: 10px;
+	background-color: #dedff3;
+	border: 1px solid #FF9999;
+	cursor: help; 
+	min-height: 30px;
+	height: 30px;
+}
+
+#balloon.expand {
+	overflow:hidden;
+	background-image: url("../../img/expand.gif"); 
+	background-repeat: no-repeat;
+	background-position: 10px 10px;
+} 
+
+#balloon.collapse {
+	height: auto;
+	overflow:visible;
+	background-image: url("../../img/collapse.gif"); 
+	background-repeat: no-repeat;
+	background-position: 10px 10px;
+} 
+
+.note {
+	margin: 5px 0; 
+	border: 1px solid #FF9999;
+	padding: 5px; 
+	background-color: #dedff3;
+}
+
+/* AREA DI LAVORO: POPUP OPZIONI CAMPO */
+.popupmenuskin {
+	WIDTH: 200px;
+	POSITION: absolute;
+	Z-INDEX: 100;
+	VISIBILITY: hidden;
+	BACKGROUND-COLOR: #dedff3;
+	BORDER: #BE382D 1px solid;
+	FONT: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+.popupmenuskin A {
+	WIDTH: 100%;
+	PADDING-RIGHT: 2px;
+	PADDING-LEFT: 2px;
+	line-height: 13px;
+	COLOR: #BE382D;
+	FONT: 11px Verdana, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	TEXT-DECORATION: none;
+}
+
+.popupmenuskin div.chiusuramenu {
+	text-align: right;
+	border-bottom: #BE382D 1px solid;
+}
+
+#mouseoverpopup {
+	BACKGROUND-COLOR: #BB1D12;
+}
+
+#mouseoverpopup A {
+	BACKGROUND-COLOR: transparent;
+	COLOR: #FFFFFF;
+}
+
+/* ******************* MASCHERA DI RICERCA ******************* */
+/* ******************* AREA DI LAVORO: MASCHERA DI RICERCA ******************* */
+DIV.contenitore-errori-arealavoro {
+	margin: 10px;
+	FONT-SIZE: 14px;
+}
+
+DIV.contenitore-ricerca {
+	width: 100%;
+	MARGIN: 10px;
+	border-bottom: 2px solid #961309;
+	border-top: 2px solid #961309;
+	padding: 1px 0px 1px 0px;
+}
+
+DIV.contenitore-popup {
+	width: 96%;
+	MARGIN: 10px;
+	border-bottom: 2px solid #961309;
+	border-top: 2px solid #961309;
+	padding: 1px 0px 1px 0px;
+}
+
+TABLE.ricerca {
+	PADDING: 0px;
+	FONT-SIZE: 11px;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+TABLE.ricerca TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.ricerca TD.etichetta-dato {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	TEXT-ALIGN: right;
+}
+
+TABLE.ricerca TD.etichetta-dato-archivio {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	TEXT-ALIGN: right;
+}
+
+td.valore-dato input {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	/*border: 1px #808080 solid;*/
+}
+
+td.valore-dato textarea {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	/*border: 1px #808080 solid;*/
+}
+
+td.valore-dato-trova input {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	/*border: 1px #808080 solid;*/
+}
+
+td.valore-dato-trova textarea {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+	/*border: 1px #808080 solid;*/
+}
+
+
+TABLE.ricerca TD.operatore-trova {
+	width: 102px;
+	HEIGHT: 22px;
+	BORDER-TOP: #FFFFFF;
+	BACKGROUND-COLOR: #FFFFFF;
+	text-align: right;
+}
+
+/*
+TABLE.ricerca TD.operatore-trova select {
+	border: 1px #808080 solid;
+}
+*/
+
+TABLE.ricerca TD.valore-dato-trova {
+	width: 578px;
+	PADDING-LEFT: 5px;
+	HEIGHT: 22px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+TABLE.ricerca TD.valore-dato {
+	width: 700px;
+	PADDING-LEFT: 10px;
+	text-align: left;
+}
+
+TABLE.ricerca TD.flag-sensitive {
+	PADDING-LEFT: 10px;
+	HEIGHT: 15px;
+	text-align: left;
+	BACKGROUND-COLOR: #EFEFEF;
+}
+
+.opzioniTrova {
+	display: inline;
+	margin-right: 20px;
+}
+
+.comandi-dettaglio {
+	BACKGROUND-COLOR: #dedff3;
+	TEXT-ALIGN: right;
+	vertical-align: bottom;
+	BORDER-BOTTOM: #dedff3 1px solid;
+	BORDER-TOP: #dedff3 1px solid;
+}
+
+.comandi-dettaglio-sx {
+	BACKGROUND-COLOR: #dedff3;
+	TEXT-ALIGN: left;
+	vertical-align: bottom;
+	BORDER-BOTTOM: #dedff3 1px solid;
+	BORDER-TOP: #dedff3 1px solid;
+}
+
+/* ***** */
+/* LISTA */ 
+/* ***** */ 
+
+/* AREA DI LAVORO: LISTA */
+DIV.contenitore-lista {
+	width: 100%;
+	MARGIN: 10px;
+	border-bottom: 2px solid #961309;
+	border-top: 2px solid #961309;
+	padding: 1px 0px 1px 0px;
+}
+
+TABLE.lista {
+	width: 100%;
+	PADDING: 0px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+TABLE.lista TD {
+	PADDING: 2px 0px 2px 0px;
+}
+
+TABLE.lista img {
+	border: 0
+}
+
+TABLE.lista A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.lista A:hover {
+	text-decoration: none;
+}
+
+span.noitemfound {
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 2px 4px 2px 4px;
+	display: block;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/* ********************* MASCHERA DI DETTAGLIO ******************* */
+/* ********************* AREA DI LAVORO: DETTAGLIO ******************* */
+DIV.contenitore-dettaglio {
+	width: 100%;
+	margin: 10px;
+	border-bottom: 2px solid #961309;
+	border-top: 2px solid #961309;
+	padding: 1px 0px 1px 0px;
+}
+
+/* AREA DI LAVORO: MINITABS DI DETTAGLIO ELEMENTO */
+ul.minitabs {
+	list-style: none;
+	width: 100%;
+	margin: 0;
+	padding: 7px 0;
+	border-bottom: 1px solid #961309;
+	font-size: 11px;
+	font-weight: bold;
+	text-align: left;
+	white-space: nowrap
+}
+
+ul.minitabs li {
+	display: inline;
+	margin: 0 2px
+}
+
+ul.minitabs a {
+	text-decoration: none;
+	border-bottom: 4px solid #FFFFFF;
+	padding: 0 0 3px;
+	color: #999999
+}
+
+ul.minitabs a.current {
+	border-color: #961309;
+	color: #961309
+}
+
+ul.minitabs a:hover {
+	border-color: #961309;
+	color: #be382d
+}
+
+/* AREA DI LAVORO: TABS DI DETTAGLIO ELEMENTO */
+TABLE.tabs {
+	margin: 0;
+	margin-top: 4px;
+	border: 0;
+	border-collapse: collapse;
+}
+
+TABLE.tabs tr td {
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	FONT-WEIGHT: bold;
+}
+
+TABLE.tabs tr TD.tab-selezionabile A {
+	COLOR: #961309;
+	TEXT-DECORATION: none;
+}
+
+TABLE.tabs tr TD.tab-attivo {
+	padding: 0 0 0 4px;
+	BACKGROUND-IMAGE: url(../../img/prov-pavia/fondobarraon.gif);
+	COLOR: #FFFFFF;
+	HEIGHT: 18px;
+	TEXT-DECORATION: none;
+}
+
+TABLE.tabs tr TD.tab-selezionabile {
+	padding: 0 0 0 4px;
+	BACKGROUND-IMAGE: url(../../img/prov-pavia/fondobarrachiaro.gif);
+	COLOR: #7B86A7;
+	HEIGHT: 18px;
+	TEXT-DECORATION: none
+}
+
+TABLE.tabs tr TD.tab-nonselezionabile {
+	padding: 0 0 0 4px;
+	BACKGROUND-IMAGE: url(../../img/prov-pavia/fondobarrachiaro.gif);
+	COLOR: #7F7F7F;
+	HEIGHT: 18px;
+	TEXT-DECORATION: none
+}
+
+TABLE.tabs tr TD.tab-angolochiaro {
+	WIDTH: 14px;
+	HEIGHT: 18px;
+	BACKGROUND-IMAGE: url(../../img/prov-pavia/fondobarrachiaro.gif);
+}
+
+TABLE.tabs tr TD.tab-angoloscuro {
+	WIDTH: 14px;
+	HEIGHT: 18px;
+	BACKGROUND-IMAGE: url(../../img/prov-pavia/fondobarraon.gif);
+}
+
+TABLE.contenitore-tabs {
+	margin: 0;
+	border: 0;
+	border-collapse: collapse;
+	padding: 0;
+	width: 100%;
+}
+
+TABLE.contenitore-tabs tr td {
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font: 10px Verdana, Arial, Helvetica, sans-serif;
+	FONT-WEIGHT: bold;
+}
+
+td.gruppitabs {
+	text-align: right;
+}
+
+TABLE.contenitore-tabs tr td.listatabs {
+	width: 20px;
+}
+
+/* AREA DI LAVORO: DATI DEL TAB DI DETTAGLIO ELEMENTO */
+TABLE.dettaglio-tab {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-top: 4px solid #d9807a;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-tab TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.dettaglio-tab TD.etichetta-dato {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab TD.etichetta-dato-archivio {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab TD.valore-dato {
+	width: 700px;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+TABLE.dettaglio-tab TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.dettaglio-tab TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+TABLE.dettaglio-tab td.even {
+	background-color: #e8e8e8;
+}
+
+TABLE.dettaglio-tab td.even_Hilight1 {
+	background-color: #e8e8e8;
+	
+}
+
+TABLE.dettaglio-tab td.even_Hilight2 {
+	background-color: #e8e8e8;
+	
+}
+
+TABLE.dettaglio-tab td.even_Hilight1_Hilight2 {
+	background-color: #e8e8e8;
+	
+	
+}
+
+TABLE.dettaglio-tab td.odd {
+	background-color: #b1c1db;
+}
+
+TABLE.dettaglio-tab td.odd_Hilight1 {
+	background-color: #b1c1db;
+	
+}
+
+TABLE.dettaglio-tab td.odd_Hilight2 {
+	background-color: #b1c1db;
+	
+}
+
+TABLE.dettaglio-tab td.odd_Hilight1_Hilight2 {
+	background-color: #b1c1db;
+	
+	
+}
+
+/* AREA DI LAVORO: DATI DEL TAB DI DETTAGLIO ELEMENTO CON ETICHETTA E VALORE AL 50% DELLA TABLE*/
+TABLE.dettaglio-tab-width-50 {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-top: 4px solid #d9807a;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-tab-width-50 TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.dettaglio-tab-width-50 TD.etichetta-dato {
+	width: 50%;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab-width-50 TD.etichetta-dato-archivio {
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab-width-50 TD.valore-dato {
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+TABLE.dettaglio-tab-width-50 TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.dettaglio-tab-width-50 TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+TABLE.dettaglio-tab-width-50 td.even {
+	background-color: #e8e8e8;
+}
+
+TABLE.dettaglio-tab-width-50 td.even_Hilight1 {
+	background-color: #e8e8e8;
+	
+}
+
+TABLE.dettaglio-tab-width-50 td.even_Hilight2 {
+	background-color: #e8e8e8;
+	
+}
+
+TABLE.dettaglio-tab-width-50 td.even_Hilight1_Hilight2 {
+	background-color: #e8e8e8;
+	
+	
+}
+
+TABLE.dettaglio-tab-width-50 td.odd {
+	background-color: #b1c1db;
+}
+
+TABLE.dettaglio-tab-width-50 td.odd_Hilight1 {
+	background-color: #b1c1db;
+	
+}
+
+TABLE.dettaglio-tab-width-50 td.odd_Hilight2 {
+	background-color: #b1c1db;
+	
+}
+
+TABLE.dettaglio-tab-width-50 td.odd_Hilight1_Hilight2 {
+	background-color: #e8e8e8;
+	
+	
+}
+
+/* AREA DI LAVORO: DATI DEL TAB DI DETTAGLIO ELEMENTO CON ETICHETTA E VALORE AL 75% DELLA TABLE*/
+TABLE.dettaglio-tab-width-75 {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-top: 4px solid #d9807a;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-tab-width-75 TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.dettaglio-tab-width-75 TD.etichetta-dato {
+	width: 75%;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab-width-75 TD.etichetta-dato-archivio {
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab-width-75 TD.valore-dato {
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+TABLE.dettaglio-tab-width-75 TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.dettaglio-tab-width-75 TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+TABLE.dettaglio-tab-width-75 td.even {
+	background-color: #e8e8e8;
+}
+
+TABLE.dettaglio-tab-width-75 td.even_Hilight1 {
+	background-color: #e8e8e8;
+	
+}
+
+TABLE.dettaglio-tab-width-75 td.even_Hilight2 {
+	background-color: #e8e8e8;
+	
+}
+
+TABLE.dettaglio-tab-width-75 td.even_Hilight1_Hilight2 {
+	background-color: #e8e8e8;
+	
+	
+}
+
+TABLE.dettaglio-tab-width-75 td.odd {
+	background-color: #b1c1db;
+}
+
+TABLE.dettaglio-tab-width-75 td.odd_Hilight1 {
+	background-color: #b1c1db;
+	
+}
+
+TABLE.dettaglio-tab-width-75 td.odd_Hilight2 {
+	background-color: #b1c1db;
+	
+}
+
+TABLE.dettaglio-tab-width-75 td.odd_Hilight1_Hilight2 {
+	background-color: #b1c1db;
+	
+	
+}
+
+/* PAGINA DI SELEZIONE MULTIPLA DI VALORI IN DETTAGLIO A TAB */
+TABLE TD.selmultipla {
+	width: 45%;
+}
+
+TABLE TD.selmultipla SELECT {
+	width: 100%;
+}
+
+TABLE TD.bottoni-selmultipla {
+	width: 5%;
+	padding: 0 2px 0 2px;
+}
+
+/* AREA DI LAVORO: DATI DEL DETTAGLIO ELEMENTO SENZA TAB*/
+TABLE.dettaglio-notab {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-notab TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+/* stile definito per emulare le liste dentro i form scheda senza avere il bordo sotto nei td della lista */
+TABLE.lista TABLE.dettaglio-notab TD {
+	BORDER-BOTTOM:0pt none;
+}
+
+TABLE.dettaglio-notab TD.no-border {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: 0px;
+}
+
+TABLE.dettaglio-notab TD.etichetta-dato {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-notab TD.etichetta-dato-archivio {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-notab TD.valore-dato {
+	width: 700px;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+TABLE.dettaglio-notab TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.dettaglio-notab TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+/* AREA DI LAVORO: DATI DEL TAB DI DETTAGLIO ELEMENTO CON ETICHETTA E VALORE AL 50% DELLA TABLE*/
+TABLE.dettaglio-notab-width-50 {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-notab-width-50 TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.dettaglio-notab-width-50 TD.no-border {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: 0px;
+}
+
+TABLE.dettaglio-notab-width-50 TD.etichetta-dato {
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-notab-width-50 TD.etichetta-dato-archivio {
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-notab-width-50 TD.valore-dato {
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+TABLE.dettaglio-notab-width-50 TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.dettaglio-notab-width-50 TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+/* AREA DI LAVORO: DATI DEL TAB DI DETTAGLIO ELEMENTO CON ETICHETTA E VALORE AL 75% DELLA TABLE*/
+TABLE.dettaglio-notab-width-75 {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-notab-width-75 TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.dettaglio-notab-width-75 TD.no-border {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: 0px;
+}
+
+TABLE.dettaglio-notab-width-75 TD.etichetta-dato {
+	width: 75%;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-notab-width-75 TD.etichetta-dato-archivio {
+	width: 75%;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-notab-width-75 TD.valore-dato {
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+TABLE.dettaglio-notab-width-75 TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.dettaglio-notab-width-75 TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+/* AREA DI LAVORO: DATI DEL TAB DI LISTA ELEMENTI ASSOCIATI */
+TABLE.dettaglio-tab-lista {
+	width: 100%;
+	border-top: 4px solid #d9807a;
+	PADDING: 0px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+TABLE.dettaglio-tab-lista TD {
+	PADDING: 2px 0px 2px 0px;
+}
+
+TABLE.dettaglio-tab-lista img {
+	border: 0
+}
+
+/* ** FORMATTAZIONI GRIGLIA ALL'INTERNO DI UN DETTAGLIO ** */
+TABLE.griglia {
+	margin: 0;
+	PADDING: 0px;
+	width: 100%;
+	FONT-SIZE: 11px;
+	border-collapse: collapse;
+	border-left: 1px solid #dedff3;
+	border-top: 1px solid #dedff3;
+	border-right: 1px solid #dedff3;
+}
+
+TABLE.griglia TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.griglia TD.no-border {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: 0px;
+}
+
+TABLE.griglia TD.etichetta-dato {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.griglia TD.etichetta-dato-archivio {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.griglia TD.valore-dato {
+	width: 190px;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+	BORDER-LEFT: #dedff3 1px solid;
+}
+
+TABLE.griglia TD.valore-dato-numerico {
+	width: 190px;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: right;
+	BORDER-LEFT: #dedff3 1px solid;
+}
+
+TABLE.griglia TD.titolo-valore-dato {
+	width: 300px;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+	BORDER-LEFT: #dedff3 1px solid;
+}
+
+TABLE.griglia TD.valore-dato A {
+	text-decoration: underline;
+	color: #000000;
+}
+
+TABLE.griglia TD.valore-dato A:hover {
+	text-decoration: none;
+}
+
+TABLE.griglia TD span.importo {
+	width: 190px;
+	display:block;
+}
+
+TABLE.griglia TD span.importoNegativo {
+	width: 190px;
+	display:block;
+}
+
+TABLE.griglia TD input.importoNoEdit {
+	text-align: right;
+	vertical-align: top;
+	border: 0px;
+	background-color: transparent;
+}
+
+/* ***************************************************** */
+/* AREA DI LAVORO: LISTA; VISUALIZZAZIONE CON DISPLAYTAG */
+/* ***************************************************** */
+span.pagebanner {
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 2px 4px 2px 4px;
+	margin-top: 10px;
+	display: block;
+	border-bottom: none;
+}
+
+span.pagelinks {
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 2px 4px 2px 4px;
+	display: block;
+	border-top: none;
+}
+
+span.pagelinks a {
+	color: #808080;
+	text-decoration: underline;
+}
+
+span.pagelinks a:hover {
+	text-decoration: none;
+}
+
+span strong {
+	background-color: #EEEEEE;
+	font-size: 1em;
+}
+
+div.exportlinks {
+	padding: 2px 0px 2px 0px;
+}
+
+div.exportlinks a {
+	color: #808080;
+	text-decoration: underline;
+}
+
+div.exportlinks a:hover {
+	text-decoration: none;
+}
+
+span.export {
+	padding: 0px 1px 1px 16px;
+	display: inline;
+	cursor: pointer;
+}
+
+span.excel {
+	background-image: url(../../img/ico_file_excel.png);
+	background-repeat: no-repeat;
+}
+
+span.csv {
+	background-image: url(../../img/ico_file_csv.png);
+	background-repeat: no-repeat;
+}
+
+span.xml {
+	background-image: url(../../img/ico_file_xml.png);
+	background-repeat: no-repeat;
+}
+
+span.rtf {
+	background-image: url(../../img/ico_file_rtf.png);
+	background-repeat: no-repeat;
+}
+
+span.pdf {
+	background-image: url(../../img/ico_file_pdf.png);
+	background-repeat: no-repeat;
+}
+
+th.sortable a {
+	background-image: url(../../img/prov-pavia/arrow_off.png);
+	background-repeat: no-repeat;
+}
+
+th.order1 a {
+	background-image: url(../../img/prov-pavia/arrow_down.png);
+	background-repeat: no-repeat;
+}
+
+th.order2 a {
+	background-image: url(../../img/prov-pavia/arrow_up.png);
+	background-repeat: no-repeat;
+}
+
+tr.odd {
+	background-color: #FFFFFF;
+}
+
+tr.even {
+	background-color: #FFEEAA;
+}
+
+tr.even_Hilight1 {
+	background-color: #FFEEAA;
+	
+}
+
+tr.even_Hilight2 {
+	background-color: #FFEEAA;
+	
+}
+
+tr.even_Hilight1_Hilight2 {
+	background-color: #FFEEAA;
+	
+	
+}
+
+tr.odd_Hilight1 {
+	background-color: #FFFFFF;
+	
+}
+
+tr.odd_Hilight2 {
+	background-color: #FFFFFF;
+	
+}
+
+tr.odd_Hilight1_Hilight2 {
+	background-color: #FFFFFF;
+	
+	
+}
+
+tr.livello1 {
+	background-color: #8C514C;
+	font-weight: bold;
+}
+tr.livello2 {
+	background-color: #D37A73;
+	font-weight: bold;
+}
+tr.livello3 {
+	background-color: #E1A6A1;
+	font-weight: bold;
+}
+tr.livello4 {
+	background-color: #F0D2D0;
+	font-weight: bold;
+}
+
+table.datilista {
+	width: 100%;
+	margin: 5px 0 5px 0;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+table.datilista thead tr {
+	background-color: #dedff3;
+}
+
+table.datilista tr.even {
+	background-color: #e8e8e8;
+}
+
+table.datilista tr.even_Hilight1 {
+	background-color: #e8e8e8;
+	
+}
+
+table.datilista tr.even_Hilight2 {
+	background-color: #e8e8e8;
+	
+}
+
+table.datilista tr.even_Hilight1_Hilight2 {
+	background-color: #e8e8e8;
+	
+	
+}
+
+table.datilista tr.odd {
+	background-color: #b1c1db;
+}
+
+table.datilista tr.odd_Hilight1 {
+	background-color: #b1c1db;
+	
+}
+
+table.datilista tr.odd_Hilight2 {
+	background-color: #b1c1db;
+	
+}
+
+table.datilista tr.odd_Hilight1_Hilight2 {
+	background-color: #b1c1db;
+	
+	
+}
+
+table.datilista tr.tableRollOverEffect1 {
+background-color: #BB1D12;
+}
+
+table.datilista tr.tableRollOverEffect1_Hilight1 {
+	background-color: #BB1D12;
+	font-style: italic;
+}
+
+table.datilista tr.tableRollOverEffect1_Hilight2 {
+	background-color: #BB1D12;
+	font-weight: bold;
+}
+
+table.datilista tr.tableRollOverEffect1_Hilight1_Hilight2 {
+	background-color: #BB1D12;
+	font-style: italic;
+	font-weight: bold;
+}
+table.datilista tr.tableRollOverEffect1_livello {
+	background-color: #BB1D12;
+	font-weight: bold;
+}
+
+table.datilista th,table.datilista td {
+	padding: 2px 4px 2px 4px;
+	text-align: left;
+	vertical-align: top;
+	border: 1px solid #FFFFFF;
+}
+
+table.datilista th.sorted {
+	background-color: #b1c1db;
+}
+
+table.datilista th a,table.datilista td a {
+	color: #000000;
+	text-decoration: underline;
+}
+
+table.datilista th a:hover,table.datilista td a:hover {
+	text-decoration: none;
+}
+
+table.datilista th.sorted a,table.datilista th.sortable a {
+	background-position: right;
+	display: block;
+	width: 100%;
+}
+
+/* class per la stampa in bianco e nero con testata in grigio, e bordi di separazione di riga e colonna */
+table.print-dati {
+	width: 100%;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	border-collapse:collapse;
+	border:1px solid #CCCCCC;
+}
+table.print-dati th {
+	background-color:#EEEEEE;
+	padding: 2px 4px 2px 4px;
+	border:1px solid #CCCCCC;
+}
+table.print-dati tr.even {
+	background-color:#FFFFFF;
+}
+table.print-dati td {
+	text-align: left;
+	vertical-align: top;
+	padding: 2px 4px 2px 4px;
+	border:1px solid #CCCCCC;
+}
+
+table.print-testata {
+	width: 75%;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 10px;
+}
+
+table.print-testata td.icone {
+	width: 2%;
+	vertical-align: top;
+	padding: 2px 4px 2px 4px;
+}
+
+table.print-testata td.testo {
+	text-align: center;
+	vertical-align: middle;
+	padding: 2px 4px 2px 4px;
+}
+
+
+/* classe definita appositamente per impostare la larghezza della prima colonna della */
+/* lista delle ricerche associate ad un gruppo in fase di modifica della associazione */
+th.associadati,td.associadati {
+	width: 106px;
+}
+
+/* INFO UTENTE NELLA TESTATA DELL'APPLICAZIONE */
+table.infoUtente {
+	width: 100%;
+	color: #B42922;
+	margin: 0;
+	border: 0;
+	border-collapse: collapse;
+	padding: 0;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* ERRORI JAVASCRIPT */
+div.errori-javascript-titolo {
+	background-color: #F5F5DC;
+	border: thin solid #000000;
+}
+
+div.errori-javascript-dettaglio {
+	background-color: #FFFFFF;
+}
+
+div.errori-javascript-dettaglio ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+li.errori-javascript-err {
+	color: #FF0000;
+	font-size: larger;
+	padding: 0 0 0 20px;
+}
+
+li.errori-javascript-war {
+	color: #0000FF;
+	padding: 0 0 0 20px;
+}
+
+li.errori-javascript-msg {
+	color: #000000;
+	padding: 0 0 0 20px;
+}
+
+/* Sezione con l'elenco delle pagine */
+span.paginatore {
+	background: #EEEEEE;
+	border: 1px dashed #000000;
+	width: 100%;
+	font-family: Tahoma;
+	padding-left: 10px;
+	padding-top: 5px;
+	padding-right: 10px;
+	padding-bottom: 5px;
+}
+
+input.edit-archivio {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #F0F8FF;
+	border: 1px #808080 solid;
+}
+
+textarea.edit-archivio {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #F0F8FF;
+}
+
+select.edit-archivio {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #F0F8FF;
+}
+
+input.edit-mandatory {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	border: 1px #808080 solid;
+	/*background-color: #FFD5D5;*/
+}
+
+select.edit-mandatory {
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	/*background-color: #FFD5D5;*/
+}
+
+/* Sezioni utilizzate nell'help */
+div.help {
+	margin-left: 20px;
+	font: 12px Verdana, Arial, Helvetica, sans-serif;
+}
+
+div.help div.titolo {
+	font: bold 16px Verdana, Arial, Helvetica, sans-serif;
+	margin-bottom: 5px;
+}
+
+div.help div.descrizione {
+	margin-left: 25px;
+	margin-bottom: 5px;
+}
+
+div.help div.entita {
+	margin-bottom: 5px;
+}
+
+div.help div.elencovalori {
+	margin-bottom: 5px;
+}
+
+TABLE.dettaglio-tab-help {
+	margin: 0;
+	PADDING: 0px;
+	width: 97%;
+	FONT-SIZE: 11px;
+	border-top: 4px solid #d9807a;
+	border-collapse: collapse;
+}
+
+TABLE.dettaglio-tab-help TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: #dedff3 1px solid;
+}
+
+TABLE.dettaglio-tab-help TD.etichetta-dato {
+	width: 300px;
+	HEIGHT: 22px;
+	PADDING-RIGHT: 10px;
+	BORDER-TOP: #dedff3 1px solid;
+	BACKGROUND-COLOR: #EFEFEF;
+	color: #000000;
+	TEXT-ALIGN: right;
+}
+
+TABLE.dettaglio-tab-help TD.valore-dato {
+	width: 700px;
+	PADDING-LEFT: 10px;
+	TEXT-ALIGN: left;
+}
+
+span.importo {
+	width: 100px;
+	text-align: right;
+	/*display:block;*/
+}
+
+span.importoNegativo {
+	width: 100px;
+	text-align: right;
+	color: #FF0000;
+	/*display:block;*/
+}
+
+span.percentuale {
+	width: 60px;
+	text-align: right;
+	/*display:block;*/
+}
+
+div.avanzamento-wizard {
+	width: 100%;
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 2px 0px 2px 2px;
+	display: block;
+	margin: 10px;
+}
+
+input.testo-cerca-oggetto {
+	font: 13px Verdana, Arial, Helvetica, sans-serif;
+	background-color: #FFFFFF;
+	color: #000000;
+	vertical-align: middle;
+	border: 1px #C3372A solid;
+}
+
+span.avanzamento-paginevisitate {
+	color: #BE382D;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	margin: 0px;
+	font-weight: bold;
+}
+
+span.avanzamento-paginedavisitare {
+	color: #7F7F7F;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+	margin: 0px;
+}
+
+/* Tabella dettaglio in linea con lo stile di dettaglio-tab */
+/* o dettaglio-notab con celle senza border-bottom */
+TABLE.dettaglio-noBorderBottom {
+	width: 100%;
+	margin: 0;
+	border: 0;
+	border-collapse: collapse;
+	padding: 0;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+TABLE.dettaglio-noBorderBottom TD {
+	PADDING: 2px 0px 2px;
+	BORDER-BOTTOM: 0px;
+}
+
+TABLE.elencoManuali {
+	width: 100%;
+	margin: 0;
+	border: 0;
+	border-collapse: collapse;
+	padding: 0;
+	font: 11px Verdana, Arial, Helvetica, sans-serif;
+}
+
+TABLE.elencoManuali TD {
+	PADDING: 10px 0px 10px;
+}
+
+TABLE.elencoManuali HR {
+        height: 1px;
+        color: #961309;
+}
+
+/* classe definita appositamente per impostare il bordo superiore */
+/*   di un elemento TD*/
+td.bordoSuperiore {
+	border-top: solid #000000 1px;
+}
+
+/* classe definita per allineare qualsiasi oggetto tutto a sinistra */
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+.block {
+	display: block;
+}
+.inline {
+	display: inline;
+}
+.nascosto {
+	display: none;
+}
+
+.info-utente {
+	margin: 10px;
+	float: right;
+	width: 35%;
+	text-align: right;
+}
+
+.width100 {
+	width: 100%;
+}
+
+.margin0px {
+	margin: 0;
+}
+
+.margin10px {
+	margin: 10px;
+}
+
+.over-hidden {
+	overflow: hidden;
+}
+
+#footer{width:100%;background-color:#FFF;float:left;margin-top:1.44em; font-size:1em;}
+#footer .superiore{border-bottom:1px solid #AAA;height:1.44em;float:left; width:100%;}
+#footer .superiore div {margin:0;padding:0;border:0;}
+#footer .superiore img{ border:0px;padding:0px;margin:0px; width:1.264em;}
+
+#footer .inferiore{height:1.44em; padding:0px; margin:0px; width:100%;}
+#footer .inferiore div{margin: 0 10px; text-align:right;}
+#footer .inferiore div span{padding:0px; padding-right:8px; border-right:1px solid #AAA; margin-left:8px;}
+#footer .inferiore .ultimolink{border:0px !important; padding-right:0px;} 
+#footer a, #footer span{color: #505050; text-decoration: none;}
+#footer a:hover{text-decoration: underline;}
+

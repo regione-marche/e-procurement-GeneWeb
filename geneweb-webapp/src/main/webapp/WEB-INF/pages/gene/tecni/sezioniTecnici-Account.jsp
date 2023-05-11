@@ -23,8 +23,9 @@
 		schedaPopUp=''
 		campi="TECNI.CODTEC;TECNI.NOMTEC"
 		chiave="TECNI.CODTEC_${param.contatore}"
+		functionId="tecni"
+		parametriWhere="N:${param.chiave}"
 		formName="formTecniAccount${param.contatore}"
-		where = " TECNI.SYSCON IS NULL or TECNI.SYSCON = ${param.chiave}"
 		inseribile="false">
 			<gene:campoScheda campo="CODTEC_${param.contatore}" entita="TECNI" title = "Codice del tecnico" campoFittizio="true"  visibile="true" definizione="T10;1;;;CODTEC1" value="${item[0]}" />
 			<gene:campoScheda campo="NOMTEC_${param.contatore}" entita="TECNI" campoFittizio="true"  title="Nome" visibile="true" definizione="T61;0;;;NOMTEC1" value="${item[1]}" />
@@ -37,8 +38,9 @@
 		schedaPopUp=''
 		campi="TECNI.CODTEC;TECNI.NOMTEC"
 		chiave="TECNI.CODTEC_${param.contatore}"
+		functionId="tecni"
+		parametriWhere="N:${param.chiave}"
 		formName="formTecniAccount${param.contatore}"
-		where = " TECNI.SYSCON IS NULL or TECNI.SYSCON = ${param.chiave}"
 		inseribile="false">
 			<gene:campoScheda campo="CODTEC_${param.contatore}" entita="TECNI" title = "Codice del tecnico" campoFittizio="true" visibile="true" definizione="T10;1;;;CODTEC1" />
 			<gene:campoScheda campo="NOMTEC_${param.contatore}" entita="TECNI" campoFittizio="true" title="Nome" visibile="true" definizione="T61;0;;;NOMTEC1" />

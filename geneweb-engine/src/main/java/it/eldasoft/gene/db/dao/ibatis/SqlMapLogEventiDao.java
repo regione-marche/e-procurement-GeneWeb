@@ -10,11 +10,18 @@
  */
 package it.eldasoft.gene.db.dao.ibatis;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.spring.SqlMapClientDaoSupportBase;
 import it.eldasoft.gene.db.dao.LogEventiDao;
 import it.eldasoft.gene.db.domain.LogEvento;
@@ -55,6 +62,22 @@ public class SqlMapLogEventiDao extends SqlMapClientDaoSupportBase implements Lo
           "searchLogFromCodOggetto", hash);
 
       return sql;
+  }
+
+  @Override
+  public List<LogEvento> getUltimiAccessi(Long idUtente) throws DataAccessException {
+    
+    Calendar c = new GregorianCalendar();
+    c.setTime(new Date());
+    c.add(Calendar.DAY_OF_MONTH, -30);
+    Date data = c.getTime();
+    
+    HashMap<String, Object> hash = new HashMap<String, Object>();
+    hash.put("idUtente", idUtente);
+    hash.put("data", data);
+    
+    return this.getSqlMapClientTemplate().queryForList(
+        "getUltimiAccessi", hash);
   }
 
 }
