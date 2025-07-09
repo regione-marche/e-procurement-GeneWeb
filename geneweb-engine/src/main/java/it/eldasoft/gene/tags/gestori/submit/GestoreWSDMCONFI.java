@@ -3,6 +3,7 @@ package it.eldasoft.gene.tags.gestori.submit;
 import org.springframework.transaction.TransactionStatus;
 
 import it.eldasoft.gene.bl.GenChiaviManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
 import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestoreChiaveNumerica;
 import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestoreEntita;
@@ -42,8 +43,7 @@ public class GestoreWSDMCONFI extends AbstractGestoreEntita {
 
       datiForm.getColumn("WSDMCONFI.ID").setChiave(true);
       datiForm.setValue("WSDMCONFI.ID", new Long(id));
-      
-
+      datiForm.addColumn("WSDMCONFI.CODAPP", this.getRequest().getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO));
     }
 
     @Override

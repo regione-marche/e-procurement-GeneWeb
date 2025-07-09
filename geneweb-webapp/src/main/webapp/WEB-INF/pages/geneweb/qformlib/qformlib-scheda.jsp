@@ -99,7 +99,6 @@
 				<gene:campoScheda campo="MODINTERNO" modificabile='false' defaultValue="2"/>	
 				<gene:campoScheda campo="STATO" defaultValue="1" modificabile='false'/>
 				<gene:campoScheda campo="ID" visibile="false"/>
-				<gene:campoScheda campo="OGGETTO" visibile="false"/>
 				<gene:campoScheda campo="DULTAGG" modificabile='false'/>
 			</gene:gruppoCampi>
 		

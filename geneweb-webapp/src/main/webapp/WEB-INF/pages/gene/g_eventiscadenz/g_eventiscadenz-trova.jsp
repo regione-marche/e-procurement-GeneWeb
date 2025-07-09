@@ -17,6 +17,9 @@ Form di ricerca degli eventi associabili ad uno scadenzario
 
 <gene:template file="ricerca-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="G_EVENTISCADENZ-trova">
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 	<gene:redefineInsert name="addHistory">
 		<gene:historyAdd titolo='Ricerca eventi per scadenzario' id="ricerca" />
 	</gene:redefineInsert>

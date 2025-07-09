@@ -21,7 +21,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 
-
+<c:choose>
+	<c:when test="${param.modalita ne 'massiva'}">
+		<c:set var="title" value="Firma digitale del documento della stipula"/>
+	</c:when>
+	<c:otherwise>
+		<c:set var="title" value="Firma digitale dei documenti"/>
+	</c:otherwise>
+</c:choose>
 
 <style type="text/css">
 			.ui-dialog-titlebar {
@@ -33,47 +40,82 @@
 </style>
 		
 <div id="dialog-form" style="display:none">
+  <b>${title}</b>
+	  <br>
+	  <br>
+  <span id="statusKo" style="display:none">
   <br>
-  <b>Firma digitale del documento</b>
-  <br>
-  <br>
- <span id="sottoTitolo">Documento da firmare: <span id='nomeDocumento'> </span></span>
-  <br>
-  <p class="validateTips">Per procedere alla firma digitale del documento, immettere le credenziali e la tipologia di firma:</p>
- <span id="errorMessage" style="color:red;display:none"><br></span>
-  <form>
-	  <table class="dati-login" style="width:auto!important;">
-	  <tr>
-		<td class="etichetta-dato">Alias&nbsp;&nbsp;
-		</td>
-		<td class="valore-dato">
-			<input id="user-dialog" name="alias" title="Alias" class="testo" type="text" size="24" value="" maxlength="100"/>
-			<input type="button" class="bottone-azione" value='Richiedi OTP' title='Richiedi OTP' onclick="javascript:richiediOTP();">
-		</td>
-	  </tr>
-	  <tr>
-		<td class="etichetta-dato">Pin&nbsp;&nbsp;
-		</td>
-		<td class="valore-dato">
-			<input id="pass-dialog" name="pin" title="Pin" class="testo" type="password" size="24" value="" maxlength="100" autocomplete="new-password"/>
-		</td>
-	  </tr>
-	  <tr>
-		<td class="etichetta-dato">OTP&nbsp;&nbsp;
-		</td>
-		<td class="valore-dato">
-			<input id="otp-dialog" name="otp" title="otp" class="testo" type="text" size="24" value="" maxlength="100"/>
-		</td>
-	  </tr>
-	  <tr id="trModalitaFirma">
-		<td colspan="2">
+	Non ci sono documenti da firmare
+	
+	<span id="infoStatusKoMessageNumFormato" style="font-style: italic; font-size: 10px; font-weight: bold; display:none;">
 		<br>
-		<input type="radio" value="cades" name="modalitaFirma" id="CAdES" checked="true"/><span>Firma P7M (CAdES)&nbsp;&nbsp;&nbsp;&nbsp;</span>
-		<input type="radio" value="pades" name="modalitaFirma" id="PAdES"/><span id="padesLabel" >Firma PDF (PAdES)</span>
-		</td>
-	  </tr>
-	  </table>
-  </form>
+		<span id='statusKoMessageNumFormato'> </span> per cui &egrave richiesta la firma senza allegato
+	</span>
+	<br>
+	<br>
+  </span>
+  <span id="statusOk" style="display:none">
+	  
+		<c:choose>
+			<c:when test="${param.modalita ne 'massiva'}">
+				<span id="sottoTitolo">Documento da firmare: <span id='nomeDocumento'> </span></span>
+			</c:when>
+			<c:otherwise>
+				<span id="sottoTitolo">Documenti da firmare: <span id='numeroDocumenti'> </span></span>
+				
+				<span id="infoMessageDocDaFirmare" style="font-style: italic; font-size: 10px; font-weight: bold;">
+					<br>
+					<span id='numeroDocumentiFormato'> </span> per cui &egrave richiesta la firma senza allegato
+				</span>
+				
+			</c:otherwise>
+		</c:choose>
+	  <br>
+	  <p class="validateTips">Per procedere alla firma digitale del documento, immettere le credenziali:</p>
+	  <form>
+		  <table class="dati-login" style="width:auto!important;">
+		  <tr>
+			<td class="etichetta-dato">Alias&nbsp;&nbsp;
+			</td>
+			<td class="valore-dato">
+				<input id="user-dialog" name="alias" title="Alias" class="testo" type="text" size="24" value="" maxlength="100"/>
+				<c:choose>
+					<c:when test="${param.modalita ne 'massiva' && param.firmaProvider ne 3}">
+						<input type="button" class="bottone-azione" value='Richiedi OTP' title='Richiedi OTP' onclick="javascript:richiediOTP();">
+					</c:when>
+				</c:choose>			
+			</td>
+		  </tr>
+		  <tr>
+			<td class="etichetta-dato">Pin&nbsp;&nbsp;
+			</td>
+			<td class="valore-dato">
+				<input id="pass-dialog" name="pin" title="Pin" class="testo" type="password" size="24" value="" maxlength="100" autocomplete="new-password"/>
+			</td>
+		  </tr>
+		  <tr>
+			<td class="etichetta-dato">OTP&nbsp;&nbsp;
+			</td>
+			<td class="valore-dato">
+				<input id="otp-dialog" name="otp" title="otp" class="testo" type="text" size="24" value="" maxlength="100"/>
+			</td>
+		  </tr>
+		  <tr id="trModalitaFirma">
+			<td colspan="2">
+			<br>
+			<input type="radio" value="cades" name="modalitaFirma" id="CAdES" checked="true"/><span>Firma P7M (CAdES)&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<input type="radio" value="pades" name="modalitaFirma" id="PAdES"/><span id="padesLabel" >Firma PDF (PAdES)</span>
+			</td>
+		  </tr>
+		  </table>
+		  <input type="hidden" value="${param.modalita}" name="isMassiva" id="isMassiva"/>
+		  <input type="hidden" value="${param.entitaFirma}" name="entitaFirma" id="entitaFirma"/>
+		  <input type="hidden" value="${param.numeroDocumenti}" name="numeroDocumentiHidden" id="numeroDocumentiHidden"/>
+		  <input type="hidden" value="${param.numeroDocumentiFormato}" name="numeroDocumentiFormatoHidden" id="numeroDocumentiFormatoHidden"/>
+		  <input type="hidden" value="${param.chiaveFirma}" name="chiaveFirma" id="chiaveFirma"/>
+	  </form>
+	  <textarea id="errorMessage" style="color:red;resize:none;display:none" disabled name="errorMessage" cols="59" rows="7"></textarea>
+	</span>
 </div>
 
 <script type="text/javascript"> 
@@ -89,17 +131,30 @@ var pinFirma;
 var aliasFirma;
 
 function openModal(idprg,iddocdig,nome,contextPath,coacod){
+	var isNotDocumenti = ($("#numeroDocumentiHidden").val() == null || $("#numeroDocumentiHidden").val() == 0) && $("#isMassiva").val() == "massiva";
+	if(!isNotDocumenti){
+		
 	
-	$( "#nomeDocumento" ).html("<b>" + nome + "</b>");
-	
-	var vet = nome.split(".");
-	var ext = vet[vet.length-1];
-	ext = ext.toUpperCase();
-	if(ext != 'PDF'){
-		$("#PAdES").attr('disabled', true);
-		$("#padesLabel").css('color', 'grey');
+		$( "#nomeDocumento" ).html("<b>" + nome + "</b>");
+		$( "#numeroDocumenti" ).html("<b>" + $("#numeroDocumentiHidden").val() + "</b>");
+		if($("#numeroDocumentiFormatoHidden").val() > 0){
+			if($("#numeroDocumentiFormatoHidden").val() == 1){
+				$( "#numeroDocumentiFormato" ).html("*C'&egrave <b>" + $("#numeroDocumentiFormatoHidden").val() + "</b> documento");
+			} else {
+				$( "#numeroDocumentiFormato" ).html("*Ci sono <b>" + $("#numeroDocumentiFormatoHidden").val() + "</b> documenti");
+			}
+		} else {
+			$("#infoMessageDocDaFirmare").css("display","none");
+		}
+		
+		var vet = nome.split(".");
+		var ext = vet[vet.length-1];
+		ext = ext.toUpperCase();
+		if(ext != 'PDF'){
+			$("#PAdES").attr('disabled', true);
+			$("#padesLabel").css('color', 'grey');
+		}
 	}
-	
 	$( "#dialog-form" ).css({
 		"display":"block",
 	});
@@ -111,8 +166,11 @@ function openModal(idprg,iddocdig,nome,contextPath,coacod){
 	  modal: true,
 	  close: function() {
 	  },
-	  buttons: {
-		"Conferma": function() {
+	  buttons: [
+	  {
+		text: "Conferma",
+		id:"ConfermaModal",
+		click: function () {
 			var pin = $("#pass-dialog").val();
 			var alias = $("#user-dialog").val();
 			var otp = $("#otp-dialog").val();
@@ -123,36 +181,82 @@ function openModal(idprg,iddocdig,nome,contextPath,coacod){
 			}
 				
 			setCredenziali(idprg,iddocdig,contextPath,coacod);
-		},
-		"Annulla": function() {
-		  $( this ).dialog( "close" );
 		}
-	  }
-	});
-	
-	$.ajax({
-		url: contextPath+'/SetFirmaDigitaleRemota.do',
-		type: 'POST',
-		async: false,
-		dataType: 'json',
-		data: {
-			metodo: 'getCredenziali'
-		},
-		success: function(data) {
-				pinFirma = data.pin;
-				aliasFirma = data.alias;
-				$("#pass-dialog").val(pinFirma);
-				$("#user-dialog").val(aliasFirma);
-		},
-		error: function() {
-			_nowait();
-			alert("Errore nel caricamento della tabella");
+      },
+	  {
+		text: "Annulla",
+		id:"AnnullaModal",
+		click: function () {
+			$("#pass-dialog").val("");
+			$("#user-dialog").val("");
+			$("#otp-dialog").val("");
+			$("#errorMessage").html("");
+			$("#errorMessage").css("display","none");
+			$( this ).dialog( "close" );
 		}
+      },
+	  {
+		text: "Chiudi",
+		id:"ChiudiModal",
+		style:"display:none;",
+		click: function () {
+			$("#pass-dialog").val("");
+			$("#user-dialog").val("");
+			$("#otp-dialog").val("");
+			$("#errorMessage").html("");
+			$("#errorMessage").css("display","none");
+			$( this ).dialog( "close" );
+			historyReload();
+		}
+      }]
 	});
-	
+	if(!isNotDocumenti){
+		$("#statusOk").css("display","block");
+		$("#statusKo").css("display","none");
+		$("#infoStatusKoMessageNumFormato").css("display","none");
+		$.ajax({
+			url: contextPath+'/SetFirmaDigitaleRemota.do',
+			type: 'POST',
+			async: false,
+			dataType: 'json',
+			data: {
+				metodo: 'getCredenziali'
+			},
+			success: function(data) {
+					pinFirma = data.pin;
+					aliasFirma = data.alias;
+					$("#pass-dialog").val(pinFirma);
+					$("#user-dialog").val(aliasFirma);
+			},
+			error: function() {
+				_nowait();
+				alert("Errore nel caricamento della tabella");
+			}
+		});
+	} else {
+		if($("#numeroDocumentiFormatoHidden").val() > 0){
+			if($("#numeroDocumentiFormatoHidden").val() == 1){
+				$( "#statusKoMessageNumFormato" ).html("*C'&egrave <b>" + $("#numeroDocumentiFormatoHidden").val() + "</b> documento");
+			} else {
+				$( "#statusKoMessageNumFormato" ).html("*Ci sono <b>" + $("#numeroDocumentiFormatoHidden").val() + "</b> documenti");
+			}
+			$("#infoStatusKoMessageNumFormato").css("display","block");
+		} else {
+			$("#infoStatusKoMessageNumFormato").css("display","none");
+		}
+		
+		$("#statusKo").css("display","block");
+		$("#statusOk").css("display","none");
+		$("#ChiudiModal").css("display","block");
+		$("#ConfermaModal").css("display","none");
+		$("#AnnullaModal").css("display","none");
+	}
 }
 
 function setCredenziali(idprg,iddocdig,contextPath,coacod){
+	var isMassiva = document.getElementById('isMassiva').value;
+	var entitaFirma = document.getElementById('entitaFirma').value;
+	var chiaveFirma = document.getElementById('chiaveFirma').value;
 	document.getElementById('bloccaScreen').style.visibility='visible';
 	$('#bloccaScreen').css("width",$(document).width());
 	$('#bloccaScreen').css("height",$(document).height());
@@ -174,6 +278,9 @@ function setCredenziali(idprg,iddocdig,contextPath,coacod){
 			iddocdig: iddocdig,
 			c0acod: coacod,
 			modalitaFirma : modalitaFirma,
+			isMassiva:isMassiva,
+			entitaFirma:entitaFirma,
+			chiaveFirma:chiaveFirma
 		},
 		success: function(data) {
 			var response = data.message;
@@ -188,7 +295,13 @@ function setCredenziali(idprg,iddocdig,contextPath,coacod){
 		},
 		error: function() {
 			_nowait();
-			alert("Errore nel caricamento della tabella");
+			alert("Errore nella richiesta di firma documenti");
+		},
+		complete: function() {
+			$("#ChiudiModal").css("display","block");
+			$("#ConfermaModal").css("display","none");
+			$("#AnnullaModal").css("display","none");
+			_nowait();
 		}
 	});
 }
@@ -216,10 +329,7 @@ function richiediOTP(){
 				$("#errorMessage").html(response);
 				$("#errorMessage").css("display","block");
 				_nowait();
-			}else{
-				historyReload();
 			}
-			
 		},
 		error: function() {
 			_nowait();

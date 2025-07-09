@@ -68,9 +68,9 @@ public class ImpostaStatoVerificheScheduler {
 
     // Lettura dei dati delle verifiche
     String selectDatiVerifiche = "select id,gg_avviso_scadenza,data_scadenza,stato_verifica" +
-    		" from verifiche where gg_avviso_scadenza is not null and stato_verifica is not null  order by id";
-    //and stato_verifica < ? new Long(3)
-
+    		" from verifiche where gg_avviso_scadenza is not null "
+    		+ "and esito_verifica is not null and esito_verifica not in(3,4) order by id";
+    
     List datiVerifiche = null;
     try {
       datiVerifiche = this.sqlManager.getListVector(selectDatiVerifiche, new Object[] {});
@@ -83,17 +83,18 @@ public class ImpostaStatoVerificheScheduler {
           try {
             Date dataOdierna = UtilityDate.getDataOdiernaAsDate();
             if(dataScadenza!=null){
-              Calendar calendar = Calendar.getInstance();
-              calendar.setTime(dataScadenza);
-              if(ggAvvisoscadenza!=null){
+              if(dataOdierna.after(dataScadenza)){
+                this.sqlManager.update("update verifiche set stato_verifica = ? where id = ?", new Object[] {Long.valueOf(3), idVerifica});
+              } else {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dataScadenza);
                 calendar.add(Calendar.DATE, -ggAvvisoscadenza.intValue());
                 Date dataAvviso = calendar.getTime();
                 if(dataOdierna.after(dataAvviso)){
-                  this.sqlManager.update("update verifiche set stato_verifica = ? where id = ?", new Object[] {new Long(2), idVerifica});
+                  this.sqlManager.update("update verifiche set stato_verifica = ? where id = ?", new Object[] {Long.valueOf(2), idVerifica});                  
+                } else {
+                  this.sqlManager.update("update verifiche set stato_verifica = ? where id = ?", new Object[] {Long.valueOf(1), idVerifica});
                 }
-              }
-              if(dataOdierna.after(dataScadenza)){
-                this.sqlManager.update("update verifiche set stato_verifica = ? where id = ?", new Object[] {new Long(3), idVerifica});
               }
             }
           } catch (SQLException e) {

@@ -110,7 +110,7 @@
 	  	<tr id="rowCF" >
 			<td class="etichetta-dato" >Codice fiscale</td>
       		<td class="valore-dato"> 
-				<c:out value="${account.codfisc}"/>
+				<c:out value="${account.codfisc.toUpperCase()}"/>
 			</td>
 	  	</tr>
 		
@@ -298,6 +298,19 @@
 				</c:choose>
 			</td>
   	</tr>
+	<tr id="rowBloccaEditImpr" >
+		<td class="etichetta-dato">Blocca utente nella modifica delle imprese</td>
+		<td class="valore-dato">
+			<c:choose>
+				<c:when test='${fn:contains(listaOpzioniUtenteSys, "ou243#")}'>
+					<c:out value="Si"/>
+				</c:when>
+				<c:otherwise>
+					<c:out value="No"/>
+				</c:otherwise>
+			</c:choose>
+		</td>
+	</tr>
   	<tr id="rowBloccaEliminazioneEntitaPrincipale" >
 			<td class="etichetta-dato">Blocca eliminazione su entita principale</td>
 			<td class="valore-dato">
@@ -365,7 +378,7 @@
 	  <c:if test="${!empty art80wsurl}">
 		  <tr>
 			<td colspan="3">
-				<b>Verifiche Art.80</b>
+				<b>Verifica requisiti ditte (mediante servizio)</b>
 			</td>
 		  </tr>
 		  <tr id="rowCreateArt80" >
@@ -399,7 +412,7 @@
 		<c:if test='${fn:contains(listaOpzioniDisponibili, "OP133#")}'>
 		  	<tr>
 				<td colspan="3">
-					<b>Verifiche interne Art.80</b>
+					<b>Verifica requisiti ditte (gestione interna)</b>
 				</td>
 		  	</tr>
 		  	<tr id="rowIntArt80" >

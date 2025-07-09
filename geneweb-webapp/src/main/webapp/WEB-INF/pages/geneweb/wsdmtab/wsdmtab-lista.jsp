@@ -33,11 +33,16 @@
 		<gene:set name="titoloMenu">
 			<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
 		</gene:set>
+		
+		<c:set var="where" value="idconfi = ? and sistema = ? and idcftab = ?" />
+		<c:set var="parametri" value="N:${param.idconfi};T:${param.sistema};N:${param.idcftab}"/>
+		${gene:callFunction4("it.eldasoft.gene.tags.functions.ImpostazioneFiltroFunction", pageContext, "WSDMTAB", where, parametri)}
+
 		<table class="lista">
 			<tr>
 				<td>
 					<gene:formLista entita="WSDMTAB" pagesize="20" sortColumn="7;5" tableclass="datilista" 
-						gestisciProtezioni="true"  where="idconfi = ${param.idconfi} and sistema = '${param.sistema}' and idcftab = ${param.idcftab}">
+						gestisciProtezioni="true">
 						
 						<input type="hidden" name="codice" value="${param.codice}" />
 						<input type="hidden" name="codapp" value="${param.codapp}" />

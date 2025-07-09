@@ -36,16 +36,6 @@
 					<a href="javascript:about('${pageContext.request.contextPath}');" title="visualizza informazioni sul software">info</a>
 				</span>
 			</c:if>
-			<c:if test="${!empty profiloAttivo && empty param.paginaChiamante && ((uffintAbilitati eq '1' && !empty uffint) || uffintAbilitati ne '1')}">
-				<span <c:if test="${!(applicationScope.attivaFormAssistenza != 0 && !empty profiloAttivo && ((uffintAbilitati eq '1' && !empty uffint) || uffintAbilitati ne '1'))}">class="ultimolink"</c:if>>
-					<a href="${pageContext.request.contextPath}/ApriPagina.do?href=contattaci.jsp" title="Contattaci">contattaci</a>
-				</span>
-			</c:if>
-			<c:if test="${applicationScope.attivaFormAssistenza != 0 && empty param.paginaChiamante && !empty profiloAttivo && ((uffintAbilitati eq '1' && !empty uffint) || uffintAbilitati ne '1')}">
-				<span class="ultimolink">
-					<a href="${pageContext.request.contextPath}/RichiestaAssistenza.do" title="Richiedi assistenza">assistenza</a>
-				</span>
-			</c:if>
 		</div>			
 	</div>
 	

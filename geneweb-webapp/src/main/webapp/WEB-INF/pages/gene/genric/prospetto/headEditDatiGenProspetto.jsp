@@ -81,7 +81,7 @@
 	// Azioni invocate dal menu contestuale
 
 	function apriTrovaRicerche(){
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	// Azioni invocate dal tab menu
@@ -103,7 +103,7 @@
 		  if (esito && !controllaCampoInputNoCarSpeciali(document.datiGenProspettoForm.codReportWS, 'Pubblica il report come servizio con codice')){
 			  esito = false;
 			}
-		// Se si è in inserimento controllo che sia stato modificato il file
+		// Se si e' in inserimento controllo che sia stato modificato il file
 		if(document.datiGenProspettoForm.nomeFile.value==""){
 			// alert(document.datiGenProspettoForm.selezioneFile.value);
 			if (esito && !controllaCampoInputObbligatorio(document.datiGenProspettoForm.selezioneFile, 'File')){
@@ -147,12 +147,12 @@
 	
 	function annulla(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 	}
 
 	function annullaModifiche(id){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca='+id;
+		document.location.href = 'DettaglioRicerca.do?metodo=visualizza&idRicerca='+id;
 	}
 
 	function aggiornaOpzioniSelectTabella(indice) {

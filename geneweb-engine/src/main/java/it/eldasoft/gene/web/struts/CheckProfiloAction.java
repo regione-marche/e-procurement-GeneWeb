@@ -10,15 +10,6 @@
  */
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.GeneManager;
-import it.eldasoft.gene.bl.admin.ProfiliManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
-import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.admin.Profilo;
-import it.eldasoft.utils.properties.ConfigManager;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +24,15 @@ import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import it.eldasoft.gene.bl.GeneManager;
+import it.eldasoft.gene.bl.admin.ProfiliManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
+import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.admin.Profilo;
+import it.eldasoft.utils.properties.ConfigManager;
 
 /**
  * Azione che estrae i profili a cui l'utente, che si e' appena autentificato, e'
@@ -107,8 +107,21 @@ public class CheckProfiloAction extends ActionBaseNoOpzioni {
 
     if(idAccount != null){
       // Siamo nel caso di un unico codice applicazione
-      listaProfiliAccountByCodApp = this.profiliManager.getProfiliAccountByCodApp(
-          idAccount.intValue(), codiceApplicazione);
+      /*listaProfiliAccountByCodApp = this.profiliManager.getProfiliAccountByCodAppBySezione(
+          idAccount.intValue(), codiceApplicazione); */
+      
+      listaProfiliAccountByCodApp = this.profiliManager.getProfiliAccountByCodAppBySezione(
+              idAccount.intValue(), codiceApplicazione);
+      
+      // controllo se c'e' almeno una sezione valorizzata
+      boolean isPresenteSezione = false;
+      for (Iterator iterator = listaProfiliAccountByCodApp.iterator(); !isPresenteSezione && iterator.hasNext();) {
+		 Profilo profilo = (Profilo) iterator.next();
+		 if (profilo.getSezione() != null && !"".equals(profilo.getSezione()) ) {
+			 isPresenteSezione = true;
+		 }
+	   }
+
 
       // Caricamento, se non ancora presenti, nell'Application Context dei
       // profili a cui l'utente e' associato. Per ciascun profilo si verifica se
@@ -164,6 +177,8 @@ public class CheckProfiloAction extends ActionBaseNoOpzioni {
               // profilo passato come parametro non associato all'utente oppure
               // più di una associazione => vado alla pagina di selezione
               request.setAttribute("listaProfiliAccount", listaProfiliAccountByCodApp);
+              request.setAttribute("isPresenteSezione", isPresenteSezione);
+              
               request.setAttribute(CostantiGenerali.NAVIGAZIONE_DISABILITATA,
                   CostantiGenerali.DISABILITA_NAVIGAZIONE);
               target = target.concat("Lista");

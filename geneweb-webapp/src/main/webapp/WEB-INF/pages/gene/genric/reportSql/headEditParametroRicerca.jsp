@@ -55,11 +55,11 @@
 
 	function annulla() {
 		bloccaRichiesteServer();
-		document.location.href = 'CambiaTabRicercaSql.do?'+csrfToken+'&tab=PAR';
+		document.location.href = 'CambiaTabRicercaSql.do?tab=PAR';
 	}
 	
 	function attivaMenu() {
-		var tipoPar = String(document.parametroRicercaForm.tipo.value);
+		var tipoPar = String(document.parametroRicercaForm.tipoParametro.value);
 		if(tipoPar == 'M'){
 			document.getElementById("trMenu").style.display = '';
 			document.getElementById("trTabellato").style.display = 'none';

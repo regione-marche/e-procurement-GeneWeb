@@ -10,6 +10,12 @@
  */
 package it.eldasoft.gene.utils;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSessionEvent;
+
+import org.apache.log4j.Logger;
+
 import it.eldasoft.gene.bl.LogEventiManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
@@ -18,12 +24,6 @@ import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.spring.SpringAppContext;
 import it.eldasoft.utils.spring.UtilitySpring;
 import it.eldasoft.utils.utility.UtilityStringhe;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSessionEvent;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -51,6 +51,8 @@ public class LogEventiUtils {
   public static final String COD_EVENTO_UNLOCK_LOGIN_UTENTE = "LOGIN_UNLOCK";
   public static final String COD_EVENTO_CHANGE_PROFILO = "CHANGE_USER_PROFILI";
   public static final String COD_EVENTO_ACCESSO_SIMULTANEO = "ACCESSO_SIMULTANEO";
+  public static final String COD_EVENTO_ABILITA_UTENTE = "ENABLE_USER";
+  public static final String COD_EVENTO_DISABILITA_UTENTE = "DISABLE_USER";
 
   /**
    * Crea un'istanza di LogEvento,prepopolandola con alcuni dati di default.

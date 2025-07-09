@@ -18,6 +18,7 @@
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<c:set var="isVerificaPDFA" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "uploadFile.verifica.pdfA")}'/>
 <c:set var="richiestaFirma" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "documentiDb.richiestaFirma")}'/>
 <c:set var="firmaProvider" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-provider")}'/>
 <c:if test='${firmaProvider eq 2}'>
@@ -120,7 +121,15 @@
 						<gene:campoLista campo="C0ATIT" />
 						<c:set var="nomDoc" value="${gene:string4Js(datiRiga.C0OGGASS_C0ANOMOGG)}"/>
 						<c:set var="nomDoc" value="${fn:replace(nomDoc,'\"','&#34;')}"/>
-						<gene:campoLista campo="C0ANOMOGG" href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', ${nomDoc},'${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');" />
+						<gene:campoLista campo="C0ANOMOGG" href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', ${nomDoc},'${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');" >
+							<c:if test="${isVerificaPDFA eq '1' && datiRiga.W_DOCDIG_DIGTIPDOC eq 'pdf/a'}">
+								&nbsp;<img id="imgCheckPDFaDocMessage" src="${pageContext.request.contextPath}/img/pdfa.png" title="File conforme al formato PDF/A" alt="File conforme al formato PDF/A">
+							</c:if>
+						</gene:campoLista>
+						<gene:campoLista campo="C0ANPROT" />
+						<gene:campoLista campo="C0ADPROT" />
+						<gene:campoLista campo="C0ANATTO" />
+						<gene:campoLista campo="C0ADATTO" />
 						<c:choose>
 							<c:when test='${dbms eq "ORA"}'>
 								<c:set var="c0acodToString" value="TO_CHAR( C0OGGASS.C0ACOD )"/>
@@ -136,6 +145,7 @@
 							</c:when>
 						</c:choose>
 						<gene:campoLista campo="IDDOCDIG" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1=${c0acodToString}"  visibile='false'/>
+						<gene:campoLista campo="DIGTIPDOC" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1=${c0acodToString}"  visibile='false'/>
 						<gene:campoLista campo="DIGNOMDOC" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1=${c0acodToString}"  visibile='false'/>
 						<c:if test="${not empty firmaRemota or richiestaFirma eq '1' or firmaDocumento eq '1'}">						
 							<gene:campoLista campo="DIGFIRMA" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1=${c0acodToString }" visibile="false"/>
@@ -216,7 +226,7 @@
 						if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
 						{
 							var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-							document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + dignomdoc;
+							document.location.href = href+"?c0acod=" + c0acod + "&dignomdoc=" + dignomdoc;
 						}
 					}
 				</c:when>
@@ -232,7 +242,7 @@
 						if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
 						{
 							var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-							document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
+							document.location.href = href+"?c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
 						}
 					}
 					

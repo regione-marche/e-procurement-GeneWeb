@@ -55,13 +55,13 @@
 	}
 		
 	function indietro(){
-		document.location.href = 'WizardImportRicerca.do?'+csrfToken+'&pageTo=${pageFrom}';
+		document.location.href = 'WizardImportRicerca.do?pageTo=${pageFrom}';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExport.do?'+csrfToken;
+		  document.location.href='AnnullaImportExport.do';
 		}
 	}
 

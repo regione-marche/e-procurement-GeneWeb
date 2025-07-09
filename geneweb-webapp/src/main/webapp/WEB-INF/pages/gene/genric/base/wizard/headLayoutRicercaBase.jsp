@@ -70,10 +70,10 @@
 	function indietro(){
 <c:choose>
  	<c:when test='${fn:length(contenitore.elencoOrdinamenti) eq 0}'>
- 		href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD1';
+ 		href = 'WizardBase.do?pageTo=ORD1';
 	</c:when>
 	<c:otherwise>
- 		href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD3';
+ 		href = 'WizardBase.do?pageTo=ORD3';
 	</c:otherwise>
 </c:choose>
 		if(href != "")
@@ -83,7 +83,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 

@@ -18,6 +18,7 @@ public class ComponiWhereTECNIFunction extends AbstractComponiWhereFunction {
   // Function IDs
   private static final String COMMNOMIN_ID = "commnomin";
   private static final String W3_ID = "w3";
+  private static final String W3_OLD_ID = "w3old";
   private static final String TECNI_ID = "tecni";
   private static final String TECNI_UFFINT_FILTER_ID = "tecniUffintFilter";
   
@@ -28,6 +29,8 @@ public class ComponiWhereTECNIFunction extends AbstractComponiWhereFunction {
       "tecni.cftec in (select cfrup from w9deleghe where id_collaboratore = ? and codein = ?) or tecni.cftec = ?  and nomtec is not null and cftec is not null";
   private static final String W3_WHERE=             
       "tecni.cftec in (select cfrup from w9deleghe where id_collaboratore = ? or (codein = ? and codein is not null)) or tecni.cftec = ?  and nomtec is not null and cftec is not null ";
+  private static final String W3_OLD_WHERE =
+      "tecni.codtec IN (SELECT rup_codtec FROM w3usrsys WHERE syscon = ?)";
   private static final String TECNI_WHERE =
       "tecni.syscon IS NULL OR tecni.syscon = ?";
   private static final String TECNI_UFFINT_FILTER_WHERE = 
@@ -52,7 +55,13 @@ public class ComponiWhereTECNIFunction extends AbstractComponiWhereFunction {
       } else {
         ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 3);
       }
-    } else if (functionId.equals(TECNI_ID)) {
+    } else if (functionId.equals(W3_OLD_ID)) {
+      if (hasFiltroUffintTecni()) {
+        ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 2);
+      } else {
+        ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
+      }
+    }else if (functionId.equals(TECNI_ID)) {
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
     } else if (functionId.equals(TECNI_UFFINT_FILTER_ID)) {
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
@@ -78,6 +87,12 @@ public class ComponiWhereTECNIFunction extends AbstractComponiWhereFunction {
         } else {
           where += " AND (" + w3filter + ")";
         }
+      }else if (functionId.equals(W3_OLD_ID)) {
+        if (hasFiltroUffintTecni()) {
+          where += " AND (" + TECNI_UFFINT_FILTER_WHERE + " AND " + W3_OLD_WHERE + ")";
+        } else {
+          where += " AND (" + W3_OLD_WHERE + ")";
+        }
       } else if (functionId.equals(TECNI_ID)) {
         where += " AND (" + TECNI_WHERE + ")";
       } else if (functionId.equals(TECNI_UFFINT_FILTER_ID)) {
@@ -91,6 +106,12 @@ public class ComponiWhereTECNIFunction extends AbstractComponiWhereFunction {
           where = TECNI_UFFINT_FILTER_WHERE + " AND " + w3filter;
         } else {
           where = w3filter;
+        }
+      } else if (functionId.equals(W3_OLD_ID)) {
+        if (hasFiltroUffintTecni()) {
+          where = TECNI_UFFINT_FILTER_WHERE + " AND " + W3_OLD_WHERE;
+        } else {
+          where = W3_OLD_WHERE;
         }
       } else if (functionId.equals(TECNI_ID)) {
         where = TECNI_WHERE;

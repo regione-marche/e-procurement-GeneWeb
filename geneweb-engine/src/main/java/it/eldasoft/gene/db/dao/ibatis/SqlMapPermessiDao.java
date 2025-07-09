@@ -61,9 +61,9 @@ public class SqlMapPermessiDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
 
     if(codiceUffint!=null)
       hash.put("codein", codiceUffint);
@@ -103,11 +103,14 @@ public class SqlMapPermessiDao extends SqlMapClientDaoSupportBase implements
     this.getSqlMapClientTemplate().insert("insertPermesso", hash);
   }
 
-  public int getNumeroPermessiPredefiniti(Integer riferimento,Integer predefinito)
+  public int getNumeroPermessiPredefiniti(Integer riferimento,Integer predefinito, String codein)
       throws DataAccessException{
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("riferimento", riferimento);
     hash.put("predefinito", predefinito);
+    if(codein != null)
+      hash.put("codein", codein);
+    
     Integer numeroRecord = (Integer) this.getSqlMapClientTemplate().queryForObject(
         "getNumeroPermessiPredefiniti", hash);
 
@@ -127,15 +130,18 @@ public class SqlMapPermessiDao extends SqlMapClientDaoSupportBase implements
     hash.put("proprietario", permessoEntita.getProprietario());
     hash.put("riferimento", riferimento);
     hash.put("predefinito", predefinito);
+    hash.put("codein", permessoEntita.getCodein());
 
     this.getSqlMapClientTemplate().insert("insertPermessoPredefinito", hash);
   }
 
   public int deletePermessiPredefinitiByIdAccount(Integer riferimento,
-      Integer predefinito) throws DataAccessException{
+      Integer predefinito, String codein) throws DataAccessException{
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("riferimento", riferimento);
     hash.put("predefinito", predefinito);
+    if(codein != null)
+      hash.put("codein", codein);
 
     return this.getSqlMapClientTemplate().delete("deletePermessiPredefiniti", hash);
   }

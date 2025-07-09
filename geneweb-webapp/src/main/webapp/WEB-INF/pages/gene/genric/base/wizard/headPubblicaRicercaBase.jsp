@@ -29,15 +29,15 @@
 	// Azioni di pagina
 
 	function avanti(){
-		var href = "PubblicaBase.do?"+csrfToken+"&";
+		var href = "PubblicaBase.do?";
 		var pubblicaSi = document.getElementById("pubblicaSi");
 		var pubblicaNo = document.getElementById("pubblicaNo");
 
 		if(pubblicaSi.checked){
-			href += 'disp=1';
+			href += '&disp=1';
 		}
 		if(pubblicaNo.checked){
-			href += 'disp=0';
+			href += '&disp=0';
 		}
 		
 		if(href.indexOf('disp') >= 0){
@@ -49,13 +49,13 @@
 	}
 	
 	function indietro(){
-		document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=LAY';
+		document.location.href = 'WizardBase.do?pageTo=LAY';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 

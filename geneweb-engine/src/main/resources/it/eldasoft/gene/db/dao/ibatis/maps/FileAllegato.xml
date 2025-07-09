@@ -5,14 +5,17 @@
 	<resultMap id="resultBINARY" class="it.eldasoft.gene.db.domain.BlobFile">
 		<result property="stream" column="DIGOGG" columnIndex="1" jdbcType="BINARY"/>
 		<result property="nome" column="DIGNOMDOC" columnIndex="2"/>
+		<result property="bucketRef" column="BUCKET_REF" columnIndex="3"/>
+		<result property="bucketUuid" column="BUCKET_UUID" columnIndex="4"/>
+		<result property="hash" column="HASH" columnIndex="5"/>
 	</resultMap>
  	
 	<sql id="selectLista">
-		SELECT DIGOGG, DIGNOMDOC FROM W_DOCDIG WHERE IDPRG = #idprg# AND IDDOCDIG = #iddocdig#
+		SELECT DIGOGG, DIGNOMDOC, BUCKET_REF, BUCKET_UUID, HASH FROM W_DOCDIG WHERE IDPRG = #idprg# AND IDDOCDIG = #iddocdig#
 	</sql>
 	
 	<sql id="selectListaFromExternalReference">
-		SELECT DIGOGG, DIGNOMDOC FROM W_DOCDIG 
+		SELECT DIGOGG, DIGNOMDOC, BUCKET_REF, BUCKET_UUID, HASH FROM W_DOCDIG
 			WHERE IDPRG = #idprg# 
 			AND DIGENT = #digent#
 			AND DIGKEY1 = #digkey1#

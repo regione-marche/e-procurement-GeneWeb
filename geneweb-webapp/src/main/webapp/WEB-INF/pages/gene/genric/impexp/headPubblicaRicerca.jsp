@@ -30,7 +30,7 @@
 	// Azioni di pagina
 
 	function avanti(){
-		var href = "PubblicaImport.do?"+csrfToken+"&";
+		var href = "PubblicaImport.do?";
 		var pubblicaSi = document.getElementById("pubblicaSi");
 		var pubblicaNo = document.getElementById("pubblicaNo");
 
@@ -50,13 +50,13 @@
 	}
 	
 	function indietro(){
-		document.location.href = 'WizardImportRicerca.do?'+csrfToken+'&pageTo=DG';
+		document.location.href = 'WizardImportRicerca.do?pageTo=DG';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExport.do?'+csrfToken;
+		  document.location.href='AnnullaImportExport.do';
 		}
 	}
 

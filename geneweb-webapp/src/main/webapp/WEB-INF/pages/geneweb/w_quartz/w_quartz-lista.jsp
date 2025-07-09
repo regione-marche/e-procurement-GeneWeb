@@ -17,6 +17,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <gene:template file="lista-template.jsp" gestisciProtezioni="true" idMaschera="W_QUARTZ-Lista" schema="GENEWEB">
 	<gene:setString name="titoloMaschera" value="Pianificazioni" />
 	<gene:setString name="entita" value="W_QUARTZ" />

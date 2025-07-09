@@ -50,7 +50,7 @@ public class ArchivioAction extends DispatchActionBaseNoOpzioni {
         ArchivioTagImpl.HIDE_INPUT_IS_OPEN_IN_POPUP);
     if (openInPopUp != null && openInPopUp.equals("1"))
       UtilityTags.getUtilityHistory(request.getSession()).clear(
-          UtilityStruts.getNumeroPopUp(request));
+          UtilityStruts.getNumeroPopUp(request), request.getSession());
     new ArchivioRequest(request, true);
     // Eseguo il calcolo della lista da richiamare
     boolean absolute = false;
@@ -89,7 +89,7 @@ public class ArchivioAction extends DispatchActionBaseNoOpzioni {
         ArchivioTagImpl.HIDE_INPUT_IS_OPEN_IN_POPUP);
     if (openInPopUp != null && openInPopUp.equals("1"))
       UtilityTags.getUtilityHistory(request.getSession()).clear(
-          UtilityStruts.getNumeroPopUp(request));
+          UtilityStruts.getNumeroPopUp(request), request.getSession());
     // Eseguo il settaggio del campo chiave
     String key = "";
     String nomeKey[] = UtilityTags.stringToArray(

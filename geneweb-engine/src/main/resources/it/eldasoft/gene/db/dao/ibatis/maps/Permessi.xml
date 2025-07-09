@@ -36,10 +36,10 @@
 
 	<select id="getPermessiEntitaUtenti" resultMap="resultPermessoEntita" parameterClass="java.util.HashMap" >
  	  SELECT G_PERMESSI.NUMPER, USRSYS.SYSCON as SYSCON, USRSYS.syslogin, USRSYS.SYSUTE, G_PERMESSI.AUTORI, G_PERMESSI.PROPRI, 
-	    <isPropertyAvailable property="adattaQueryPerDB2">
-		 	  CAST(G_PERMESSI.$campoChiave$ AS VARCHAR(30)) as VALORECHIAVE
+	    <isPropertyAvailable property="adattaQueryPerPG">
+		 	  CAST(NULL AS VARCHAR(30)) as VALORECHIAVE
 	    </isPropertyAvailable>
-	    <isNotPropertyAvailable property="adattaQueryPerDB2">
+	    <isNotPropertyAvailable property="adattaQueryPerPG">
 	    	NULL as VALORECHIAVE
 	    </isNotPropertyAvailable>
 	    ,G_PERMESSI.MERUOLO, USRSYS.MERUOLO as RUOLOUSRSYS, USRSYS.SYSDISAB 
@@ -50,24 +50,24 @@
 	 WHERE USRSYS.SYSCON = G_PERMESSI.SYSCON
   	   AND G_PERMESSI.$campoChiave$	= #valoreChiave#
   	   <isPropertyAvailable property="codein">
-		 	  AND USR_EIN.SYSCON = USRSYS.SYSCON AND CODEIN=#codein#
+		 	  AND USR_EIN.SYSCON = USRSYS.SYSCON AND USR_EIN.CODEIN=#codein#
 	    </isPropertyAvailable>
   	   AND (USRSYS.SYSUFFAPP IS NULL OR USRSYS.SYSUFFAPP=(SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#)
   	   OR (USRSYS.SYSUFFAPP IS NOT NULL AND (SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#) IS NULL))
      UNION
     SELECT 
-    <isPropertyAvailable property="adattaQueryPerDB2">
+    <isPropertyAvailable property="adattaQueryPerPG">
     	CAST(NULL AS DECIMAL(12)),
     </isPropertyAvailable>
-    <isNotPropertyAvailable property="adattaQueryPerDB2">
+    <isNotPropertyAvailable property="adattaQueryPerPG">
     	NULL,
     </isNotPropertyAvailable>
     USRSYS.SYSCON as SYSCON, USRSYS.syslogin, USRSYS.SYSUTE,
     
-    <isPropertyAvailable property="adattaQueryPerDB2">
+    <isPropertyAvailable property="adattaQueryPerPG">
     	CAST(NULL AS DECIMAL(7)), CAST(NULL AS VARCHAR(1)), CAST(NULL AS VARCHAR(30)),CAST(NULL AS DECIMAL(7)), 
     </isPropertyAvailable>
-    <isNotPropertyAvailable property="adattaQueryPerDB2">
+    <isNotPropertyAvailable property="adattaQueryPerPG">
     	NULL, NULL, NULL, NULL,
     </isNotPropertyAvailable>
      USRSYS.MERUOLO as RUOLOUSRSYS, USRSYS.SYSDISAB 
@@ -77,7 +77,7 @@
     </isPropertyAvailable>
      WHERE
       <isPropertyAvailable property="codein">
-		 	  USR_EIN.SYSCON = USRSYS.SYSCON AND CODEIN=#codein# and (
+		 	  USR_EIN.SYSCON = USRSYS.SYSCON AND USR_EIN.CODEIN=#codein# and (
 	    </isPropertyAvailable>
       (USRSYS.SYSUFFAPP IS NULL OR USRSYS.SYSUFFAPP=(SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#)
       OR (USRSYS.SYSUFFAPP IS NOT NULL AND (SELECT SYSUFFAPP FROM USRSYS WHERE USRSYS.SYSCON = #idAccount#) IS NULL))
@@ -112,16 +112,28 @@
 
 	<select id="getNumeroPermessiPredefiniti" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
 		SELECT COUNT(NUMPER) FROM G_PERMESSI WHERE SYSRIF=#riferimento# AND PREDEF=#predefinito#
+		<isPropertyAvailable property="codein">
+		 AND CODEIN=#codein#
+		</isPropertyAvailable>
+		<isNotPropertyAvailable property="codein">
+    	 AND CODEIN IS NULL
+    	</isNotPropertyAvailable>
 	</select>
 
 	<insert id="insertPermessoPredefinito" parameterClass="java.util.HashMap">
-		INSERT INTO G_PERMESSI (NUMPER, SYSCON, AUTORI, PROPRI, SYSRIF, PREDEF) VALUES (#idPermesso#, #idAccount#, #autorizzazione#, #proprietario#, #riferimento#, #predefinito#)
+		INSERT INTO G_PERMESSI (NUMPER, SYSCON, AUTORI, PROPRI, SYSRIF, PREDEF, CODEIN) VALUES (#idPermesso#, #idAccount#, #autorizzazione#, #proprietario#, #riferimento#, #predefinito#, #codein#)
 	</insert>
 
 	<delete id="deletePermessiPredefiniti" parameterClass="java.util.HashMap" >
 		DELETE FROM G_PERMESSI
 		 WHERE SYSRIF=#riferimento#
 		   AND PREDEF=#predefinito#
+		   	<isPropertyAvailable property="codein">
+			 AND CODEIN=#codein#
+			</isPropertyAvailable>
+			<isNotPropertyAvailable property="codein">
+    	 	 AND CODEIN IS NULL
+    		</isNotPropertyAvailable>
 	</delete>
 
 </sqlMap>

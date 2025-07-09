@@ -95,7 +95,7 @@ public interface PermessiDao {
    * @return Ritorna il numero di permessi predefiniti per l'utente predefinito
    * @throws DataAccessException
    */
-  public int getNumeroPermessiPredefiniti(Integer riferimento, Integer predefinito)
+  public int getNumeroPermessiPredefiniti(Integer riferimento, Integer predefinito, String codein)
       throws DataAccessException;
 
   /**
@@ -120,6 +120,6 @@ public interface PermessiDao {
    * @throws DataAccessException
    */
   public int deletePermessiPredefinitiByIdAccount(Integer riferimento,
-      Integer predefinito) throws DataAccessException;
+      Integer predefinito, String codein) throws DataAccessException;
 
 }

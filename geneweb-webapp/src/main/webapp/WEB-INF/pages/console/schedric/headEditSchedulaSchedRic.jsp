@@ -136,7 +136,7 @@
 	
 	function annullaModifiche(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioSchedRic.do?'+csrfToken+'&metodo=annullaCrea';
+		document.location.href = 'DettaglioSchedRic.do?metodo=annullaCrea';
 	}
 
 	function nascondiPerTipo() {

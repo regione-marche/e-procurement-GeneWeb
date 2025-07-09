@@ -21,10 +21,17 @@ public class ComponiWhereQFORMLIBFunction extends AbstractComponiWhereFunction {
       "QFORMLIB.STATO = 2 and QFORMLIB.GENERE = 1 and (QFORMLIB.BUSTA = ? or QFORMLIB.BUSTA is null)"
       + " and (QFORMLIB.DATAINI is null or QFORMLIB.DATAINI <=";
 
-  private static final String ELENCO_WHERE =
+  private static final String ELENCO_BASE_WHERE =
       "QFORMLIB.STATO = 2 and QFORMLIB.GENERE = 2 and (QFORMLIB.DATAINI is null or QFORMLIB.DATAINI <=";
 
   private static final String ELENCO_ID = "elenco";
+
+  private static final String ELENCOPREMIALE_ID = "elencopremiale";
+
+  private static final String ELENCOPREMIALE_WHERE = "QFORMLIB.TIPOLOGIA=6 AND "+ ELENCO_BASE_WHERE;
+
+  private static final String ELENCONONPREMIALE_WHERE = "(QFORMLIB.TIPOLOGIA is null or QFORMLIB.TIPOLOGIA<>6) AND "+ ELENCO_BASE_WHERE;
+
   // Costruttori
   public ComponiWhereQFORMLIBFunction() {
     super(Logger.getLogger(ComponiWhereQFORMLIBFunction.class), "QFORMLIB");
@@ -35,7 +42,7 @@ public class ComponiWhereQFORMLIBFunction extends AbstractComponiWhereFunction {
   protected void integrityChecks(final PageContext pageContext) throws JspException {
     if (functionId.equals(DEFAULT_ID)) {
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
-    }else if (functionId.equals(ELENCO_ID)) {
+    }else if (functionId.equals(ELENCO_ID) || functionId.equals(ELENCOPREMIALE_ID)) {
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 0);
     } else {
       throw ComponiWhereUtils.getUnknownFunctionIdException(functionId, ENTITA, LOGGER);
@@ -48,7 +55,9 @@ public class ComponiWhereQFORMLIBFunction extends AbstractComponiWhereFunction {
     String db = ConfigManager.getValore(CostantiGenerali.PROP_DATABASE);
     String whereArchivio = BASE_WHERE;
     if(functionId.equals(ELENCO_ID))
-      whereArchivio = ELENCO_WHERE;
+      whereArchivio = ELENCONONPREMIALE_WHERE;
+    else if(functionId.equals(ELENCOPREMIALE_ID))
+      whereArchivio = ELENCOPREMIALE_WHERE;
 
     if("ORA".equals(db))
       whereArchivio+="trunc(sysdate)";

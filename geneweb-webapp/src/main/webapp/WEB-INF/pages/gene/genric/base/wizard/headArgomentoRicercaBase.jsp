@@ -45,7 +45,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href='DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}	
 

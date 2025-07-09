@@ -63,7 +63,7 @@ public class GestoreQFORMLIB extends AbstractGestoreEntita {
         genereString = genere.toString();
       String surveyGenere = ", \"surveyGenere\": \"" + genereString + "\"";
       String initOggetto="{\"survey\": {\"surveyType\": \"" + tipologiaString +  "\"" + surveyGenere + " }}";
-      impl.setValue("QFORMLIB.OGGETTO", initOggetto);
+      impl.addColumn("QFORMLIB.OGGETTO", initOggetto);
       impl.setValue("QFORMLIB.ID", Long.valueOf(genChiaviManager.getNextId("QFORMLIB")));
       impl.insert("QFORMLIB", sqlManager);
     }catch(Exception e) {

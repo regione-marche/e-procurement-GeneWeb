@@ -28,13 +28,13 @@
 	// Azioni invocate dal menu contestuale
 
 	function apriTrovaRicerche(){
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina
@@ -55,7 +55,7 @@
 	
 	function annullaModifiche(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 	}
 
 -->

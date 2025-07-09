@@ -155,6 +155,8 @@ public class CostantiGenerali {
    * Nome dell'attributo da inserire in sessione e contenente le informazioni dell'utente ed il suo profilo
    */
   public static final String   PROFILO_UTENTE_SESSIONE                            = "profiloUtente";
+  
+  public static final String   PAIRING_SSO                                        = "pairingSSO";
 
   /** Nome del resource bundle della parte generale dell'applicazione */
   public static final String   RESOURCE_BUNDLE_APPL_GENERALE                      = "AliceResources";
@@ -294,6 +296,8 @@ public class CostantiGenerali {
   public static final String   PROP_RICHIESTA_ASSISTENZA_MODO_NON_ATTIVO          = "0";
   public static final String   PROP_RICHIESTA_ASSISTENZA_MODO_WS                  = "1";
   public static final String   PROP_RICHIESTA_ASSISTENZA_MODO_MAIL                = "2";
+  public static final String   PROP_RICHIESTA_ASSISTENZA_CONTATTACI               = "3";
+  public static final String   PROP_RICHIESTA_ASSISTENZA_SUPPORTO                 = "4";
 
   /**
    * Chiave della property contenente 1 se esiste associazione 1 a 1 tra uffici intestatari e utenti,
@@ -652,53 +656,44 @@ public class CostantiGenerali {
 
   public static final String   PROP_PROFILO_DEFAULT_INSERIMENTO                   = "it.eldasoft.account.insert.profiloDefault";
 
-  /** property per indicare il tipo protocollo per la SSO Attiva */
-  public static final String   PROP_SSO_PROTOCOLLO                                = "sso.protocollo";
-
-  /** property per indicare la URL di default per l'accesso SSO */
-  public static final String   PROP_SSO_LOGIN_URL                                 = "sso.login.url";
-
-  /** property per indicare la URL di default per la disconnessione SSO */
-  public static final String   PROP_SSO_LOGOUT_URL                                = "sso.logout.url";
-
-  /** property per decriptare il token per la autenticazione SSO Cohesion */
-  public static final String   PROP_SSO_COHESION_ENCRYPTION_KEY                   = "sso.cohesion.encryption.key";
-
-  /** property per indicare il nome del campo contenente la login per l'autenticazione SSO */
-  public static final String   PROP_SSO_ATTRIBUTE_LOGIN                           = "sso.attribute.login";
-
-  /** property per indicare il nome del campo contenente il nome per l'autenticazione SSO */
-  public static final String   PROP_SSO_ATTRIBUTE_FIRST_NAME                      = "sso.attribute.firstName";
-
-  /** property per indicare il nome del campo contenente il cognome per l'autenticazione SSO */
-  public static final String   PROP_SSO_ATTRIBUTE_LAST_NAME                       = "sso.attribute.lastName";
-
-  /** property per indicare il nome del campo contenente la descrizione (nome+cognome) per l'autenticazione SSO */
-  public static final String   PROP_SSO_ATTRIBUTE_DESCRIPTION                     = "sso.attribute.description";
-
-  /** property per indicare il nome del campo contenente l'email per l'autenticazione SSO */
-  public static final String   PROP_SSO_ATTRIBUTE_EMAIL                           = "sso.attribute.mail";
-
-  /** property per indicare il nome del campo contenente il codice fiscale per l'autenticazione SSO */
-  public static final String   PROP_SSO_ATTRIBUTE_FISCAL_CODE                     = "sso.attribute.fiscalCode";
-
-  /** property SPID */
-  public static final String   PROP_SSO_SPID_WS_AUTHSERVICESPID_URL               = "sso.spid.ws.auth.url";
-
-  public static final String   PROP_SSO_SPID_SERVICEPROVIDER                      = "sso.spid.service.provider";
-
-  public static final String   PROP_SSO_SPID_AUTHLEVEL                            = "sso.spid.authlevel";
-
-  public static final String   PROP_SSO_SPID_AUTHLEVEL_URL                        = "sso.spid.authlevel.url";
-
-  /** property Gateway */
-  public static final String   PROP_SSO_GATEWAY_WS_AUTHSERVICE_URL                = "sso.gateway.ws.auth.url";
+  /** property per il prelievo delle info relative all'SSO utilizzato */
+  public static final String ID_ATTRIBUTO_SESSIONE_ACCOUNT_SSO                    = "accountSSO";
   
-  public static final String   PROP_SSO_GATEWAY_ENDPOINT                          = "sso.gateway.endpoint";
-
-  public static final String   PROP_SSO_GATEWAY_CLIENTID                          = "sso.gateway.clientId";
-
-  public static final String   PROP_SSO_GATEWAY_PASSPHRASE                        = "sso.gateway.passphrase";
+  public static final String PROP_SSO_SPID                                        = "SPID";
+  public static final String PROP_SSO_SPIDBUSINESS                                = "SPIDbusiness";
+  public static final String PROP_SSO_CIE                                         = "CIE";
+  public static final String PROP_SSO_WEBSERVER1                                  = "Webserver1";
+  public static final String PROP_SSO_WEBSERVER2                                  = "Webserver2";
+  public static final String PROP_SSO_WEBSERVER3                                  = "Webserver3";
+  public static final String PROP_SSO_GATEWAY                                     = "Gateway";
+  public static final String PROP_SSO_COHESION                                    = "Cohesion";
+  
+  /** property per SPID/CIE */
+  public static final String PROP_SSO_AUTHLEVEL_URL                               = "https://www.spid.gov.it/Spid";
+  /** property per SPID */
+  public static final String PROP_SSO_SPID_WS_AUTHSERVICESPID_URL                 = "auth.sso.spid.wsAuthServiceSPID.url";
+  public static final String PROP_SSO_SPIDBUSINESS_WS_AUTHSERVICESPID_URL         = "auth.sso.spidbusiness.wsAuthServiceSPID.url";
+  public static final String SESSION_ID_SPID_AUTHID                               = "ACTION_SPID_AUTHID";
+  /** property per CIE */
+  public static final String PROP_SSO_CIE_WS_AUTHSERVICESPID_URL                  = "auth.sso.cie.wsAuthServiceCIE.url";
+  public static final String SESSION_ID_CIE_AUTHID                                =  "ACTION_CIE_AUTHID";
+  
+  /** property Gateway */
+  public static final String   PROP_SSO_GATEWAY_WS_AUTHSERVICE_URL                = "auth.sso.gateway.ws.url";
+  
+  public static final String   PROP_SSO_GATEWAY_ENDPOINT                          = "auth.sso.gateway.endpoint";
+  
+  public static final String   PROP_SSO_GATEWAY_CLIENTID                          = "auth.sso.gateway.clientId";
+  
+  /** property per Webserver */
+  public static final String   PROP_AUTH_SSO_WEBSERVER_LOGOUT1                    = "auth.sso.webserver.logout.url.1";
+  public static final String   PROP_AUTH_SSO_WEBSERVER_LOGOUT2                    = "auth.sso.webserver.logout.url.2";
+  public static final String   PROP_AUTH_SSO_WEBSERVER_LOGOUT3                    = "auth.sso.webserver.logout.url.3";
+  
+  /** property per indicare se l'autenticazione tramite COHESION è attiva */
+  public static final String   PROP_AUTH_SSO_COHESION                             = "auth.sso.cohesion";
+  public static final String   PROP_AUTH_SSO_COHESION_LOGOUT                      = "auth.sso.cohesion.logout.url";
+  
 
   /**
    * Chiave per attivare il link alla registrazione degli utenti
@@ -815,6 +810,8 @@ public class CostantiGenerali {
 
   public static final String   PROP_RICHIESTA_ASSISTENZA_FILE_SIZE                = "assistenza.filesize";
 
+  public static final String   PROP_RICHIESTA_ASSISTENZA_URL_SUPPORTO_ESTERNO     = "assistenza.urlSupportoEsterno";
+
   public static final String   CFG_RICHIESTA_ASSISTENZA_FORM                      = "cfgRichiestaAssistenzaForm";
 
   public static final String   DEFAULT_PROP_RICHIESTA_ASSISTENZA_OGGETTO          = "1-Segnalazione di un malfunzionamento;2-Segnala una non conformità normativa;3-Richiesta di informazioni o istruzioni;4-Richiesta assistenza su modelli o report;5-Richiesta offerta per personalizzazioni e nuove funzioni";
@@ -823,4 +820,34 @@ public class CostantiGenerali {
 
   /** Chiave della configurazione che fornisce l'elenco delle estensioni ammesse in fase di upload file. */
   public static final String   PROP_ESTENSIONI_AMMESSE                            = "uploadFile.estensioniAmmesse";
+  
+  /**
+   * Chiave della property che se valorizzata ad 1 indica la configurazione multi ente per cui prima va selezionato l'ente e poi fatto il
+   * login sullo stesso.
+   */
+  public static final String   PROP_LOGIN_MULTI_ENTE                              = "loginMultiEnte";
+
+  /** Properties per la gestione delle versioni di certificazione */
+  public static final String   PROP_NOME_COMPONENTE                               = "npa.nomeComponente";
+
+  public static final String   PROP_NOME_PIATTAFORMA                              = "npa.nomePiattaforma";
+
+  public static final String   PROP_VERSIONE_COMPONENTE                           = "npa.versioneComponente";
+
+  public static final String   PROP_VERSIONE_PIATTAFORMA                          = "npa.versionePiattaforma";
+
+  public static final String   ATTR_NOME_COMPONENTE                               = "nomeComponente";
+
+  public static final String   ATTR_NOME_PIATTAFORMA                              = "nomePiattaforma";
+
+  public static final String   ATTR_VERSIONE_COMPONENTE                           = "versioneComponente";
+
+  public static final String   ATTR_VERSIONE_PIATTAFORMA                          = "versionePiattaforma";
+
+  public static final String BUCKET_URL                                           = "objectStorage.url";
+  public static final String BUCKET_TENANTID                                      = "objectStorage.tenantId";
+  public static final String BUCKET_ABILITAZIONE                                  = "objectStorage.abilita";
+
+
+
 }

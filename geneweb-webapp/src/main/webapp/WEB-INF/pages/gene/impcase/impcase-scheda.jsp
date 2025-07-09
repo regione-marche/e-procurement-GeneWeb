@@ -16,6 +16,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+<c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
+
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="ImpcaseScheda" >
 	<gene:setString name="titoloMaschera" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.GetTitleFunction",pageContext,"IMPCASE")}' />
 	<gene:redefineInsert name="noteAvvisi" />
@@ -35,11 +37,16 @@
 				<gene:campoScheda campo="NOTECO"/>
 			</gene:gruppoCampi>
 
+			<c:if test='${!fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 			<gene:campoScheda>
 				<jsp:include page="/WEB-INF/pages/commons/pulsantiScheda.jsp" />
 			</gene:campoScheda>
-
+			</c:if>
 		</gene:formScheda>
+		<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+			<gene:redefineInsert name="schedaModifica"/>
+			<gene:redefineInsert name="schedaNuovo"/>
+		</c:if>
 	</gene:redefineInsert>
 </gene:template>
 

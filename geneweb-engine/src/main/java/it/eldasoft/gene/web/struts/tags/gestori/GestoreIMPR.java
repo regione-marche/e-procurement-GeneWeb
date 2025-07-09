@@ -13,10 +13,13 @@ package it.eldasoft.gene.web.struts.tags.gestori;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
 import org.springframework.transaction.TransactionStatus;
 
 import it.eldasoft.gene.bl.GeneManager;
@@ -133,7 +136,7 @@ public class GestoreIMPR extends AbstractGestoreEntita {
       String usernome = (String)this.getSqlManager().getObject(select, new Object[]{userent, codiceImpresa});
       if(usernome!=null && !"".equals(usernome)){
 
-        Long count = (Long) this.getSqlManager().getObject("select count(*) from w_invcom where IDPRG = ? and COMKEY1 = ? and COMSTATO = ?", new Object[]{"PA",usernome,5});
+        Long count = (Long) this.getSqlManager().getObject("select count(*) from w_invcom where IDPRG = ? and COMKEY1 = ? and COMSTATO = ?", new Object[]{"PA",usernome,"5"});
         if(count > 0){
           String msg = "Impossibile eliminare l'impresa in quanto sono presenti offerte non ancora acquisite";
           Exception e = null;
@@ -339,6 +342,14 @@ public class GestoreIMPR extends AbstractGestoreEntita {
       UtilityStruts.addMessage(this.getRequest(), "warning",
           "warnings.imprese.componentiRaggruppamento",new Object[]{msg,msg1});
     }
+
+    LogEvento logevento = LogEventiUtils.createLogEvento(this.getRequest());
+    logevento.setLivEvento(1);
+    logevento.setOggEvento(impl.getString("IMPR.CODIMP"));
+    logevento.setCodEvento("IMPR_INSERT");
+    logevento.setDescr("Inserimento impresa in anagrafica");
+    logevento.setErrmsg("");
+    LogEventiUtils.insertLogEventi(logevento);
   }
 
 
@@ -492,6 +503,14 @@ public class GestoreIMPR extends AbstractGestoreEntita {
           soggettoCollettivo.put("ccDedicato", UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.COORBA")));
           modificaPrincipale = true;
         }
+        if (impl.isModifiedColumn("IMPR.IS_AREA_IBAN")) {
+          soggettoCollettivo.put("areaIban", UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.IS_AREA_IBAN")));
+          modificaPrincipale = true;
+        }
+        if (impl.isModifiedColumn("IMPR.NUMERO_CONTO")) {
+          soggettoCollettivo.put("numeroConto", UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.NUMERO_CONTO")));
+          modificaPrincipale = true;
+        }
         if (impl.isModifiedColumn("IMPR.CODBIC")) {
           soggettoCollettivo.put("bic", UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.CODBIC")));
           modificaPrincipale = true;
@@ -587,11 +606,6 @@ public class GestoreIMPR extends AbstractGestoreEntita {
         }
         if (impl.isModifiedColumn("IMPR.INDWEB")) {
           soggettoCollettivo.put("urlSitoWeb", UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.INDWEB")));
-          modificaPrincipale = true;
-        }
-        //MODIFICA E/O eventuale INSERIMENTO coordinate di pagamento
-        if (impl.isModifiedColumn("IMPR.COORBA")) {
-          soggettoCollettivo.put("ccDedicato", UtilityStringhe.convertiNullInStringaVuota(impl.getString("IMPR.COORBA")));
           modificaPrincipale = true;
         }
         if(new Long(6).equals(tipimp)){
@@ -801,6 +815,13 @@ public class GestoreIMPR extends AbstractGestoreEntita {
         }
       }
     }
+    LogEvento logevento = LogEventiUtils.createLogEvento(this.getRequest());
+    logevento.setLivEvento(1);
+    logevento.setOggEvento(impl.getString("IMPR.CODIMP"));
+    logevento.setCodEvento("IMPR_EDIT");
+    logevento.setDescr("Modifica anagrafica impresa");
+    logevento.setErrmsg(elaboraModifiche(impl));
+    LogEventiUtils.insertLogEventi(logevento);
   }
 
   /**
@@ -1151,6 +1172,48 @@ public class GestoreIMPR extends AbstractGestoreEntita {
             }
         }
       }
+  }
+
+  private String elaboraModifiche(DataColumnContainer datiForm) {
+    String descrErrMsg = "Dettaglio modifiche:";
+    HashMap<String, DataColumn> hm = datiForm.getColonne();
+    Iterator<?> it = hm.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, DataColumn> pair = (Map.Entry<String, DataColumn>) it.next();
+      if (pair.getValue().isModified()) {
+        if(pair.getKey().indexOf("MOD_")>=0 || pair.getKey().indexOf("INDICE_")>=0 )
+          continue;
+        if (!"".equals(descrErrMsg)) {
+          descrErrMsg += "\n";
+        }
+        if (pair.getKey().indexOf("DEL_AIN") > 0) {
+          //Nel caso di eliminazione di un indirizzo non ho le chiavi della occorrenza eliminata, quindi
+          //il messaggio sarà generico
+          descrErrMsg += "Eliminato un indirizzo";
+        } else {
+          JdbcParametro paramOrigin = pair.getValue().getOriginalValue();
+          String valOriginale = "";
+          if (paramOrigin != null) {
+            valOriginale = paramOrigin.toString();
+          }
+          JdbcParametro paramNuovo = pair.getValue().getValue();
+          String valNuovo = "";
+          if (paramNuovo != null) {
+            valNuovo = paramNuovo.toString();
+          }
+          if ("".equals(valOriginale)) {
+            valOriginale = "NULL";
+          }
+          if ("".equals(valNuovo)) {
+            valNuovo = "NULL";
+          }
+          descrErrMsg += pair.getKey() + ": ";
+          descrErrMsg += "valore vecchio= " + valOriginale + ", ";
+          descrErrMsg += "valore nuovo= " + valNuovo;
+        }
+      }
+    }
+    return descrErrMsg;
   }
 }
 

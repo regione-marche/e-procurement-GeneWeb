@@ -23,7 +23,7 @@
   }
   
 	function annullaModifiche(){
-		document.location.href='ListaPermessiEntita.do?'+csrfToken+'&metodo=visualizza&campoChiave=${campoChiave}&valoreChiave=${valoreChiave}&genereGara=${genereGara}';
+		document.location.href='ListaPermessiEntita.do?metodo=visualizza&campoChiave=${campoChiave}&valoreChiave=${valoreChiave}&genereGara=${genereGara}';
 	}
 	
 	function controlloRiga(idRiga){

@@ -16,6 +16,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <c:set var="visualizzaLink" value='${gene:checkProt(pageContext, "MASC.VIS.GENE.G_CONFCOD-scheda")}'/>
 <c:set var="tipoSelezionato" value="${gene:if(empty param.TIPOSEL,1,param.TIPOSEL)}"/>
 
@@ -75,7 +78,7 @@
 			<td>
 			<gene:formLista entita="G_CONFCOD" sortColumn="2" pagesize="20" tableclass="datilista"
 			gestisciProtezioni="true" where="G_CONFCOD.CODAPP in (${filtroCodapp})" > 
-				<!-- Se il nome del campo è vuoto non lo gestisce come un campo normale -->
+				<!-- Se il nome del campo e' vuoto non lo gestisce come un campo normale -->
 				<gene:campoLista title="Opzioni" width="50">
 					<gene:PopUp variableJs="rigaPopUpMenu${currentRow}" onClick="chiaveRiga='${chiaveRigaJava}'">					
 							<c:if test='${gene:checkProt(pageContext, "MASC.VIS.GENE.G_CONFCOD-scheda")}' >
@@ -110,7 +113,7 @@
 
 	<gene:javaScript>
 	function cambiaTipoCodifica(tipo) {
-		document.location.href="ApriPagina.do?"+csrfToken+"&href=gene/g_confcod/g_confcod-lista.jsp?TIPOSEL="+tipo;
+		document.location.href="ApriPagina.do?href=gene/g_confcod/g_confcod-lista.jsp?TIPOSEL="+tipo;
 	}
   </gene:javaScript>
 </gene:template>

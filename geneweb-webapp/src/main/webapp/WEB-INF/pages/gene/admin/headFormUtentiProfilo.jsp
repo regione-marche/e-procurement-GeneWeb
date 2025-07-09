@@ -25,7 +25,7 @@
 
   function annullaModifiche(id){
     bloccaRichiesteServer();
-		document.location.href='ListaAccountProfilo.do?'+csrfToken+'&metodo=visualizza&codPro=' + id;
+		document.location.href='ListaAccountProfilo.do?metodo=visualizza&codPro=' + id;
   }
 
 </script>

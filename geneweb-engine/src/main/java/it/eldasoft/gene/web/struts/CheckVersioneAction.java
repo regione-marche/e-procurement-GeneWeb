@@ -240,7 +240,7 @@ public class CheckVersioneAction extends ActionBaseNoOpzioni {
             profiloApplicativoSelezionato,
             "FUNZ",
             "VIS",
-            "ALT.GENE.associazioneUffintAbilitata")){
+            "ALT.GENE.associazioneUffintAbilitata") || "1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))){
           target = "uffint";
           request.getSession().setAttribute(CostantiGenerali.ATTR_UFFINT_ABILITATI, "1");
 

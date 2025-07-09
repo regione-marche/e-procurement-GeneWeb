@@ -23,7 +23,7 @@
 	<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 	<c:set var="codimp" value="${param.codimp}" />
 	
-	<gene:setString name="titoloMaschera"  value="Art.80 - richiedi verifica per l'operatore economico"/>
+	<gene:setString name="titoloMaschera"  value="Verifica requisiti - richiedi verifica per l'operatore economico"/>
 	
 	<gene:redefineInsert name="head" >
 	

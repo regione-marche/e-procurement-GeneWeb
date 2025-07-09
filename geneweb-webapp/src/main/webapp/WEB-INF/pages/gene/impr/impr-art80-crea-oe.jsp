@@ -46,7 +46,7 @@
 		</c:choose>
 	</c:if>
 
-	<gene:setString name="titoloMaschera" value="Art.80 - richiedi verifica per l'operatore economico" />
+	<gene:setString name="titoloMaschera" value="Verifica requisiti - richiedi verifica per l'operatore economico" />
 
 	<gene:redefineInsert name="corpo">
 		<form action="${contextPath}/Art80CreaOE.do" method="post" name="formArt80CreaOE" >
@@ -56,7 +56,7 @@
 					<td colspan="2" style="padding: 0 5 0 5;">
 						<br>
 						<br>
-						Invio dei dati per la creazione di un nuovo operatore economico ai fini del controllo documenti secondo le disposizioni dell'art. 80.
+						Invio dei dati per la creazione di un nuovo operatore economico ai fini del controllo documenti per la verifica requisiti.
 						<br>
 						<br>
 						Tipologia di controllo (*): 

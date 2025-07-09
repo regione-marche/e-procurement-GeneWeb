@@ -15,6 +15,9 @@ import java.sql.SQLException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.bl.TabellatiManager;
 import it.eldasoft.gene.tags.utils.AbstractFunzioneTag;
@@ -40,7 +43,7 @@ public class EsisteCategoriaPerTipoAppaltoFunction extends AbstractFunzioneTag {
     TabellatiManager tabellatiManager = (TabellatiManager) UtilitySpring.getBean("tabellatiManager",
         pageContext, TabellatiManager.class);
 
-    String tipoCategoria = (String) params[1];
+    Integer tipoCategoria =  NumberUtils.createInteger(StringUtils.stripToNull((String) params[1]));
     String esito = "false";
 
     try {

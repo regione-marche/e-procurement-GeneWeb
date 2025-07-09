@@ -115,6 +115,11 @@
     <include refid="selectAccount"/>
      WHERE $operatoreUpper$ (syslogin) = #login#
   </select>
+  
+  <select id="getAccountBySysCf" resultMap="result">
+    <include refid="selectAccount"/>
+     WHERE $operatoreUpper$ (syscf) = #codfisc#
+  </select>
 
   <select id="getAccountByPassword" resultMap="result">
     <include refid="selectAccount"/>
@@ -230,6 +235,9 @@ ORDER BY W_PROFILI.NOME, W_GRUPPI.NOME
 	     </isEqual>
 	     <isEqual property="gestioneUtenti" compareValue="ou11|ou12">
 	     	USRSYS.SYSPWBOU like '%ou12%'
+	     </isEqual>
+	     <isEqual property="gestioneUtenti" compareValue="nonou11">
+	     	USRSYS.SYSPWBOU not like '%ou11%'
 	     </isEqual>
      </isNotEmpty>  
      <isNotEmpty prepend="AND" property="amministratore">
@@ -543,5 +551,24 @@ ORDER BY W_PROFILI.NOME, W_GRUPPI.NOME
   <delete id="deleteLoginFallite" parameterClass="java.lang.String">  
   DELETE FROM g_loginko WHERE username = #username#
   </delete>
+  
+  <select id="getMaxLoaBySysconAndCodein" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	SELECT MAX(LOA)
+  	FROM USR_LOA
+ 	WHERE SYSCON = #idAccount#
+   	AND CODEIN = #uffint#
+  </select>
+  
+  <insert id="insertUsrLoa" parameterClass="java.util.HashMap">
+  	insert into usr_loa (syscon, codein, provider, loa, authdata) values (#idAccount#,#uffint#,#provider#,#loa#,#authData#)
+  </insert>
+  
+   <update id="updateUsrLoa" parameterClass="java.util.HashMap">
+  	update usr_loa set loa=#loa#, provider=#provider#, authdata=#authData# where syscon=#idAccount# and codein=#uffint#
+   </update>
+   
+   <update id="updateLdapUsr" parameterClass="java.util.HashMap">
+  	update usrsys set flag_ldap=3, syscf=#codfisc# where syscon=#idAccount#
+   </update>
 
 </sqlMap>

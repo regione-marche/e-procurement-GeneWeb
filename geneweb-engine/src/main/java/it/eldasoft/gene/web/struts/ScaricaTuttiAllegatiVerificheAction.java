@@ -142,7 +142,7 @@ public class ScaricaTuttiAllegatiVerificheAction  extends DispatchActionAjaxLogg
 
     String codiceEvento, descr;
     codiceEvento = "ART80_DOWNLOAD_DOC_ZIP";
-    descr = "Download documenti verifiche art.80 su file zip (cod.ditta: " + codimp + ")";
+    descr = "Download documenti verifica requisiti su file zip (cod.ditta: " + codimp + ")";
     String idprgDoc = null;
     String iddocdg = null;
     String nomeDoc = null;

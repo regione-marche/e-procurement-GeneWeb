@@ -17,10 +17,12 @@ import it.eldasoft.gene.bl.admin.AccountManager;
 import it.eldasoft.gene.bl.admin.ProfiliManager;
 import it.eldasoft.gene.bl.permessi.PermessiManager;
 import it.eldasoft.gene.bl.system.MailManager;
+import it.eldasoft.gene.commons.web.XSSRequestWrapper;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.struts.UploadFileForm;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.domain.AccountSSO;
 import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.db.domain.admin.Account;
 import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
@@ -54,6 +56,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.upload.FormFile;
 import org.apache.velocity.Template;
@@ -158,13 +161,17 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
           GenChiaviManager.class);
 
       //Verifica se siamo in SSO
-      String propProtSSO = ConfigManager.getValore(CostantiGenerali.PROP_SSO_PROTOCOLLO);
-      propProtSSO = UtilityStringhe.convertiNullInStringaVuota(propProtSSO);
+      AccountSSO accountSSO = (AccountSSO) this.getRequest().getSession().getAttribute(
+          CostantiGenerali.ID_ATTRIBUTO_SESSIONE_ACCOUNT_SSO);
 
-
-      String nome = datiForm.getString("NOME");
-      String cognome = datiForm.getString("COGNOME");
-      String email = datiForm.getString("EMAIL");
+      // sanitizzazione XSS di alcune informazioni che possono essere poi salvate in DB
+      String nome = XSSRequestWrapper.stripXSS(datiForm.getString("NOME"));
+      String cognome = XSSRequestWrapper.stripXSS(datiForm.getString("COGNOME"));
+      String email = XSSRequestWrapper.stripXSS(datiForm.getString("EMAIL"));
+      datiForm.setValue("NOME", nome);
+      datiForm.setValue("COGNOME", cognome);
+      datiForm.setValue("EMAIL", email);
+      // lettura delle rimanenti informazioni
       String codfisc = datiForm.getString("CODFISC");
       codfisc = codfisc.toUpperCase();
       String login = datiForm.getString("LOGIN");
@@ -253,7 +260,7 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
 
       String codapp = ConfigManager.getValore(CostantiGenerali.PROP_CODICE_APPLICAZIONE);
 
-      if(!"".equals(propProtSSO) && !"0".equals(propProtSSO)){
+      if("3".equals(flagLdap)){
         //Determinazione della password di default per gli utenti SSO
         String regDefaultPwd = ConfigManager.getValore(CostantiGenerali.PROP_REG_DEFAULT_PASSWORD);
         regDefaultPwd = UtilityStringhe.convertiNullInStringaVuota(regDefaultPwd);
@@ -295,10 +302,7 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
       }
 
       //Verifico la password se non si tratta di autenticazione SSO (in tal caso viene messa la password di default)
-      // 1 - Shibboleth
-      // 2 - Cohesion
-      // 3 - SSOBart
-      if(!"".equals(propProtSSO) && !"0".equals(propProtSSO)){
+      if(accountSSO != null){
         if("".equals(password) || password.length() < 8 ){
           throw new GestoreException("Errore: Password non definita o inferiore a 8 caratteri!", MSG_ERROR_PASSWORD_LENGTH, null);
         }
@@ -408,7 +412,21 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
         if (!FileAllegatoManager.isEstensioneFileAmmessa(fname)) {
           throw new GestoreException("Il file selezionato da caricare ha un'estensione non accettata",
               "upload.estensioneNonAmmessa", new String[]{fname}, null);
+        } else {
+          try {
+            if(!FileAllegatoManager.checkFileContent(mf.getSelezioneFile().getFileData(), fname)){
+              throw new GestoreException("Il file selezionato da caricare viene scartato in quanto ha un contenuto in formato non valido secondo le verifiche mediante la libreria Apache Tika",
+                  "upload.erroreVerificaContenuto", new String[]{fname}, null);
+            } else if(fname.toLowerCase().endsWith(".pdf") && FileAllegatoManager.isMaliciousPdf(mf.getSelezioneFile().getFileData(), fname)) {
+              throw new GestoreException("Il file selezionato da caricare viene scartato in quanto sembra codificare dei contenuti non sicuri (malware)",
+                  "upload.erroreContenutoMalevolo", new String[]{fname}, null);
+            }
+          } catch (IOException e) {
+            throw new GestoreException("Il file selezionato da caricare viene scartato in quanto non risulta possibile la lettura del suo contenuto",
+                "upload.erroreVerificaContenuto", new String[]{fname}, e);
+          }
         }
+        
         if(fname.length()!=0 && ff.getFileSize()>0 && (!eseguireControlloDimTotale || (eseguireControlloDimTotale &&ff.getFileSize() <= dimMaxTotaleFilesByte))) {
           try {
             baos.write(ff.getFileData());
@@ -434,7 +452,15 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
 
 
       // Controllo preliminare mediante CAPTCHA
-      if (!this.rpHash(this.getRequest().getParameter("realperson")).equals(this.getRequest().getParameter("realpersonHash"))) {
+      String realpersonHash=this.getRequest().getParameter("realpersonHash");
+      
+      String nomePagina = ConfigManager.getValore(CostantiGenerali.PROP_REGISTRAZIONE_NOME_PAGINA);
+      if (nomePagina == null || nomePagina.trim().length() == 0 || "registrazione-account.jsp?modo=NUOVO".equals(nomePagina)) {
+        String captchaRegistrazione = (String) this.getRequest().getSession().getAttribute("captchaRegistrazione");
+        this.getRequest().getSession().removeAttribute("captchaRegistrazione");//non riutilizzabile
+        realpersonHash = this.rpHash(StringUtils.defaultString(captchaRegistrazione)); 
+      }
+      if (!this.rpHash(this.getRequest().getParameter("realperson")).equals(realpersonHash)) {
         throw new GestoreException("Il codice di controllo digitato non corrisponde a quello visualizzato",
             REGISTRAZIONE_UTENTE_CAPTCHA_ERRORE, null);
       }
@@ -452,6 +478,8 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
           if("0".equals(flagLdap)){
             opzioniUtente.setOpzione(CostantiGeneraliAccount.OPZIONI_SICUREZZA_PASSWORD);
           }
+          opzioniUtente.setOpzione(CostantiGeneraliAccount.OPZIONI_BLOCCO_MODIFICA_UFFINT);
+          opzioniUtente.setOpzione(CostantiGeneraliAccount.OPZIONI_BLOCCO_MODIFICA_IMPR);
           account.setOpzioniUtente(opzioniUtente.toString());
           account.setEmail(datiForm.getString("EMAIL"));
           account.setDataInserimento(new Date());
@@ -604,10 +632,19 @@ public class GestoreFormRegistrazione extends AbstractGestoreEntita {
          gestoreTECNI.getRequest().setAttribute("modo", "REGISTRAZIONE");
 
          gestoreTECNI.verificaCodiceFiscalePartitaIVA(implTECNI, esitoVerificaCFPIVA);
-         
+
+         boolean update = false;
+         if(implTECNI.getColumn("TECNI.CODTEC").getOriginalValue()!=null) {
+           codtec = implTECNI.getColumn("TECNI.CODTEC").getOriginalValue().getStringValue();
+           update = true;
+         }
+
          if("0".equals(esitoVerificaCFPIVA[0])){
            this.setPermessiAssociazioneAccountEntita(codtec, new Integer(account.getIdAccount()));
-           gestoreTECNI.inserisci(status, implTECNI);
+           if(update)
+              gestoreTECNI.update(status,implTECNI);
+           else
+              gestoreTECNI.inserisci(status, implTECNI);
          }else if("1".equals(esitoVerificaCFPIVA[0])){
            this.setPermessiAssociazioneAccountEntita(codtec, new Integer(account.getIdAccount()));
            msg += "\n\n" + esitoVerificaCFPIVA[1];

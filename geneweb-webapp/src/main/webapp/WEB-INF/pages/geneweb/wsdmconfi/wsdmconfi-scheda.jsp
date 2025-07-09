@@ -3,6 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
 
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" idMaschera="WSDMCONFI-scheda" schema="GENEWEB">
 	
@@ -16,7 +18,6 @@
 				<gene:formScheda entita="WSDMCONFI" gestisciProtezioni="true" gestore="it.eldasoft.gene.tags.gestori.submit.GestoreWSDMCONFI">
 					
 					<gene:campoScheda campo="ID" visibile="false"/>
-					<gene:campoScheda campo="CODAPP" visibile="false" value="PG"/>
 					<gene:campoScheda campo="DESCRI" obbligatorio="true"/>		
 					
 					<gene:campoScheda>
@@ -60,7 +61,6 @@
 	<gene:javaScript>
 		
 		document.formListaConfipro.idconfi.value=$("#WSDMCONFI_ID").val();
-		document.formListaConfipro.descri.value=$("#WSDMCONFI_DESCRI").val();
 		bloccaRichiesteServer();
 		document.formListaConfipro.submit();
 		
@@ -70,8 +70,6 @@
 		<input type="hidden" name="href" value="geneweb/wsdmconfi/wsdmconfi-pagine-scheda.jsp" />
 		<input type="hidden" name="entita" value="WSDMCONFI" />
 		<input type="hidden" name="idconfi" value="" /> 
-		<input type="hidden" name="descri" value="" /> 
-		<input type="hidden" name="codapp" value="${codapp}" /> 
 		<input type="hidden" name="tabAttivo" value="datigen" /> 
 		<input type="hidden" name="risultatiPerPagina" value="20" />
 		<jsp:include page="/WEB-INF/pages/commons/csrf.jsp" />

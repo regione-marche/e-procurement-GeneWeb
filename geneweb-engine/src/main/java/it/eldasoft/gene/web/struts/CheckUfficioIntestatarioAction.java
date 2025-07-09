@@ -18,6 +18,8 @@ import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.db.domain.UfficioIntestatario;
 import it.eldasoft.utils.profiles.OpzioniUtente;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -78,6 +80,9 @@ public class CheckUfficioIntestatarioAction extends ActionBaseNoOpzioni {
     // target di default, da modificare nel momento in cui si verificano dei
     // problemi
     String target = CostantiGeneraliStruts.FORWARD_OK;
+    if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+      target = "successMultiEnte";
+    }
     String messageKey = null;
 
 //    String codiceApplicazione = (String) request.getSession().getAttribute(
@@ -91,7 +96,7 @@ public class CheckUfficioIntestatarioAction extends ActionBaseNoOpzioni {
     HashMap<String, HashSet<String>> hashProfiliKeyParent = (HashMap<String, HashSet<String>>) request.getSession().getAttribute(CostantiGenerali.PROFILI_KEY_PARENTS);
     hashProfiliKey.put(profiloApplicativoSelezionato, new HashSet<String>());
     hashProfiliKeyParent.put(profiloApplicativoSelezionato, new HashSet<String>());
-
+    
     OpzioniUtente opzioniUtente = new OpzioniUtente(profiloUtente.getFunzioniUtenteAbilitate());
 
     try {
@@ -102,51 +107,51 @@ public class CheckUfficioIntestatarioAction extends ActionBaseNoOpzioni {
       } else {
         elencoUfficiIntestatari = this.uffintManager.getUfficiIntestatariAccount(profiloUtente.getId());
       }
+      
       switch (elencoUfficiIntestatari.size()) {
       case 0:
-        // elimino la sessione in quanto devo bloccare l'accesso
-        request.getSession().invalidate();
-        // nessuna associazione => errore
-        target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+        // nessuna associazione => errore e devo forzare la disconnessione per invalidare la sessione
+        target = "logout";
         messageKey = "errors.checkUfficioIntestatario.noUffintAccount";
         logger.error(this.resBundleGenerale.getString(messageKey));
         this.aggiungiMessaggio(request, messageKey);
         break;
-      case 1:
-        // una associazione => attribuisco l'ufficio e proseguo arrivando alla
-        // homepage
-        // rilegge il codice applicazione come fatto nella CheckVersioneAction
-        request.getSession().setAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO,
-            ((UfficioIntestatario) elencoUfficiIntestatari.get(0)).getCodice());
-        request.getSession().setAttribute(CostantiGenerali.NOME_UFFICIO_INTESTATARIO_ATTIVO,
-            ((UfficioIntestatario) elencoUfficiIntestatari.get(0)).getNome());
-        request.getSession().removeAttribute(
-            CostantiGenerali.SENTINELLA_SELEZIONA_UFFICIO_INTESTATARIO);
-
-//        if (logger.isDebugEnabled()) {
-//          logger.debug("runAction: fine metodo");
-//        }
-//
-//        // di default si va alla homepage, a meno che non sia presente un
-//        // parametro nel request denominato "skipHome" valorizzato a 1 (tale
-//        // parametro arriva valorizzato esclusivamente nel caso di unico profilo
-//        // e unico ufficio intestatario attribuiti all'utente, e quindi non si
-//        // passa per alcuna pagina di selezione profilo e selezione stazione
-//        // appaltante, ma dalla login con un'unica richiesta si aprirà la pagina
-//        // di destinazione)
-//        if (!"1".equals(request.getParameter("skipHome")))
-//          return UtilityStruts.redirectToPage("home"
-//              + codiceApplicazione
-//              + ".jsp", false, request);
-//        else
-//          return UtilityStruts.redirectToPage(request.getParameter("href"),
-//              false, request);
+      case 1:        
+        if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+          // va verificato in configurazione multi ente che l'ente selezionato sia effettivamente associato all'utente
+          String enteSelezionato = (String)request.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
+          String denominazioneEnteSelezionato = (String)request.getSession().getAttribute(CostantiGenerali.NOME_UFFICIO_INTESTATARIO_ATTIVO);
+          if (!(((UfficioIntestatario) elencoUfficiIntestatari.get(0)).getCodice().equals(enteSelezionato))) {
+            // associazione errata tra utente ed ente => errore importante, altrimenti entro in un ente nel quale non sono autorizzato!
+            // devo forzare la disconnessione per invalidare la sessione
+            target = "logout";
+            messageKey = "errors.listaEntiLogin.nonAssociato";
+            // nel messaggio utente si indica la denominazione, nel messaggio a log indichiamo il codice della S.A. selezionata
+           logger.error(this.resBundleGenerale.getString(messageKey).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0),
+                enteSelezionato).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(1), profiloUtente.getNome()));
+            this.aggiungiMessaggio(request, messageKey, denominazioneEnteSelezionato, profiloUtente.getNome());
+          }
+        } else {
+          // una associazione => attribuisco l'ufficio e proseguo arrivando alla
+          // homepage
+          // rilegge il codice applicazione come fatto nella CheckVersioneAction
+          request.getSession().setAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO,
+              ((UfficioIntestatario) elencoUfficiIntestatari.get(0)).getCodice());
+          request.getSession().setAttribute(CostantiGenerali.NOME_UFFICIO_INTESTATARIO_ATTIVO,
+              ((UfficioIntestatario) elencoUfficiIntestatari.get(0)).getNome());
+          request.getSession().removeAttribute(
+              CostantiGenerali.SENTINELLA_SELEZIONA_UFFICIO_INTESTATARIO);
+        }
         break;
       default:
         // potrei ricevere nella chiamata un ufficio intestatario da utilizzare,
         // e dopo aver controllato che sia uno di quelli associati all'utente
         // lo utilizzo, altrimenti vado alla pagina di selezione
         String uffint = request.getParameter("uffint");
+        if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+          // va verificato in configurazione multi ente che l'ente selezionato sia effettivamente associato all'utente
+          uffint = (String)request.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
+        }
         boolean trovato = false;
         if (uffint != null) {
           for (int i = 0; i < elencoUfficiIntestatari.size() && !trovato; i++) {
@@ -161,17 +166,32 @@ public class CheckUfficioIntestatarioAction extends ActionBaseNoOpzioni {
           }
         }
         if (!trovato) {
-          // uffint passato come parametro non associato all'utente oppure
-          // più di una associazione => vado alla pagina di selezione
-          request.setAttribute("elencoUfficiIntestatari",
-              elencoUfficiIntestatari);
-          request.setAttribute(CostantiGenerali.NAVIGAZIONE_DISABILITATA,
-              CostantiGenerali.DISABILITA_NAVIGAZIONE);
-          target = target.concat("Lista");
+          if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+            // associazione errata tra utente ed ente => errore importante, altrimenti entro in un ente nel quale non sono autorizzato!
+            // devo forzare la disconnessione per invalidare la sessione
+            target = "logout";
+            String denominazioneEnteSelezionato = (String)request.getSession().getAttribute(CostantiGenerali.NOME_UFFICIO_INTESTATARIO_ATTIVO);
+            messageKey = "errors.listaEntiLogin.nonAssociato";
+            // nel messaggio utente si indica la denominazione, nel messaggio a log indichiamo il codice della S.A. selezionata
+            logger.error(this.resBundleGenerale.getString(messageKey).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0),
+                uffint).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(1), profiloUtente.getNome()));
+            this.aggiungiMessaggio(request, messageKey, denominazioneEnteSelezionato, profiloUtente.getNome());
+          } else {
+            // uffint passato come parametro non associato all'utente oppure
+            // più di una associazione => vado alla pagina di selezione
+            request.setAttribute("elencoUfficiIntestatari",
+                elencoUfficiIntestatari);
+            request.setAttribute(CostantiGenerali.NAVIGAZIONE_DISABILITATA,
+                CostantiGenerali.DISABILITA_NAVIGAZIONE);
+            target = target.concat("Lista");
+          }
         }
-        request.getSession().setAttribute(
-            CostantiGenerali.SENTINELLA_SELEZIONA_UFFICIO_INTESTATARIO, "1");
-      }
+        if (!"1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+          // nel caso standard, dobbiamo andare alla selezione ufficio su una lista
+          request.getSession().setAttribute(
+              CostantiGenerali.SENTINELLA_SELEZIONA_UFFICIO_INTESTATARIO, "1");
+        }
+     }
 
     } catch (DataAccessException e) {
       target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;

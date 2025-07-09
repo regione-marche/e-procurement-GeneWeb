@@ -251,7 +251,7 @@ public class GetAttivitaCalendarioJSONAction extends DispatchAction {
 
         // definizione dei parametri per l'estrazione dei dati e definizione della query
         StringBuilder select = new StringBuilder(
-            "SELECT TIT, DATASCAD, DATACONS, DATAIN, DATAFI, DURATA, ENT, KEY1, KEY2, KEY3, KEY4, KEY5 FROM G_SCADENZ");
+            "SELECT TIT, DATASCAD, DATACONS, DATAIN, DATAFI, G_SCADENZ.DURATA, ENT, KEY1, KEY2, KEY3, KEY4, KEY5 FROM G_SCADENZ");
         Object[] params = null;
         int i = 0;
 

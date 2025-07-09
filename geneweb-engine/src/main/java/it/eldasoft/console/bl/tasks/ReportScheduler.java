@@ -82,6 +82,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -1487,9 +1488,20 @@ public class ReportScheduler {
       if (schedulazioneInCoda.getStato() == CostantiCodaSched.STATO_ESEGUITO_CON_SUCCESSO) {
         testoMail = TESTO_MAIL_SUCCESS + ".\n\n"  + nomeApplicativo;
         if (schedulazione.getEmail().indexOf(",") > 0) {
-          mailSender.send(schedulazione.getEmail().split(","), null, null,
-              nomeApplicativo + OGGETTO_MAIL + " '" + schedulazione.getNomeRicerca() + "' ",
-              testoMail, new String[] { fileComposto });
+        	String arrayDestinatari[] = schedulazione.getEmail().split(",");
+        	for (int contatoreDestinatari = 0; contatoreDestinatari < arrayDestinatari.length; contatoreDestinatari++) {
+				String arraySingoloDestinatario[] = new String[] { arrayDestinatari[contatoreDestinatari] };
+				mailSender.send(arraySingoloDestinatario, null, null,
+			              nomeApplicativo + OGGETTO_MAIL + " '" + schedulazione.getNomeRicerca() + "' ",
+			              testoMail, new String[] { fileComposto });
+				if (mailSender.getDelay() != null) {
+					try {
+						TimeUnit.MILLISECONDS.sleep(mailSender.getDelay());
+					} catch (InterruptedException e) {
+						logger.error("Errore durante l'attesa tra un invio di una mail e la successiva schedulata", e);
+					}
+				}
+			}
         } else {
           mailSender.send(new String[] { schedulazione.getEmail() }, null,
               null,
@@ -1509,9 +1521,19 @@ public class ReportScheduler {
               + "' ");
         }
 
-        if (schedulazione.getEmail().indexOf(",") > 0) {
-          mailSender.send(schedulazione.getEmail().split(","), null, null,
-              tmpOggetto, testoMail, null);
+		if (schedulazione.getEmail().indexOf(",") > 0) {
+			String arrayDestinatari[] = schedulazione.getEmail().split(",");
+			for (int contatoreDestinatari = 0; contatoreDestinatari < arrayDestinatari.length; contatoreDestinatari++) {
+				String arraySingoloDestinatario[] = new String[] { arrayDestinatari[contatoreDestinatari] };
+				mailSender.send(arraySingoloDestinatario, null, null, tmpOggetto, testoMail, null);
+				if (mailSender.getDelay() != null) {
+					try {
+						TimeUnit.MILLISECONDS.sleep(mailSender.getDelay());
+					} catch (InterruptedException e) {
+						logger.error("Errore durante l'attesa tra un invio di una mail e la successiva schedulata", e);
+					}
+				}
+			}
         } else {
           mailSender.send(new String[] { schedulazione.getEmail() }, null,
               null, tmpOggetto, testoMail, null);

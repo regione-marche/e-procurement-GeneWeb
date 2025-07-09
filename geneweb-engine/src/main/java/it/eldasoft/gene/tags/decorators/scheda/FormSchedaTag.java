@@ -11,6 +11,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyContent;
 
+import it.eldasoft.gene.tags.utils.functions.FiltroLivelloUtenteFunction;
+import it.eldasoft.utils.metadata.domain.LegameTabelle;
+import it.eldasoft.utils.metadata.domain.Tabella;
+import it.eldasoft.utils.properties.ConfigManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -147,6 +151,8 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
 
     SqlManager sql = (SqlManager) UtilitySpring.getBean("sqlManager",
         this.pageContext, SqlManager.class);
+    GeneManager gene = (GeneManager) UtilitySpring.getBean(
+            "geneManager", this.pageContext, GeneManager.class);
 
     // Set in sessione dell'attributo
     // CostantiGenerali.ENTITA_PRINCIPALE_MODIFICABILE:
@@ -201,7 +207,82 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
       String lsModo = UtilityTags.getParametro(this.pageContext,
           UtilityTags.DEFAULT_HIDDEN_PARAMETRO_MODO);
       if (lsModo == null) lsModo = UtilityTags.SCHEDA_MODO_VISUALIZZA;
-      // Se non si ha l'entita allora è stato gestito in modo generale
+
+      // qui vanno aggiunti i controlli bloccanti per non accedere al dettaglio se non autorizzati.
+      // i controlli devono essere:
+      // 1. se la uffint risulta impostata in sessione deve corrispondere all'eventuale campo presente nella entita principale
+      // 2. sulle autorizzazioni dell'utente sull'entita
+
+      if (!UtilityTags.SCHEDA_MODO_INSERIMENTO.equals(lsModo) && (this.getEntita() != null && !this.getEntita().isEmpty())) {
+        String uffintAttivo = (String) this.pageContext.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
+        // 1. verifica sulla uffint
+        if (uffintAttivo != null && key != null) {
+          // controllo anche key perche' si possono creare ad esempio le popup di messaggi in cui si usa un formScheda
+          // ma non si passa key o keyparent ma si passa chiaveRiga e si usa per valorizzare dei campi ad hoc in pagina
+          String chiaveEntitaCollegataUffint = FormSchedaTag.trovaChiaveEntitaCollegataUffint(key, sql, gene);
+
+          // se il campo di collegamento con UFFINT e' stato trovato, allora eseguo una query sull'entita' che la contiene filtrando per il campo key
+          if (chiaveEntitaCollegataUffint != null) {
+            String[] datiDaElaborare = chiaveEntitaCollegataUffint.split("#");
+            JdbcWhere where = new JdbcWhere();
+            UtilityTags.jdbcAddKeyWhere(where, datiDaElaborare[2]);
+            String query = "SELECT " + datiDaElaborare[1] + " FROM " + datiDaElaborare[0] + where.toString();
+
+            String uffintRecord = null;
+            try {
+              uffintRecord = (String) sql.getObject(query, SqlManager.getObjectFromPram(where.getParametri()));
+            } catch (SQLException e) {
+              throw new JspException("Errore durante l'estrazione del riferimento ad ufficio intestatario, key " + key + ": "
+                      + e.getMessage(), e);
+            }
+
+            // si sta tentando di forzare l'accesso ad un record non relativo all'uffint? this.getPageContext().getRequest()).getAttribute("forzaRedirect")
+            if (uffintRecord != null && !uffintRecord.equals(uffintAttivo)) {
+              logger.error("Bloccato accesso all'entita' " + this.getEntita() + " con chiave " + key + " perche' non e' relativo all'ufficio intestatario attivo (" + uffintAttivo + ") ma e' relativo all'ufficio intestatario " + uffintRecord);
+              this.getPageContext().setAttribute("forzaRedirect", Boolean.TRUE, PageContext.REQUEST_SCOPE);
+              // svuoto l'history
+              UtilityTags.getUtilityHistory(((HttpServletRequest)
+                      this.getPageContext().getRequest()).getSession()).clear(UtilityStruts.getNumeroPopUp(this.getPageContext().getRequest()), this.getPageContext().getSession());
+              return SKIP_BODY;
+            }
+          }
+        }
+
+        // 2. Verifica delle autorizzazioni dell'utente sull'entita'
+        ProfiloUtente profiloUtente = (ProfiloUtente) this.pageContext.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
+        if (key != null) {
+          String chiaveEntitaControllataConPermessi = FormSchedaTag.trovaChiaveEntitaControllataConPermessi(key, profiloUtente, sql, gene);
+          // se il campo di collegamento con UFFINT e' stato trovato, allora eseguo una query sull'entita' che la contiene filtrando per il campo key
+          if (chiaveEntitaControllataConPermessi != null) {
+            String[] datiDaElaborare = chiaveEntitaControllataConPermessi.split("#");
+            JdbcWhere where = new JdbcWhere();
+            UtilityTags.jdbcAddKeyWhere(where, datiDaElaborare[2]);
+            String query = "SELECT COUNT(*) FROM "
+                    + datiDaElaborare[0]
+                    + where.toString()
+                    + " AND "
+                    + datiDaElaborare[1];
+            try {
+              long numOccorrenze = (Long) sql.getObject(query, SqlManager.getObjectFromPram(where.getParametri()));
+              // si sta tentando di forzare l'accesso ad un record non visibile all'utente
+              if (numOccorrenze == 0) {
+                logger.error("Bloccato accesso all'entita' " + this.getEntita() + " con chiave " + key + " perche' non e' visibile all'utente " + profiloUtente.getId());
+                this.getPageContext().setAttribute("forzaRedirect", Boolean.TRUE, PageContext.REQUEST_SCOPE);
+                // svuoto l'history
+                UtilityTags.getUtilityHistory(((HttpServletRequest)
+                        this.getPageContext().getRequest()).getSession()).clear(UtilityStruts.getNumeroPopUp(this.getPageContext().getRequest()), this.getPageContext().getSession());
+                return SKIP_BODY;
+              }
+
+            } catch (SQLException e) {
+              throw new JspException("Errore durante la verifica visibilita' di un record,  key " + key + ": "
+                      + e.getMessage(), e);
+            }
+          }
+        }
+      }
+
+      // Se non si ha l'entita allora ? stato gestito in modo generale
       if (this.getEntita() != null && this.getEntita().length() == 0) {
 
         // Aggiungo i dati delle riga
@@ -320,8 +401,6 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
           if (lsModo.equals(UtilityTags.SCHEDA_MODO_VISUALIZZA)) {
             // si estraggono dei conteggi per la visualizzazione nei link
             // corrispondenti
-            GeneManager gene = (GeneManager) UtilitySpring.getBean(
-                "geneManager", this.pageContext, GeneManager.class);
             long numNoteAvvisi = gene.contaOccorrenzeNoteAvvisi(
                 this.getEntita(), select.getWhere().toString(false),
                 SqlManager.getObjectFromPram(select.getParemetri()));
@@ -346,10 +425,11 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
             Vector valori = sql.getVector(select);
             if (valori == null) {
               // si sta tentando di forzare l'accesso ad un record non presente in db
+              logger.error("Bloccato accesso all'entita' " + this.getEntita() + " con chiave " + key + " perche' non e' presente in db");
               this.getPageContext().setAttribute("forzaRedirect", Boolean.TRUE, PageContext.REQUEST_SCOPE);
               // svuoto l'history
               UtilityTags.getUtilityHistory(((HttpServletRequest)
-                  this.getPageContext().getRequest()).getSession()).clear(UtilityStruts.getNumeroPopUp(this.getPageContext().getRequest()));
+                  this.getPageContext().getRequest()).getSession()).clear(UtilityStruts.getNumeroPopUp(this.getPageContext().getRequest()), this.getPageContext().getSession());
               return SKIP_BODY;
             }
             for (int i = 0; i < this.getAttributes().getElencoCampi().size(); i++) {
@@ -755,7 +835,7 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
   /**
    * Funzione che verifica se esiste o meno un campo nell'elenco
    *
-   * @param string
+   * @param nomeCampoFisico nome del campo
    * @return
    */
   @Override
@@ -877,4 +957,187 @@ public class FormSchedaTag extends BodyTagSupportGene implements IFormScheda {
     }
     return (AbstractGestorePreload) o;
   }
+
+  /**
+   * Partendo dalla chiave di una entita, si va a controllare se e' collegata ad UFFINT. Se non risulta collegata, si richiama ricorsivamente sull'entita padre collegata all'entita stessa.
+   * @param chiaveEntita chiave serializzata in formato stringa
+   * @param sqlManager esecutore query
+   * @return stringa serializzata contenente entita, campo di collegamento ad uffint, e valore della chiave, separati da #
+   * @throws JspException
+   */
+  public static String trovaChiaveEntitaCollegataUffint(String chiaveEntita, SqlManager sqlManager, GeneManager geneManager) throws JspException {
+    String entita = chiaveEntita.substring(0, chiaveEntita.indexOf("."));
+
+    if ("UFFINT".equals(entita)) {
+      // caso base, si termina immediatamente, la UFFINT non si filtra su se stessa
+      return null;
+    }
+
+    String archiviFiltrati = ConfigManager.getValore("it.eldasoft.associazioneUffintAbilitata.archiviFiltrati");
+    if (archiviFiltrati.contains(entita)) {
+      // nel caso di configurazione con filtro sugli archivi, si verifica se l'entita' oggetto della ricerca e'
+      // uno di quelli filtrati, ed in tal caso si costruisce il risultato, in quanto non esiste alcuna mappatura
+      // a livello di dizionario tabelle, campi e join tra tabelle
+      if ("TEIM".equals(entita)) {
+       return "TEIM#CGENTIM#" + chiaveEntita;
+      }
+    }
+
+    // verifico che la tabella che devo controllare effettivamente esista
+    Tabella tabellaPrincipale = DizionarioTabelle.getInstance().getDaNomeTabella(entita);
+    if (tabellaPrincipale == null || !geneManager.esisteTabella(entita)) {
+      return null;
+    }
+
+    // arrivati qui si analizzano i metadati per comprendere i legami tra la tabella ed eventuali altre tabelle
+
+    Tabella tabellaUffint = DizionarioTabelle.getInstance().getDaNomeTabella("UFFINT");
+    String campoFKUffint = null;
+    String risultato = null;
+
+    // per prima cosa si cerca nella UFFINT la relazione con la presente tabella principale
+    LegameTabelle[] legami = tabellaUffint.getLegameTabelle(entita);
+    if (legami.length == 1) {
+      campoFKUffint = legami[0].getElencoCampiTabellaDestinazione()[0];
+      risultato = entita + "#" + campoFKUffint + "#" + chiaveEntita;
+    }
+
+    // se non la trovo, cerco nei legami della tabella principale la presenza di un legame con la tabella UFFINT
+    // (non dovrebbe accadere mai, ma per qualche tabella e' stato fatto qui il mapping della relazione anziche' su UFFINT)
+    if (campoFKUffint == null && tabellaPrincipale != null) {
+      legami = tabellaPrincipale.getLegameTabelle("UFFINT");
+      if (legami.length == 1) {
+        campoFKUffint = legami[0].getElencoCampiTabellaOrigine()[0];
+        risultato = entita + "#" + campoFKUffint + "#" + chiaveEntita;
+      }
+    }
+
+    if (campoFKUffint == null && tabellaPrincipale != null) {
+      // estraggo i legami della tabella principale, per ognuno eseguo la query per ottenere la chiave dell'entita' collegata e passo il risultato alla funzione ricorsiva
+      LegameTabelle[] legamiPrincipale = tabellaPrincipale.getLegamiTabelle().toArray(new LegameTabelle[0]);
+      String schemaTabellaPrincipale = tabellaPrincipale.getNomeSchema();
+      for (LegameTabelle legame : legamiPrincipale) {
+        String entitaCollegata = legame.getTabellaDestinazione();
+        Tabella tabellaCollegata = DizionarioTabelle.getInstance().getDaNomeTabella(entitaCollegata);
+        // per evitare risalite nella gerarchia delle tabelle (es: un archivio generale viene collegato ad entita' di
+        // tanti schemi), si esegue la risalita ricorsiva solo su entita' relative allo STESSO schema concettuale, in modo
+        // da arrivare alla propria entita' principale di riferimento su cui viene pilotata la visibilita'
+        if (tabellaCollegata != null && schemaTabellaPrincipale.equals(tabellaCollegata.getNomeSchema())) {
+
+          // si costruisce la query per estrarre il valore della FK verso l'entita collegata
+          JdbcWhere where = new JdbcWhere();
+          UtilityTags.jdbcAddKeyWhere(where, chiaveEntita);
+          StringBuilder query = new StringBuilder("SELECT ").append(StringUtils.join(legame.getElencoCampiTabellaOrigine(), ",")).append(" FROM ").append(entita).append(where.toString());
+
+          // si estrae la FK (chiave del padre)
+          StringBuilder campiPadreSerializzati = new StringBuilder();
+          try {
+            Vector<JdbcParametro> campiPadre = sqlManager.getVector(query.toString(), SqlManager.getObjectFromPram(where.getParametri()));
+            if (campiPadre != null) {
+              // solo se trovo una occorrenza nella tabella continuo a navigare nella tabella collegata
+              for (int i = 0; i < legame.getElencoCampiTabellaDestinazione().length; i++) {
+                String campoChiavePadre = legame.getElencoCampiTabellaDestinazione()[i];
+                if (i > 0) {
+                  campiPadreSerializzati.append(";");
+                }
+                campiPadreSerializzati.append(entitaCollegata).append(".").append(campoChiavePadre).append("=");
+                campiPadreSerializzati.append(campiPadre.get(i).getTipo()).append(":").append(campiPadre.get(i).getStringValue());
+              }
+            }
+          } catch (SQLException e) {
+            throw new JspException("Errore durante l'estrazione del riferimento ad entita padre da chiave figlio " + chiaveEntita + ": "
+                    + e.getMessage(), e);
+          }
+
+          // si richiama ricorsivamente l'algoritmo sulla chiave dell'entita' collegata, solo se esiste
+          if (campiPadreSerializzati.length() > 0) {
+            String risultatoRicorsivo = trovaChiaveEntitaCollegataUffint(campiPadreSerializzati.toString(), sqlManager, geneManager);
+            if (risultatoRicorsivo != null) {
+              return risultatoRicorsivo;
+            }
+          }
+        }
+      }
+    }
+
+    return risultato;
+  }
+
+  /**
+   * Partendo dalla chiave di una entita, si va a controllare se ci sono filtri di riga mediante G_PERMESSI. Se non ci sono, si richiama ricorsivamente sull'entita padre collegata all'entita stessa.
+   * @param chiaveEntita chiave serializzata in formato stringa
+   * @param profiloUtente profilo dell'utente loggato
+   * @param sqlManager esecutore query
+   * @param geneManager esecutore funzioni utilita' su db
+   * @return stringa serializzata contenente entita, filtro sql da applicare, e valore della chiave, separati da #
+   * @throws JspException
+   */
+  public static String trovaChiaveEntitaControllataConPermessi(String chiaveEntita, ProfiloUtente profiloUtente, SqlManager sqlManager, GeneManager geneManager) throws JspException {
+    String entita = chiaveEntita.substring(0, chiaveEntita.indexOf("."));
+
+    // verifico che la tabella che devo controllare effettivamente esista
+    Tabella tabellaPrincipale = DizionarioTabelle.getInstance().getDaNomeTabella(entita);
+    if (tabellaPrincipale == null || !geneManager.esisteTabella(entita)) {
+      return null;
+    }
+
+    // arrivati qui si analizzano i metadati per comprendere i legami tra la tabella ed eventuali altre tabelle
+
+    // se l'entita' e' gestita con filtro utente allora termino immediatamente
+    String filtroLivelloUtente = FiltroLivelloUtenteFunction.getFiltroLivelloUtente(entita, profiloUtente);
+    if  (filtroLivelloUtente != null && !filtroLivelloUtente.trim().isEmpty()) {
+      return entita + "#" + filtroLivelloUtente + "#" + chiaveEntita ;
+    }
+
+    // se l'entita' non e' correlata ad una regola di filtro livello utente, la si cerca ricorsivamente nelle entita' correlate, nello stesso schema
+    if (tabellaPrincipale != null) {
+      // estraggo i legami della tabella principale, per ognuno eseguo la query per ottenere la chiave dell'entita' collegata e passo il risultato alla funzione ricorsiva
+      LegameTabelle[] legamiPrincipale = tabellaPrincipale.getLegamiTabelle().toArray(new LegameTabelle[0]);
+      String schemaTabellaPrincipale = tabellaPrincipale.getNomeSchema();
+      for (LegameTabelle legame : legamiPrincipale) {
+        String entitaCollegata = legame.getTabellaDestinazione();
+        Tabella tabellaCollegata = DizionarioTabelle.getInstance().getDaNomeTabella(entitaCollegata);
+        // per evitare risalite nella gerarchia delle tabelle (es: un archivio generale viene collegato ad entita' di
+        // tanti schemi), si esegue la risalita ricorsiva solo su entita' relative allo STESSO schema concettuale, in modo
+        // da arrivare alla propria entita' principale di riferimento su cui viene pilotata la visibilita'
+        if (tabellaCollegata != null && schemaTabellaPrincipale.equals(tabellaCollegata.getNomeSchema())) {
+
+          // si costruisce la query per estrarre il valore della FK verso l'entita collegata
+          JdbcWhere where = new JdbcWhere();
+          UtilityTags.jdbcAddKeyWhere(where, chiaveEntita);
+          StringBuilder query = new StringBuilder("SELECT ").append(StringUtils.join(legame.getElencoCampiTabellaOrigine(), ",")).append(" FROM ").append(entita).append(where.toString());
+
+          // si estrae la FK (chiave del padre)
+          StringBuilder campiPadreSerializzati = new StringBuilder();
+          try {
+            Vector<JdbcParametro> campiPadre = sqlManager.getVector(query.toString(), SqlManager.getObjectFromPram(where.getParametri()));
+            if (campiPadre != null) {
+              // solo se trovo una occorrenza nella tabella continuo a navigare nella tabella collegata
+              for (int i = 0; i < legame.getElencoCampiTabellaDestinazione().length; i++) {
+                String campoChiavePadre = legame.getElencoCampiTabellaDestinazione()[i];
+                if (i > 0) {
+                  campiPadreSerializzati.append(";");
+                }
+                campiPadreSerializzati.append(entitaCollegata).append(".").append(campoChiavePadre).append("=");
+                campiPadreSerializzati.append(campiPadre.get(i).getTipo()).append(":").append(campiPadre.get(i).getStringValue());
+              }
+            }
+          } catch (SQLException e) {
+            throw new JspException("Errore durante l'estrazione del riferimento ad entita padre da chiave figlio " + chiaveEntita + ": "
+                    + e.getMessage(), e);
+          }
+
+          // si richiama ricorsivamente l'algoritmo sulla chiave dell'entita' collegata, solo se esiste
+          if (campiPadreSerializzati.length() > 0) {
+            String risultatoRicorsivo = trovaChiaveEntitaControllataConPermessi(campiPadreSerializzati.toString(), profiloUtente, sqlManager, geneManager);
+            if (risultatoRicorsivo != null) {
+              return risultatoRicorsivo;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
 }

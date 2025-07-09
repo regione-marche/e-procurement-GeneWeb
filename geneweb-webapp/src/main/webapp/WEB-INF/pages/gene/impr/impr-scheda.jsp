@@ -23,6 +23,7 @@
 	</gene:sqlSelect>
 </c:if>
 <c:set var="esisteElenchiOperatori" value='${gene:callFunction("it.eldasoft.gene.tags.functions.EsisteElenchiOperatoriFunction", pageContext)}' />
+<c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" scope="request"/>
 
 <c:set var="ag0087raggr" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "ag008.7.raggr")}'/>
 <c:set var="ag0088raggr" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "ag008.8.raggr")}'/>
@@ -68,7 +69,7 @@
 				<jsp:include page="impr-lista-accertamentiAntimafia.jsp" />
 			</gene:pagina>
 			<c:if test='${isVerificaArt80 eq "1"}'>
-				<gene:pagina title="Documenti art.80" idProtezioni="VART80" >
+				<gene:pagina title="Verifica requisiti" idProtezioni="VART80" >
 					<jsp:include page="impr-lista-verificheArt80.jsp" />
 				</gene:pagina>
 			</c:if>

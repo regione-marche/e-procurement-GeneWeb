@@ -25,25 +25,27 @@
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genMod.annullaExport"/>')){
-		  document.location.href='AnnullaImportExportModelli.do?'+csrfToken;
+		  document.location.href='AnnullaImportExportModelli.do';
 		}
 	}
 
   function esportaModello(id){
-  	document.location.href='EsportaModello.do?'+csrfToken+'&metodo=esporta&id=' + id;
+  	document.location.href='EsportaModello.do?metodo=esporta&id=' + id;
   }
 
   
 	
 	function indietro(){
-		document.location.href='InitTrovaModelliExport.do?'+csrfToken;
+		document.location.href='InitTrovaModelliExport.do';
 	}
 	
 	function elimina(idModello){
 	  if(confirm("Procedere con l'eliminazione del modello ?","Eliminazione modello")){
 	  	bloccaRichiesteServer();
-	 		document.location.href='EsportaModello.do?'+csrfToken+'&metodo=elimina&idModello='+idModello;
+	 		document.location.href='EsportaModello.do?metodo=elimina&idModello='+idModello;
 		}
 	}
+
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

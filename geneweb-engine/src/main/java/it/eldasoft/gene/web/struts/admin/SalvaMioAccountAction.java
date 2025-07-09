@@ -12,7 +12,6 @@ package it.eldasoft.gene.web.struts.admin;
 
 import it.eldasoft.gene.bl.admin.AccountManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.db.domain.admin.Account;
 import it.eldasoft.gene.tags.history.UtilityHistory;
@@ -22,6 +21,7 @@ import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.profiles.CheckOpzioniUtente;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -76,6 +76,13 @@ public class SalvaMioAccountAction extends AbstractDispatchActionBaseAdmin {
     try {
       Integer id = Integer.valueOf(mioAccountForm.getIdAccount());
       Account accountDb = this.accountManager.getAccountById(id);
+      
+      // protezione da iniezione di Stored XSS: valido il parametro nome in modo da rispettare un dominio testuale senza caratteri speciali 
+      if (mioAccountForm.getNome()!=null && !Pattern.matches("^[A-Za-zאטלעש \\']+$", mioAccountForm.getNome())) {
+        logger.error("Ricevuto nome contenente caratteri non validi: " + mioAccountForm.getNome());
+        throw new RuntimeException("Ricevuto nome contenente caratteri non validi: " + mioAccountForm.getNome());
+      }
+      
       accountDb.setNome(mioAccountForm.getNome());
       accountDb.setEmail(mioAccountForm.getEmail());
       accountDb.setCodfisc(mioAccountForm.getCodfisc());

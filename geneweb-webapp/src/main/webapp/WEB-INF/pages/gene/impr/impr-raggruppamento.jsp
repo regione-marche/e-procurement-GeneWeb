@@ -15,7 +15,7 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="https://owasp.org/www-project-csrfguard/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <fmt:setBundle basename="AliceResources" />
 
@@ -69,6 +69,12 @@
 	<c:if test='${impresaRegistrata eq "SI"  and isIntegrazionePortaleAlice ne "true"}'>
 		<gene:redefineInsert name="schedaModifica"/>
 		<gene:redefineInsert name="pulsanteModifica" />
+	</c:if>
+	<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+		<gene:redefineInsert name="schedaModifica"/>
+		<gene:redefineInsert name="pulsanteModifica" />
+		<gene:redefineInsert name="pulsanteNuovo"/>
+		<gene:redefineInsert name="schedaNuovo"/>
 	</c:if>
 	
 	<gene:redefineInsert name="pulsanteSalva">

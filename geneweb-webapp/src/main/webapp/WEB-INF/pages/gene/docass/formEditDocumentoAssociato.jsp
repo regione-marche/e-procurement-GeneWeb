@@ -16,30 +16,38 @@
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <html:form action="/DocumentoAssociato.do" method="post" enctype="multipart/form-data">
 	<table class="dettaglio-notab">
-	  <tr>
-	    <td class="etichetta-dato">Data</td>
-	    <td class="valore-dato">${documento.dataInserimento}
-	        <html:hidden property="dataInserimento" value="${documento.dataInserimento}"/>
-	    </td>
-	  </tr>
+	<c:choose>
+		<c:when test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADAT")}'>
+			<tr>
+				<td class="etichetta-dato">Data</td>
+				<td class="valore-dato">${documento.dataInserimento}
+					<html:hidden property="dataInserimento" value="${documento.dataInserimento}"/>
+				</td>
+			</tr>
+		</c:when>
+		<c:otherwise>
+			<input type="hidden" name="dataInserimento" value="${documento.dataInserimento}"/>
+		</c:otherwise>
+	</c:choose>
 	  <tr>
 	    <td class="etichetta-dato">Titolo *</td>
 	    <td class="valore-dato"><html:text property="titolo" value="${documento.titolo}" size="30" maxlength="64"/></td>
 	  </tr>
 	  <tr>
 	<c:choose>
-  	<c:when test='${not empty uploadFile and not empty documento.nomeDocAss}' >
+  	<c:when test='${not empty uploadFile and not empty documento.nomeDocAss and not empty documento.id}' >
 	    <td class="etichetta-dato">Nome File
   	  <td class="valore-dato">
   	  	${documento.nomeDocAss}&nbsp;&nbsp;<html:file property="selezioneFile" size="30" maxlength="255"/>
   	  	<html:hidden property="nomeDocAss" value="${documento.nomeDocAss}"/>
   	  </td>
  	  </c:when>
-  	<c:when test='${not empty uploadFile and empty documento.nomeDocAss}' >
+  	<c:when test='${not empty uploadFile and (empty documento.nomeDocAss || empty documento.id)}' >
 	    <td class="etichetta-dato">Nome File *
   	  <td class="valore-dato">
   	  	<html:file property="selezioneFile" size="30" maxlength="255"/>
@@ -78,28 +86,56 @@
 		&nbsp;<span class="formatoParametro">&nbsp;(GG/MM/AAAA)</span>
     </td>
   </tr>
-  <tr>
-    <td class="etichetta-dato">Numero protocollo</td>
-    <td class="valore-dato"><html:text property="numeroProtocollo" value="${documento.numeroProtocollo}" size="20" maxlength="20"/></td>
-  </tr>
-  <tr>
-    <td class="etichetta-dato">Data protocollo</td>
-    <td class="valore-dato">
-    <input type="text" name="dataProtocollo" id="dataProtocollo" onblur="javascript:controllaInputData(this);" value="${documento.dataProtocollo}" class="data">
-		&nbsp;<span class="formatoParametro">&nbsp;(GG/MM/AAAA)</span>
-    </td>
-  </tr>
-  <tr>
-    <td class="etichetta-dato">Numero atto</td>
-    <td class="valore-dato"><html:text property="numeroAtto" value="${documento.numeroAtto}" size="20" maxlength="20"/></td>
-  </tr>
-  <tr>
-    <td class="etichetta-dato">Data atto</td>
-    <td class="valore-dato">
-    <input type="text" name="dataAtto" id="dataAtto" onblur="javascript:controllaInputData(this);" value="${documento.dataAtto}" class="data">
-		&nbsp;<span class="formatoParametro">&nbsp;(GG/MM/AAAA)</span>
-    </td>
-  </tr>
+<c:choose>
+	<c:when test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ANPROT")}'>
+		<tr>
+			<td class="etichetta-dato">Numero protocollo</td>
+			<td class="valore-dato"><html:text property="numeroProtocollo" value="${documento.numeroProtocollo}" size="20" maxlength="20"/></td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<input type="hidden" name="numeroProtocollo" value="${documento.numeroProtocollo}"/>
+	</c:otherwise>
+</c:choose>
+<c:choose>
+	<c:when test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADPROT")}'>
+		<tr>
+			<td class="etichetta-dato">Data protocollo</td>
+			<td class="valore-dato">
+				<input type="text" name="dataProtocollo" id="dataProtocollo" onblur="javascript:controllaInputData(this);" value="${documento.dataProtocollo}" class="data">
+				&nbsp;<span class="formatoParametro">&nbsp;(GG/MM/AAAA)</span>
+			</td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<input type="hidden" name="dataProtocollo" value="${documento.dataProtocollo}"/>
+	</c:otherwise>
+</c:choose>
+<c:choose>
+	<c:when test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ANATTO")}'>
+		<tr>
+			<td class="etichetta-dato">Numero atto</td>
+			<td class="valore-dato"><html:text property="numeroAtto" value="${documento.numeroAtto}" size="20" maxlength="20"/></td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<input type="hidden" name="numeroAtto" value="${documento.numeroAtto}"/>
+	</c:otherwise>
+</c:choose>
+<c:choose>
+	<c:when test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADATTO")}'>
+		<tr>
+			<td class="etichetta-dato">Data atto</td>
+			<td class="valore-dato">
+				<input type="text" name="dataAtto" id="dataAtto" onblur="javascript:controllaInputData(this);" value="${documento.dataAtto}" class="data">
+				&nbsp;<span class="formatoParametro">&nbsp;(GG/MM/AAAA)</span>
+			</td>
+		</tr>
+	</c:when>
+	<c:otherwise>
+		<input type="hidden" name="dataAtto" value="${documento.dataAtto}"/>
+	</c:otherwise>
+</c:choose>
 	  <tr>
 	    <td class="etichetta-dato">Annotazioni</td>
 	    <td class="valore-dato"><html:textarea property="annotazioni" value="${documento.annotazioni}" cols="80" rows="25"/></td>

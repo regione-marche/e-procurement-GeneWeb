@@ -20,9 +20,12 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-<gene:insert name="addHistory">
-	<gene:historyAdd titolo='${gene:getString(pageContext,"titoloMaschera",gene:resource("label.tags.template.lista.titolo"))}' id="lista" />
-</gene:insert>
+
+<c:if test='${param.metodo ne "elimina" and param.metodo ne "eliminaSelez"}'>
+	<gene:insert name="addHistory">
+		<gene:historyAdd titolo='${gene:getString(pageContext,"titoloMaschera",gene:resource("label.tags.template.lista.titolo"))}' id="lista" />
+	</gene:insert>
+</c:if>
 <HTML lang="it">
 <HEAD>
 <jsp:include page="/WEB-INF/pages/commons/headStd.jsp" />

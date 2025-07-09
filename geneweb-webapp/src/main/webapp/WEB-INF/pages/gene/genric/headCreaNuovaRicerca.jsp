@@ -28,7 +28,7 @@
     var valoreAzione = null;
 		var href = null;
     //var esito = true;
-    //var controllo = false; // variabile di controllo modificata se almeno un valore è scelto
+    //var controllo = false; // variabile di controllo modificata se almeno un valore e' scelto
     var bottone = document.formRabioBut.azione;
 
     var arrayLen = "" + bottone.length;
@@ -45,25 +45,25 @@
     }
 
 		if (valoreAzione == '0') {
-			href = 'CreaEliminaRicercaBase.do?'+csrfToken+'&metodo=crea&famiglia=' + valoreAzione;
+			href = 'CreaEliminaRicercaBase.do?metodo=crea&famiglia=' + valoreAzione;
 		}
 		if (valoreAzione == '1') {
-			href = 'CreaEliminaRicerca.do?'+csrfToken+'&metodo=crea&famiglia=' + valoreAzione;
+			href = 'CreaEliminaRicerca.do?metodo=crea&famiglia=' + valoreAzione;
 		}
 		if (valoreAzione == '2') {
-			href = 'CreaEliminaRicercaProspetto.do?'+csrfToken+'&metodo=crea&famiglia=' + valoreAzione;
+			href = 'CreaEliminaRicercaProspetto.do?metodo=crea&famiglia=' + valoreAzione;
 		}
 		if (valoreAzione == '3') {
 			var objIdRicFam = document.getElementById("idRicercaFamiglia");
 			if (objIdRicFam.selectedIndex != null && objIdRicFam.selectedIndex > 0){
 				var idRicerca = objIdRicFam.options[objIdRicFam.selectedIndex].value;
-				href = 'CaricaRicerca.do?'+csrfToken+'&idRicerca=' + idRicerca;
+				href = 'CaricaRicerca.do?idRicerca=' + idRicerca;
 			} else {
 				alert('Selezionare uno dei report predefiniti per continuare');
 			}
 		}
 		if (valoreAzione == '4') {
-			href = 'CreaEliminaRicercaSql.do?'+csrfToken+'&metodo=crea&famiglia=' + valoreAzione;
+			href = 'CreaEliminaRicercaSql.do?metodo=crea&famiglia=' + valoreAzione;
 		}
 		if (href != null) {
 			document.location.href = href;
@@ -72,7 +72,7 @@
 	
 	function annullaCreazione() {
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 	}
 
 	function cambiaRadio() {

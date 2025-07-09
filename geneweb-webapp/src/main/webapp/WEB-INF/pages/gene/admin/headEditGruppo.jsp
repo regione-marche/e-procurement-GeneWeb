@@ -34,7 +34,7 @@
 
   function annullaModifica(id){
 	  bloccaRichiesteServer();
-		document.location.href='DettaglioGruppo.do?'+csrfToken+'&idGruppo=' + id;
+		document.location.href='DettaglioGruppo.do?idGruppo=' + id;
   }
 
 	function gestisciSubmit() {

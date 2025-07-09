@@ -15,6 +15,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <gene:template file="scheda-template.jsp">
@@ -88,10 +91,10 @@
 	</gene:redefineInsert>
 
 	<gene:insert name="addHistory">
-		<gene:historyAdd titolo="Art.80, configurazione delle codifiche relative alla forma giuridica" id="schedaConfigurazioneTabellatiFG" />
+		<gene:historyAdd titolo="Verifica requisiti ditte (mediante servizio) - configurazione codifiche relative alla forma giuridica" id="schedaConfigurazioneTabellatiFG" />
 	</gene:insert>	
 
-	<gene:setString name="titoloMaschera" value="Art.80, configurazione delle codifiche relative alla forma giuridica" />
+	<gene:setString name="titoloMaschera" value="Verifica requisiti ditte (mediante servizio) - configurazione codifiche relative alla forma giuridica" />
 	
 	<gene:redefineInsert name="corpo">
 
@@ -104,7 +107,7 @@
 						<thead>
 							<tr class="intestazione">
 								<td colspan="2">Forma giuridica (tabellato G_043)</td>
-								<td rowspan="2">Forma giuridica (codifica del servizio di verifica Art.80)</td>
+								<td rowspan="2">Forma giuridica (codifica del servizio di verifica requisiti)</td>
 							</tr>
 							<tr class="intestazione">
 								<td>Descrizione</td>

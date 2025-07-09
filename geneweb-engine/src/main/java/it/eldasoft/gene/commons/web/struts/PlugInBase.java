@@ -474,7 +474,8 @@ public abstract class PlugInBase implements PlugIn {
 				modoAssistenza = StringUtils.stripToNull(maProp.getValore());
 			}
       if (modoAssistenza == null
-          || !(CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_MODO_WS.equals(modoAssistenza) || CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_MODO_MAIL.equals(modoAssistenza))) {
+          || !(CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_MODO_WS.equals(modoAssistenza) || CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_MODO_MAIL.equals(modoAssistenza)
+              || CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_CONTATTACI.equals(modoAssistenza) || CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_SUPPORTO.equals(modoAssistenza))) {
         modoAssistenza = CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_MODO_NON_ATTIVO;
       }
       context.setAttribute(CostantiGenerali.ATTR_ATTIVA_FORM_ASSISTENZA, modoAssistenza);
@@ -486,9 +487,8 @@ public abstract class PlugInBase implements PlugIn {
       //(StringUtils.isNotBlank(ConfigManager.getValore(CostantiGenerali.PROP_ATTIVA_COHESION))
       //? "1" : "0"));
       // 23/03/2016 CF, centralizzato il controllo per SSO (1-Shibboleth; 2-Cohesion; 3-SSOBART)
-      String propProtSSO = ConfigManager.getValore(CostantiGenerali.PROP_SSO_PROTOCOLLO);
-      propProtSSO = UtilityStringhe.convertiNullInStringaVuota(propProtSSO);
-      if(!"".equals(propProtSSO) && "2".equals(propProtSSO)){
+      String propProtSSOCohesionActive = ConfigManager.getValore(CostantiGenerali.PROP_AUTH_SSO_COHESION);
+      if("1".equals(propProtSSOCohesionActive)){
         context.setAttribute(CostantiGenerali.ATTR_ATTIVA_COHESION, "1");
       }else{
         context.setAttribute(CostantiGenerali.ATTR_ATTIVA_COHESION, "0");
@@ -503,6 +503,30 @@ public abstract class PlugInBase implements PlugIn {
       //appCorrettamenteConfigurata = false;
     }
     context.setAttribute(CostantiGenerali.ATTR_TITOLO, titolo);
+
+    String nomeComponente = ConfigManager.getValore(CostantiGenerali.PROP_NOME_COMPONENTE);
+    if (nomeComponente == null) {
+    	logger.warn(rb.getString("warnings.notFound." + CostantiGenerali.PROP_NOME_COMPONENTE));
+    }
+    context.setAttribute(CostantiGenerali.ATTR_NOME_COMPONENTE, nomeComponente);
+
+    String nomePiattaforma = ConfigManager.getValore(CostantiGenerali.PROP_NOME_PIATTAFORMA);
+    if (nomePiattaforma == null) {
+    	logger.warn(rb.getString("warnings.notFound." + CostantiGenerali.PROP_NOME_PIATTAFORMA));
+    }
+    context.setAttribute(CostantiGenerali.ATTR_NOME_PIATTAFORMA, nomePiattaforma);
+
+    String versioneComponente = ConfigManager.getValore(CostantiGenerali.PROP_VERSIONE_COMPONENTE);
+    if (versioneComponente == null) {
+    	logger.warn(rb.getString("warnings.notFound." + CostantiGenerali.PROP_VERSIONE_COMPONENTE));
+    }
+    context.setAttribute(CostantiGenerali.ATTR_VERSIONE_COMPONENTE, versioneComponente);
+
+    String versionePiattaforma = ConfigManager.getValore(CostantiGenerali.PROP_VERSIONE_PIATTAFORMA);
+    if (versionePiattaforma == null) {
+    	logger.warn(rb.getString("warnings.notFound." + CostantiGenerali.PROP_VERSIONE_PIATTAFORMA));
+    }
+    context.setAttribute(CostantiGenerali.ATTR_VERSIONE_PIATTAFORMA, versionePiattaforma);
 
     // si inserisce il path da utilizzare per i fogli di stile
     String pathCss = ConfigManager.getValore(PROP_PATH_CSS);

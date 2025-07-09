@@ -83,7 +83,7 @@
 <script type="text/javascript">
 <!-- 
 
-	// Creazione menù dei campi
+	// Creazione menu dei campi
 	
 	<%
   /* 
@@ -184,7 +184,7 @@
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	var setDisplayNotCaseSensitive = 'none';

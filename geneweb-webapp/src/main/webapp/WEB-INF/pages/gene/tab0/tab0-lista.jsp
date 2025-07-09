@@ -17,6 +17,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <gene:template file="lista-template.jsp" gestisciProtezioni="true" idMaschera="TAB0-LISTA" schema="GENE">
 
 	<gene:redefineInsert name="addHistory">
@@ -31,11 +34,16 @@
 		<gene:set name="titoloMenu">
 			<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
 		</gene:set>
+		
+		<c:set var="where" value="TAB0COD = ?" />
+		<c:set var="parametri" value="T:${param.cod}"/>
+		${gene:callFunction4("it.eldasoft.gene.tags.functions.ImpostazioneFiltroFunction", pageContext, "TAB0", where, parametri)}
+		
 		<table class="lista">
 			<tr>
 				<td>
 					<gene:formLista entita="TAB0" pagesize="20" sortColumn="3;4" tableclass="datilista" 
-						gestisciProtezioni="true" where="TAB0COD = '${param.cod}'" >
+						gestisciProtezioni="true">
 						
 						<input type="hidden" name="cod" value="${param.cod}" />
 						<input type="hidden" name="titolo" value="${param.titolo}" />

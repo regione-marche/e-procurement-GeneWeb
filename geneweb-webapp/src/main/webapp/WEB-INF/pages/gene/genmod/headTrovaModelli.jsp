@@ -34,11 +34,11 @@
 	}
 	
   function apriTrovaModelli(){
-		document.location.href='InitTrovaModelli.do?'+csrfToken;
+		document.location.href='InitTrovaModelli.do';
   }
 
   function creaNuovoModello(){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=creaModello';
+		document.location.href='Modello.do?metodo=creaModello';
   }
   
   function resetRicerca(){

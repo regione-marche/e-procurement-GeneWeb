@@ -45,6 +45,21 @@ public interface AccountDao {
    *         verificati problemi durante l'accesso ai dati
    */
   Account getAccountByLogin(String login) throws DataAccessException, SqlComposerException;
+  
+  /**
+   * Estrae un account a partire dal cf
+   *
+   * @param cf
+   *        syscf dell'account
+   * @return oggetto {@link it.eldasoft.gene.db.domain.Account} individuato
+   *         dalla login in input
+   *
+   * @throws DataAccessException
+   *         eccezione emessa dal framework Spring nel qual caso si siano
+   *         verificati problemi durante l'accesso ai dati
+   */
+  Account getAccountBySysCf(String cf) throws DataAccessException, SqlComposerException;
+
 
   List<Account> getAccountByPassword(String password) throws DataAccessException;
 
@@ -617,5 +632,64 @@ public interface AccountDao {
    *        utente per cui rimuovere le login fallite
    */
   void deleteLoginFallite(String username);
-
+  
+  
+  /**
+   * Recupera il LoA massimo con cui l'utente si sia mai collegato.
+   *
+   * @param idAccount
+   *        utente su cui effettuare la ricerca
+   * @param uffint
+   *        ufficio intestatario su cui si sta loggando l'utente ('STD' per applicativi NON multi-ente)
+   */
+  Integer getMaxLoaBySysconAndCodein(Integer idAccount, String uffint);
+  
+  
+  /**
+   * Setta le informazioni di autenticazione per l'utente che sta effettuado l'accesso
+   *
+   * @param idAccount
+   *        utente su cui effettuare la ricerca
+   * @param uffint
+   *        ufficio intestatario su cui si sta loggando l'utente ('STD' per applicativi NON multi-ente)
+   * @param provider
+   *        il provider con cui si sta effettuando il login   
+   * @param loa
+   *        il Livello di Autenticazione con cui è stato effettuato il login
+   * @param authData
+   *        la data in cui è stato effettuato il login in oggetto    
+   */
+  void insertUsrLoa(Integer idAccount, String uffint, String provider, int loa, Date authData);
+  
+  /**
+   * Aggiorna le informazioni di autenticazione per l'utente che sta effettuado l'accesso
+   *
+   * @param idAccount
+   *        chiave di usersys
+   * @param uffint
+   *        ufficio intestatario su cui si sta loggando l'utente ('STD' per applicativi NON multi-ente)
+   * @param provider
+   *        il provider con cui si sta effettuando il login   
+   * @param loa
+   *        il Livello di Autenticazione con cui è stato effettuato il login
+   * @param authData
+   *        la data in cui è stato effettuato il login in oggetto    
+   */
+  void updateUsrLoa(Integer idAccount, String uffint, String provider, int loa, Date authData);
+  
+  /**
+   * Aggiorna le informazioni di login per la migrazione al sistema SSO
+   *
+   * @param idAccount
+   *        utente su cui eseguire l'update
+   * @param syscf
+   *        codice fiscale ottenuto dal provider SSO
+   * @param syslogin
+   *        nuova login per l'account (solitamente uguale a codice fiscale)  
+   * @param loginCriptata
+   *        nuova login criptata per l'account (solitamente uguale a codice fiscale) 
+   */
+  void updateLdapUsr(Integer idAccount, String sysCf);
+  
+  
 }

@@ -33,7 +33,7 @@
 	    var bottone = document.listaAccountLdap.dn;
 	    var valore;
 	    if (bottone.length) {
-	      // controllo l'array (caso di più record selezionabili)
+	      // controllo l'array (caso di piu' record selezionabili)
 	      for (var i=0; i<bottone.length; i++) {
 	        if(bottone[i].checked) {
 	          controllo = true;
@@ -60,13 +60,13 @@
 	    }
 	  }
 	function indietro(){
-			document.location.href = 'FiltroAccountLdap.do?'+csrfToken;
+			document.location.href = 'FiltroAccountLdap.do';
 	}
 	
 	function annulla(){
 		if (confirm("Annullare l'inserimento di un nuovo utente?")){
 			bloccaRichiesteServer();
-			document.location.href = 'SalvaAccount.do?'+csrfToken+'&metodo=annulla';
+			document.location.href = 'SalvaAccount.do?metodo=annulla';
 		}
 	}
 

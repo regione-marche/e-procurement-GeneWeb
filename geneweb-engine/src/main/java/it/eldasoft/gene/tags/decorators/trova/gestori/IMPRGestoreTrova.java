@@ -51,6 +51,12 @@ public class IMPRGestoreTrova extends AbstractGestoreTrova {
 		
 		if (PROTECTION_CHECK) {
 			final String tipoAppalto = UtilityStruts.getParametroString(request, TIPO_APPALTO_NAME);
+			try {
+	            Integer.parseInt(tipoAppalto);
+			} catch (NumberFormatException e) {
+	            LOGGER.warn(String.format("Valore del campo non numerico: %s", tipoAppalto));
+	            return filter;
+	        }
 			
 			if (StringUtils.isNotBlank(tipoAppalto)) {
 				final String composedWhere = String.format(NEW_CAMPO_WHERE, tipoAppalto);

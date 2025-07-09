@@ -298,7 +298,7 @@
 	function isEmailFormatoValido(unCampoInput) 
 	{
 	    var mail = unCampoInput.value;
-	    var caratteriAmmessi = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+	    var caratteriAmmessi = /^[\w-.]+@[\w-.]+/;
 	    var esito = false
 	 
 	    if (!mail.match(caratteriAmmessi)) {
@@ -322,7 +322,7 @@
   // altrimenti
 	/////////////////////////////////////////////////////////
 	function isFormatoEmailValido(valoreMail){
-	  var caratteriAmmessi = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+	  var caratteriAmmessi = /^[\w-.]+@[\w-.]+/;
 	  var esito = false
 	  if(valoreMail.match(caratteriAmmessi)){
        esito = true;

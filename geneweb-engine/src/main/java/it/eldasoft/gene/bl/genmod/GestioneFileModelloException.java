@@ -24,6 +24,7 @@ public class GestioneFileModelloException extends IOException {
   public static final String ERROR_FILE_GIA_ESISTENTE          = "filegiaesistente";
   public static final String ERROR_FILE_INESISTENTE            = "fileinesistente";
   public static final String ERROR_FILE_ESTENSIONE_NON_GESTITA = "exterr";
+  public static final String ERROR_CONTENUTO_NON_VALIDO        = "contenterr";
   public static final String ERROR_FILE_VUOTO                  = "fileVuoto";
   
   private String             codiceErrore;

@@ -75,6 +75,11 @@ public class GeneralTagsFunction {
     return callFunction(objClass, new Object[] { param0, param1, param2,
         param3, param4 });
   }
+  
+  public static String callFunctionN(String objClass, Object... param0)
+      throws JspException {
+    return callFunction(objClass, param0);
+  }
 
   private static String callFunction(String objClass, Object[] params)
       throws JspException {

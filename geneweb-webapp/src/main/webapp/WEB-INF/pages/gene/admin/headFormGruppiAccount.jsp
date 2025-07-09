@@ -25,11 +25,11 @@
 
   function annullaModifiche(id){
     bloccaRichiesteServer();
-		document.location.href='ListaGruppiAccount.do?'+csrfToken+'&metodo=visualizzaLista&idAccount=' + id;
+		document.location.href='ListaGruppiAccount.do?metodo=visualizzaLista&idAccount=' + id;
   }
   
   function schedaVisualizza(id){
-		document.location.href = 'DettaglioAccount.do?'+csrfToken+'&metodo=carica&idAccount=' + id + '&modo=visualizza';
+		document.location.href = 'DettaglioAccount.do?metodo=carica&idAccount=' + id + '&modo=visualizza';
 	}
 
 </script>

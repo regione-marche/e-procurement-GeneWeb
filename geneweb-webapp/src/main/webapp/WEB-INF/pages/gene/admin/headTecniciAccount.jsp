@@ -18,19 +18,19 @@
 	
    
  	function schedaVisualizza(id){
-		document.location.href = 'geneAdmin/DettaglioAccount.do?'+csrfToken+'&metodo=visualizza&idAccount=' + id;
+		document.location.href = 'geneAdmin/DettaglioAccount.do?metodo=visualizza&idAccount=' + id;
 	}
 	 	
 	function listaGruppiAccount(id){
-		document.location.href='geneAdmin/ListaGruppiAccount.do?'+csrfToken+'&idAccount=' + id + '&metodo=visualizzaLista';
+		document.location.href='geneAdmin/ListaGruppiAccount.do?idAccount=' + id + '&metodo=visualizzaLista';
   }
 	 	
 	function listaProfiliAccount(id){
-		document.location.href='geneAdmin/ListaProfiliAccount.do?'+csrfToken+'&idAccount=' + id + '&metodo=visualizza';
+		document.location.href='geneAdmin/ListaProfiliAccount.do?idAccount=' + id + '&metodo=visualizza';
   }
 	
 	function listaUfficiIntestatariAccount(id){
-		document.location.href='geneAdmin/ListaUfficiIntestatariAccount.do?'+csrfToken+'&idAccount=' + id + '&metodo=visualizza';
+		document.location.href='geneAdmin/ListaUfficiIntestatariAccount.do?idAccount=' + id + '&metodo=visualizza';
   }
     	
 	

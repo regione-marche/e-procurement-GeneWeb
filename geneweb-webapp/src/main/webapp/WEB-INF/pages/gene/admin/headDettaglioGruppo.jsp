@@ -18,33 +18,33 @@
 <!--
 
 	function creaGruppo(){
-		document.location.href='CreaGruppo.do?'+csrfToken;
+		document.location.href='CreaGruppo.do';
 	}
 
 	function listaGruppi(){
-		document.location.href='ListaGruppi.do?'+csrfToken;
+		document.location.href='ListaGruppi.do';
 	}
 	
   function modifica(id){
-		document.location.href='EditGruppo.do?'+csrfToken+'&idGruppo=' + id;
+		document.location.href='EditGruppo.do?idGruppo=' + id;
   }
 
 <!-- Azioni invocate dal tab menu -->
 
 	function dettaglioGruppo(id){
-		document.location.href='DettaglioGruppo.do?'+csrfToken+'&idGruppo=' + id;
+		document.location.href='DettaglioGruppo.do?idGruppo=' + id;
 	}
 
 	function listaUtentiGruppo(id){
-		document.location.href='ListaUtentiGruppo.do?'+csrfToken+'&metodo=visualizzaLista&idGruppo=' + id;
+		document.location.href='ListaUtentiGruppo.do?metodo=visualizzaLista&idGruppo=' + id;
 	}
 
 	function listaRicercheGruppo(id){
-		document.location.href='ListaRicercheGruppo.do?'+csrfToken+'&metodo=visualizzaLista&idGruppo=' + id;
+		document.location.href='ListaRicercheGruppo.do?metodo=visualizzaLista&idGruppo=' + id;
 	}
 
 	function listaModelliGruppo(id){
-		document.location.href='ListaModelliGruppo.do?'+csrfToken+'&metodo=visualizzaLista&idGruppo=' + id;
+		document.location.href='ListaModelliGruppo.do?metodo=visualizzaLista&idGruppo=' + id;
 	}
 	
 -->

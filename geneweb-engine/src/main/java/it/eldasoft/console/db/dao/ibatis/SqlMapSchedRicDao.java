@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.dao.DataAccessException;
 
 /**
@@ -50,14 +52,14 @@ public class SqlMapSchedRicDao extends SqlMapClientDaoSupportBase implements
       throws DataAccessException, SqlComposerException {
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("tipo", trovaSched.getTipo());
-    hash.put("attivo", trovaSched.getAttivo());
-    hash.put("idRicerca", trovaSched.getIdRicerca());
+    hash.put("attivo", NumberUtils.createInteger(StringUtils.stripToNull(trovaSched.getAttivo())));
+    hash.put("idRicerca", NumberUtils.createInteger(StringUtils.stripToNull(trovaSched.getIdRicerca())));
     hash.put("operatoreNome", trovaSched.getOperatoreNome());
     //this.setOperatoreMatch(hash, trovaSched.getNome(), "operatoreNome");
     hash.put("nome", trovaSched.getNome());
     hash.put("escapeNome", trovaSched.getEscapeNome());
-    hash.put("owner", trovaSched.getOwner());
-    hash.put("esecutore", trovaSched.getEsecutore());
+    hash.put("owner", NumberUtils.createInteger(StringUtils.stripToNull(trovaSched.getOwner())));
+    hash.put("esecutore", NumberUtils.createInteger(StringUtils.stripToNull(trovaSched.getEsecutore())));
     hash.put("tabTipo", CostantiSchedRic.TABELLATO_TIPO_SCHEDRIC);
     hash.put("codiceProfilo", trovaSched.getProfiloOwner());
     hash.put("codiceApplicazione", trovaSched.getCodiceApplicazione());
@@ -76,9 +78,9 @@ public class SqlMapSchedRicDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
 
     return getSqlMapClientTemplate().queryForList("getSchedRic", hash);
 
@@ -167,17 +169,17 @@ public class SqlMapSchedRicDao extends SqlMapClientDaoSupportBase implements
   public List<?> getCodaSchedulazioni(TrovaCodaSched trovaCodaSched)
       throws DataAccessException, SqlComposerException {
     HashMap<String, Object> hash = new HashMap<String, Object>();
-    hash.put("stato", trovaCodaSched.getStato());
-    hash.put("attivo", trovaCodaSched.getNome());
-    hash.put("idRicerca", trovaCodaSched.getIdRicerca());
-    hash.put("idSchedRic", trovaCodaSched.getIdSchedRic());
+    hash.put("stato", NumberUtils.createInteger(StringUtils.stripToNull(trovaCodaSched.getStato())));
+    hash.put("attivo", NumberUtils.createInteger(StringUtils.stripToNull(trovaCodaSched.getNome())));
+    hash.put("idRicerca", NumberUtils.createInteger(StringUtils.stripToNull(trovaCodaSched.getIdRicerca())));
+    hash.put("idSchedRic", NumberUtils.createInteger(StringUtils.stripToNull(trovaCodaSched.getIdSchedRic())));
     //this.setOperatoreMatch(hash, trovaCodaSched.getNome(), "operatoreNome");
     //hash.put("nome", trovaCodaSched.getNome());
     //this.setOperatoreMatch(hash, trovaCodaSched.getMsg(), "operatoreMsg");
     hash.put("operatoreMsg", trovaCodaSched.getOperatoreMsg());
     hash.put("msg", trovaCodaSched.getMsg());
     hash.put("escapeMsg", trovaCodaSched.getEscapeMsg());
-    hash.put("esecutore", trovaCodaSched.getEsecutore());
+    hash.put("esecutore", NumberUtils.createInteger(StringUtils.stripToNull(trovaCodaSched.getEsecutore())));
     hash.put("tabStato", CostantiCodaSched.TABELLATO_STATO_CODASCHED);
     hash.put("profiloOwner", trovaCodaSched.getProfiloOwner());
     hash.put("codiceApplicazione", trovaCodaSched.getCodiceApplicazione());

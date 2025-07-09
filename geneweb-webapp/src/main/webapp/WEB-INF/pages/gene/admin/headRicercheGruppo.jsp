@@ -35,7 +35,7 @@
 
   function annullaModifiche(id){
 		bloccaRichiesteServer();
-		document.location.href='ListaRicercheGruppo.do?'+csrfToken+'&metodo=visualizzaLista&idGruppo=' + id;
+		document.location.href='ListaRicercheGruppo.do?metodo=visualizzaLista&idGruppo=' + id;
   }
 
 -->

@@ -14,9 +14,10 @@ import it.eldasoft.gene.bl.GenChiaviManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.bl.verifiche.VerificheInterneManager;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.ws.objectstorage.ObjectStorageUtils;
+import it.eldasoft.gene.ws.objectstorage.UploadInfo;
 import it.eldasoft.utils.spring.UtilitySpring;
-import it.maggioli.eldasoft.security.EncryptionConstants;
-import it.maggioli.eldasoft.security.SymmetricEncryptionUtils;
+import it.maggioli.eldasoft.security.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -81,6 +82,8 @@ public class GestoreDocumentiVerifiche extends AbstractGestoreEntita {
             Long idVerifica = (Long) SqlManager.getValueFromVectorParam(datiDOC_VERIF, 0).getValue();
             Long iddocdg = (Long) SqlManager.getValueFromVectorParam(datiDOC_VERIF, 1).getValue();
             if(iddocdg != null){
+              UploadInfo oldBucketInfo = ObjectStorageUtils.getUploadInfo("select bucket_ref, bucket_uuid from w_docdig where idprg=? and iddocdig=? and digent= ?",new Object[] {"PG",iddocdg,"DOCUMENTI_VERIFICHE"});
+              ObjectStorageUtils.deleteFile(oldBucketInfo.bucket_ref(),oldBucketInfo.uuid());
               this.getSqlManager().update("delete from W_DOCDIG where IDPRG = ? and IDDOCDIG = ? and digent= ?", new Object[] {"PG", iddocdg, "DOCUMENTI_VERIFICHE"});
               this.getSqlManager().update("delete from DOCUMENTI_VERIFICHE where ID = ?", new Object[] {idDocumentiVerifiche});
             }else{

@@ -21,11 +21,11 @@ import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
 import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
+import it.eldasoft.gene.ws.objectstorage.ObjectStorageUtils;
 import it.eldasoft.utils.utility.UtilityDate;
 import it.eldasoft.utils.utility.UtilityStringhe;
 import it.eldasoft.utils.utility.UtilityWeb;
-import it.maggioli.eldasoft.security.EncryptionConstants;
-import it.maggioli.eldasoft.security.SymmetricEncryptionUtils;
+import it.maggioli.eldasoft.security.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -128,7 +128,13 @@ public class VerificheInterneManager {
             if(!FileAllegatoManager.isEstensioneFileAmmessa(fileName)){
               throw new GestoreException("Il file selezionato da caricare ha un'estensione non accettata",
                   "upload.estensioneNonAmmessa", new String[]{fileName}, null);
-            }else{
+            } else if(!FileAllegatoManager.checkFileContent(uploadFileForm.getSelezioneFile().getFileData(), fileName)){
+              throw new GestoreException("Il file selezionato da caricare viene scartato in quanto ha un contenuto in formato non valido secondo le verifiche mediante la libreria Apache Tika",
+                  "upload.erroreVerificaContenuto", new String[]{fileName}, null);
+            } else if(fileName.toLowerCase().endsWith(".pdf") && FileAllegatoManager.isMaliciousPdf(uploadFileForm.getSelezioneFile().getFileData(), fileName)) {
+              throw new GestoreException("Il file selezionato da caricare viene scartato in quanto sembra codificare dei contenuti non sicuri (malware)",
+                      "upload.erroreContenutoMalevolo", new String[]{fileName}, null);
+            } else {
               //variabili per tracciatura eventi
               String genericMsgErr = "Errore inaspettato durante la tracciatura su w_logeventi";
               int livEvento = 3;
@@ -213,6 +219,7 @@ public class VerificheInterneManager {
                         impl.update("W_DOCDIG", sqlManager);
                       }
                     }
+                    ObjectStorageUtils.addFile(impl.getColumn("W_DOCDIG.IDPRG").getValue().getStringValue(), impl.getColumn("W_DOCDIG.IDDOCDIG").getValue().longValue());
                 }
               } catch (GeneralSecurityException e) {
                 livEvento = 3;
@@ -257,7 +264,7 @@ public class VerificheInterneManager {
   public Long calcolaStatoVerifica(int idVerifica, Date dataScadenza, Long ggValidita, Long ggAvvisoScadenza)
     throws GestoreException {
 
-    Long statoVerifica = new Long(0);
+    Long statoVerifica = null;
 
     Date dataOdierna = UtilityDate.getDataOdiernaAsDate();
     if(dataScadenza!=null){
@@ -268,11 +275,10 @@ public class VerificheInterneManager {
         Date dataAvviso = calendar.getTime();
         if(dataOdierna.after(dataAvviso)){
           statoVerifica = new Long(2);
+        }else{
+          statoVerifica = new Long(1);
         }
-      }else{
-        statoVerifica = new Long(1);
       }
-
       if(dataOdierna.after(dataScadenza)){
         statoVerifica = new Long(3);
       }
@@ -311,7 +317,7 @@ public class VerificheInterneManager {
 
       Long numCertificazioni = (Long) this.sqlManager.getObject(
           "select count(*) from DOCUMENTI_VERIFICHE" +
-          " where ID_VERIFICA = ? and tipo = ? and (ISARCHI is null OR ISARCHI <> 1)", new Object[] {idVerifica,new Long(2)});
+          " where ID_VERIFICA = ? and tipo = ? and (ISARCHI is null OR ISARCHI <> '1')", new Object[] {idVerifica,new Long(2)});
       if(new Long(2).equals(tipoDoc)){
         numCertificazioni++;
       }
@@ -324,7 +330,7 @@ public class VerificheInterneManager {
 
       Vector datiDocumenti = this.sqlManager.getVector(
           "select max(DATA_INVIO_RICHIESTA), max(DATA_SILENZIO_ASSENSO), max(DATA_EMISSIONE) from DOCUMENTI_VERIFICHE" +
-          " where ID_VERIFICA = ? and (ISARCHI is null OR ISARCHI <> 1) and (ESITO_VERIFICA_DOC is null OR ESITO_VERIFICA_DOC <> 6)", new Object[] {idVerifica} );
+          " where ID_VERIFICA = ? and (ISARCHI is null OR ISARCHI <> '1') and (ESITO_VERIFICA_DOC is null OR ESITO_VERIFICA_DOC <> 6)", new Object[] {idVerifica} );
       if (datiDocumenti != null && datiDocumenti.size() > 0) {
         mDataUltimaRichiesta = (Date) SqlManager.getValueFromVectorParam(datiDocumenti, 0).getValue();
         mDataSilenzioAssenso = (Date) SqlManager.getValueFromVectorParam(datiDocumenti, 1).getValue();
@@ -392,7 +398,7 @@ public class VerificheInterneManager {
 
 
   public void downloadFileAllegatoCifrato(String nomeFile, String idProgramma, Long idDocumento, String entita, Long idEntita, String uffint, HttpServletResponse response)
-    throws IOException, SQLException, GeneralSecurityException {
+          throws IOException, SQLException, GeneralSecurityException, GestoreException {
     if (logger.isDebugEnabled())
       logger.debug("downloadFileAllegatoCifrato(" + nomeFile + "," + idProgramma + "," + idDocumento + "): inizio metodo");
 

@@ -37,7 +37,7 @@
 <gene:formScheda entita="VERIFICHE" gestisciProtezioni="true" >
 
 	<c:choose>
-		<c:when test='${"ou228" eq opzVerifiche}'>
+		<c:when test='${"ou228" eq opzVerifiche && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 		</c:when>
 		<c:otherwise>
 			<gene:redefineInsert name="schedaModifica" />
@@ -51,7 +51,7 @@
 	<gene:campoScheda campo="DESCR_VERIFICA" title="Descrizione verifica" />
 	<gene:campoScheda campo="MODO_GESTIONE_VERIFICA" />
 	<gene:campoScheda campo="ENTE_COMPETENZA" />
-	<c:if test='${"ou228" eq opzVerifiche}'>
+	<c:if test='${"ou228" eq opzVerifiche && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 		<gene:campoScheda>
 			<jsp:include page="/WEB-INF/pages/commons/pulsantiScheda.jsp" />
 		</gene:campoScheda>

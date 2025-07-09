@@ -98,18 +98,19 @@ public class RichiestaOTPAction extends DispatchActionAjaxLogged {
           }
           in.close();
 
-          System.out.println(res.toString());
       } else {
-          System.out.println("GET request not worked");
+        json.put("message", "Errore nella richiesta dell'OTP: "+conn.getResponseMessage());
       }
     }catch (Exception e) {
-      System.out.println(e.getMessage());
-      
+      json.put("message", e.getMessage());
     } finally {
       if (conn != null) conn.disconnect();
       if (logger.isDebugEnabled()) {
         logger.debug("RichiestaOTP: conclusa con successo");
         this.aggiungiMessaggio(request, "everything ok");
+      }
+      if(json.get("message") == null) {
+        json.put("message", "ok");
       }
     }
     

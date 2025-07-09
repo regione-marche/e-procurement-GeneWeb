@@ -10,25 +10,6 @@
  */
 package it.eldasoft.gene.web.struts.admin;
 
-import it.eldasoft.gene.bl.TabellatiManager;
-import it.eldasoft.gene.bl.admin.AccountManager;
-import it.eldasoft.gene.bl.system.MailManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
-import it.eldasoft.gene.commons.web.domain.GestioneTab;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.Tabellato;
-import it.eldasoft.gene.db.domain.admin.Account;
-import it.eldasoft.gene.utils.MailUtils;
-import it.eldasoft.utils.mail.IMailSender;
-import it.eldasoft.utils.mail.MailSenderException;
-import it.eldasoft.utils.profiles.CheckOpzioniUtente;
-import it.eldasoft.utils.profiles.OpzioniUtente;
-import it.eldasoft.utils.properties.ConfigManager;
-import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
-import it.eldasoft.utils.sicurezza.ICriptazioneByte;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +26,28 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.springframework.dao.DataAccessException;
+
+import it.eldasoft.gene.bl.TabellatiManager;
+import it.eldasoft.gene.bl.admin.AccountManager;
+import it.eldasoft.gene.bl.system.MailManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
+import it.eldasoft.gene.commons.web.domain.GestioneTab;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.domain.Tabellato;
+import it.eldasoft.gene.db.domain.admin.Account;
+import it.eldasoft.gene.utils.LogEventiUtils;
+import it.eldasoft.gene.utils.MailUtils;
+import it.eldasoft.utils.mail.IMailSender;
+import it.eldasoft.utils.mail.MailSenderException;
+import it.eldasoft.utils.profiles.CheckOpzioniUtente;
+import it.eldasoft.utils.profiles.OpzioniUtente;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
+import it.eldasoft.utils.sicurezza.ICriptazioneByte;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Action di gestione dell'account: crea un nuovo Account (form), carica il form
@@ -305,7 +308,7 @@ public class AccountAction extends AbstractDispatchActionBaseAdmin {
       formUtente.setLivelloGare(CostantiGeneraliAccount.DEFAULT_LIVELLO_GARE);
       formUtente.setAbilitazioneAP(CostantiGeneraliAccount.DEFAULT_ABILITAZIONE_AP);
 
-      formUtente.setOpzioniUtente(new OpzioniUtente(new String[]{CostantiGeneraliAccount.OPZIONI_MENU_STRUMENTI,CostantiGeneraliAccount.OPZIONI_SICUREZZA_PASSWORD, CostantiGeneraliAccount.OPZIONI_BLOCCO_MODIFICA_UFFINT}));
+      formUtente.setOpzioniUtente(new OpzioniUtente(new String[]{CostantiGeneraliAccount.OPZIONI_MENU_STRUMENTI,CostantiGeneraliAccount.OPZIONI_SICUREZZA_PASSWORD, CostantiGeneraliAccount.OPZIONI_BLOCCO_MODIFICA_UFFINT,CostantiGeneraliAccount.OPZIONI_BLOCCO_MODIFICA_IMPR}));
       formUtente.setOpzioniUtenteSys(formUtente.getOpzioniUtente().getElencoOpzioni());
 
       sessione.setAttribute(CostantiGenerali.NOME_OGGETTO_SESSION, "");
@@ -421,6 +424,33 @@ public class AccountAction extends AbstractDispatchActionBaseAdmin {
     Account account = null;
     try {
       this.accountManager.updateAbilitazioneUtente(i, flag);
+
+      // Creazione del LogEvento per l'abilitazione/disabilitazione dell'utente
+      {
+        final LogEvento logEvento = LogEventiUtils.createLogEvento(request);
+        logEvento.setLivEvento(LogEvento.LIVELLO_INFO);
+        logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_DISABILITA_UTENTE);
+        String message = String.format(
+            "L'utente %d ha disabilitato l'utente con id = %d e login = %s",
+            ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getId(), 
+            i, 
+            accountManager.getAccountById(i).getLogin()
+          );
+
+        if (CostantiDettaglioAccount.ABILITATO.equals(flag)) {
+          logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_ABILITA_UTENTE);
+          message = String.format(
+            "L'utente %d ha abilitato l'utente con id = %d e login = %s",
+            ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getId(), 
+            i, 
+            accountManager.getAccountById(i).getLogin()
+          );
+        }
+
+        logEvento.setDescr(message);
+        LogEventiUtils.insertLogEventi(logEvento);
+      }
+
       account = this.accountManager.getAccountById(new Integer(i));
 
       if (account.getFlagLdap() != 1) {
@@ -513,19 +543,19 @@ public class AccountAction extends AbstractDispatchActionBaseAdmin {
       logger.error(logMessageError, ms);
 
       if (!creazioneMailSender) {
-        this.aggiungiMessaggio(request, "errors.applicazione.inaspettataException");
+        logMessageKey = "warnings.abilitazione.mancaConfigurazioneMail";
       } else {
         if (!invioMailUtente) {
-          logMessageKey = "warnings.registrazione.mancatoInvioMailUtente";
-          logMessageError = resBundleGenerale.getString(logMessageKey);
-          this.aggiungiMessaggio(request, logMessageKey);
+          logMessageKey = "warnings.abilitazione.mancatoInvioMailUtente";
         }
-        // } else {
+        // else {
         // logMessageKey = "warnings.registrazione.mancatoInvioMailAdmin";
         // logMessageError = resBundleGenerale.getString(logMessageKey);
         // }
-        logger.warn(logMessageError, ms);
       }
+      logMessageError = resBundleGenerale.getString(logMessageKey);
+      this.aggiungiMessaggio(request, logMessageKey);
+      logger.warn(logMessageError, ms);
     }
   }
 

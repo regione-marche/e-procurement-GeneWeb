@@ -55,13 +55,13 @@
 	}
 		
 	function indietro(){
-		document.location.href = 'WizardImportModello.do?'+csrfToken+'&pageTo=${pageFrom}';
+		document.location.href = 'WizardImportModello.do?pageTo=${pageFrom}';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genMod.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExportModelli.do?'+csrfToken;
+		  document.location.href='AnnullaImportExportModelli.do';
 		}
 	}
 

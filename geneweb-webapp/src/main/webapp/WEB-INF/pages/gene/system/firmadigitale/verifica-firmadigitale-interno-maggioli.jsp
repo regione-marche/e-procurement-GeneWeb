@@ -119,7 +119,7 @@
 						<td colspan="1"><b><br>Download dei documenti<b></td>
 						<td>
 							<a id="linkVerificaFirmaDigitale" style="float:right;" href="javascript:verificaFirmaDigitale('${opreload}','${idprg}','${iddocdig}');">
-								<img src="/Appalti/img/firmaRemota.png" title="Verifica firma digitale del documento" alt="Verifica firma digitale del documento" width="16" height="16">
+								<img src="${pageContext.request.contextPath}/img/firmaRemota.png" title="Verifica firma digitale del documento" alt="Verifica firma digitale del documento" width="16" height="16">
 								<span title="Verifica firma digitale del documento">Verifica firma digitale</span>
 							</a>
 						</td>
@@ -195,7 +195,7 @@
 		
 		function downloadDocumentoFirmato(idprg, iddocdig, type) {
 			var href = "${pageContext.request.contextPath}/DownloadDocumentoFirmato.do";
-			document.location.href = href+"?"+csrfToken+"&idprg=" + idprg + "&iddocdig=" + iddocdig + "&type=" + type;
+			document.location.href = href+"?idprg=" + idprg + "&iddocdig=" + iddocdig + "&type=" + type;
 		}
 		function verificaFirmaDigitale(opreload, idprg, iddocdig) {
 			_wait();

@@ -50,6 +50,7 @@ import it.eldasoft.utils.profiles.CheckOpzioniUtente;
 import it.eldasoft.utils.profiles.OpzioniUtente;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.sicurezza.CriptazioneException;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Action per insert e modifica di un account
@@ -142,9 +143,19 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
 	}
 	
 	boolean bloccaOperazione = false;
+	boolean bloccaCF = false;
 	 
     try {
-      if (!(this.accountManager.isUsedLogin(utenteProdottoForm.getLogin(), -1) || ("1".equals(utenteProdottoForm.getFlagLdap()) && this.accountManager.isUsedDn(
+      Account accountDBStessoCF = this.accountManager.getAccountBySysCf(utenteProdottoForm.getCodfisc());
+      if(accountDBStessoCF != null) {
+        // controllo applicativo preventivo prima di attivare il vincolo unique sulla colonna
+        messageKey = "errors.pairingSSO.cfPresente";
+        logger.error(this.resBundleGenerale.getString(messageKey).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0),utenteProdottoForm.getCodfisc()));
+        this.aggiungiMessaggio(request, messageKey, utenteProdottoForm.getCodfisc());
+        bloccaCF = true;
+      }
+
+      if (!bloccaCF && !(this.accountManager.isUsedLogin(utenteProdottoForm.getLogin(), -1) || ("1".equals(utenteProdottoForm.getFlagLdap()) && this.accountManager.isUsedDn(
           utenteProdottoForm.getDn(), -1))) && (credenzialiDisponibili)) {
     	  
     	  if (amministratoreForm && !isEsecutoreAmministratore) {
@@ -167,13 +178,13 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
     	            accountUtente.getIdAccount()));
     	        request.setAttribute("idAccount", new Integer(account.getIdAccount()));
 
-    	        // controllo sul codice fiscale duplicato
-    	        if (StringUtils.isNotBlank(account.getCodfisc())) {
-    	          List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), utenteProdottoForm.getCodfisc());
-
-    	          // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
-    	          request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
-    	        }
+//    	        // controllo sul codice fiscale duplicato
+//    	        if (StringUtils.isNotBlank(account.getCodfisc())) {
+//    	          List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), utenteProdottoForm.getCodfisc());
+//
+//    	          // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
+//    	          request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
+//    	        }
 
     	        // setto il modo cosÏ riesco a stabilire in fase di creazione della
     	        // pagina se siamo in inserimento
@@ -205,19 +216,20 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
     	        LogEventiUtils.insertLogEventi(logEvento);
     	  }
       } else {
-        if (this.accountManager.isUsedLogin(utenteProdottoForm.getLogin(), -1))
-          messageKey = "errors.login.loginDuplicato";
-        else{
-			if (!credenzialiDisponibili) {
-				messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
-			} else {
-				messageKey = "errors.login.dnDuplicato";
-			}
+        if(!bloccaCF) {
+          if (this.accountManager.isUsedLogin(utenteProdottoForm.getLogin(), -1))
+            messageKey = "errors.login.loginDuplicato";
+          else{
+              if (!credenzialiDisponibili) {
+                  messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
+              } else {
+                  messageKey = "errors.login.dnDuplicato";
+              }
+          }
+          logger.error(this.resBundleGenerale.getString(messageKey));
+          this.aggiungiMessaggio(request, messageKey);
         }
         target = SalvaAccountAction.FORWARD_LOGIN_KO;
-
-        logger.error(this.resBundleGenerale.getString(messageKey));
-        this.aggiungiMessaggio(request, messageKey);
         request.setAttribute("accountForm", utenteProdottoForm);
         request.setAttribute("metodo", "inserisci");
         List<Tabellato> listaUffAppartenenza = this.tabellatiManager.getTabellato(TabellatiManager.UFF_APPARTENENZA);
@@ -345,10 +357,21 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
 	}
 	
 	boolean bloccaOperazione = false;
+	boolean bloccaCambioCF = false;
     
     try {
       Integer id = Integer.valueOf(accountForm.getIdAccount());
-      if (!this.accountManager.isUsedLogin(accountForm.getLogin(),
+      
+      List<AccountCodFiscDuplicati> listaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(id, accountForm.getCodfisc());
+      if(listaUtentiUgualeCodfisc.size() > 0) {
+        // controllo applicativo preventivo prima di attivare il vincolo unique sulla colonna
+        messageKey = "errors.pairingSSO.cfPresente";
+        logger.error(this.resBundleGenerale.getString(messageKey).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0),accountForm.getCodfisc()));
+        this.aggiungiMessaggio(request, messageKey, accountForm.getCodfisc());
+        bloccaCambioCF = true;
+      }
+      
+      if (!bloccaCambioCF && !this.accountManager.isUsedLogin(accountForm.getLogin(),
           id.intValue()) && (credenzialiDisponibili)) {
         Account accountDb = this.accountManager.getAccountById(id);
         OpzioniUtente opzioniUtente = new OpzioniUtente(accountDb.getOpzioniUtente());
@@ -356,22 +379,46 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
         // crea opzioniUtenteForm,   
         int idCurrentUser = new Integer(profiloUtente.getId());
         Account currentUser = this.accountManager.getAccountById(idCurrentUser);
-        
-        if (!checkAmministratore.test(opzioniUtente) && amministratoreForm ){
-        	if (isEsecutoreAmministratore) {
-                this.messageManager.insertMessageToUsersAdministrator("L'amministratore " + currentUser.getLogin() + " (id = " + idCurrentUser + ") ha conferito i diritti di amministratore all'utenza " + accountForm.getLogin() + " (id = " + id + ")","", idCurrentUser);        		
-        	} else {
-        		bloccaOperazione = true;
-        	}
-            // tracciatura evento, metti anche nel log una tracciatura info
+
+        // solo un amministratore di sistema puo' modificare il campo login post creazione utente
+        if (!accountDb.getLogin().equals(accountForm.getLogin())) {
+          if (!checkAmministratore.test(opzioniUtenteLoggato)) {
+            this.messageManager.insertMessageToUsersAdministrator("Bloccata azione dell'utente " + currentUser.getLogin() + " (id = " + idCurrentUser + ") non amministratore di sistema per aver tentato di forzare la modifica della login " + accountDb.getLogin() + " (id = " + id + ") in " + accountForm.getLogin(),"", idCurrentUser);               
+            bloccaOperazione = true;
+          } else {
+            // anche in caso di successo informo gli altri amministratori della modifica apportata
+            this.messageManager.insertMessageToUsersAdministrator("L'amministratore " + currentUser.getLogin() + " (id = " + idCurrentUser + ") modifica la login " + accountDb.getLogin() + " (id = " + id + ") in " + accountForm.getLogin(),"", idCurrentUser);               
+          }
+        } 
+
+        // solo un amministratore di sistema puo' modificare il campo codice fiscale post creazione utente
+        if (accountDb.getCodfisc() != null && !accountDb.getCodfisc().equals(accountForm.getCodfisc())) {
+          if (!checkAmministratore.test(opzioniUtenteLoggato)) {
+            this.messageManager.insertMessageToUsersAdministrator("Bloccata azione dell''utente " + currentUser.getLogin() + " (id = " + idCurrentUser + ") non amministratore di sistema per aver tentato di forzare la modifica del codice fiscale " + accountDb.getCodfisc() + " (id = " + id + ") in " + accountForm.getCodfisc(),"", idCurrentUser);               
+            bloccaOperazione = true;            
+          } else {
+            // anche in caso di successo informo gli altri amministratori della modifica apportata
+            this.messageManager.insertMessageToUsersAdministrator("L'amministratore " + currentUser.getLogin() + " (id = " + idCurrentUser + ") modifica il codice fiscale " + accountDb.getCodfisc() + " (id = " + id + ") in " + accountForm.getCodfisc(),"", idCurrentUser);               
+          }
         }
-        else{
-          if (checkAmministratore.test(opzioniUtente) && !amministratoreForm ){
-          	if (isEsecutoreAmministratore) {
+        
+        if (!bloccaOperazione) {
+          if (!checkAmministratore.test(opzioniUtente) && amministratoreForm ) {
+            if (isEsecutoreAmministratore) {
+              // tracciatura evento, metti anche nel log una tracciatura info che l'utente modificato diventa amministratore
+              this.messageManager.insertMessageToUsersAdministrator("L'amministratore " + currentUser.getLogin() + " (id = " + idCurrentUser + ") ha conferito i diritti di amministratore all'utenza " + accountForm.getLogin() + " (id = " + id + ")","", idCurrentUser);               
+            } else {
+              bloccaOperazione = true;
+            }
+          } else {
+            if (checkAmministratore.test(opzioniUtente) && !amministratoreForm ){
+              if (isEsecutoreAmministratore) {
+                // tracciatura evento, metti anche nel log una tracciatura info che l'utente modificato non e' piu' amministratore
                 this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = "+ idCurrentUser +") ha rimosso i diritti di amministratore all'utenza "+ accountForm.getLogin() +" (id = " + id + ")","", idCurrentUser);
-        	} else {
-        		bloccaOperazione = true;
-        	}
+              } else {
+                bloccaOperazione = true;
+              }
+            }
           }
         }
         
@@ -394,14 +441,14 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
                   this.messageManager.insertMessageToUsersAdministrator("L'amministratore "+ currentUser.getLogin() +" (id = "+ idCurrentUser +") ha aggiornato l'utenza amministrativa  "+ accountForm.getLogin() +" (" + id + ") con opzioni utente = " + list.toString() + ", sysab3 = "+ account.getAbilitazioneStd() +", sysabg = "+ account.getAbilitazioneGare(),"", idCurrentUser);
                 }
                 
-                // controllo sul codice fiscale duplicato
-                if (StringUtils.isNotBlank(account.getCodfisc())) {
-                  List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), accountForm.getCodfisc());
-
-                  // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
-                  request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
-                }
-
+//                // controllo sul codice fiscale duplicato
+//                if (StringUtils.isNotBlank(account.getCodfisc())) {
+//                  List<AccountCodFiscDuplicati> ListaUtentiUgualeCodfisc = this.accountManager.getListaUtentiUgualeCodfisc(account.getIdAccount(), accountForm.getCodfisc());
+//
+//                  // set nel request della lista di tutti gli utenti col medesimo codice fiscale dell'utente corrente
+//                  request.setAttribute("ListaUtentiUgualeCodfisc", ListaUtentiUgualeCodfisc);
+//                }
+//
                 // Set in sessione di id e nome dell'account che si sta modificando
                 request.getSession().setAttribute(CostantiGenerali.ID_OGGETTO_SESSION,
                     new Integer(formUtente.getIdAccount()));
@@ -413,13 +460,16 @@ public class SalvaAccountAction extends AbstractDispatchActionBaseAdmin {
 
       } else {
         target = SalvaAccountAction.FORWARD_LOGIN_KO;
-		if (credenzialiDisponibili) {
-			messageKey = "errors.login.loginDuplicato";
-		} else {
-			messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
-		}
+        if (!bloccaCambioCF) {
+          if (credenzialiDisponibili) {
+            messageKey = "errors.login.loginDuplicato";
+        } else {
+            messageKey = "errors.login.credenzialiGi‡UtilizzateDiRecente";
+        }
         logger.error(this.resBundleGenerale.getString(messageKey));
         this.aggiungiMessaggio(request, messageKey);
+        }
+          
         request.setAttribute("idAccount", accountForm.getIdAccount());
         request.setAttribute("accountForm", accountForm);
         request.setAttribute("metodo", "carica");

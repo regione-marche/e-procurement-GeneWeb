@@ -1,10 +1,12 @@
 package it.eldasoft.gene.web.struts.login.spid;
 
 import it.cedaf.authservice.service.AuthData;
+import it.cedaf.authservice.service.AuthException;
 import it.cedaf.authservice.service.AuthService;
 import it.cedaf.authservice.service.AuthServiceProxy;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.AccountSSO;
 import it.eldasoft.gene.db.domain.admin.Account;
 import it.eldasoft.gene.web.struts.login.LoginAction;
 import it.eldasoft.utils.properties.ConfigManager;
@@ -32,8 +34,6 @@ public class SpidLoginResponseAction extends LoginAction {
 
     static Logger logger = Logger.getLogger(SpidLoginResponseAction.class);
 
-    private static final String SESSION_ID_SPID_AUTHID          =  "ACTION_SPID_AUTHID";
-
 
     @Override
     protected ActionForward runAction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -42,6 +42,7 @@ public class SpidLoginResponseAction extends LoginAction {
     String url = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_SPID_WS_AUTHSERVICESPID_URL));
 
     Account account = null;
+    AccountSSO accountSSO = null;
 	String nome = "";
 	String cognome = "";
 	String codiceFiscale = "";
@@ -57,10 +58,17 @@ public class SpidLoginResponseAction extends LoginAction {
     AuthService ws = authServiceProxy.getAuthService();
 
     // recupera dalla sessione il token temporaneo...
-    String authId = (String) request.getSession().getAttribute(SESSION_ID_SPID_AUTHID);
+    String authId = (String) request.getSession().getAttribute(CostantiGenerali.SESSION_ID_SPID_AUTHID);
 
     // recupera le info dell'utente dal servizio SPID tramite il token...
-    AuthData userInfo = ws.retrieveUserData(authId);
+    AuthData userInfo = null;
+    try {
+      userInfo = ws.retrieveUserData(authId);
+    }catch(AuthException e) {
+      logger.error("Errore nel recupero delle informazioni dal provider SPID", e);
+      this.aggiungiMessaggio(request, "errors.generico", "Errore nel recupero delle informazioni dal provider");
+      return mapping.findForward(CostantiGeneraliStruts.FORWARD_LOGIN);
+    }
     if(userInfo != null) {
 
       // azienda o libero professionista ?
@@ -83,21 +91,36 @@ public class SpidLoginResponseAction extends LoginAction {
 
       if (((isPersonaFisica && nome != null && cognome != null) || (!isPersonaFisica && azienda != null))
               && login != null && login.length() >= 11) {
-
         request.getSession().removeAttribute("errMsg");
+        
+        if("true".equals((String) request.getSession().getAttribute(CostantiGenerali.PAIRING_SSO))) {//pairing utenza base con utenzaSSO
+            return mapping.findForward(this.pairUtenteLdap0WithSSO(request, codiceFiscale, CostantiGenerali.PROP_SSO_SPID));
+        }
+
         String error = "Attenzione: C'è stato un problema con la richiesta di autenticazione, si prega di riprovare più tardi o di contattare l'assistenza in quanto l'utente può non disporre dei permessi necessari al login.\n\nGrazie";
 
         try {
 
           target = this.testSkipProfili(request, target);
 
-          account = this.loginManager.getAccountByLogin(codiceFiscale);
+          account = this.accountManager.getAccountBySysCf(codiceFiscale);
 
           if(account != null){
-            target = this.checkLogin(account.getLogin(), account.getPassword(), request, true, target);
+            accountSSO = new AccountSSO();
+            accountSSO.setAuthId(authId);
+            accountSSO.setLogin(codiceFiscale);
+            accountSSO.setNome(nome);
+            accountSSO.setCognome(cognome);
+            accountSSO.setEmail(email);
+            accountSSO.setLoginProvider(CostantiGenerali.PROP_SSO_SPID);
+            accountSSO.setStandardProvider(CostantiGenerali.PROP_SSO_SPID);
+            accountSSO.setCurrentLoa(Integer.parseInt(userInfo.getLivelloAutenticazione().split("SpidL")[1])+1);
+            
+            target = this.checkLogin(account.getLogin(), account.getPassword(), request, accountSSO, target);
             //TODO: probabilmente queste set non servono a nulla e vanno rimosse
             request.setAttribute("username", account.getLogin());
             request.setAttribute("password", account.getPassword());
+            
           }else{
             //Settaggio dei vari parametri nella form di registrazione
             request.setAttribute("nome", nome);
@@ -111,8 +134,8 @@ public class SpidLoginResponseAction extends LoginAction {
               return this.forwardToRegistrationForm(request);
             }else{
               target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
-              messageKey = "errors.login.unknown";
-              this.aggiungiMessaggio(request, messageKey, username);
+              messageKey = "errors.login.unknownUser";
+              this.aggiungiMessaggio(request, messageKey);
             }
           }
         } catch (Exception e) {

@@ -512,7 +512,7 @@
 		
 		function downloadDocumentoFirmato(idprg, iddocdig, type) {
 			var href = "${pageContext.request.contextPath}/DownloadDocumentoFirmato.do";
-			document.location.href = href+"?"+csrfToken+"&idprg=" + idprg + "&iddocdig=" + iddocdig + "&type=" + type;
+			document.location.href = href+"?idprg=" + idprg + "&iddocdig=" + iddocdig + "&type=" + type;
 		}
 	</gene:javaScript>
 

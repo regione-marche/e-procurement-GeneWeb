@@ -547,7 +547,7 @@ var ie10 = false;
 		if(oggetto==null){
 			valori='!'+valori;
 		}
-		openPopUpAction(applicationPath+'/geneGenmod/FwLeggiValoriChiavi.do', csrfToken+'&entita='+entita+'&nomeChiavi='+chiavi+'&valori='+valori,"");
+		openPopUpAction(applicationPath+'/geneGenmod/FwLeggiValoriChiavi.do', 'entita='+entita+'&nomeChiavi='+chiavi+'&valori='+valori,"");
 	}
 	
 	/**************************************************************
@@ -1284,7 +1284,7 @@ function bloccoPulsanteInvio(evento){
 	//////////////////////////////////////////
 	function calendarioScadenzario(entita) {
 		bloccaRichiesteServer();
-		document.location.href = contextPath + "/CalScadenzario.do?"+csrfToken+"&entita=" + entita;
+		document.location.href = contextPath + "/CalScadenzario.do?entita=" + entita;
 	}
 
 	function checkBrowser() {
@@ -1309,9 +1309,34 @@ function bloccoPulsanteInvio(evento){
 	}
 	
 	function qformEditor(id,entita,readOnly){
-		document.location.href='ApriPagina.do?'+csrfToken+'&href=geneweb/qeditor/qeditor.jsp&ent=' + entita + '&id='+id + '&firstTimer=true&readOnly='+readOnly;
+		document.location.href='ApriPagina.do?href=geneweb/qeditor/qeditor.jsp&ent=' + entita + '&id='+id + '&firstTimer=true&readOnly='+readOnly;
 	}
 	
 	function qformAnteprima(id,entita){
-		document.location.href='ApriPagina.do?'+csrfToken+'&href=geneweb/qeditor/anteprimaQform.jsp&ent=' + entita + '&id='+id ;
+		document.location.href='ApriPagina.do?href=geneweb/qeditor/anteprimaQform.jsp&ent=' + entita + '&id='+id ;
+	}
+	
+	function pingSessioneAttiva() {
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			async: false,
+			url: contextPath + "/PingSessioneAttiva.do",
+			error: function(){
+				bloccaRichiesteServer();
+				window.location=contextPath+'/History.do?metodo=reload&numeroPopUp='+getNumeroPopUp();
+			}
+		});
+	}
+	
+	//////////////////////////////////////////
+	// Nome:        clearCsrfTokenFromHref
+	// Descrizione: rimuove dai link in pagina da cui partono quindi chiamate GET, il token CSRF inserito inutilmente 
+	//////////////////////////////////////////
+	function clearCsrfTokenFromHref() {
+		$("a[href*='"+csrfToken+"']").each(function() {
+			var oldUrl = $(this).attr("href"); // Get current url
+            var newUrl = oldUrl.replace(csrfToken, ""); // Create new url
+            $(this).attr("href", newUrl); // Set herf value
+		});
 	}

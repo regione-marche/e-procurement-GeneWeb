@@ -21,29 +21,29 @@
 	
 	
   function modificaAssGruppiAccount(id){
-		document.location.href='ListaGruppiAccount.do?'+csrfToken+'&metodo=editLista&idAccount=' + id;
+		document.location.href='ListaGruppiAccount.do?metodo=editLista&idAccount=' + id;
   }
   
   	
 	function listaProfiliAccount(id){
-		document.location.href='ListaProfiliAccount.do?'+csrfToken+'&idAccount=' + id + '&metodo=visualizza';
+		document.location.href='ListaProfiliAccount.do?idAccount=' + id + '&metodo=visualizza';
   }
  
 	function listaUfficiIntestatariAccount(id){
-		document.location.href='ListaUfficiIntestatariAccount.do?'+csrfToken+'&idAccount=' + id + '&metodo=visualizza';
+		document.location.href='ListaUfficiIntestatariAccount.do?idAccount=' + id + '&metodo=visualizza';
   }
     	
  	function schedaVisualizza(id){
-		document.location.href = 'DettaglioAccount.do?'+csrfToken+'&metodo=visualizza&idAccount=' + id;
+		document.location.href = 'DettaglioAccount.do?metodo=visualizza&idAccount=' + id;
 	}
 	
 	function schedaNuovo(){
-		document.location.href = 'InitCreaAccount.do?'+csrfToken;
+		document.location.href = 'InitCreaAccount.do';
 	}
 	
 	function schedaTecniciAccount(id){
 		var chiave= "USRSYS.SYSCON=N:" + id;
-		document.location.href = "${pageContext.request.contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/tecni/tecni-Account.jsp&key="+chiave;
+		document.location.href = "${pageContext.request.contextPath}/ApriPagina.do?href=gene/tecni/tecni-Account.jsp&key="+chiave;
 		
 	}	
 </script>

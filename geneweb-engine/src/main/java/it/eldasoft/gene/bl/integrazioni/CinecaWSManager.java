@@ -1070,7 +1070,7 @@ public class CinecaWSManager {
     String selectFornitore = "select codimp, tipimp, nomest, cfimp, pivimp, indimp, nciimp, locimp, proimp, capimp," +
     " telimp, faximp, nazimp, dcciaa, natgiui, emai2ip, telcel, indweb, coorba, emaiip, banapp," +
     " cnatec, dnatec, annoti, cognome, nome, sextec, inctec," +
-    " tipalb,albtec,datalb,proalb,sogmov,codbic" +
+    " tipalb,albtec,datalb,proalb,sogmov,codbic,is_area_iban,numero_conto" +
     " from impr where codimp = ? ";
     String selectLegaliRappresentanti = "select nomleg from impleg where codimp2 = ?" +
     		" and coalesce(legini,TO_DATE('1111/01/01', 'YYYY/MM/DD')) <= ?" +
@@ -1115,6 +1115,8 @@ public class CinecaWSManager {
         String provAlboProf = (String) SqlManager.getValueFromVectorParam(datiIMPR, 31).getValue();
         String soggettiAbilitati = (String) SqlManager.getValueFromVectorParam(datiIMPR, 32).getValue();
         String codiceBic = (String) SqlManager.getValueFromVectorParam(datiIMPR, 33).getValue();
+        String isAreaIban = (String) SqlManager.getValueFromVectorParam(datiIMPR, 34).getValue();
+        String numeroConto = (String) SqlManager.getValueFromVectorParam(datiIMPR, 35).getValue();
 
 
         //inizializzo i dati anagrafici
@@ -1182,6 +1184,8 @@ public class CinecaWSManager {
         datiBaseSoggettoCollettivo.put("ccDedicato", contoCorrenteDedicato);
         datiBaseSoggettoCollettivo.put("emailUfficio", emailPrincipale);
         datiBaseSoggettoCollettivo.put("bic", codiceBic);
+        datiBaseSoggettoCollettivo.put("isAreaIban", isAreaIban);
+        datiBaseSoggettoCollettivo.put("numeroConto", numeroConto);
 
         if(comuneNascita != null){
           String codComuneNascita = (String) this.sqlManager.getObject("select tabcod5 from tabsche where tabcod='S2003' and tabcod1='09' and tabdesc = ? ", new Object[]{comuneNascita.toUpperCase()});

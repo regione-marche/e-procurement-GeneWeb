@@ -88,7 +88,7 @@
 			</c:when>
 			<c:otherwise>
 				bloccaRichiesteServer();
-				document.location.href='CambiaPassword.do?'+csrfToken+'&metodo=annulla';
+				document.location.href='CambiaPassword.do?metodo=annulla';
 			</c:otherwise>
 		</c:choose>
 	}

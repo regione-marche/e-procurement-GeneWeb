@@ -57,7 +57,7 @@
 	// Azioni invocate dal menu contestuale
 
 	function listaRicerchePredefinite() {
-		document.location.href='ListaRicerchePredefinite.do?'+csrfToken;
+		document.location.href='ListaRicerchePredefinite.do';
 	}
 
 	function annulla() {
@@ -65,12 +65,7 @@
 	}
 	
 	function svuotaInput() {
-		if (elencoFormatoParametri.length == 1) {
-			document.parametriRicercaForm.parametriRicerca.value="";
-		} else {
-			for (var i = 0; i < elencoFormatoParametri.length; i++)
-				document.parametriRicercaForm.parametriRicerca[i].value="";
-		}
+        $("input[name^='parametriRicerca']:visible").val("");
 		<c:if test="${requestScope.kronos eq 1}">
 		document.parametriRicercaForm.KRDATINVAL.value="";
 		document.parametriRicercaForm.KRDATFINVAL.value="";

@@ -179,10 +179,10 @@
 		
 		SELECT DISTINCT W_MODELLI.ID_MODELLO, TAB2.TAB2D2, W_MODELLI.NOME, W_MODELLI.DESCR, W_MODELLI.NOMEFILE,W_MODELLI.CODAPP,
 		W_MODELLI.DISP, W_MODELLI.OWNER, W_MODELLI.ENTPRINC, W_MODELLI.PROSPETTO, W_MODELLI.PERSONALE, 
-		<isPropertyAvailable property="adattaQueryPerDB2">
+		<isPropertyAvailable property="adattaQueryPerPG">
 			CAST(NULL AS VARCHAR(61)) AS SYSUTE, 
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			NULL AS SYSUTE, 
 		</isNotPropertyAvailable>
 		W_MODELLI.RIEPILOGATIVO, W_MODELLI.FILTROENTPRINC

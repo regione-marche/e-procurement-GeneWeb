@@ -18,6 +18,9 @@
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <tiles:insert definition=".dettaglioNoTabDef" flush="true">
 
 	<tiles:put name="head" type="string">
@@ -27,15 +30,15 @@
 // Azioni di pagina
 
 function modifica(){
-	document.location.href='ConfigurazioneLdap.do?'+csrfToken+'&metodo=modifica';
+	document.location.href='ConfigurazioneLdap.do?metodo=modifica';
 }
 
 function modificaPassword(){
-	document.location.href='ConfigurazioneLdap.do?'+csrfToken+'&metodo=modificaPassword';
+	document.location.href='ConfigurazioneLdap.do?metodo=modificaPassword';
 }
 
 function verifica(){
-	document.location.href='ConfigurazioneLdap.do?'+csrfToken+'&metodo=verificaConnessione';
+	document.location.href='ConfigurazioneLdap.do?metodo=verificaConnessione';
 }
 
 

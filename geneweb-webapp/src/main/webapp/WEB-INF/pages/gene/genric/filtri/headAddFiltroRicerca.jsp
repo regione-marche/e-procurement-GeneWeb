@@ -33,7 +33,7 @@
 	// Azioni invocate dal tab menu
 	
 	function cambiaTab(codiceTab){
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina
@@ -108,13 +108,13 @@
 	function helpListaValori() {
 		var operatore = new String(document.filtroRicercaForm.operatore.value);
 		var action = "${contextPath}/geneGenric/ApriHelpListaValori.do";
-		var href = String(csrfToken+"&operatore=" + operatore);
+		var href = String("operatore=" + operatore);
 		openPopUpActionCustom(action, href, "listaValori", 580, 350, "no", "yes");
 	}
 	
 	function helpListaValoriTabellati(tabellato) {
 		var action = "${contextPath}/GetTabellato.do";
-		var href = String(csrfToken+"&tabellato="+tabellato+"&funzione=aggiungi&apici=0");
+		var href = String("tabellato="+tabellato+"&funzione=aggiungi&apici=0");
 		//if(document.filtroRicercaForm.operatore.value == "IN" || document.filtroRicercaForm.operatore.value == "NOT IN") 
 		//	href += "1";
 		//else

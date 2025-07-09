@@ -3,6 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
 
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" idMaschera="WSDMCONFI-pagine" schema="GENEWEB">
 
@@ -19,23 +21,6 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<c:choose>
-		<c:when test='${!empty param.descri}'>
-			<c:set var="descri" value="${param.descri}" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="descri" value="${descri}" />
-		</c:otherwise>
-	</c:choose>
-	
-	<c:choose>
-		<c:when test='${!empty param.codapp}'>
-			<c:set var="codapp" value="${param.codapp}" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="codapp" value="${codapp}" />
-		</c:otherwise>
-	</c:choose>
 	<c:choose>
 		<c:when test='${!empty param.modalita}'>
 			<c:set var="modalita" value="${param.modalita}" />
@@ -72,6 +57,7 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<c:set var='descri' value='${gene:callFunctionN("it.eldasoft.gene.tags.functions.GetSafeDataFromDB", pageContext, "select descri from wsdmconfi where id = ? and codapp = ?", idconfi, sessionScope.moduloAttivo)}' />
 	<gene:setString name="titoloMaschera" value="Dettaglio configurazione '${descri}'" />
 	<gene:redefineInsert name="modelliPredisposti" />
 	<gene:redefineInsert name="documentiAssociati" />
@@ -112,15 +98,11 @@
 				<c:when test="${modalita ne 'modifica'}">
 					<jsp:include page="..\wsdmconfipro\dettConfigWSDM.jsp">
 						<jsp:param name="idconfi" value="${idconfi}"/>
-						<jsp:param name="descri" value="${descri}"/>
-						<jsp:param name="codapp" value="${codapp}"/>
 					</jsp:include>
 				</c:when>
 				<c:otherwise>
 					<jsp:include page="..\wsdmconfipro\modConfigWSDM.jsp">
 						<jsp:param name="idconfi" value="${idconfi}"/>
-						<jsp:param name="descri" value="${descri}"/>
-						<jsp:param name="codapp" value="${codapp}"/>
 					</jsp:include>
 				</c:otherwise>
 			</c:choose>
@@ -129,7 +111,6 @@
 			<gene:pagina title="Uffici intestatari" idProtezioni="WSDM_UFF">
 				<jsp:include page="..\wsdmconfiuff\tabUffintWSDM.jsp">
 					<jsp:param name="idconfi" value="${idconfi}"/>
-					<jsp:param name="codapp" value="${codapp}"/>
 					<jsp:param name="wsdmProtocollo" value="${wsdmProtocollo}"/>
 					<jsp:param name="wsdmDocumentale" value="${wsdmDocumentale}"/>
 					<jsp:param name="tabTabellatiAttiva" value="${tabTabellatiAttiva}"/>
@@ -138,16 +119,12 @@
 			<gene:pagina title="Dati tabellati" idProtezioni="WSDM_TAB" selezionabile="${tabTabellatiAttiva ne 'false' or activePage eq '0'}">
 				<jsp:include page="..\wsdmcftab\tabTabellatiWSDM.jsp">
 					<jsp:param name="idconfi" value="${idconfi}"/>
-					<jsp:param name="descri" value="${descri}"/>
-					<jsp:param name="codapp" value="${codapp}"/>
 					<jsp:param name="wsdmProtocollo" value="${wsdmProtocollo}"/>
 					<jsp:param name="wsdmDocumentale" value="${wsdmDocumentale}"/>
 				</jsp:include>
 			</gene:pagina>	
 			<%@ include file="wsdmconfi-altriTab.jsp" %>
 			<input type="hidden" name="idconfi" value="${idconfi}"/>
-			<input type="hidden" name="descri" value="${descri}"/>
-			<input type="hidden" name="codapp" value="${codapp}"/>
 			<input type="hidden" name="tabTabellatiAttiva" value="${tabTabellatiAttiva}"/>
 			<input type="hidden" name="wsdmProtocollo" value="${wsdmProtocollo}"/>
 			<input type="hidden" name="wsdmDocumentale" value="${wsdmDocumentale}"/>

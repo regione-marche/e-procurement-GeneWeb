@@ -31,8 +31,8 @@
 	<c:forEach items="${listaParametri}" var="parametro" varStatus="ciclo">
 		<c:set var="tipoPar" value="${fn:trim(parametro.tipo)}" />
 		<c:choose>
-			<c:when test='${tipoPar eq "U"}'>
-				<input type="hidden" name="parametriModello" id="parametro${ciclo.index}" value="${idAccount}">
+			<c:when test='${tipoPar eq "U" || tipoPar eq "UI"}'>
+				<input type="hidden" name="parametriModello" id="parametro${ciclo.index}" value="">
 			</c:when>
 			<c:otherwise>
 			  <tr>

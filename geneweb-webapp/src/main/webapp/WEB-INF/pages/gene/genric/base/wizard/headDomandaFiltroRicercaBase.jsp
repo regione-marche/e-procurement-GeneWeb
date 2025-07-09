@@ -35,16 +35,16 @@
 		var filtroNo = document.getElementById("filtroNo");
 
 		if(filtroSi.checked){
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL2';
+			href = 'WizardBase.do?pageTo=FIL2';
 		}
 		
 		if(filtroNo.checked){
   <c:choose>
   	<c:when test='${fn:length(contenitore.elencoFiltri) eq 0}'>
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD1';
+			href = 'WizardBase.do?pageTo=ORD1';
 		</c:when>
 		<c:otherwise>
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL3';
+			href = 'WizardBase.do?pageTo=FIL3';
 		</c:otherwise>
 	</c:choose>
 		}
@@ -62,13 +62,13 @@
 	}
 	
 	function indietro(){
-	  document.location.href='WizardBase.do?'+csrfToken+'&pageTo=CAM';
+	  document.location.href='WizardBase.do?pageTo=CAM';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 

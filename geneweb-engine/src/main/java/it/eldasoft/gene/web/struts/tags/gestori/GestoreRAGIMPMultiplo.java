@@ -14,10 +14,16 @@ import it.eldasoft.gene.bl.integrazioni.Art80Manager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.datautils.DataColumn;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
 import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.spring.UtilitySpring;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -157,13 +163,61 @@ public class GestoreRAGIMPMultiplo extends AbstractGestoreEntita {
       
       String codein = (String) this.getServletContext().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
       art80Manager.art80AggiornaProfessionistiStudioAssociato(impl.getString("IMPR.CODIMP"),codein);
-      
+
+
+      LogEvento logevento = LogEventiUtils.createLogEvento(this.getRequest());
+      logevento.setLivEvento(1);
+      logevento.setOggEvento(impl.getString("IMPR.CODIMP"));
+      logevento.setCodEvento("IMPR_EDIT");
+      logevento.setDescr("Modifica anagrafica impresa (raggruppamento)");
+      logevento.setErrmsg(elaboraModifiche(impl));
+      LogEventiUtils.insertLogEventi(logevento);
     }
   }
 
   @Override
   public void postUpdate(DataColumnContainer impl) throws GestoreException {
 
+  }
+
+  private String elaboraModifiche(DataColumnContainer datiForm) throws GestoreException {
+    String descrErrMsg = "Dettaglio modifiche:";
+    HashMap<String, DataColumn> hm = datiForm.getColonne();
+    Iterator<?> it = hm.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, DataColumn> pair = (Map.Entry<String, DataColumn>) it.next();
+      if (pair.getValue().isModified()) {
+        if(pair.getKey().indexOf("MOD_")>=0 || pair.getKey().indexOf("INDICE_")>=0 )
+          continue;
+        if (!"".equals(descrErrMsg)) {
+          descrErrMsg += "\n";
+        }
+        if (pair.getKey().indexOf("DEL_RAGIMP") > 0) {
+          descrErrMsg += "Eliminata dal raggruppamento l'impresa "+datiForm.getColumn("RAGIMP.CODDIC_"+pair.getKey().substring(pair.getKey().indexOf("DEL_RAGIMP_")+11)).getOriginalValue();
+        } else {
+          JdbcParametro paramOrigin = pair.getValue().getOriginalValue();
+          String valOriginale = "";
+          if (paramOrigin != null) {
+            valOriginale = paramOrigin.toString();
+          }
+          JdbcParametro paramNuovo = pair.getValue().getValue();
+          String valNuovo = "";
+          if (paramNuovo != null) {
+            valNuovo = paramNuovo.toString();
+          }
+          if ("".equals(valOriginale)) {
+            valOriginale = "NULL";
+          }
+          if ("".equals(valNuovo)) {
+            valNuovo = "NULL";
+          }
+          descrErrMsg += pair.getKey() + ": ";
+          descrErrMsg += "valore vecchio= " + valOriginale + ", ";
+          descrErrMsg += "valore nuovo= " + valNuovo;
+        }
+      }
+    }
+    return descrErrMsg;
   }
 
 }

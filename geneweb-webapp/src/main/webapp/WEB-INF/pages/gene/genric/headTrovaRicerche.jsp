@@ -34,19 +34,19 @@
 	}
 	
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
   }
 
 	function creaNuovaRicerca(){
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	function creaNuovaRicercaWizard(){
-		document.location.href='CreaNuovaRicercaWizard.do?'+csrfToken;
+		document.location.href='CreaNuovaRicercaWizard.do';
   }
   
   function importaRicerca(){
-		document.location.href='WizardImportRicerca.do?'+csrfToken+'&pageTo=UPL';
+		document.location.href='WizardImportRicerca.do?pageTo=UPL';
 	}
 
 	function gestisciVisualizzazioneAvanzata() {

@@ -14,10 +14,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<c:if test="${!fn:contains(listaOpzioniUtenteAbilitate, 'ou243#')}">
 <gene:set name="titoloMenu">
 	<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
 </gene:set>
-
+</c:if>
 
 <c:set var="idVerifica" value='${gene:getValCampo(key, "VERIFICHE.ID")}' scope="request"/>
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
@@ -47,7 +48,7 @@
 		<td>
 		<gene:formLista entita="DOCUMENTI_VERIFICHE" where="${whereDocVerifiche}"
 		tableclass="datilista" sortColumn='2' gestisciProtezioni="true" gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreDocumentiVerifiche" pagesize="25" >
-			<c:if test='${!(opzVerifiche eq "ou228")}'>
+			<c:if test='${!(opzVerifiche eq "ou228") || fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 				<gene:redefineInsert name="listaEliminaSelezione"></gene:redefineInsert>				
 				<gene:redefineInsert name="pulsanteListaEliminaSelezione"></gene:redefineInsert>
 			</c:if>							
@@ -56,7 +57,7 @@
 					
 			<gene:campoLista title="Opzioni<center>${titoloMenu}</center>" width="50">
 				<gene:PopUp variableJs="rigaPopUpMenu" onClick="chiaveRiga='${chiaveRigaJava}'"/>
-				<c:if test='${gene:checkProtFunz(pageContext,"DEL","LISTADELSEL") && fn:contains(listaOpzioniUtenteAbilitate, "ou228#")}'>
+				<c:if test='${gene:checkProtFunz(pageContext,"DEL","LISTADELSEL") && fn:contains(listaOpzioniUtenteAbilitate, "ou228#") && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 					<input type="checkbox" name="keys" value="${chiaveRiga}"  />
 				</c:if>
 			</gene:campoLista>
@@ -85,9 +86,9 @@
 			 where="W_DOCDIG.IDPRG=DOCUMENTI_VERIFICHE.IDPRG AND W_DOCDIG.IDDOCDIG=DOCUMENTI_VERIFICHE.IDDOCDG" />
 			<c:if test='${opzVerifiche eq "ou227" || opzVerifiche eq "ou228"}' >
 				<gene:campoLista campo="DIGNOMDOC" entita="W_DOCDIG" visibile="true"
-				 where="W_DOCDIG.IDPRG=DOCUMENTI_VERIFICHE.IDPRG AND W_DOCDIG.IDDOCDIG=DOCUMENTI_VERIFICHE.IDDOCDG" href="javascript:visualizzaFileDIGOGG('${datiRiga.DOCUMENTI_VERIFICHE_ID}', '${datiRiga.W_DOCDIG_DIGNOMDOC}','${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');" />
+				 where="W_DOCDIG.IDPRG=DOCUMENTI_VERIFICHE.IDPRG AND W_DOCDIG.IDDOCDIG=DOCUMENTI_VERIFICHE.IDDOCDG" href="javascript:visualizzaFileDocumentiVerifiche('${datiRiga.DOCUMENTI_VERIFICHE_ID}', '${datiRiga.W_DOCDIG_DIGNOMDOC}');" />
 			</c:if>	
-			<c:if test='${(param.archiviati ne 1) && (opzVerifiche eq "ou228")}'>
+			<c:if test="${gene:checkProtFunz(pageContext,'ALT','ArchiviaDocumentiVeriche') && (param.archiviati ne 1) && (opzVerifiche eq 'ou228') && !fn:contains(listaOpzioniUtenteAbilitate, 'ou243#')}">
 				<gene:campoLista title="&nbsp;" width="20">
 					<a href="javascript:chiaveRiga='${chiaveRigaJava}';archiviaDocVerifica();" title="Archivia documento" >
 						<img width="16" height="16" title="Archivia documento verifica" alt="Archivia documento verifica" src="${pageContext.request.contextPath}/img/archiviaDocumento.png"/>
@@ -101,10 +102,10 @@
 		<c:if test='${gene:checkProtObj(pageContext, "MASC.VIS", "GENE.ImpcaseScheda"  )}' >
 			<gene:PopUpItemResource variableJs="rigaPopUpMenu" resource="popupmenu.tags.lista.visualizza" title="Visualizza documento"/>
 		</c:if>
-		<c:if test='${gene:checkProtFunz(pageContext, "MOD", "MOD"  ) && (opzVerifiche eq "ou228")}' >
+		<c:if test='${gene:checkProtFunz(pageContext, "MOD", "MOD"  ) && (opzVerifiche eq "ou228") && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}' >
 			<gene:PopUpItemResource variableJs="rigaPopUpMenu" resource="popupmenu.tags.lista.modifica" title="Modifica documento" />
 		</c:if>
-		<c:if test='${gene:checkProtFunz(pageContext, "DEL", "DEL"  ) && (opzVerifiche eq "ou228")}' >
+		<c:if test='${gene:checkProtFunz(pageContext, "DEL", "DEL"  ) && (opzVerifiche eq "ou228") && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}' >
 			<gene:PopUpItemResource variableJs="rigaPopUpMenu" resource="popupmenu.tags.lista.elimina" title="Elimina documento" />
 		</c:if>
 		</td>
@@ -112,7 +113,7 @@
 	<tr>
 		<td class="comandi-dettaglio"  colSpan="2">
 
-		<c:if test='${(opzVerifiche eq "ou228")}'>
+		<c:if test='${(opzVerifiche eq "ou228") && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 			<c:if test='${autorizzatoModifiche ne 2 and gene:checkProtFunz(pageContext,"DEL","LISTADELSEL") }'>
 				<INPUT type="button"  class="bottone-azione" value='${gene:resource("label.tags.template.lista.listaEliminaSelezione")}' title='${gene:resource("label.tags.template.lista.listaEliminaSelezione")}' onclick="javascript:listaEliminaSelezione();">
 			</c:if>
@@ -131,12 +132,12 @@
 		
 <gene:javaScript>
 
-	function visualizzaFileDIGOGG(c0acod, dignomdoc,idprg,iddocdig) {
+	function visualizzaFileDocumentiVerifiche(digkey1, dignomdoc) {
 		var uffint= "${sessionScope.uffint}";
 		if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
 		{
-			var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-			document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + dignomdoc + "&digent=" + "DOCUMENTI_VERIFICHE" + "&uffint=" + uffint;
+			var href = "${pageContext.request.contextPath}/VisualizzaFileDocumentiVerifiche.do";
+			document.location.href = href+"?digkey1=" + digkey1 + "&dignomdoc=" + dignomdoc + "&uffint=" + uffint;
 		}
 	}
 		

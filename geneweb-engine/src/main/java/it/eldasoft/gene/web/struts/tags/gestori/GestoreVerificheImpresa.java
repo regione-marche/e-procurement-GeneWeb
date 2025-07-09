@@ -13,6 +13,8 @@ package it.eldasoft.gene.web.struts.tags.gestori;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.bl.verifiche.VerificheInterneManager;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.ws.objectstorage.ObjectStorageUtils;
+import it.eldasoft.gene.ws.objectstorage.UploadInfo;
 import it.eldasoft.utils.spring.UtilitySpring;
 import it.eldasoft.utils.utility.UtilityNumeri;
 
@@ -70,6 +72,8 @@ public class GestoreVerificheImpresa extends AbstractGestoreEntita {
         for (int i = 0; i < listaDoc.size(); i++) {
           Long iddocdg = (Long) SqlManager.getValueFromVectorParam(listaDoc.get(i), 1).getValue();
           if(iddocdg != null){
+            UploadInfo oldBucketInfo = ObjectStorageUtils.getUploadInfo("select bucket_ref, bucket_uuid from w_docdig where idprg=? and iddocdig=? and digent= ?",new Object[] {"PG",iddocdg,"DOCUMENTI_VERIFICHE"});
+            ObjectStorageUtils.deleteFile(oldBucketInfo.bucket_ref(),oldBucketInfo.uuid());
             this.getSqlManager().update("delete from W_DOCDIG where IDPRG = ? and IDDOCDIG = ? and digent=?", new Object[] {"PG", iddocdg, "DOCUMENTI_VERIFICHE"});
           }
         }

@@ -1,16 +1,19 @@
 package it.eldasoft.gene.web.struts;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -24,6 +27,7 @@ import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
 import it.eldasoft.gene.commons.web.struts.ActionAjaxLogged;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.utils.utility.UtilityDate;
+import net.sf.json.JSONObject;
 
 public class SetW_MESSAGEAction extends ActionAjaxLogged {
 
@@ -35,6 +39,9 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
   private static final String INSERIMENTO_MESSAGGIO         = "INSERT";
   private static final String CANCELLAZIONE_MESSAGGIO       = "DELETE";
   private static final String MARCA_LETTURA_MESSAGGIO       = "READ";
+  
+  private static final String REGEXPR_VALIDAZIONE_SUBJECT   = "^[A-Za-zאטלעש0-9 \\\\.,;\\'\\\"\n]+$";
+
 
   private SqlManager          sqlManager;
 
@@ -48,10 +55,13 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
 
     String target = null;
     String messageKey = null;
+    PrintWriter out = response.getWriter();
 
     DataSourceTransactionManagerBase.setRequest(request);
 
     try {
+
+    	JSONObject result = new JSONObject();
 
       ProfiloUtente profilo = (ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
       if (profilo != null) {
@@ -62,13 +72,14 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
         String id = request.getParameter("id");
         String recipientuff = request.getParameter("recipientuff");
         String recipientusr = request.getParameter("recipientusr");
-        String subject = request.getParameter("subject");
-        String body = request.getParameter("body");
+        String subject = StringUtils.stripToNull(request.getParameter("subject"));
+        String body = null; // request.getParameter("body"); // il body attualmente viene sempre inviato vuoto dalla pagina, per cui non lo usiamo in modo da proteggerci da XSS Stored
         String read = request.getParameter("read");
 
         TransactionStatus status = null;
         boolean commitTransaction = false;
         try {
+          
           status = this.sqlManager.startTransaction();
 
           // Messaggio in uscita o gia' inviato
@@ -76,6 +87,14 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
 
             // Inserimento di un nuovo messaggio
             if (INSERIMENTO_MESSAGGIO.equals(operation)) {
+              // protezione da iniezione di Stored XSS: se il parametro subject arriva null allora sicuramente e' stato ripulito dall'http
+              // filter XSS, altrimenti valido il parametro subject in modo da rispettare un dominio testuale senza caratteri speciali
+              if (subject==null || !Pattern.matches(REGEXPR_VALIDAZIONE_SUBJECT, subject)) {
+                logger.error("Ricevuto oggetto contenente caratteri non validi: " + subject);
+                response.sendError(500, "Ricevuto oggetto contenente caratteri non validi");
+                return null;
+              }
+              
               String insertW_MESSAGE_OUT = "insert into w_message_out (message_id, message_date, message_subject, message_body, message_sender_syscon) values (?,?,?,?,?)";
               Long maxMessageIdOut = (Long) this.sqlManager.getObject("select max(message_id) from w_message_out", new Object[] {});
               if (maxMessageIdOut == null) maxMessageIdOut = new Long(0);
@@ -128,6 +147,7 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
               }
 
               commitTransaction = true;
+              result.put("Messaggio inserito con successo", null);
             }
 
             // Cancellazione di un messaggio esistente
@@ -141,6 +161,7 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
                 this.sqlManager.update("delete from w_message_out_rec where message_id = ?", new Object[] { new Long(id) });
               }
               commitTransaction = true;
+              result.put("Messaggio cancellato con successo", null);
             }
 
           }
@@ -154,6 +175,7 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
                   "update w_message_in set message_recipient_read = ? where message_id = ? and message_recipient_syscon = ?",
                   new Object[] { new Long(read), new Long(id), syscon });
               commitTransaction = true;
+              result.put("Messaggio marcato come letto", null);
             }
 
             // Cancellazione messaggio esistente
@@ -161,9 +183,12 @@ public class SetW_MESSAGEAction extends ActionAjaxLogged {
               this.sqlManager.update("delete from w_message_in where message_id = ? and message_recipient_syscon = ?",
                   new Object[] { new Long(id), syscon });
               commitTransaction = true;
+              result.put("Messaggio cancellato con successo", null);
             }
 
           }
+          out.println(result);
+          out.flush();
 
         } catch (Exception e) {
           commitTransaction = false;

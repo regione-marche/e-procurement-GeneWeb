@@ -13,10 +13,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
 
 <% //Si cancella dalla sessione il valore delle password per determinare le chiavi di cifratura delle buste %>
-
-<c:set var="codapp" value="${sessionScope.moduloAttivo}"/>
 
 <gene:template file="lista-template.jsp" gestisciProtezioni="true" schema="GENEWEB" idMaschera="WSDMCONFI-lista">
 	<gene:setString name="titoloMaschera" value="Lista configurazioni di integrazione con sistema di protocollazione e gestione documentale"/>
@@ -28,11 +28,11 @@
 	<table class="lista">
 		<tr>
 			<td>
-				<gene:formLista entita="WSDMCONFI" where="codapp = '${codapp}'" gestisciProtezioni="true" pagesize="20" tableclass="datilista" sortColumn="2" >
+				<gene:formLista entita="WSDMCONFI" where="codapp = '${sessionScope.moduloAttivo}'" gestisciProtezioni="true" pagesize="20" tableclass="datilista" sortColumn="2" >
 				<gene:campoLista title="Opzioni" width="50">
 					<c:if test="${currentRow >= 0}">
 						<gene:PopUp variableJs="rigaPopUpMenu${currentRow}"	onClick="chiaveRiga='${chiaveRigaJava}'">
-							<gene:PopUpItem title="Visualizza dettaglio" href="javascript:visualizzaConf('${datiRiga.WSDMCONFI_ID}','${datiRiga.WSDMCONFI_DESCRI}');"/>
+							<gene:PopUpItem title="Visualizza dettaglio" href="javascript:visualizzaConf(${datiRiga.WSDMCONFI_ID})"/>
 							<gene:PopUpItemResource resource="popupmenu.tags.lista.modifica" title="Modifica intestazione" />
 							<gene:PopUpItemResource resource="popupmenu.tags.lista.elimina" title="Elimina" />
 						</gene:PopUp>
@@ -42,10 +42,9 @@
 					</c:if>
 				</gene:campoLista>
 				<gene:campoLista campo="ID" headerClass="sortable" visibile="false" href="javascript:visualizzaConf('${datiRiga.WSDMCONFI_ID}','${datiRiga.WSDMCONFI_DESCRI}');"/>
-				<gene:campoLista campo="CODAPP" headerClass="sortable" visibile="false"/>
-				<gene:campoLista campo="DESCRI" headerClass="sortable" href="javascript:visualizzaConf('${datiRiga.WSDMCONFI_ID}','${datiRiga.WSDMCONFI_DESCRI}');"/>
+				<gene:campoLista campo="DESCRI" headerClass="sortable" href="javascript:visualizzaConf(${datiRiga.WSDMCONFI_ID})"/>
 				<gene:campoLista title="Default" campo="DEFAULT" headerClass="sortable" campoFittizio="true" definizione="T10;0;;;" width="100">
-					<c:set var="defaultConf" value="${gene:callFunction3('it.eldasoft.gene.tags.functions.IsDefaultConfigFunction',  pageContext, datiRiga.WSDMCONFI_ID, codapp)}"/>
+					<c:set var="defaultConf" value="${gene:callFunction3('it.eldasoft.gene.tags.functions.IsDefaultConfigFunction',  pageContext, datiRiga.WSDMCONFI_ID, sessionScope.moduloAttivo)}"/>
 					<c:if test="${defaultConf eq 'defaultNonAttiva'}">
 						<c:set var="defaultConf" value="Sì <img src='${pageContext.request.contextPath}/img/conf_allert.png' title='Configurazione non utilizzata' />"/>
 					</c:if>
@@ -74,8 +73,6 @@
 		<input type="hidden" name="href" value="geneweb/wsdmconfi/wsdmconfi-pagine-scheda.jsp" />
 		<input type="hidden" name="entita" value="WSDMCONFI" />
 		<input type="hidden" name="idconfi" value="" /> 
-		<input type="hidden" name="descri" value="" /> 
-		<input type="hidden" name="codapp" value="${codapp}" /> 
 		<input type="hidden" name="tabAttivo" value="datigen" /> 
 		<input type="hidden" name="risultatiPerPagina" value="20" />
 		<jsp:include page="/WEB-INF/pages/commons/csrf.jsp" />
@@ -91,7 +88,6 @@
 	// Visualizzazione del dettaglio
 	function visualizzaConf(id,descri){
 		document.formListaConfipro.idconfi.value=id;
-		document.formListaConfipro.descri.value=descri;
 		bloccaRichiesteServer();
 		document.formListaConfipro.submit();
 	}

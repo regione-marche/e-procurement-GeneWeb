@@ -1,5 +1,8 @@
 package it.eldasoft.gene.tags.decorators.scheda;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
@@ -10,9 +13,6 @@ import it.eldasoft.gene.tags.link.UtilityPopUpCampiImpl;
 import it.eldasoft.gene.tags.utils.UtilityTags;
 import it.eldasoft.utils.profiles.CheckOpzioniUtente;
 import it.eldasoft.utils.profiles.OpzioniUtente;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Classe che gestisce l'implementazione di un campo di una scheda
@@ -214,7 +214,7 @@ public class CampoSchedaTagImpl extends CampoDecorator {
       if (this.isObbligatorio()) {
         this.getJs().println(
             CheckCampoSchedaTag.toString(this.getFormName(), this.getNome(),
-                "\"##\".length>0", "Il campo \""
+                "\"##\".trim().length>0", "Il campo \""
                     + this.getTitle()
                     + "\" è obbligatorio", true, true));
       }

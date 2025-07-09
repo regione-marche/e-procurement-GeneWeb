@@ -19,6 +19,8 @@
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
 
 <script type="text/javascript">
 <!--

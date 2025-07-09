@@ -29,11 +29,10 @@
 		var confermaNo = document.getElementById("NoConfermaListaOrdinamenti");
 
 		if(confermaSi.checked){
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=LAY';
-			//href = 'ListaLayout.do';
+			href = 'WizardBase.do?pageTo=LAY';
 		}
 		if(confermaNo.checked){
-			href = 'OrdinamentiBase.do?'+csrfToken+'&metodo=annullaListaOrdinamenti';
+			href = 'OrdinamentiBase.do?metodo=annullaListaOrdinamenti';
 		}
 		
 		if(href != ""){
@@ -45,13 +44,13 @@
 	}
 
 	function indietro(){
-		document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD1';
+		document.location.href = 'WizardBase.do?pageTo=ORD1';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 	
@@ -61,10 +60,10 @@
 		var confermaNo = document.getElementById("NoConfermaListaOrdinamenti");
 		
 		if(confermaSi.checked){
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=DG&pageFrom=ORD3';
+			href = 'WizardBase.do?pageTo=DG&pageFrom=ORD3';
 		}
 		if(confermaNo.checked){
-			href = 'OrdinamentiBase.do?'+csrfToken+'&metodo=annullaListaOrdinamenti&pageFrom=ORD2';
+			href = 'OrdinamentiBase.do?metodo=annullaListaOrdinamenti&pageFrom=ORD2';
 		}
 		if(href != ""){
 			bloccaRichiesteServer();
@@ -75,7 +74,7 @@
 
 	function elimina(id) {
 		if(confirm("Procedere con l'eliminazione del record?")){
-		  document.location.href = 'OrdinamentiBase.do?'+csrfToken+'&metodo=elimina&id=' + id;
+		  document.location.href = 'OrdinamentiBase.do?metodo=elimina&id=' + id;
 		}
 	}
 
@@ -100,12 +99,12 @@
 	
 	function modifica(id){
 		var metodo = "modifica";
-		document.location.href = 'ListaOrdinamentiRicercaBase.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaOrdinamentiRicercaBase.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function inviaRichiesta(id, metodo){
 		bloccaRichiesteServer();
-		document.location.href = 'ListaOrdinamentiRicercaBase.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaOrdinamentiRicercaBase.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function spostaInPosizioneMarcata(id){
@@ -130,7 +129,7 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ListaOrdinamentiRicercaBase.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
+				document.location.href = 'ListaOrdinamentiRicercaBase.do?metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
 			}
 		}
 	}

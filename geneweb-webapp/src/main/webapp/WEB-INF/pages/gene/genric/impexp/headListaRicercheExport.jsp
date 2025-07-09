@@ -25,27 +25,29 @@
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaExport"/>')){
-		  document.location.href='AnnullaImportExport.do?'+csrfToken;
+		  document.location.href='AnnullaImportExport.do';
 		}
 	}
 
   function esportaRicerca(id){
-  	document.location.href='EsportaRicerca.do?'+csrfToken+'&metodo=esportaRicerca&id=' + id;
+  	document.location.href='EsportaRicerca.do?metodo=esportaRicerca&id=' + id;
   }
 
   function esportaProspetto(id){
-  	document.location.href='EsportaRicerca.do?'+csrfToken+'&metodo=esportaProspetto&id=' + id;
+  	document.location.href='EsportaRicerca.do?metodo=esportaProspetto&id=' + id;
   }
 	
 	function indietro(){
-		document.location.href='InitTrovaRicercheExport.do?'+csrfToken;
+		document.location.href='InitTrovaRicercheExport.do';
 	}
 	
 	function elimina(id) {
   		if(confirm("Procedere con l'eliminazione del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='EsportaRicerca.do?'+csrfToken+'&metodo=elimina&idRicerca=' + id;
+  			document.location.href='EsportaRicerca.do?metodo=elimina&idRicerca=' + id;
   		}
   }
+
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

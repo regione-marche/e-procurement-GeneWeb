@@ -120,10 +120,10 @@
 		AND W_GRPRIC.ID_GRUPPO = #idGruppo#
 		AND TAB1.TAB1COD = #tabTipoRicerche#
 
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 		</isNotPropertyAvailable>
 
@@ -140,10 +140,10 @@
 		AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
 		AND W_RICERCHE.PERSONALE = 0
 
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 		</isNotPropertyAvailable>
 
@@ -155,10 +155,10 @@
 	  SELECT DISTINCT W_RICERCHE.ID_RICERCA, TAB1.TAB1DESC, W_RICERCHE.NOME, W_RICERCHE.DESCR, W_RICERCHE.FAMIGLIA AS TFDESCR, W_RICERCHE.PERSONALE
   	  FROM W_RICERCHE, TAB1
  	   WHERE TAB1.TAB1COD = #tabTipoRicerche#
-				<isPropertyAvailable property="adattaQueryPerDB2">
-					AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+				<isPropertyAvailable property="adattaQueryPerPG">
+					AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 				</isPropertyAvailable>
-				<isNotPropertyAvailable property="adattaQueryPerDB2">
+				<isNotPropertyAvailable property="adattaQueryPerPG">
 					AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 				</isNotPropertyAvailable>
   	   AND (ID_RICERCA IN (
@@ -171,10 +171,10 @@
 			  	 AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
 			   	 AND W_RICERCHE.DISP = #disponibile#
 			  	 AND TAB1.TAB1COD = #tabTipoRicerche#
-						<isPropertyAvailable property="adattaQueryPerDB2">
-							AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+						<isPropertyAvailable property="adattaQueryPerPG">
+							AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 						</isPropertyAvailable>
-						<isNotPropertyAvailable property="adattaQueryPerDB2">
+						<isNotPropertyAvailable property="adattaQueryPerPG">
 							AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 						</isNotPropertyAvailable>
 				 	 <isNotEmpty prepend="AND" property="mostraReportBase">
@@ -192,10 +192,10 @@
 			  	 AND W_RICERCHE.OWNER = #idAccount#
 			   	 AND W_RICERCHE.DISP = #disponibile#
 			  	 AND TAB1.TAB1COD = #tabTipoRicerche#
-						<isPropertyAvailable property="adattaQueryPerDB2">
-							AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+						<isPropertyAvailable property="adattaQueryPerPG">
+							AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 						</isPropertyAvailable>
-						<isNotPropertyAvailable property="adattaQueryPerDB2">
+						<isNotPropertyAvailable property="adattaQueryPerPG">
 							AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 						</isNotPropertyAvailable>
 			 	 	<isNotEmpty prepend="AND" property="mostraReportBase">
@@ -212,10 +212,10 @@
 	  SELECT DISTINCT W_RICERCHE.ID_RICERCA, TAB1.TAB1DESC, W_RICERCHE.NOME, W_RICERCHE.DESCR, W_RICERCHE.FAMIGLIA AS TFDESCR, W_RICERCHE.PERSONALE
   	FROM W_RICERCHE, TAB1
  	  WHERE TAB1.TAB1COD = #tabTipoRicerche#
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 		</isNotPropertyAvailable>
 			AND ((
@@ -245,10 +245,10 @@
 				   	 AND W_RICERCHE.PROFILO_OWNER = #codiceProfilo#
 						 AND W_RICERCHE.DISP = #disponibile#
 				  	 AND TAB1.TAB1COD = #tabTipoRicerche#
-							<isPropertyAvailable property="adattaQueryPerDB2">
-								AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+							<isPropertyAvailable property="adattaQueryPerPG">
+								AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 							</isPropertyAvailable>
-							<isNotPropertyAvailable property="adattaQueryPerDB2">
+							<isNotPropertyAvailable property="adattaQueryPerPG">
 								AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 							</isNotPropertyAvailable>
 			 	 		 <isNotEmpty prepend="AND" property="mostraReportBase">
@@ -264,10 +264,10 @@
 			  		  AND W_RICERCHE.OWNER = #idAccount#
 				  		AND W_RICERCHE.DISP = #disponibile#
    		  	  	AND TAB1.TAB1COD = #tabTipoRicerche#
-							<isPropertyAvailable property="adattaQueryPerDB2">
-								AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+							<isPropertyAvailable property="adattaQueryPerPG">
+								AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 							</isPropertyAvailable>
-							<isNotPropertyAvailable property="adattaQueryPerDB2">
+							<isNotPropertyAvailable property="adattaQueryPerPG">
 								AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 							</isNotPropertyAvailable>
 					 	 <isNotEmpty prepend="AND" property="mostraReportBase">
@@ -353,29 +353,22 @@
 			W_RICERCHE.OWNER = #owner#
 		</isNotEmpty>
 
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TT.TAB1TIP
 		</isNotPropertyAvailable>
 		AND TT.TAB1COD = #tabTipoRicerche#
-
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
-		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
-			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
-		</isNotPropertyAvailable>
-
+		AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
 		AND TF.TAB1COD = #tabFamigliaRicerca#		
 		AND USRSYS.SYSCON = W_RICERCHE.OWNER
 		UNION
 		SELECT W_RICERCHE.ID_RICERCA, TT.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR,W_RICERCHE.DISP, TF.TAB1DESC AS TFDESCR, W_RICERCHE.PERSONALE, 
-		<isPropertyAvailable property="adattaQueryPerDB2">
+		<isPropertyAvailable property="adattaQueryPerPG">
   		CAST(NULL AS VARCHAR(61)) AS SYSUTE
     </isPropertyAvailable>
-    <isNotPropertyAvailable property="adattaQueryPerDB2">
+    <isNotPropertyAvailable property="adattaQueryPerPG">
 			NULL AS SYSUTE
     </isNotPropertyAvailable>
 		FROM W_RICERCHE, TAB1 TT, TAB1 TF<isNotEmpty prepend=", " property="idGruppo">W_GRPRIC</isNotEmpty>
@@ -425,20 +418,14 @@
 			W_RICERCHE.PERSONALE = #personale#
 		</isNotEmpty>
 
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TT.TAB1TIP
 		</isNotPropertyAvailable>
 			AND TT.TAB1COD = #tabTipoRicerche#
-
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
-		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
 			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
-		</isNotPropertyAvailable>
 		AND TF.TAB1COD = #tabFamigliaRicerca#		
 		AND W_RICERCHE.OWNER NOT IN (SELECT SYSCON FROM USRSYS)
 		
@@ -498,21 +485,15 @@
 			W_RICERCHE.OWNER = #owner#
 		</isNotEmpty>
 		
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TT.TAB1TIP
 		</isNotPropertyAvailable>
 		AND TT.TAB1COD = #tabTipoRicerche#
 		
 		AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
-		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
-			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
-		</isNotPropertyAvailable>		
 		AND TF.TAB1COD = #tabFamigliaRicerca#		
 		
 		AND USRSYS.SYSCON = W_RICERCHE.OWNER
@@ -534,10 +515,10 @@
 		    ))
 		UNION
 		SELECT W_RICERCHE.ID_RICERCA, TT.TAB1DESC AS TTDESC, W_RICERCHE.NOME, W_RICERCHE.DESCR,W_RICERCHE.DISP, TF.TAB1DESC AS TFDESCR, W_RICERCHE.PERSONALE,
-		<isPropertyAvailable property="adattaQueryPerDB2">
+		<isPropertyAvailable property="adattaQueryPerPG">
   		CAST(NULL AS VARCHAR(61)) AS SYSUTE
     </isPropertyAvailable>
-    <isNotPropertyAvailable property="adattaQueryPerDB2">
+    <isNotPropertyAvailable property="adattaQueryPerPG">
 			NULL AS SYSUTE
     </isNotPropertyAvailable>
 		FROM W_RICERCHE, TAB1 TT, TAB1 TF<isNotEmpty prepend=", " property="idGruppo">W_GRPRIC</isNotEmpty>
@@ -587,20 +568,14 @@
 		<isNotEmpty prepend="AND" property="personale">
 			W_RICERCHE.PERSONALE = #personale#
 		</isNotEmpty>
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TT.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TT.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TT.TAB1TIP
 		</isNotPropertyAvailable>
 		AND TT.TAB1COD = #tabTipoRicerche#
-
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.FAMIGLIA) = TF.TAB1TIP
-		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
-			AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
-		</isNotPropertyAvailable>
+		AND W_RICERCHE.FAMIGLIA = TF.TAB1TIP
 		AND TF.TAB1COD = #tabFamigliaRicerca#		
 
     AND W_RICERCHE.OWNER NOT IN (SELECT SYSCON FROM USRSYS)
@@ -635,10 +610,10 @@
 		SELECT ID_RICERCA, TIPO, NOME, DESCR, DISP, VALDISTINTI, RISPERPAG, VISMODELLI, ENTPRINC, CODAPP, OWNER, FAMIGLIA, ID_PROSPETTO, PERSONALE, FILTROUTENTE, PROFILO_OWNER, VISPARAM, LINKSCHEDA, CODREPORTWS, FILTROUFFINT, DEFSQL
 		FROM W_RICERCHE, TAB1 
 		WHERE ID_RICERCA = #idRicerca#
-		<isPropertyAvailable property="adattaQueryPerDB2">
-			AND INTEGER(W_RICERCHE.TIPO) = TAB1.TAB1TIP
+		<isPropertyAvailable property="adattaQueryPerPG">
+			AND W_RICERCHE.TIPO = TAB1.TAB1TIP::text
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			AND W_RICERCHE.TIPO = TAB1.TAB1TIP
 		</isNotPropertyAvailable>
 		AND TAB1.TAB1COD = #tabTipoRicerche#

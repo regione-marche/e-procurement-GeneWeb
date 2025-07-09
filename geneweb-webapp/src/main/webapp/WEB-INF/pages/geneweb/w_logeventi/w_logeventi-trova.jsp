@@ -17,6 +17,9 @@
 
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#"/>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <gene:template file="ricerca-template.jsp" gestisciProtezioni="true" schema="GENEWEB" idMaschera="LogEventiTrova" >
 
 	<gene:redefineInsert name="addHistory">

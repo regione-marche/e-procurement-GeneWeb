@@ -37,12 +37,12 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaETrovaRicerche();
 		//else
 		//</c:if>
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=TAB';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=TAB';
 	}
 	
 	function listaRicerche(){
@@ -50,7 +50,7 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaEListaRicerche();
 		//else
 		//</c:if>
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function salvaRicercaEListaRicerche() {
@@ -63,60 +63,60 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaECreaRicerca();
 		//else
 		//</c:if>
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	function salvaRicercaECreaRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaECrea&tab=TAB';
+		document.location.href='DettaglioRicerca.do?metodo=salvaECrea&tab=TAB';
 	}
 	
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina
 	
 	function aggiungiArgomento(){
-		document.location.href='InitAddArgomentoRicerca.do?'+csrfToken;
+		document.location.href='InitAddArgomentoRicerca.do';
 	}
 	
 	function modifica(prog){
-		document.location.href='InitEditArgomentoRicerca.do?'+csrfToken+'&prog=' + prog;
+		document.location.href='InitEditArgomentoRicerca.do?prog=' + prog;
   }
 
 	function elimina(prog) {
 		if(confirm("Procedere con l'eliminazione del record?")){
 			bloccaRichiesteServer();
-			document.location.href='EditArgomentoRicerca.do?'+csrfToken+'&metodo=elimina&prog=' + prog;
+			document.location.href='EditArgomentoRicerca.do?metodo=elimina&prog=' + prog;
 		}
 	}
 	
 	function setEntPrinc(prog) {
 		bloccaRichiesteServer();
-		document.location.href='EditArgomentoRicerca.do?'+csrfToken+'&metodo=setEntPrinc&prog=' + prog;
+		document.location.href='EditArgomentoRicerca.do?metodo=setEntPrinc&prog=' + prog;
 	}
 
 	// azioni generali in sola visualizzazione
 
 	function salvaRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salva&tab=TAB'
+		document.location.href='DettaglioRicerca.do?metodo=salva&tab=TAB'
 	}
 
 	function ripristinaRicercaSalvata(){
 		if (confirm('<fmt:message key="info.genRic.ripristinaRicerca"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
+		  document.location.href='DettaglioRicerca.do?metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
 		}
 	}
 	
 	function annullaCreazioneRicerca(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 
@@ -126,16 +126,16 @@
 		//else
 		//</c:if>
 		bloccaRichiesteServer();
-		document.location.href='ControllaDatiRicerca.do?'+csrfToken+'&tab=TAB';
+		document.location.href='ControllaDatiRicerca.do?tab=TAB';
 	}
 	
 	function salvaRicercaEEseguiRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaEEsegui&tab=TAB';
+		document.location.href='DettaglioRicerca.do?metodo=salvaEEsegui&tab=TAB';
 	}
 
 	function esportaRicerca(){
-		document.location.href='EsportaRicerca.do?'+csrfToken;
+		document.location.href='EsportaRicerca.do';
 	}
 
 -->

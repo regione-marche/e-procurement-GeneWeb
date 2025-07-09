@@ -15,7 +15,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="https://owasp.org/www-project-csrfguard/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <fmt:setBundle basename="AliceResources" />
 
@@ -38,6 +38,8 @@
 
 <gene:formScheda entita="IMPR" gestisciProtezioni="true" plugin="it.eldasoft.gene.web.struts.tags.gestori.plugin.GestoreImpresa" gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreIMPR">
 
+<c:set var="saceWsBaseUrl" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "sace.ws.baseUrl")}'/>
+
 <c:set var="imprcodimp" value='' />
 <c:if test='${modoAperturaScheda ne "NUOVO"}'>
 	<c:set var="imprcodimp" value='${gene:getValCampo(key, "IMPR.CODIMP")}' />
@@ -50,7 +52,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		<c:set var="impresaRegistrata" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.ImpresaRegistrataSuPortaleFunction",  pageContext, codiceImpresa )}'/>
 	</c:if>
 			
-	<c:if test='${modoAperturaScheda eq "VISUALIZZA" and (tipologiaImpresa ne 3 and tipologiaImpresa ne 10) and isIntegrazionePortaleAlice eq "true"}'>
+	<c:if test='${modoAperturaScheda eq "VISUALIZZA" and (tipologiaImpresa ne 3 and tipologiaImpresa ne 10) and isIntegrazionePortaleAlice eq "true" && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 		<gene:redefineInsert name="addToAzioni" >
 			<c:if test='${gene:checkProt(pageContext, "FUNZ.VIS.ALT.GENE.ImprScheda.RegistraSuPortale") and impresaRegistrata ne "SI" and abilitaRegistrazioneSuPortale eq "1"}' >
 				<tr>
@@ -73,6 +75,13 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 					</td>
 				</tr>
 			</c:if>
+			<c:if test='${empty datiRiga.IMPR_CGENIMP and !empty saceWsBaseUrl}'>
+				<tr>
+					<td class="vocemenulaterale" >
+						<a href="javascript:associaCodiceERP()" title="Associa codice ERP" tabindex="1507">Associa codice ERP</a>
+					</td>
+				</tr>
+			</c:if>
 		</gene:redefineInsert>
 	</c:if>
 	
@@ -87,7 +96,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			<%/* Aggiungo il calcolo paretndo dal nome esteso */%>
 			<gene:calcoloCampoScheda funzione='"#IMPR_NOMEST#".substr(0,60)' elencocampi="IMPR_NOMEST" />
 		</gene:campoScheda>
-		<gene:campoScheda campo="TIPIMP"/>
+		<gene:campoScheda campo="TIPIMP" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoTIPIMP"/>
 		<gene:campoScheda campo="TIPRTI"/>
 		<gene:campoScheda campo="NATGIUI"/>
 		<gene:campoScheda campo="TIPOCOOP" visibile="${not empty valoreSocCooperativa }"/>
@@ -437,10 +446,13 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 		</gene:campoScheda>
 		<gene:campoScheda campo="SOGGDURC" defaultValue="1"/>
 		<gene:campoScheda campo="SETTPROD"/>
+		<gene:campoScheda campo="CODCNEL" />
 		<gene:campoScheda campo="DABPRE"/>
 		<gene:campoScheda campo="BANAPP"/>
+		<gene:campoScheda campo="IS_AREA_IBAN"/>
 		<gene:campoScheda campo="COORBA"/>
 		<gene:campoScheda campo="CODBIC"/>
+		<gene:campoScheda campo="NUMERO_CONTO"/>
 		<gene:campoScheda campo="SOGMOV"/>
 		<gene:campoScheda campo="SOCIOUNICO"/>
 		<gene:campoScheda campo="REGFISC"/>
@@ -476,7 +488,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 	<gene:gruppoCampi idProtezioni="ART80" visibile="${!empty art80wsurl}">
 	
 		<gene:campoScheda nome="ART80">
-			<td colspan="2"><b>Verifiche Art. 80</b></td>
+			<td colspan="2"><b>Verifica requisiti</b></td>
 		</gene:campoScheda>
 	
 		<c:choose>
@@ -488,8 +500,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 								<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou226#")}'>
 									<span style="float: right;">
 										<a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','crea');" 
-											title="Richiedi verifica art.80">
-											Richiedi verifica art.80
+											title="Richiedi verifica requisiti">
+											Richiedi verifica requisiti
 										</a>
 									</span>
 								</c:if>
@@ -508,8 +520,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 									<c:if test="${datiRiga.ART80_SERVICE eq 'one_shot'}">
 										<span style="float: right;">
 											<a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','aggiorna');" 
-												title="Aggiorna verifica art.80">
-												Richiedi aggiornamento verifica art.80
+												title="Aggiorna verifica requisiti">
+												Richiedi aggiornamento verifica requisiti
 											</a>
 										</span>
 									</c:if>
@@ -533,8 +545,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 								<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou226#")}'>
 									<span style="float: right;">
 										<a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','crea');" 
-											title="Richiedi verifica art.80">
-											Richiedi verifica art.80
+											title="Richiedi verifica requisiti">
+											Richiedi verifica requisiti
 										</a>
 									</span>
 								</c:if>
@@ -553,8 +565,8 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 									<c:if test="${datiRiga.IMPR_ART80_SERVICE eq 'one_shot'}">
 										<span style="float: right;">
 										    <a href="javascript:art80submit('${datiRiga.IMPR_CODIMP}','aggiorna');" 
-												title="Aggiorna verifica art.80">
-												Richiedi aggiornamento verifica art.80
+												title="Aggiorna verifica requisiti">
+												Richiedi aggiornamento verifica requisiti
 											</a>
 										</span>
 									</c:if>
@@ -602,7 +614,13 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 	<c:if test='${impresaRegistrata eq "SI"  and isIntegrazionePortaleAlice ne "true"}'>
 		<gene:redefineInsert name="schedaModifica"/>
 		<gene:redefineInsert name="pulsanteModifica" />
-	</c:if>	
+	</c:if>
+	<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+		<gene:redefineInsert name="schedaModifica"/>
+		<gene:redefineInsert name="pulsanteModifica" />
+		<gene:redefineInsert name="pulsanteNuovo"/>
+		<gene:redefineInsert name="schedaNuovo"/>
+	</c:if>
 
 		<input  type="hidden" name="MOD_DATI_REG" title = "MOD_DATI_REG" value="${isModificaDatiRegistrati}" />
 		<input  type="hidden" name="numElementiListaPersonale" id = "numElementiListaPersonale" value="" />
@@ -669,6 +687,7 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			visualizzazioneIndirizzi(valore);
 			showObj("rowCCIAA",vis);
 			showObj("rowIMPR_ISCRCCIAA",vis);
+			showObj("rowIMPR_CODCNEL",vis);
 			
 			if (vis) {
 				$("#tabellaPersonale").parent().parent().show();
@@ -765,8 +784,10 @@ ${gene:callFunction3("it.eldasoft.gene.tags.functions.GetListaSezioniIscrizioneF
 			showObj("rowIMPR_SETTPROD",vis);
 			showObj("rowIMPR_DABPRE",vis);
 			showObj("rowIMPR_BANAPP",vis);
+			showObj("rowIMPR_IS_AREA_IBAN",vis);
 			showObj("rowIMPR_COORBA",vis);
 			showObj("rowIMPR_CODBIC",vis);
+			showObj("rowIMPR_NUMERO_CONTO",vis);
 			showObj("rowIMPR_SOGMOV",vis);
 			showObj("rowIMPR_CODATT",vis);
 			showObj("rowIMPR_CAPSOC",vis);
@@ -984,7 +1005,17 @@ function apriLista(){
 	 	var href = "href=gene/impr/popupSoggettoDelegaPortale.jsp?codice="+codimp;
 	 	openPopUpCustom(href,"",700, 350, "no", "yes")
 	 }
-	  
+	 
+	 function associaCodiceERP() {
+	 	var codfisc=getValue("IMPR_CFIMP");
+ 	 	if(codfisc == null  || codfisc == ""){
+ 	 		alert("Il campo codice fiscale è obbligatorio per poter eseguire l'associazione del codice ERP");
+ 	 	} else {
+			var codimp = getValue("IMPR_CODIMP");
+			var href = "href=gene/impr/popupAssociaCodiceERP.jsp?codice="+codimp;
+			openPopUpCustom(href,"",700, 350, "no", "yes")
+		}
+	 }
  </c:if>
  
  function isMailValida(valore){

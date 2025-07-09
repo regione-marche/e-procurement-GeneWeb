@@ -22,7 +22,8 @@ public class ComponiWhereUFFINTFunction extends AbstractComponiWhereFunction {
   private static final String G1AQSPESA_ID = "g1aqspesa";
   private static final String NULL_ISCUC_ID = "nullIscuc";
   private static final String CODEIN_NOT_EQUALS_ID = "codeinNotEquals";
-
+  private static final String UFFINT_CFEIN_UGUALI_ID = "uffintCfeinUguali"; 
+  
   // Nomi form
   private static final String TORN_PARENT_FORM_NAME = "TORNAltriSogg";
   private static final String GARE_PARENT_FORM_NAME = "GareAltriSogg";
@@ -37,6 +38,8 @@ public class ComponiWhereUFFINTFunction extends AbstractComponiWhereFunction {
       "uffint.codein IN (SELECT cenint FROM garaltsog WHERE ngara in";
   private static final String CODEIN_NOT_EQUALS_WHERE =
       "uffint.codein <> ?";
+  private static final String UFFINT_CFEIN_UGUALI_WHERE = 
+      "uffint.CFEIN in (select CFEIN from UFFINT u where u.CODEIN = ? or u.CODEIN is null)";
 
   // Nomi filtri addizionali
   private static final String ABILITAZIONE_FILTER_NAME = "abilitazione";
@@ -72,6 +75,9 @@ public class ComponiWhereUFFINTFunction extends AbstractComponiWhereFunction {
     } else if (functionId.equals(CODEIN_NOT_EQUALS_ID)) {
       ComponiWhereUtils.expectedFunctionParamsCountCheck(LOGGER, ENTITA, functionParams, 0);
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
+    } else if (functionId.equals(UFFINT_CFEIN_UGUALI_ID)) {
+      ComponiWhereUtils.expectedFunctionParamsCountCheck(LOGGER, ENTITA, functionParams, 1);
+      ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
     } else {
       throw ComponiWhereUtils.getUnknownFunctionIdException(functionId, ENTITA, LOGGER);
     }
@@ -103,6 +109,8 @@ public class ComponiWhereUFFINTFunction extends AbstractComponiWhereFunction {
       where += NULL_ISCUC_WHERE;
     } else if (functionId.equals(CODEIN_NOT_EQUALS_ID)) {
       where += CODEIN_NOT_EQUALS_WHERE;
+    } else if (functionId.equals(UFFINT_CFEIN_UGUALI_ID)) {
+    	where += UFFINT_CFEIN_UGUALI_WHERE;
     }
 
     if (notEmptyWhere) {

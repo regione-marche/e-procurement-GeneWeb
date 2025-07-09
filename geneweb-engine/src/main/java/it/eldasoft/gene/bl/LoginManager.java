@@ -23,6 +23,7 @@ import it.eldasoft.utils.sql.comp.SqlComposerException;
 import it.eldasoft.utils.utility.UtilityNumeri;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class LoginManager {
 
     return account;
   }
-
+  
   /**
    * Estrae un utente in base alla login e alla password (per la login
    * il controllo &egrave; NON case sensitive).
@@ -281,5 +282,20 @@ public class LoginManager {
     }
     return hash;
   }
+  
+  public Integer getMaxLoaBySysconAndCodein(Integer idAccount, String uffint) {
+    return this.accountDao.getMaxLoaBySysconAndCodein(idAccount, uffint);
+  }
+
+  public void insertUsrLoa(Integer idAccount, String uffint, String provider, int loa, Date authData) {
+    this.accountDao.insertUsrLoa(idAccount, uffint, provider, loa, authData);  
+  }
+
+
+  public void updateUsrLoa(Integer idAccount, String uffint, String provider, int loa, Date authData) {
+    this.accountDao.updateUsrLoa(idAccount, uffint, provider, loa, authData);
+  }
+  
+  
 
 }

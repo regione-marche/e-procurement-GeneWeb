@@ -339,11 +339,11 @@ public class UffintManager {
 				  }
 				  // Se esistono utenti da disabilitare
 				  if (whereOn.length() > 0) {
-					  this.sqlManager.update("update usrsys set sysdisab = 1 where 1 = 0" + whereOn, null);
+					  this.sqlManager.update("update usrsys set sysdisab = '1' where 1 = 0" + whereOn, null);
 				  }
 				  // Se esistono utenti da abilitare
 				  if (whereOff.length() > 0) {
-					  this.sqlManager.update("update usrsys set sysdisab = 0 where 1 = 0" + whereOff, null);
+					  this.sqlManager.update("update usrsys set sysdisab = '0' where 1 = 0" + whereOff, null);
 				  }
 			  }
 		  }

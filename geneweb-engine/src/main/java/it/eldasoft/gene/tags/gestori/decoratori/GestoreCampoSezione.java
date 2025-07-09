@@ -28,7 +28,7 @@ public class GestoreCampoSezione extends AbstractGestoreCampoTabellato {
   @Override
   public SqlSelect getSql() {
     String codapp = (String)this.getPageContext().getAttribute(CostantiGenerali.MODULO_ATTIVO, PageContext.SESSION_SCOPE);
-    return new SqlSelect("select distinct sezione, sezione as sezione_descrizione from w_config where sezione is not null and codapp = ? order by sezione", new Object[] {codapp});
+    return new SqlSelect("select distinct sezione, sezione as sezione_descrizione from w_config where sezione is not null and codapp in (?, ?) order by sezione", new Object[] {"W_",codapp});
   }
 
 }

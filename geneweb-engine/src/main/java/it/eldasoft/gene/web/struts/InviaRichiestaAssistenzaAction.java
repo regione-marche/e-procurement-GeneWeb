@@ -18,6 +18,7 @@ import it.eldasoft.gene.commons.web.struts.ActionBase;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.db.domain.PropsConfig;
 import it.eldasoft.gene.utils.MailUtils;
+import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
 import it.eldasoft.utils.mail.IMailSender;
 import it.eldasoft.utils.mail.MailSenderException;
 import it.eldasoft.utils.properties.ConfigManager;
@@ -135,6 +136,24 @@ public class InviaRichiestaAssistenzaAction extends Action {
 
       if (!FileAllegatoManager.isEstensioneFileAmmessa(assistenzaForm.getSelezioneFile().getFileName())) {
         String chiave = "errors.gestoreException.*.upload.estensioneNonAmmessa";
+        String logMessageError = this.resBundleGenerale.getString(chiave);
+        logMessageError = logMessageError.replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0), assistenzaForm.getSelezioneFile().getFileName());
+        logger.error(logMessageError);
+
+        aggiungiMessaggio(request, chiave, assistenzaForm.getSelezioneFile().getFileName());
+        target = "validateError";
+        continua = false;
+      } else if(!FileAllegatoManager.checkFileContent(assistenzaForm.getSelezioneFile().getFileData(), assistenzaForm.getSelezioneFile().getFileName())){
+        String chiave = "errors.gestoreException.*.upload.erroreVerificaContenuto";
+        String logMessageError = this.resBundleGenerale.getString(chiave);
+        logMessageError = logMessageError.replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0), assistenzaForm.getSelezioneFile().getFileName());
+        logger.error(logMessageError);
+
+        aggiungiMessaggio(request, chiave, assistenzaForm.getSelezioneFile().getFileName());
+        target = "validateError";
+        continua = false;
+      } else if(assistenzaForm.getSelezioneFile().getFileName().toLowerCase().endsWith(".pdf") && FileAllegatoManager.isMaliciousPdf(assistenzaForm.getSelezioneFile().getFileData(), assistenzaForm.getSelezioneFile().getFileName())){
+        String chiave = "errors.gestoreException.*.upload.erroreContenutoMalevolo";
         String logMessageError = this.resBundleGenerale.getString(chiave);
         logMessageError = logMessageError.replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0), assistenzaForm.getSelezioneFile().getFileName());
         logger.error(logMessageError);

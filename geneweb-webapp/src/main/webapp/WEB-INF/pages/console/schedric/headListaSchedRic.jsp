@@ -43,27 +43,27 @@
 	}
 	
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaSchedRic.do?'+csrfToken;
+		document.location.href='InitTrovaSchedRic.do';
   }
 
   function creaNuovaSchedRic(){
-		document.location.href='WizardSchedRic.do?'+csrfToken+'&pageTo=REP';
+		document.location.href='WizardSchedRic.do?pageTo=REP';
   }
   
   
   function visualizza(id){
-		document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=visualizzaDettaglio&idSchedRic=' + id;
+		document.location.href='DettaglioSchedRic.do?metodo=visualizzaDettaglio&idSchedRic=' + id;
   }
 
   function elimina(id) {
   		if(confirm("Procedere con l'eliminazione del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=elimina&idSchedRic=' + id;
+  			document.location.href='DettaglioSchedRic.do?metodo=elimina&idSchedRic=' + id;
   		}
   }
 
   function modifica(id){
-		document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=modificaDettaglio&idSchedRic=' + id;
+		document.location.href='DettaglioSchedRic.do?metodo=modificaDettaglio&idSchedRic=' + id;
   }
   
   
@@ -81,11 +81,13 @@
 	}
 
 	function attiva(id){
-		document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=attiva&idSchedRic=' + id;
+		document.location.href='DettaglioSchedRic.do?metodo=attiva&idSchedRic=' + id;
   	}
 	
 	function disattiva(id){
-		document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=disattiva&idSchedRic=' + id;
+		document.location.href='DettaglioSchedRic.do?metodo=disattiva&idSchedRic=' + id;
   	}
+
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

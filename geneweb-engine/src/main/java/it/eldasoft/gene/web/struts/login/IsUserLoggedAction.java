@@ -10,13 +10,21 @@
  */
 package it.eldasoft.gene.web.struts.login;
 
+import it.eldasoft.gene.bl.LoginManager;
+import it.eldasoft.gene.bl.admin.AccountManager;
+import it.eldasoft.gene.bl.system.LdapManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase;
 import it.eldasoft.gene.commons.web.struts.ActionBase;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.domain.admin.Account;
+import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.sicurezza.FactoryCriptazioneByte;
+import it.eldasoft.utils.sicurezza.ICriptazioneByte;
 import it.eldasoft.utils.utility.UtilityStringhe;
 
 import java.io.IOException;
@@ -46,6 +54,43 @@ public class IsUserLoggedAction extends Action {
 
   /** Logger Log4J di classe */
   static Logger            logger            = Logger.getLogger(IsUserLoggedAction.class);
+  
+  /** Reference alla classe di business logic per l'estrazione dell'account */
+  protected LoginManager      loginManager;
+
+  protected AccountManager      accountManager;
+
+  protected LdapManager         ldapManager;
+
+  /**
+   * @param ldapManager
+   *        The ldapManager to set.
+   */
+  public void setLdapManager(LdapManager ldapManager) {
+    this.ldapManager = ldapManager;
+  }
+
+  /**
+   * @param loginManager
+   *        loginManager da settare internamente alla classe.
+   */
+  public void setLoginManager(LoginManager loginManager) {
+    this.loginManager = loginManager;
+  }
+
+  /**
+   * @return Ritorna LoginManager.
+   */
+  public LoginManager getLoginManager() {
+    return this.loginManager;
+  }
+  /**
+   * @param accountManager
+   *        accountManager da settare internamente alla classe.
+   */
+  public void setAccountManager(AccountManager accountManager) {
+    this.accountManager = accountManager;
+  }
 
   /**
    * Resource bundle parte generale dell'applicazione (modulo GENE)
@@ -61,11 +106,21 @@ public class IsUserLoggedAction extends Action {
     String target = CostantiGeneraliStruts.FORWARD_OK;
 
     DataSourceTransactionManagerBase.setRequest(request);
+    
+    if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+      if (request.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO) == null) {
+        // nel caso di configurazione multiente, blocco l'azione se bypasso la selezione ente
+        this.aggiungiMessaggio(request, "errors.loginMultiente.enteNonSelezionato");
+        target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      }
+    }    
 
     // se il client è già loggato, ne blocco l'accesso
     ProfiloUtente profiloUtente = (ProfiloUtente) request.getSession().getAttribute(
         CostantiGenerali.PROFILO_UTENTE_SESSIONE);
-    if (profiloUtente != null) {
+    boolean isPairingSSO = "true".equals((String) request.getSession().getAttribute(
+        CostantiGenerali.PAIRING_SSO));
+    if (profiloUtente != null && !isPairingSSO) {
       target = "logged";
       String messageKey = "errors.login.utenteLoggato";
       logger.error(this.resBundleGenerale.getString(messageKey).replaceAll(
@@ -190,5 +245,60 @@ public class IsUserLoggedAction extends Action {
       nomePagina = "registrazione-account.jsp?modo=NUOVO";
     }
     return UtilityStruts.redirectToPage("/" + nomePagina,true,request);
+  }
+  
+  /**
+   * Verifica se l'applicativo non utilizza i profili: in tal caso viene
+   * predisposto, in caso di successo, l'avanzamento dell'operazione di
+   * autenticazione mediante check della versione dell'applicativo e non con il
+   * check dei profili attribuiti all'utente
+   *
+   * @param request
+   *        request HTTP
+   * @param target
+   *        target per il forward di struts
+   * @return target modificato
+   */
+  protected String pairUtenteLdap0WithSSO(HttpServletRequest request, String codiceFiscale, String sso) {
+    
+    request.getSession().removeAttribute(CostantiGenerali.PAIRING_SSO);
+    
+    ProfiloUtente profilo = (ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
+    String descEvento="Associazione utente "+profilo.getLogin()+" (syscon: "+profilo.getId()+") a sistema di autenticazione esterno ("+sso+")";
+    int livEvento=1;
+    String errore=null;
+    
+    try {
+      Account account = this.accountManager.getAccountBySysCf(codiceFiscale);
+      if(account != null && account.getIdAccount()!=profilo.getId()) {
+        String messageKey = "errors.pairingSSO.cfPresente";
+        errore=this.resBundleGenerale.getString(messageKey).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0),codiceFiscale);
+        logger.error(errore);
+        this.aggiungiMessaggio(request, messageKey, codiceFiscale);
+        livEvento=3;
+      }else {
+        this.accountManager.updateLdapUsr(profilo.getId(), codiceFiscale);
+        this.aggiungiMessaggio(request, "info.pairingSSO.successo", codiceFiscale); 
+      }  
+    }catch(Exception e) {
+      String messageKey = "errors.pairingSSO.generico";
+      errore=this.resBundleGenerale.getString(messageKey);
+      logger.error(errore);
+      this.aggiungiMessaggio(request, messageKey);
+      livEvento=3;
+    }finally{
+      try {
+        LogEvento logEvento = LogEventiUtils.createLogEvento(request);
+        logEvento.setLivEvento(livEvento);
+        logEvento.setOggEvento(codiceFiscale);
+        logEvento.setCodEvento("ASSOCIAZIONE_UTENZA_SSO");
+        logEvento.setDescr(descEvento);
+        logEvento.setErrmsg(errore);
+        LogEventiUtils.insertLogEventi(logEvento);
+      } catch (Exception le) {
+        logger.error("Errore inaspettato durante la tracciatura su w_logeventi", le);
+      }
+    }
+    return "pairingSSOResult";
   }
 }

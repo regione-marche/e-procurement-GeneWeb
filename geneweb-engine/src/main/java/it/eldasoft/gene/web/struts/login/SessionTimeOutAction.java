@@ -10,18 +10,12 @@
  */
 package it.eldasoft.gene.web.struts.login;
 
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.struts.ActionBase;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.utils.properties.ConfigManager;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -29,6 +23,13 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.struts.ActionBase;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.AccountSSO;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Action per il popolamento del request con il messaggio di "sessione scaduta"
@@ -59,20 +60,16 @@ public class SessionTimeOutAction extends Action {
     // target di default, da modificare nel momento in cui si verificano dei
     // problemi
     String target = CostantiGeneraliStruts.FORWARD_LOGIN;
-
+    if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+      // in configurazione multiente, il processo riparte prima di tutto dalla scelta ente
+      target = "selezioneInizialeEnte";
+    }
+    
     String messageKey = null;
     messageKey = "errors.session.timeOut";
     this.aggiungiMessaggio(request, messageKey);
 
-    String propProtSSO = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_PROTOCOLLO));
-    String propDefURL = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_LOGOUT_URL));
-    //Per sistemi con autenticazione SSO si fa la redirect condisconnessione
-    // anche della sessione remota (1-Shibboleth; 2-Cohesion; 3-SSOBart)
-    if(propProtSSO != null && !"0".equals(propProtSSO) && propDefURL != null){
-      String url = propDefURL;
-      request.setAttribute("url", url);
-      target = "logoutSSO";
-    }
+    //TODO Bisogna cancellare i cookie? (Si, almeno su SPID)
 
     if (logger.isDebugEnabled()) {
       logger.debug("execute: fine metodo");

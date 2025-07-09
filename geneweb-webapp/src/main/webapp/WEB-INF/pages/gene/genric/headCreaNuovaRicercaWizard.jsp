@@ -27,7 +27,7 @@
 	function creaNuovaRicerca(){
     var valoreAzione = null;
     //var esito = true;
-    //var controllo = false; // variabile di controllo modificata se almeno un valore è scelto
+    //var controllo = false; // variabile di controllo modificata se almeno un valore e' scelto
     var bottone = document.formRabioBut.azione;
     for(var i=0; i < bottone.length; i++) { // uso bottone.length per sapere quanti radio button ci sono
       if(bottone[i].checked) { // scorre tutti i vari radio button
@@ -40,18 +40,18 @@
    
 		//document.location.href='DettaglioRicerca.do?metodo=crea&famiglia='+valoreAzione;
 		if (valoreAzione == '0')
-			document.location.href='CreaRicercaBaseWizard.do?'+csrfToken+'&metodo=crea&famiglia='+valoreAzione;
+			document.location.href='CreaRicercaBaseWizard.do?metodo=crea&famiglia='+valoreAzione;
 		if (valoreAzione == '1') 
-			document.location.href='CreaRicercaWizard.do?'+csrfToken+'&metodo=crea&famiglia='+valoreAzione;
+			document.location.href='CreaRicercaWizard.do?metodo=crea&famiglia='+valoreAzione;
 		if (valoreAzione == '2')
-			document.location.href='CreaRicercaProspettoWizard.do?'+csrfToken+'&metodo=crea&famiglia='+valoreAzione;
+			document.location.href='CreaRicercaProspettoWizard.do?metodo=crea&famiglia='+valoreAzione;
 					
 		
 	}
 	
 	function annullaCreazione(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 	}
 
 -->

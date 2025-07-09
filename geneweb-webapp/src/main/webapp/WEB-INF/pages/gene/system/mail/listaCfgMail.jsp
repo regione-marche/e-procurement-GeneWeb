@@ -22,6 +22,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <tiles:insert  definition=".listaDef" flush="true">
@@ -44,22 +47,22 @@
 
 	function nuovo(){
 		bloccaRichiesteServer();
-		document.location.href = 'ConfigurazioneMail.do?'+csrfToken+'&metodo=nuovo';
+		document.location.href = 'ConfigurazioneMail.do?metodo=nuovo';
 	}
 	
 	function modifica(id){
-		document.location.href = 'ConfigurazioneMail.do?'+csrfToken+'&metodo=modifica&idcfg=' + id;
+		document.location.href = 'ConfigurazioneMail.do?metodo=modifica&idcfg=' + id;
   	}
 
 	
 	function visualizza(id){
-		document.location.href = 'ConfigurazioneMail.do?'+csrfToken+'&metodo=visualizza&idcfg=' + id;
+		document.location.href = 'ConfigurazioneMail.do?metodo=visualizza&idcfg=' + id;
 	}
 	
 	function elimina(id){
 		if (confirm("Confermi l'eliminazione della configurazione?")){
 			bloccaRichiesteServer();
-			document.location.href = 'ListaConfigurazioniMail.do?'+csrfToken+'&metodo=elimina&idcfg=' + id;
+			document.location.href = 'ListaConfigurazioniMail.do?metodo=elimina&idcfg=' + id;
 		}
 	}
 	

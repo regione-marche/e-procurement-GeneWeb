@@ -28,7 +28,7 @@
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab){
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina

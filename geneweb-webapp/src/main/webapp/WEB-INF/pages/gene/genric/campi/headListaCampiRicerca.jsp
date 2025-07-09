@@ -39,12 +39,12 @@
 		if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaETrovaRicerche();
 		else
 		</c:if>
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=CAM';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=CAM';
 	}
 	
 	function listaRicerche(){
@@ -52,12 +52,12 @@
 		if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaEListaRicerche();
 		else
 		</c:if>
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function salvaRicercaEListaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaELista&tab=CAM';
+		document.location.href='DettaglioRicerca.do?metodo=salvaELista&tab=CAM';
 	}
 	
 	function creaNuovaRicerca(){
@@ -65,19 +65,19 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaECreaRicerca();
 		//else
 		//</c:if>
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	function salvaRicercaECreaRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaECrea&tab=CAM';
+		document.location.href='DettaglioRicerca.do?metodo=salvaECrea&tab=CAM';
 	}
 	
 	// Azioni invocate dalle opzioni sul singolo record
 	
 	function modifica(id){
 		var metodo = "modifica";
-		document.location.href = 'ListaCampiRicerca.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaCampiRicerca.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function elimina(id) {
@@ -96,7 +96,7 @@
 
 	function inviaRichiesta(id, metodo){
 		bloccaRichiesteServer();
-		document.location.href = 'ListaCampiRicerca.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaCampiRicerca.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function spostaInPosizioneMarcata(id){
@@ -121,7 +121,7 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ListaCampiRicerca.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
+				document.location.href = 'ListaCampiRicerca.do?metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
 			}
 		}
 	}
@@ -129,17 +129,17 @@
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina
 
 	function aggiungiCampo(){
-		document.location.href='AddCampoRicerca.do?'+csrfToken;
+		document.location.href='AddCampoRicerca.do';
 	}
 
 	function aggiungiCampi(){
-		document.location.href='AddElencoCampiRicerca.do?'+csrfToken;
+		document.location.href='AddElencoCampiRicerca.do';
 	}
 
 	function trovaCampo(){	
@@ -147,33 +147,33 @@
 		var w = 500;
 		var l = Math.floor((screen.width-w)/2);
 		var t = Math.floor((screen.height-h)/2); 
-    	var popup = window.open('${pageContext.request.contextPath}/geneGenric/InitTrovaCampoRicerca.do?'+csrfToken,'popup','width=' + w + ',height=' + h + ',top=' + t + ',left=' + l + ',status=yes,resizable=yes,scrollbars=yes');
+    	var popup = window.open('${pageContext.request.contextPath}/geneGenric/InitTrovaCampoRicerca.do','popup','width=' + w + ',height=' + h + ',top=' + t + ',left=' + l + ',status=yes,resizable=yes,scrollbars=yes');
     	popup.focus();
 	}
 	
 	function estraiCampiDistinti() {
 		bloccaRichiesteServer();
-		document.location.href = "ListaCampiRicerca.do?"+csrfToken+"&metodo=campiDistinti";
+		document.location.href = "ListaCampiRicerca.do?metodo=campiDistinti";
 	}
 
 	// azioni generali in sola visualizzazione
 
 	function salvaRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salva&tab=CAM'
+		document.location.href='DettaglioRicerca.do?metodo=salva&tab=CAM'
 	}
 
 	function ripristinaRicercaSalvata(){
 		if (confirm('<fmt:message key="info.genRic.ripristinaRicerca"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
+		  document.location.href='DettaglioRicerca.do?metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
 		}
 	}
 	
 	function annullaCreazioneRicerca(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 
@@ -184,17 +184,17 @@
 		</c:if>
 		{
 			bloccaRichiesteServer();
-			document.location.href='ControllaDatiRicerca.do?'+csrfToken+'&tab=CAM'
+			document.location.href='ControllaDatiRicerca.do?tab=CAM'
 		}
 	}
 	
 	function salvaRicercaEEseguiRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaEEsegui&tab=CAM';
+		document.location.href='DettaglioRicerca.do?metodo=salvaEEsegui&tab=CAM';
 	}
 
 	function esportaRicerca(){
-		document.location.href='EsportaRicerca.do?'+csrfToken;
+		document.location.href='EsportaRicerca.do';
 	}
 
 	function gestisciSubmit(azione){

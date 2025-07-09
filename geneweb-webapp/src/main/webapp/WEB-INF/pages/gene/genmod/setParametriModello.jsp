@@ -234,6 +234,8 @@ $(function() {
 	 		esito1 = true;
 	 	else if(elencoFormatoParametri[indice] == 'T')
 	 		esito1 = true;
+		else if(elencoFormatoParametri[indice] == 'UI')
+			esito1 = true;
 	 		
   		return esito1;
 	}
@@ -443,7 +445,7 @@ $(function() {
 	<c:set var="indice" value="0" />
 	<c:forEach items="${listaParametri}" var="parametro" varStatus="ciclo">
 		<c:set var="tipoPar" value="${fn:trim(parametro.tipo)}" />
-	  <c:if test='${tipoPar ne "U"}'>
+	  <c:if test='${tipoPar ne "U" && tipoPar ne "UI"}'>
 	  <tr>
       <td class="etichetta-dato">
       	${fn:trim(parametro.nome)}<c:if test="${fn:trim(parametro.obbligatorio eq 1)}"> (*)</c:if>
@@ -508,8 +510,8 @@ $(function() {
 		</tr>
 		</c:if>
 
-		<c:if test='${tipoPar eq "U" && !empty idAccount}'>
-				<input type="hidden" name="parametriModello" value="${idAccount}">
+		<c:if test='${tipoPar eq "U" || tipoPar eq "UI"}'>
+				<input type="hidden" name="parametriModello" value="">
 		</c:if>
 
 	</c:forEach>

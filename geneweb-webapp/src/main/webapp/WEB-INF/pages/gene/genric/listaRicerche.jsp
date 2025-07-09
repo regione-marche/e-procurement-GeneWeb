@@ -19,12 +19,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#" />
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
-<c:set var="token"><csrf:token/></c:set>
 
 <c:if test="${!empty (querySql)}">
 	<jsp:include page="/WEB-INF/pages/gene/genric/debugRisultatiRicerca.jsp" />
@@ -34,7 +32,7 @@
 	<table class="lista">
 		<tr>
 			<td>
-				<display:table name="listaRicerche" defaultsort="4" id="ricercaForm" class="datilista" requestURI="TrovaRicerche.do?${token}" pagesize="${requestScope.risultatiPerPagina}" sort="list">
+				<display:table name="listaRicerche" defaultsort="4" id="ricercaForm" class="datilista" requestURI="TrovaRicerche.do" pagesize="${requestScope.risultatiPerPagina}" sort="list">
 					<display:column class="associadati" title="Opzioni<br><center><a href='javascript:selezionaTutti(document.listaForm.id);' Title='Seleziona Tutti'> <img src='${pageContext.request.contextPath}/img/ico_check.gif' height='15' width='15' alt='Seleziona Tutti'></a>&nbsp;<a href='javascript:deselezionaTutti(document.listaForm.id);' Title='Deseleziona Tutti'><img src='${pageContext.request.contextPath}/img/ico_uncheck.gif' height='15' width='15' alt='Deseleziona Tutti'></a></center>" style="width:50px">
 						<c:if test='${not fn:contains(ricercaForm.famiglia, "modello") && not fn:contains(ricercaForm.famiglia, "base")}' >
 							<elda:linkPopupRecord idRecord="${ricercaForm.idRicerca}" contextPath="${contextPath}" />
@@ -49,7 +47,7 @@
 				  </display:column>
 					<display:column property="tipoRicerca" title="Tipo Report" sortable="true" headerClass="sortable" >  </display:column>
 					<display:column property="famiglia" title="Famiglia" sortable="true" headerClass="sortable" >  </display:column>
-					<display:column property="nomeRicerca" title="Titolo" href="DettaglioRicerca.do?${token}&metodo=visualizza&" paramId="idRicerca"
+					<display:column property="nomeRicerca" title="Titolo" href="DettaglioRicerca.do?metodo=visualizza&" paramId="idRicerca"
 									paramProperty="idRicerca" sortable="true" headerClass="sortable" >  </display:column>
 					<display:column property="descrRicerca" title="Descrizione" sortable="true" headerClass="sortable" >  </display:column>
 				<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou48#")}'>

@@ -12,11 +12,15 @@ package it.eldasoft.gene.web.struts;
 
 import it.eldasoft.gene.bl.admin.UffintManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.db.domain.UfficioIntestatario;
 import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 import java.io.IOException;
 
@@ -57,36 +61,51 @@ public class SetUfficioIntestatarioAction extends ActionBaseNoOpzioni {
 
     if (logger.isDebugEnabled()) logger.debug("runAction: inizio metodo");
 
-    String idUffint = request.getParameter("uffint");
-
-    UfficioIntestatario ufficio = this.uffintManager.getUfficioIntestatarioByPK(idUffint);
-
-    // set in sessione dell'id dell'ufficio e del suo nome
-    request.getSession().setAttribute(
-        CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO, ufficio.getCodice());
-    request.getSession().setAttribute(
-        CostantiGenerali.NOME_UFFICIO_INTESTATARIO_ATTIVO, ufficio.getNome());
-
     // forward alla pagina iniziale
     String codiceApplicazione = (String) request.getSession().getAttribute(
         CostantiGenerali.MODULO_ATTIVO);
 
+    String target = null;
+    if ("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE))) {
+      String messageKey = "errors.listaEntiLogin.bloccaModifica";
+      String login = ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getLogin();
+      logger.error(this.resBundleGenerale.getString(messageKey).replaceAll(UtilityStringhe.getPatternParametroMessageBundle(0), login));
+      this.aggiungiMessaggio(request, messageKey, login);
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+    } else {
+
+      String idUffint = request.getParameter("uffint");
+
+      UfficioIntestatario ufficio = this.uffintManager.getUfficioIntestatarioByPK(idUffint);
+
+      // set in sessione dell'id dell'ufficio e del suo nome
+      request.getSession().setAttribute(
+          CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO, ufficio.getCodice());
+      request.getSession().setAttribute(
+          CostantiGenerali.NOME_UFFICIO_INTESTATARIO_ATTIVO, ufficio.getNome());
+
+      int livEvento = 1;
+      String errMsgEvento = "";
+
+      LogEvento logEvento = LogEventiUtils.createLogEvento(request);
+      logEvento.setLivEvento(livEvento);
+      logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_SET_UFFINT);
+      logEvento.setDescr("Selezione ufficio intestatario (" + ufficio.getCodice() + ")");
+      logEvento.setErrmsg(errMsgEvento);
+      LogEventiUtils.insertLogEventi(logEvento);
+    }
+    
     if (logger.isDebugEnabled()) {
       logger.debug("runAction: fine metodo");
     }
 
-    int livEvento = 1;
-    String errMsgEvento = "";
+    if (target == null) {
+      return UtilityStruts.redirectToPage("home" + codiceApplicazione + ".jsp",
+          false, request);
+    } else {
+      return mapping.findForward(target);
+    }
 
-    LogEvento logEvento = LogEventiUtils.createLogEvento(request);
-    logEvento.setLivEvento(livEvento);
-    logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_SET_UFFINT);
-    logEvento.setDescr("Selezione ufficio intestatario (" + ufficio.getCodice() + ")");
-    logEvento.setErrmsg(errMsgEvento);
-    LogEventiUtils.insertLogEventi(logEvento);
-
-    return UtilityStruts.redirectToPage("home" + codiceApplicazione + ".jsp",
-        false, request);
   }
 
 }

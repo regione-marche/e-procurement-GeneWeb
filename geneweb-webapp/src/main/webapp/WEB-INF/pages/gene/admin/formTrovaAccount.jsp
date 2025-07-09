@@ -47,18 +47,28 @@
 	      	<html:text property="nome" styleId="nome" value="${trovaAccountForm.nome}" size="50" maxlength="60"/>	      	
 	      </td>
 	    </tr>
-	    <tr>
-	      <td class="etichetta-dato" >Utente disabilitato</td>
-	      <td class="operatore-trova">&nbsp;</td>
-	      <td class="valore-dato-trova"> 
-	      	<html:select property="utenteDisabilitato" value="${trovaAccountForm.utenteDisabilitato}">
-			      	<html:option value="">&nbsp;</html:option>
-			      	<html:option value="1"> Si </html:option> 
-			      	<html:option value="0"> No </html:option> 
+   	    <tr>
+	      <td class="etichetta-dato" >Codice Fiscale</td>
+	      <td class="operatore-trova">
+	      	<html:select property="operatoreCodiceFiscale" value="${trovaAccountForm.operatoreCodiceFiscale}">
+		      	<html:options name="listaValueConfrontoStringa" labelName="listaTextConfrontoStringa" />
 	      	</html:select>
 	      </td>
+	      <td class="valore-dato-trova"> 
+	      	<html:text property="codiceFiscale" styleId="codiceFiscale" value="${trovaAccountForm.codiceFiscale}" size="50" maxlength="60"/>
+	      </td>
 	    </tr>
-
+	    <tr>
+	      <td class="etichetta-dato" >E-mail</td>
+	      <td class="operatore-trova">
+	      	<html:select property="operatoreEMail" value="${trovaAccountForm.operatoreEMail}">
+		      	<html:options name="listaValueConfrontoStringa" labelName="listaTextConfrontoStringa" />
+	      	</html:select>
+	      </td>
+	      <td class="valore-dato-trova"> 
+	      	<html:text property="eMail" styleId="eMail" value="${trovaAccountForm.eMail}" size="50" maxlength="60"/>
+	      </td>
+	    </tr>
 	    <c:if test='${fn:contains(listaOpzioniDisponibili, "OP100#")}'>
 	    <tr>
 	      <td class="etichetta-dato" >Utente LDAP</td>
@@ -72,7 +82,17 @@
 	      </td>
 	    </tr>
 	    </c:if>
-
+	    <tr>
+	      <td class="etichetta-dato" >Utente disabilitato</td>
+	      <td class="operatore-trova">&nbsp;</td>
+	      <td class="valore-dato-trova"> 
+	      	<html:select property="utenteDisabilitato" value="${trovaAccountForm.utenteDisabilitato}">
+			      	<html:option value="">&nbsp;</html:option>
+			      	<html:option value="1"> Si </html:option> 
+			      	<html:option value="0"> No </html:option> 
+	      	</html:select>
+	      </td>
+	    </tr>
 		<c:if test="${! empty listaUffAppartenenza }">
 		   <tr>
 			<td class="etichetta-dato">Ufficio Appartenenza</td>
@@ -85,36 +105,13 @@
 			  </td>
 			</tr>
 		</c:if>
-		
-	    <tr>
-	      <td class="etichetta-dato" >Codice Fiscale</td>
-	      <td class="operatore-trova">
-	      	<html:select property="operatoreCodiceFiscale" value="${trovaAccountForm.operatoreCodiceFiscale}">
-		      	<html:options name="listaValueConfrontoStringa" labelName="listaTextConfrontoStringa" />
-	      	</html:select>
-	      </td>
-	      <td class="valore-dato-trova"> 
-	      	<html:text property="codiceFiscale" styleId="codiceFiscale" value="${trovaAccountForm.codiceFiscale}" size="50" maxlength="60"/>
-	      </td>
-	    </tr>
-	    
-   	    <tr>
-	      <td class="etichetta-dato" >E-mail</td>
-	      <td class="operatore-trova">
-	      	<html:select property="operatoreEMail" value="${trovaAccountForm.operatoreEMail}">
-		      	<html:options name="listaValueConfrontoStringa" labelName="listaTextConfrontoStringa" />
-	      	</html:select>
-	      </td>
-	      <td class="valore-dato-trova"> 
-	      	<html:text property="eMail" styleId="eMail" value="${trovaAccountForm.eMail}" size="50" maxlength="60"/>
-	      </td>
-	    </tr>
-	    
+
 	    <tr>
 			<td class="etichetta-dato">Gestione utenti</td>
 			<td class="operatore-trova">&nbsp;</td>
 			<td class="valore-dato-trova">
 				<html:select  name="accountForm" property="gestioneUtenti" value="${trovaAccountForm.gestioneUtenti}">	
+					<html:option value="">&nbsp;</html:option>
 					<html:options property="listaValuePrivilegi" labelProperty="listaTextPrivilegi"/>
 				</html:select>
 			</td>

@@ -85,7 +85,7 @@ public class GestoreImpresa extends AbstractGestorePreload {
               PageContext.REQUEST_SCOPE), null);
       if (!modoAperturaScheda.equalsIgnoreCase("NUOVO")) {
         String codimp = ((JdbcParametro) keyParent.get("IMPR.CODIMP")).getStringValue();
-
+        page.setAttribute("codimp",codimp, PageContext.REQUEST_SCOPE);
         caricaIndirizzi(page, sqlManager, codimp);
 
       } else {

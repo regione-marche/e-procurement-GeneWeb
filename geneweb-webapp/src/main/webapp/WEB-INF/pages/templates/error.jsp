@@ -57,6 +57,9 @@
 								<font color="red"><c:out value="${error}"/></font><br/>
 								</html:messages>
 							</P>
+							<c:if test="${ritentaAccesso eq 'true'}">
+								<p>Per tentare un nuovo accesso <a href="${requestScope.url}">clicca qui</a>.</p>
+							</c:if>
 							</logic:messagesPresent>
 							</td>
 						</tr>

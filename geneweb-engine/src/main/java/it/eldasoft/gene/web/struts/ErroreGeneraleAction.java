@@ -11,6 +11,7 @@
 package it.eldasoft.gene.web.struts;
 
 import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
+import it.eldasoft.gene.commons.web.struts.ActionBaseNoSessione;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.utils.utility.UtilityStringhe;
 
@@ -37,7 +38,7 @@ import org.apache.struts.action.ActionMapping;
  * 
  * @author Luca.Giacomazzo
  */
-public class ErroreGeneraleAction extends ActionBaseNoOpzioni {
+public class ErroreGeneraleAction extends ActionBaseNoSessione {
 
   /** Logger Log4J di classe */
   static Logger logger = Logger.getLogger(ErroreGeneraleAction.class);

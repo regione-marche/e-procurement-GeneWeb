@@ -19,6 +19,7 @@ import it.eldasoft.gene.db.dao.DocumentiAssociatiDao;
 import it.eldasoft.gene.db.domain.docass.DocumentoAssociato;
 import it.eldasoft.gene.web.struts.docass.CostantiDocumentiAssociati;
 import it.eldasoft.gene.web.struts.docass.GestioneFileDocumentiAssociatiException;
+import it.eldasoft.gene.ws.objectstorage.ObjectStorageUtils;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.sql.comp.SqlComposerException;
 import it.eldasoft.utils.utility.UtilityStringhe;
@@ -261,6 +262,7 @@ public class DocumentiAssociatiManager {
 
         fileIn = new File(pathAssolutoModelliOut + nomeFileSrc);
         this.fileAllegatoManager.insertFileAllegatoAssociaModello(moduloAttivo, iddocdig_next, "C0OGGASS", Long.toString(documento.getId()), FileUtils.readFileToByteArray(fileIn));
+        ObjectStorageUtils.addFile(moduloAttivo, iddocdig_next);
 
         if (fileIn != null && fileIn.exists()) {
           fileIn.delete();

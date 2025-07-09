@@ -37,13 +37,13 @@
 	}
 	
 	function indietro(){
-		document.location.href='InitCreaAccount.do?'+csrfToken;
+		document.location.href='InitCreaAccount.do';
 	}
 	
 	function annulla(){
 		if (confirm("Annullare l'inserimento di un nuovo utente?")){
 			bloccaRichiesteServer();
-			document.location.href = 'SalvaAccount.do?'+csrfToken+'&metodo=annulla';
+			document.location.href = 'SalvaAccount.do?metodo=annulla';
 		}
 	}
 

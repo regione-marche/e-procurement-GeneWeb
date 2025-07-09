@@ -36,21 +36,21 @@
 	// Azioni invocate dal menu contestuale
 
 	function apriTrovaRicerche(){
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=ORD';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=ORD';
 	}
 	
 	function listaRicerche(){
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function salvaRicercaEListaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaELista&tab=ORD';
+		document.location.href='DettaglioRicerca.do?metodo=salvaELista&tab=ORD';
 	}
 	
 	function creaNuovaRicerca(){
@@ -58,25 +58,25 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaECreaRicerca();
 		//else
 		//</c:if>
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	function salvaRicercaECreaRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaECrea&tab=ORD';
+		document.location.href='DettaglioRicerca.do?metodo=salvaECrea&tab=ORD';
 	}
 	
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicercaBase.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicercaBase.do?tab=' + codiceTab;
 	}
 
 	// Azioni invocate dalle opzioni sul singolo record
 	
 	function modifica(id){
 		var metodo = "modifica";
-		document.location.href = 'ListaOrdinamentiRicercaBase.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaOrdinamentiRicercaBase.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function elimina(id) {
@@ -95,7 +95,7 @@
 
 	function inviaRichiesta(id, metodo){
 		bloccaRichiesteServer();
-		document.location.href = 'ListaOrdinamentiRicercaBase.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaOrdinamentiRicercaBase.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function spostaInPosizioneMarcata(id){
@@ -120,7 +120,7 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ListaOrdinamentiRicercaBase.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
+				document.location.href = 'ListaOrdinamentiRicercaBase.do?metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
 			}
 		}
 	}
@@ -128,27 +128,27 @@
 	// Azioni di pagina
 	
 	function aggiungiOrdinamento(){
-		document.location.href='AddOrdinamentoRicercaBase.do?'+csrfToken;
+		document.location.href='AddOrdinamentoRicercaBase.do';
 	}
 	
 	// azioni generali in sola visualizzazione
 
 	function salvaRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salva&tab=ORD'
+		document.location.href='DettaglioRicerca.do?metodo=salva&tab=ORD'
 	}
 
 	function ripristinaRicercaSalvata(){
 		if (confirm('<fmt:message key="info.genRic.ripristinaRicerca"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
+		  document.location.href='DettaglioRicerca.do?metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
 		}
 	}
 	
 	function annullaCreazioneRicerca(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		  document.location.href='InitTrovaRicerche.do';
 		}
 	}
 
@@ -158,16 +158,16 @@
 		//else
 		//</c:if>
 		bloccaRichiesteServer();
-		document.location.href='ControllaDatiRicercaBase.do?'+csrfToken+'&tab=ORD'
+		document.location.href='ControllaDatiRicercaBase.do?tab=ORD'
 	}
 	
 	function salvaRicercaEEseguiRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaEEsegui&tab=ORD';
+		document.location.href='DettaglioRicerca.do?metodo=salvaEEsegui&tab=ORD';
 	}
 
 	function esportaRicerca(){
-		document.location.href='EsportaRicerca.do?'+csrfToken;
+		document.location.href='EsportaRicerca.do';
 	}
 	
 	function gestisciSubmit(azione){

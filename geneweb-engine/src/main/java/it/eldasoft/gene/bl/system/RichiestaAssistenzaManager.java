@@ -88,6 +88,9 @@ public class RichiestaAssistenzaManager {
 			if (CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_FILE_SIZE.equals(property.getChiave())) {
 				cfg.setServizioFileSize(property.getValore());
 			}
+			if (CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_URL_SUPPORTO_ESTERNO.equals(property.getChiave())) {
+				cfg.setUrlSupportoEsterno(property.getValore());
+			}
 		}
 
 		// decripto la password
@@ -131,7 +134,7 @@ public class RichiestaAssistenzaManager {
 	 */
 	public void updateConfigurazione(ConfigurazioneRichiestaAssistenza config) {
 
-		int numeroProperties = 6;
+		int numeroProperties = 7;
 		// si verifica se è variata la username, ed in 
 		// tal caso si svuota anche il campo password
 		PropsConfig propertyUsr = this.propsConfigManager.getProperty(
@@ -165,10 +168,13 @@ public class RichiestaAssistenzaManager {
 		props[5].setChiave(CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_FILE_SIZE);
 		props[5].setValore(config.getServizioFileSize());
 
-		if (numeroProperties == 7) {
+		props[6].setChiave(CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_URL_SUPPORTO_ESTERNO);
+		props[6].setValore(config.getUrlSupportoEsterno());
+
+		if (numeroProperties == 8) {
 			// sono nel caso di cambio indirizzo servizio o username accesso allo
 			// stesso, aggiungo la password (da sbiancare)
-			props[6].setChiave(CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_SERVIZIO_PWD);
+			props[7].setChiave(CostantiGenerali.PROP_RICHIESTA_ASSISTENZA_SERVIZIO_PWD);
 		}
 
 		this.propsConfigManager.insertProperties(props);

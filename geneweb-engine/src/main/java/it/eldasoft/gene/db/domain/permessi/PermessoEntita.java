@@ -33,6 +33,7 @@ public class PermessoEntita implements Serializable {
   private Integer ruolo;
   private Integer ruoloUsrsys;
   private String utenteDisabilitato;
+  private String codein;
 
   // Campi che vengono estratti da DB, ma non vengono gestiti in fase di insert
   private String login;
@@ -50,6 +51,7 @@ public class PermessoEntita implements Serializable {
     this.ruolo             = null;
     this.ruoloUsrsys       = null;
     this.utenteDisabilitato =null;
+    this.codein            = null;
   }
 
   /**
@@ -232,6 +234,20 @@ public class PermessoEntita implements Serializable {
    */
   public void setUtenteDisabilitato(String utenteDisabilitato) {
     this.utenteDisabilitato = utenteDisabilitato;
+  }
+  
+  /**
+   * @return Ritorna codein.
+   */
+  public String getCodein() {
+    return codein;
+  }
+
+  /**
+   * @param codein codein da settare internamente alla classe.
+   */
+  public void setCodein(String codein) {
+    this.codein = codein;
   }
 
 }

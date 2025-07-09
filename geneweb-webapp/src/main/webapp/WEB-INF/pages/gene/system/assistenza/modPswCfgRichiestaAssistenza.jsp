@@ -17,6 +17,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <tiles:insert definition=".dettaglioNoTabDef" flush="true">
 
 	<tiles:put name="head" type="string">
@@ -39,7 +42,7 @@
 			}
 
 			function annulla() {
-				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?'+csrfToken+'&metodo=visualizza';
+				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?metodo=visualizza';
 			}
 		-->
 		</script>	</tiles:put>

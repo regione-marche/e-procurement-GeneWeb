@@ -51,56 +51,56 @@
 	}
 
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
   }
 
   function creaNuovaRicerca(){
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
   }
   
   function creaNuovaRicercaWizard(){
-		document.location.href='CreaNuovaRicercaWizard.do?'+csrfToken;
+		document.location.href='CreaNuovaRicercaWizard.do';
   }
   
   function visualizza(id){
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca=' + id;
+		document.location.href='DettaglioRicerca.do?metodo=visualizza&idRicerca=' + id;
   }
 
   function elimina(id) {
   		if(confirm("Procedere con l'eliminazione del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='CreaEliminaRicerca.do?'+csrfToken+'&metodo=elimina&idRicerca=' + id;
+  			document.location.href='CreaEliminaRicerca.do?metodo=elimina&idRicerca=' + id;
   		}
   }
 
   function copia(id) {
   		if(confirm("Procedere con la creazione di una copia del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=copia&idRicerca=' + id;
+  			document.location.href='DettaglioRicerca.do?metodo=copia&idRicerca=' + id;
   		}
   }
   
   function eliminaBase(id) {
   		if(confirm("Procedere con l'eliminazione del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='CreaEliminaRicercaBase.do?'+csrfToken+'&metodo=elimina&idRicerca=' + id;
+  			document.location.href='CreaEliminaRicercaBase.do?metodo=elimina&idRicerca=' + id;
   		}
   }
   
   function eseguiRicerca(id){
   	bloccaRichiesteServer();
-  	document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=caricaEEsegui&idRicerca=' + id +'&fromPage=listaRicerche';
+  	document.location.href='DettaglioRicerca.do?metodo=caricaEEsegui&idRicerca=' + id +'&fromPage=listaRicerche';
   }
 
   function eseguiProspetto(id){
   	bloccaRichiesteServer();
-		document.location.href='CheckParametriProspetto.do?'+csrfToken+'&idRicerca=' + id + '&fromPage=listaRicerche';
+		document.location.href='CheckParametriProspetto.do?idRicerca=' + id + '&fromPage=listaRicerche';
   }
 
   function copiaProspetto(id) {
   		if(confirm("Procedere con la creazione di una copia del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='CopiaProspetto.do?'+csrfToken+'&id=' + id;
+  			document.location.href='CopiaProspetto.do?id=' + id;
   		}
   }
 
@@ -120,9 +120,10 @@
 	function eliminaProspetto(idProspetto){
 		if(confirm("Procedere con l'eliminazione del record?")){
 			bloccaRichiesteServer();
- 			document.location.href='CreaEliminaRicercaProspetto.do?'+csrfToken+'&metodo=elimina&idRicerca=' + idProspetto;
-  	}
+ 			document.location.href='CreaEliminaRicercaProspetto.do?metodo=elimina&idRicerca=' + idProspetto;
+		}
 	}
-	
+
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

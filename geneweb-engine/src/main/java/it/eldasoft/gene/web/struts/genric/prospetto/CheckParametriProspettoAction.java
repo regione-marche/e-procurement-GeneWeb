@@ -236,9 +236,19 @@ public class CheckParametriProspettoAction extends ActionBaseNoOpzioni {
           idModello = datiGenProspetto.getDatiModello().getIdModello();
   
           List<?> elencoParametri = this.modelliManager.getParametriModello(idModello);
+          boolean gestioneConForm=false;
+          int countParametriUoUI = 0;
+          Iterator checkTipoParametri = elencoParametri.iterator();
+          while(checkTipoParametri.hasNext()) {
+            ParametroModello parametro = (ParametroModello) checkTipoParametri.next();
+            if(!"U".equals(parametro.getTipo()) && !"UI".equals(parametro.getTipo())) {
+              gestioneConForm = true;
+              break;
+            } else
+              countParametriUoUI++;
+          }
           if (elencoParametri != null && elencoParametri.size() > 0) {
-            if (elencoParametri.size() > 1
-                || (elencoParametri.size() == 1 && !"U".equalsIgnoreCase(((ParametroModello) elencoParametri.get(0)).getTipo()))) {
+            if (gestioneConForm) {
               if (fromPage.equalsIgnoreCase("listaRicerche")
                   || fromPage.equalsIgnoreCase("dettaglioRicerca")) {
                 target = "setParametri";
@@ -247,11 +257,6 @@ public class CheckParametriProspettoAction extends ActionBaseNoOpzioni {
                 target = "setParametriPredefiniti";
                 parametriProspettoForm.setPaginaSorgente("listaPredefinite-Parametro");
               }
-              // Inserimento identificativo utente nel request per popolare il
-              // parametro hidden nella lista dei parametri per comporre il
-              // modello stesso
-              request.setAttribute("idAccount",
-                  new Integer(profiloUtente.getId()));
               request.setAttribute("listaParametri", elencoParametri);
   
               // cicliamo sulla lista dei parametri e per ogni parametro di tipo
@@ -262,10 +267,8 @@ public class CheckParametriProspettoAction extends ActionBaseNoOpzioni {
                   profiloUtente, codiceProfilo, parametriProspettoForm, noErrori,
                   listaValori, elencoParametri);
   
-            } else if (elencoParametri.size() == 1
-                && "U".equalsIgnoreCase(((ParametroModello) elencoParametri.get(0)).getTipo())) {
-              parametriProspettoForm.setParametriModello(new String[] { ""
-                  + profiloUtente.getId() });
+            } else{
+              parametriProspettoForm.setParametriModello(new String[countParametriUoUI]);
               target = "salvaEComponi";
             }
             if (noErrori) parametriProspettoForm.setIdSessione(0);

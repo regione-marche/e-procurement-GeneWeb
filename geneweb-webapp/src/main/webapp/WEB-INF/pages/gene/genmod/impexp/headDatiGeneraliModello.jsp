@@ -37,9 +37,9 @@
 	<c:if test='${(contenitore.esisteModello)}' >
 	<%
 	 /* Codice Javascript da eseguire nel seguente caso:
-	  * 1. nella basi dati esiste già un report con lo stesso titolo
+	  * 1. nella basi dati esiste gia' un report con lo stesso titolo
 	  *    (e stessi CODAPP e PROFILO_OWNER)
-		* L'utente può decidere se sovrascrivere il report o se	inserirne uno nuovo
+		* L'utente puo' decidere se sovrascrivere il report o se inserirne uno nuovo
 		* con un titolo diverso
 	  */
 	%>
@@ -87,7 +87,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genMod.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExportModelli.do?'+csrfToken;
+		  document.location.href='AnnullaImportExportModelli.do';
 		}
 	}
 	
@@ -103,7 +103,7 @@
 	}
 
 	function indietro(){
-		document.location.href = 'WizardImportModello.do?'+csrfToken+'&pageTo=UPL';
+		document.location.href = 'WizardImportModello.do?pageTo=UPL';
 	}
 	
 -->

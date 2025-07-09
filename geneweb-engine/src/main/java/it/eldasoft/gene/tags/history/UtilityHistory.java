@@ -29,8 +29,6 @@ public class UtilityHistory implements Serializable {
 	/** UID */
 	private static final long serialVersionUID = 7205879352363361105L;
 
-	private HttpSession session;
-
 	/** Vettore di vettori di history con numero di popUp */
 	private List<HistoryVector> historyVector;
 
@@ -52,8 +50,7 @@ public class UtilityHistory implements Serializable {
 		queriedEntities.add(entity);
 	}
 
-	public UtilityHistory(final HttpSession session) {
-		this.session = session;
+	public UtilityHistory() {
 		historyVector = new ArrayList<HistoryVector>();
 		queriedEntities = new HashSet<String>();
 	}
@@ -62,15 +59,11 @@ public class UtilityHistory implements Serializable {
 	 * Funzione che esegue il clear della history
 	 *
 	 */
-	public void clear(int numPopUp) {
-		this.getHistory(numPopUp).clear();
-		eliminaPopUpHistory(numPopUp);
+	public void clear(int numPopUp, HttpSession session) {
+		this.getHistory(numPopUp).clear(session);
+		eliminaPopUpHistory(numPopUp, session);
 	}
 
-	public void clear(int numPopUp, final String savedEntity) {
-		this.getHistory(numPopUp).clear();
-		eliminaPopUpHistory(numPopUp);
-	}
 
 	/**
 	 * Funzione che aggiunge all'histori l'oggetto con i dati di sessione
@@ -105,7 +98,7 @@ public class UtilityHistory implements Serializable {
 		// Svuoto la lista delle entità su cui sto eseguendo delle query per prepararmi al prossimo item da inserire
 		queriedEntities.clear();
 		getHistory(item.getNumeroPopUp()).push(item);
-		eliminaPopUpHistory(item.getNumeroPopUp());
+		eliminaPopUpHistory(item.getNumeroPopUp(), context.getSession());
 		// Setto gli attributi di dafault (come la dimensione dell'history)
 		UtilityTags.addDefaultAttributi(context.getRequest());
 	}
@@ -156,10 +149,10 @@ public class UtilityHistory implements Serializable {
 			HistoryItem item = this.get(idx, numPopUp);
 			// Adesso elimino dall'history tutti sino al punto
 			while (getHistory(numPopUp).size() > (idx + 1)) {
-				this.getHistory(numPopUp).pop();
+				this.getHistory(numPopUp).pop(request.getSession());
 			}
 			this.getHistory(numPopUp).popWithoutClear();
-			eliminaPopUpHistory(numPopUp);
+			eliminaPopUpHistory(numPopUp, request.getSession());
 			result = item.redirect(request);
 		}
 		return result;
@@ -186,11 +179,11 @@ public class UtilityHistory implements Serializable {
 			HistoryItem item = this.get(historySize - numeroPassi, numPopUp);
 			// Adesso elimino dall'history tutti sino al punto
 			while (numeroPassi > 1) {
-				this.getHistory(numPopUp).pop();
+				this.getHistory(numPopUp).pop(request.getSession());
 				numeroPassi--;
 			}
 			this.getHistory(numPopUp).popWithoutClear();
-			eliminaPopUpHistory(numPopUp);
+			eliminaPopUpHistory(numPopUp, request.getSession());
 			result = item.redirect(request);
 		}
 		return result;
@@ -230,7 +223,7 @@ public class UtilityHistory implements Serializable {
 	private HistoryVector getHistory(int numPopUp) {
 		if (this.historyVector.size() < (numPopUp + 1)) {
 			while (this.historyVector.size() < (numPopUp + 1))
-				this.historyVector.add(new HistoryVector(session));
+				this.historyVector.add(new HistoryVector());
 		}
 
 		return (this.historyVector.get(numPopUp));
@@ -242,12 +235,12 @@ public class UtilityHistory implements Serializable {
 	 *
 	 * @param numPopUp
 	 */
-	private void eliminaPopUpHistory(int numPopUp) {
+	private void eliminaPopUpHistory(int numPopUp, HttpSession session) {
 		if (numPopUp < 0)
 			numPopUp = 0;
 		while (this.historyVector.size() > numPopUp + 1) {
 			HistoryVector history = this.historyVector.remove(this.historyVector.size() - 1);
-			history.clear();
+			history.clear(session);
 		}
 	}
 
@@ -291,8 +284,8 @@ public class UtilityHistory implements Serializable {
 	 * @param numPopUp
 	 * @param nome
 	 */
-	public void removeAttribute(int numPopUp) {
-		this.getHistory(numPopUp).pop();
+	public void removeAttribute(int numPopUp, HttpSession session) {
+		this.getHistory(numPopUp).pop(session);
 	}
 
 	public void setDefaultAttribToCurrent(ServletRequest request) {

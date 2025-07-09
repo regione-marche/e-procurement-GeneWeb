@@ -66,6 +66,11 @@ public class ConfigurazioneRichiestaAssistenza implements Serializable {
 	private String servizioFileSize;
 
 	/**
+	 * Indirizzo del servizio esterno di richiesta assistenza.
+	 */
+	private String urlSupportoEsterno;
+
+	/**
 	 * Inizializza tutti i campi a null.
 	 */
 	public ConfigurazioneRichiestaAssistenza() {
@@ -77,6 +82,7 @@ public class ConfigurazioneRichiestaAssistenza implements Serializable {
 		this.servizioUsr = null;
 		this.servizioPwd = null;
 		this.servizioFileSize = null;
+		this.urlSupportoEsterno=null;
 	}
 
 	/**
@@ -203,5 +209,13 @@ public class ConfigurazioneRichiestaAssistenza implements Serializable {
 	 */
 	public void setOldModo(String oldModo) {
 		this.oldModo = oldModo;
+	}
+
+	public String getUrlSupportoEsterno() {
+		return urlSupportoEsterno;
+	}
+
+	public void setUrlSupportoEsterno(String urlSupportoEsterno) {
+		this.urlSupportoEsterno = urlSupportoEsterno;
 	}
 }

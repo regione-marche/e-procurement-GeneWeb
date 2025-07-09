@@ -37,7 +37,7 @@ import org.apache.struts.action.ActionMapping;
  */
 public class OpenPopUpAction extends ActionBaseNoOpzioni {
 
-  private static Logger logger = Logger.getLogger(OpenPageAction.class);
+  private static Logger logger = Logger.getLogger(OpenPopUpAction.class);
 
   @Override
   protected ActionForward runAction(ActionMapping mapping, ActionForm form,
@@ -51,7 +51,7 @@ public class OpenPopUpAction extends ActionBaseNoOpzioni {
       if (UtilityStruts.isValidJspPath(href)) {
         // Si va a cancellare tutte le voci di history presenti nei livelli di popup
         // maggiori o uguali al livello di popup attuale
-        UtilityTags.getUtilityHistory((request).getSession()).clear(UtilityStruts.getNumeroPopUp(request));
+        UtilityTags.getUtilityHistory((request).getSession()).clear(UtilityStruts.getNumeroPopUp(request), request.getSession());
 
         request.setAttribute(UtilityTags.REQUEST_VAR_HISTORY_SIZE, new Integer(
         UtilityTags.getUtilityHistory( (request).getSession()).size( UtilityStruts.getNumeroPopUp(request))));

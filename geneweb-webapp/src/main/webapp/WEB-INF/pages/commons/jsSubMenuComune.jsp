@@ -31,72 +31,72 @@
 <script type="text/javascript">
  	var linksetSubMenuArchivi = "";
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-tecnici")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/tecni/tecni-trova.jsp&deftrova=TECNI", 1241, "Archivio tecnici");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=gene/tecni/tecni-trova.jsp&deftrova=TECNI", 1241, "Archivio tecnici");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-imprese")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/impr/impr-trova.jsp&deftrova=IMPR", 1242, "Archivio imprese");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=gene/impr/impr-trova.jsp&deftrova=IMPR", 1242, "Archivio imprese");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-tecnici-imprese")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/teim/teim-trova.jsp&deftrova=TEIM", 1243, "Archivio tecnici delle imprese");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=gene/teim/teim-trova.jsp&deftrova=TEIM", 1243, "Archivio tecnici delle imprese");
 	</c:if>
 	 <c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-utenti")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/utent/utent-trova.jsp&deftrova=UTENT", 1244, "Archivio soggetti");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=gene/utent/utent-trova.jsp&deftrova=UTENT", 1244, "Archivio soggetti");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext, "SUBMENU.VIS.ARCHIVI.Archivio-uffici-intestatari")}'>
-		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/uffint/uffint-trova.jsp&deftrova=UFFINT", 1245, "Archivio ${fn:toLowerCase(nomeEntitaParametrizzata)}");
+		linksetSubMenuArchivi += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=gene/uffint/uffint-trova.jsp&deftrova=UFFINT", 1245, "Archivio ${fn:toLowerCase(nomeEntitaParametrizzata)}");
 	</c:if>
   
   var linksetSubMenuDocUsoGenerale = "";
 	<c:if test='${not empty sessionScope.profiloAttivo and gene:checkProt(pageContext,"SUBMENU.VIS.REPORT.Report-predefiniti")}'>  
-	  linksetSubMenuDocUsoGenerale += creaVoceSubmenu("${contextPath}/geneGenric/ListaRicerchePredefinite.do?"+csrfToken, 1251, "Report predefiniti");
+	  linksetSubMenuDocUsoGenerale += creaVoceSubmenu("${contextPath}/geneGenric/ListaRicerchePredefinite.do", 1251, "Report predefiniti");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.REPORT.Schedulazioni")}'>
-	  linksetSubMenuDocUsoGenerale += creaVoceSubmenu("${contextPath}/schedric/InitTrovaSchedRic.do?"+csrfToken, 1252, "Schedulazione report");
+	  linksetSubMenuDocUsoGenerale += creaVoceSubmenu("${contextPath}/schedric/InitTrovaSchedRic.do", 1252, "Schedulazione report");
 	</c:if>
 	<c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.REPORT.Risultati-schedulazioni")}'>
-	  linksetSubMenuDocUsoGenerale += creaVoceSubmenu("${contextPath}/schedric/InitTrovaCodaSched.do?"+csrfToken, 1253, "Risultati schedulazioni");
+	  linksetSubMenuDocUsoGenerale += creaVoceSubmenu("${contextPath}/schedric/InitTrovaCodaSched.do", 1253, "Risultati schedulazioni");
 	</c:if>
 		
   var linksetSubMenuStrumenti = "";
-  <!-- F.D. 27/02/2007 cambia la gestione dei menù: vengono abilitati i menù in base alle opzioni utente (ou) -->  	  
+  <!-- F.D. 27/02/2007 cambia la gestione dei menu: vengono abilitati i menï¿½ in base alle opzioni utente (ou) -->  	  
   <c:if test='${not empty sessionScope.profiloAttivo && fn:contains(listaOpzioniDisponibili, "OP2#") && (fn:contains(listaOpzioniUtenteAbilitate, "ou48#") || fn:contains(listaOpzioniUtenteAbilitate, "ou49#")) and gene:checkProt(pageContext,"SUBMENU.VIS.STRUMENTI.Generatore-report")}'>	
-	  linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/geneGenric/InitTrovaRicerche.do?"+csrfToken, 1261, "Generatore report");
+	  linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/geneGenric/InitTrovaRicerche.do", 1261, "Generatore report");
 	</c:if>
-  <!-- F.D. 27/02/2007 cambia la gestione dei menù: vengono abilitati i menù in base alle opzioni utente (ou) -->  	  
+  <!-- F.D. 27/02/2007 cambia la gestione dei menu: vengono abilitati i menï¿½ in base alle opzioni utente (ou) -->  	  
   <c:if test='${fn:contains(listaOpzioniDisponibili, "OP1#") && (fn:contains(listaOpzioniUtenteAbilitate, "ou50#") || fn:contains(listaOpzioniUtenteAbilitate, "ou51#")) and gene:checkProt(pageContext,"SUBMENU.VIS.STRUMENTI.Generatore-modelli")}'>
-	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/geneGenmod/InitTrovaModelli.do?"+csrfToken, 1262, "Generatore modelli");
+	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/geneGenmod/InitTrovaModelli.do", 1262, "Generatore modelli");
   </c:if>
   <c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou232#") and gene:checkProt(pageContext,"FUNZ.VIS.ALT.GENEWEB.QuestionariQForm") and (fn:contains(listaOpzioniDisponibili, "OP135#") or fn:contains(listaOpzioniDisponibili, "OP136#"))}'>
-	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=geneweb/qformlib/qformlib-trova.jsp&deftrova=QFORMLIB", 1263, "Generatore Q-form");
+	linksetSubMenuStrumenti += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=geneweb/qformlib/qformlib-trova.jsp&deftrova=QFORMLIB", 1263, "Generatore Q-form");
   </c:if>
   	
   var linksetSubMenuUtilita = "";
   <c:if test='${(profiloUtente.utenteLdap == 0 && !profiloUtente.autenticazioneSSO) and gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Cambia-password")}'>
-  	linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/InitCambiaPasswordAdmin.do?"+csrfToken+"&metodo=cambioBase&provenienza=menu", 1271, "Cambia password");
+  	linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/InitCambiaPasswordAdmin.do?metodo=cambioBase&provenienza=menu", 1271, "Cambia password");
   </c:if>
-  <!-- F.D. 27/02/2007 cambia la gestione dei menù: vengono abilitati i menù in base alle opzioni utente (ou) -->
+  <!-- F.D. 27/02/2007 cambia la gestione dei menu: vengono abilitati i menu in base alle opzioni utente (ou) -->
   <c:if test='${fn:contains(listaOpzioniDisponibili, "OP101#") && (fn:contains(listaOpzioniUtenteAbilitate, "ou11#") || fn:contains(listaOpzioniUtenteAbilitate, "ou12#"))}'>
 	  <c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Gestione-profili")}'>
-	  	linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/ListaProfili.do?"+csrfToken, 1272, "Gestione profili");
+	  	linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/ListaProfili.do", 1272, "Gestione profili");
 		</c:if>
 	  <c:if test='${not empty sessionScope.profiloAttivo && !(1 eq gruppiDisabilitati) and gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Gestione-gruppi")}'>
-		  linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/ListaGruppi.do?"+csrfToken, 1273, "Gestione gruppi");
+		  linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/ListaGruppi.do", 1273, "Gestione gruppi");
 	  </c:if>
 	  <c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Gestione-utenti-applicativo")}'>
-		  linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/InitTrovaAccount.do?"+csrfToken, 1274, "Gestione utenti applicativo");
+		  linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneAdmin/InitTrovaAccount.do", 1274, "Gestione utenti applicativo");
 	  </c:if>
   </c:if>
 	<c:if test='${not empty sessionScope.profiloAttivo && fn:contains(listaOpzioniUtenteAbilitate, "ou56#")}'>
 	  <c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Import-export-report")}'>
-	  	linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneGenric/InitFunzAvanzate.do?"+csrfToken, 1275, "Import/Export definizione report");
+	  	linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneGenric/InitFunzAvanzate.do", 1275, "Import/Export definizione report");
   	</c:if>
   	<c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Import-export-modelli")}'>
-  		linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneGenmod/InitFunzAvanzateModelli.do?"+csrfToken, 1276, "Import/Export definizione modello");
+  		linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/geneGenmod/InitFunzAvanzateModelli.do", 1276, "Import/Export definizione modello");
   	</c:if>
   </c:if>
 
 	<c:if test='${attivaLogEventi eq "1" && gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.StatisticheAccessi")}' >    
-		linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=commons/contatoreAccessi.jsp", 1277, "Statistiche accessi");
+		linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=commons/contatoreAccessi.jsp", 1277, "Statistiche accessi");
 	</c:if>	
 	
 	<c:if test='${gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Manuali")}'>
@@ -106,7 +106,7 @@
 				linksetSubMenuUtilita += creaVoceSubmenu(${gene:string4Js(pathManual)}, 1278, "Manuale");
 			</c:when>
 			<c:otherwise>
-			linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/guida.jsp", 1278, "Manuali");
+			linksetSubMenuUtilita += creaVoceSubmenu("${contextPath}/ApriPagina.do?href=gene/guida.jsp", 1278, "Manuali");
 			</c:otherwise>
 		</c:choose>
   </c:if>

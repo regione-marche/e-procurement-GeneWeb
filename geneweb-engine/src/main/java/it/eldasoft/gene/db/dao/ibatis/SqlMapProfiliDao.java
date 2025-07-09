@@ -56,7 +56,7 @@ public class SqlMapProfiliDao extends SqlMapClientDaoSupportBase
     return this.getSqlMapClientTemplate().queryForList(
         "getProfiliByCodAppOrderByNome", hash);
   }
-  
+    
   /** 
    * Metodo per estrarre il profilo a partire dal codice del profilo (PK)
    * 
@@ -137,6 +137,26 @@ public class SqlMapProfiliDao extends SqlMapClientDaoSupportBase
    */
   public List<?> getProfiliUtenteByCodApp(int idAccount, String codApp)
         throws DataAccessException {
+	  
+	return getProfiliUtenteByCodAppBySezione( idAccount,  codApp, "");
+  }
+  
+  /** 
+   * Metodo per estrarre la lista ordinata dei profili a cui un account e' associato.
+   * L'ordine è dato da ord, nome
+   * 
+   * @param idAccount
+   * @param codApp codice applicazione. Se il codice applicazione e' costituito
+   *        da piu' codici applicazione separati da ';', allora tale stringa 
+   *        viene splittata per estrarre tutti i profili a cui l'utente e'
+   *        associato per ciascun codice applicativo
+   *        (Es: per UGC il codice applicazione configurato nel file di property
+   *        e' uguale a 'C1;C2;C3' --> cercare tutti i profili a cui l'utente è
+   *        associato, filtrando per i tre codici applicativi C1, C2 e C3.
+   * @param ordinamento è la stringa sql ORDER BY con cui specifico l'ordinamento
+   */
+  public List<?> getProfiliUtenteByCodAppBySezione(int idAccount, String codApp, String ordinamento)
+        throws DataAccessException {
     
     List<String> listaCodApp = new ArrayList<String>();
     if(codApp.indexOf(CostantiGenerali.SEPARATORE_PROPERTIES_MULTIVALORE) >= 0){
@@ -151,6 +171,7 @@ public class SqlMapProfiliDao extends SqlMapClientDaoSupportBase
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("idAccount", new Integer(idAccount));
     hash.put("listaCodApp", listaCodApp);
+    hash.put("defOrdinamento",ordinamento);
     
     return this.getSqlMapClientTemplate().queryForList(
         "getProfiliUtenteByCodApp", hash);

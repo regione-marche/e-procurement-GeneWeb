@@ -49,9 +49,10 @@ public class VerificaFirmaServizioEsterno extends Action {
 
     private static final String DIGITAL_SIGNATURE_PROVIDER     = "digital-signature-provider";
 	private static final String DIGITAL_SIGNATURE_CHECK_URL = "digital-signature-check-url";
-	private static final String DIGITAL_SIGNATURE_CHECK_AUTHSECRET = "digital-signature-check-authsecret";
-	private static final String DIGITAL_SIGNATURE_CHECK_AUTHUSERNAME = "digital-signature-check-authusername";
-	private static final String DIGITAL_SIGNATURE_CHECK_AUTHURL = "digital-signature-check-authurl";
+	private static final String KEYCLOAK_REALM_PASSWORD = "keycloak.progettosegreteria.password";
+	private static final String KEYCLOAK_REALM_SUBPATH = "keycloak.progettosegreteria.subpath";
+	private static final String KEYCLOAK_REALM_USERNAME = "keycloak.progettosegreteria.username";
+	private static final String KEYCLOAK_REALM_BASEURL = "keycloak.realms.baseurl";
 	private final Logger logger = Logger.getLogger(VerificaFirmaServizioEsterno.class);
 
 //	private final extensionsAllowed = 
@@ -61,9 +62,9 @@ public class VerificaFirmaServizioEsterno extends Action {
 	    this.sqlManager = sqlManager;
 	}    
 	
-	@Override
+    @Override
 	public final ActionForward execute(final ActionMapping mapping, final ActionForm form,
-			final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+			final HttpServletRequest request, final HttpServletResponse response) {
 
 		Long time = System.currentTimeMillis();
 		
@@ -75,10 +76,12 @@ public class VerificaFirmaServizioEsterno extends Action {
 		String errMsgEvento = "";
         int livEvento = 1;
         ResponseCheckSignature rcs = null;
-        TransactionStatus transazione = this.sqlManager.startTransaction();
+        TransactionStatus transazione = null;
         Boolean commitTransaction = true;
         String providerMessage = "";
+        String result = "success";
 		try {
+		    transazione = this.sqlManager.startTransaction();
 		    codiceProfilo = (String) request.getSession().getAttribute(CostantiGenerali.PROFILO_ATTIVO);
 	        if(request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE) != null){
 	          int idUtenteInt = ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getId();
@@ -109,9 +112,9 @@ public class VerificaFirmaServizioEsterno extends Action {
                     break;
                   case "1":
                   	providerMessage = "MAGGIOLI";
-                    String authUrl = ConfigManager.getValore(DIGITAL_SIGNATURE_CHECK_AUTHURL);
-                    String authUsername = StringUtils.trimToNull(ConfigManager.getValore(DIGITAL_SIGNATURE_CHECK_AUTHUSERNAME));
-                    String authSecret = ConfigManager.getValore(DIGITAL_SIGNATURE_CHECK_AUTHSECRET);
+                    String authUrl = ConfigManager.getValore(KEYCLOAK_REALM_BASEURL)+ConfigManager.getValore(KEYCLOAK_REALM_SUBPATH);
+                    String authUsername = StringUtils.trimToNull(ConfigManager.getValore(KEYCLOAK_REALM_USERNAME));
+                    String authSecret = ConfigManager.getValore(KEYCLOAK_REALM_PASSWORD);
                     String providerUrl = ConfigManager.getValore(DIGITAL_SIGNATURE_CHECK_URL);
                     
                     logger.debug("authUrl: "+authUrl);
@@ -157,39 +160,44 @@ public class VerificaFirmaServizioEsterno extends Action {
 			livEvento = 3;
 			commitTransaction = false;
 		    errMsgEvento = e.getLocalizedMessage();
+		    if(e.getMessage().contains("ApiException:")) {
+              dynaForm.set("exceptionMessage", e.getMessage().split("ApiException:")[1]);
+		    } else {
+		      dynaForm.set("exceptionMessage", e.getMessage());
+		    }
+            result = "error";
 		} finally {
-		  
-		  if (transazione != null) {
-	        if (Boolean.TRUE.equals(commitTransaction))
-	          this.sqlManager.commitTransaction(transazione);
-	        else
-	          this.sqlManager.rollbackTransaction(transazione);
-		  }
-	      LogEvento logEvento =  new LogEvento();
-	      logEvento.setCodApplicazione("PG");
-	      logEvento.setLivEvento(livEvento);
-	      String oggetto = dynaForm.getString("idprg");
-	      if(oggetto!=null)
-	        oggetto+="/" + dynaForm.get("iddocdig").toString();
-	      logEvento.setOggEvento(oggetto);
-	      logEvento.setCodEvento("VERIFICAFIRMA_FILE");
-	      logEvento.setDescr("Richiesta verifica firma file a servizi "+providerMessage);
-	      logEvento.setErrmsg(errMsgEvento);
-	      logEvento.setCodProfilo(codiceProfilo);
-	      logEvento.setIdUtente(idUtente);
-	      logEvento.setIp(ip);
-	      try{
-	        LogEventiUtils.insertLogEventi(logEvento);
+		  try{
+		    if (transazione != null) {
+    	        if (Boolean.TRUE.equals(commitTransaction))
+    	          this.sqlManager.commitTransaction(transazione);
+    	        else
+    	          this.sqlManager.rollbackTransaction(transazione);
+    		  }
+    	      LogEvento logEvento =  new LogEvento();
+    	      logEvento.setCodApplicazione("PG");
+    	      logEvento.setLivEvento(livEvento);
+    	      String oggetto = dynaForm.getString("idprg");
+    	      if(oggetto!=null)
+    	        oggetto+="/" + dynaForm.get("iddocdig").toString();
+    	      logEvento.setOggEvento(oggetto);
+    	      logEvento.setCodEvento("VERIFICAFIRMA_FILE");
+    	      logEvento.setDescr("Richiesta verifica firma file a servizi "+providerMessage);
+    	      logEvento.setErrmsg(errMsgEvento);
+    	      logEvento.setCodProfilo(codiceProfilo);
+    	      logEvento.setIdUtente(idUtente);
+    	      logEvento.setIp(ip);
+    	      LogEventiUtils.insertLogEventi(logEvento);
 	      }catch(Exception e){
 	          logger.error("Errore inaspettato durante la tracciatura su w_logeventi");
 	      }
 		  
 	    }
-		return mapping.findForward("success");
+		return mapping.findForward(result);
 	}
 	
 	
-	private FirmaCheck getObjectsByXML(String xml) throws DocumentException {
+	public FirmaCheck getObjectsByXML(String xml) throws DocumentException {
 	  FirmaCheck fc = new FirmaCheck();
 	  
       Document document = new SAXReader().read(new InputSource(new ByteArrayInputStream(xml.getBytes())));
@@ -205,13 +213,13 @@ public class VerificaFirmaServizioEsterno extends Action {
         Signature s = new Signature();
         s.setIndex(index);
         index++;
-        s.setSubjectCommonName(node.selectSingleNode("subject/CN").getText());
-        s.setSubjectSerialNumber(node.selectSingleNode("subject/SER").getText());
+        s.setSubjectCommonName(node.selectSingleNode("subject/CN")!=null?node.selectSingleNode("subject/CN").getText():null);
+        s.setSubjectSerialNumber(node.selectSingleNode("subject/SER")!=null?node.selectSingleNode("subject/SER").getText():null);
         
-        s.setIssuerCommonName(node.selectSingleNode("issuer/CN").getText());
-        s.setIssuerOrganization(node.selectSingleNode("issuer/O").getText());
+        s.setIssuerCommonName(node.selectSingleNode("issuer/CN")!=null?node.selectSingleNode("issuer/CN").getText():null);
+        s.setIssuerOrganization(node.selectSingleNode("issuer/O")!=null?node.selectSingleNode("issuer/O").getText():null);
 
-        s.setSerialNumber(node.selectSingleNode("serial").getText());
+        s.setSerialNumber(node.selectSingleNode("serial")!=null?node.selectSingleNode("serial").getText():null);
         
         Date data = null;
         try {
@@ -226,8 +234,8 @@ public class VerificaFirmaServizioEsterno extends Action {
         }
         s.setSigningTimeISO(data);
         
-        s.setSignerDigestAlgDes(node.selectSingleNode("digestAlgorithm").getText());
-        s.setValid("OK".equals(node.selectSingleNode("status").getText()));
+        s.setSignerDigestAlgDes(node.selectSingleNode("digestAlgorithm")!=null?node.selectSingleNode("digestAlgorithm").getText():null);
+        s.setValid("OK".equals(node.selectSingleNode("status")!=null?node.selectSingleNode("status").getText():"KO"));
 
         
         listSignature.add(s);
@@ -243,9 +251,9 @@ public class VerificaFirmaServizioEsterno extends Action {
         } catch (ParseException e) {
           logger.error("ParseException errore: ",e);
         }
-        ts.setValid("OK".equals(document.selectSingleNode("deSign/timeStamp/status").getText()));
-        ts.setSerial(document.selectSingleNode("deSign/timeStamp/timeStampSerial").getText());
-        ts.setTsa(document.selectSingleNode("deSign/timeStamp/issuer/CN").getText());
+        ts.setValid("OK".equals(document.selectSingleNode("deSign/timeStamp/status")!=null?document.selectSingleNode("deSign/timeStamp/status").getText():"KO"));
+        ts.setSerial(document.selectSingleNode("deSign/timeStamp/timeStampSerial")!=null?document.selectSingleNode("deSign/timeStamp/timeStampSerial").getText():null);
+        ts.setTsa(document.selectSingleNode("deSign/timeStamp/issuer/CN")!=null?document.selectSingleNode("deSign/timeStamp/issuer/CN").getText():null);
         List<Node> nodesPolicy = document.selectNodes("deSign/timeStamp/policyInformationList/policyInformation");
         if(!nodesPolicy.isEmpty())
           ts.setPolicyId(nodesPolicy.get(0).selectSingleNode("policyID").getText());

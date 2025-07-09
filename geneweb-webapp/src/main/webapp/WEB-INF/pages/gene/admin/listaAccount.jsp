@@ -90,16 +90,12 @@
 					<display:column property="idAccount" title="Codice" sortable="true"	headerClass="sortable" href="DettaglioAccount.do?metodo=visualizza&" paramId="idAccount" paramProperty="idAccount" />
 					<display:column property="nome" title="Descrizione" sortable="true" headerClass="sortable" />
 					<display:column property="login" title="Nome utente" sortable="true" headerClass="sortable" />
-					<display:column property="utenteDisabilitato" title="Utente disabilitato" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.IntBooleanDecorator"/>
+					<display:column property="codfisc" title="Codice fiscale" sortable="true" headerClass="sortable" />
+					<display:column property="email" title="E-Mail" sortable="true" headerClass="sortable" />
 					<c:if test='${fn:contains(listaOpzioniDisponibili, "OP100#")}'>
 						<display:column property="flagLdap" title="Utente LDAP" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.IntBooleanDecorator"/>
 					</c:if>
-					<c:if test="${! empty hashUffAppartenenza }">
-						<display:column title="Ufficio appartenenza" sortable="true" headerClass="sortable" >
-							<c:out value="${hashUffAppartenenza[account.ufficioAppartenenza].descTabellato}" />
-						</display:column>
-					</c:if>
-					<display:column property="email" title="E-Mail" sortable="true" headerClass="sortable" />
+					<display:column property="utenteDisabilitato" title="Utente disabilitato" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.IntBooleanDecorator"/>
 				</display:table>
 			</td>
 		</tr>

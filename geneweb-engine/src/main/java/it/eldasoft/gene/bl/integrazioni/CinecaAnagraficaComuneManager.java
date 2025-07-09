@@ -261,16 +261,48 @@ public class CinecaAnagraficaComuneManager {
       isStraniera = true;
     }
 
-      String contoCorrenteDedicato = (String) datiAnagrafica.get("ccDedicato");
-      contoCorrenteDedicato = UtilityStringhe.convertiNullInStringaVuota(contoCorrenteDedicato);
-      if("".equals(contoCorrenteDedicato)){
+    String iban = (String) datiAnagrafica.get("ccDedicato");
+    if(Boolean.FALSE.equals(isStraniera)){
+      iban = UtilityStringhe.convertiNullInStringaVuota(iban);
+      if("".equals(iban)){
         outcome = "false";
         if(!"".equals(msgDetail)){
           msgDetail += " - ";//separatore
         }
-        msgDetail += "conto corrente dedicato";
+        msgDetail += "IBAN";
       }
-
+    } else {
+      String isAreaIban = (String) datiAnagrafica.get("isAreaIban");
+      isAreaIban = UtilityStringhe.convertiNullInStringaVuota(isAreaIban);
+      if("".equals(isAreaIban)){
+        outcome = "false";
+        if(!"".equals(msgDetail)){
+          msgDetail += " - ";//separatore
+        }
+        msgDetail += "area IBAN";
+      } else {
+        if("1".equals(isAreaIban)){
+          if("".equals(iban)){
+            outcome = "false";
+            if(!"".equals(msgDetail)){
+              msgDetail += " - ";//separatore
+            }
+            msgDetail += "IBAN";
+          }
+        } else {
+          String numeroConto = (String) datiAnagrafica.get("numeroConto");
+          numeroConto = UtilityStringhe.convertiNullInStringaVuota(numeroConto);
+          if("".equals(numeroConto)){
+            outcome = "false";
+            if(!"".equals(msgDetail)){
+              msgDetail += " - ";//separatore
+            }
+            msgDetail += "numero conto corrente";
+          }
+        }
+      }
+    }
+    
     /*
     if(!isStraniera){
       String soggettiAbilitati = (String) datiAnagrafica.get("soggettiAbilitati");
@@ -415,6 +447,8 @@ public class CinecaAnagraficaComuneManager {
       }
       msgDetail += "pec";
     }
+    
+    
 
     res[0] = outcome;
     res[1] = msgDetail;
@@ -489,6 +523,8 @@ public class CinecaAnagraficaComuneManager {
 		anagrafica.setUrlSitoWeb((String) soggettoCollettivo.get("urlSitoWeb"));
 		anagrafica.setCodEsternoCoordPag((String) soggettoCollettivo.get("codEsternoCoordPag"));
 		anagrafica.setCodNazioneNascita((String) soggettoCollettivo.get("codNazioneNascita"));
+		anagrafica.setIsAreaIban((String) soggettoCollettivo.get("isAreaIban"));
+		anagrafica.setNumeroConto((String) soggettoCollettivo.get("numeroConto"));
 	  
 		return anagrafica;
 	  
@@ -723,6 +759,50 @@ public class CinecaAnagraficaComuneManager {
     }
 
     return cred;
+  }
+
+
+
+
+
+
+  /**
+   * Metodo per controllare se l'impresa è nell'area IBAN e nell'area SEPA, definire quale controllo effettuare tramite il parametro 'opzione'
+   *
+   * @param codiceNazione : Codice della Nazione
+   *
+   * @param opzione : Tabella di riferimento che puo' essere 'paesi_iban' o 'paesi_sepa'
+   *
+   * @return Boolean (controlloAnagraficaIbanSepa)
+   *
+   */
+
+  public Boolean isAnagraficaIBANoSEPA(String codiceNazione, String opzione){
+    Boolean controlloAnagraficaIbanSepa = false;
+    List<?> datiTab2;
+    codiceNazione = UtilityStringhe.convertiNullInStringaVuota(codiceNazione);
+    opzione = UtilityStringhe.convertiNullInStringaVuota(opzione);
+    
+    try {
+      if(!"".equalsIgnoreCase(opzione)) {
+
+        String query = "";
+        if("paesi_iban".equalsIgnoreCase(opzione)) {
+          query = "select * from tab2 where tab2cod = 'UBUY1' and tab2tip not exist (select cd_iso3166_1_a2 from paesi_iban) and tab2d1 = ?";        
+        } else if("paesi_sepa".equalsIgnoreCase(opzione)) {
+          query = "select * from tab2 where tab2cod = 'UBUY1' and tab2tip not exist (select cd_iso3166_1_a2 from paesi_sepa) and tab2d1 = ?";
+        }
+        datiTab2 = sqlManager.getVector(query, new Object[] { opzione, codiceNazione });
+        
+        if (datiTab2 != null && !datiTab2.isEmpty()) {
+          controlloAnagraficaIbanSepa = true;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return controlloAnagraficaIbanSepa;
   }
 
 }

@@ -29,6 +29,8 @@
 
 
 	function schedaSalva(){
+		if(document.accountForm.codfisc.value != '') 
+			document.accountForm.codfisc.value=document.accountForm.codfisc.value.toUpperCase();
 		
 		if (document.mioAccountForm.email.value != "" && !controllaEmail(document.mioAccountForm.email,'document.mioAccountForm.email')) {
 			return ; //false;
@@ -128,7 +130,7 @@
 
 	function schedaAnnulla(){
 		bloccaRichiesteServer();
-		document.location.href='SalvaMioAccount.do?'+csrfToken+'&metodo=annulla';
+		document.location.href='SalvaMioAccount.do?metodo=annulla';
 	}
 
 -->

@@ -15,9 +15,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%/*Imposto il menu nel titolo*/%>
-<gene:set name="titoloMenu">
-	<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
-</gene:set>
+<c:if test="${!fn:contains(listaOpzioniUtenteAbilitate, 'ou243#')}">
+	<gene:set name="titoloMenu">
+		<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
+	</gene:set>
+</c:if>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="modo" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.GestioneVerificheFunction", pageContext, "")}'/>
@@ -51,7 +53,7 @@
 				<!-- Se il nome del campo è vuoto non lo gestisce come un campo normale -->
 				<gene:campoLista title="Opzioni<center>${titoloMenu}</center>" width="50">
 					<gene:PopUp variableJs="rigaPopUpMenu" onClick="chiaveRiga='${chiaveRigaJava}'"/>
-					<c:if test='${gene:checkProtFunz(pageContext,"DEL","LISTADELSEL") && ("ou227" eq opzVerifiche || "ou228" eq opzVerifiche)}'>
+					<c:if test='${gene:checkProtFunz(pageContext,"DEL","LISTADELSEL") && ("ou227" eq opzVerifiche || "ou228" eq opzVerifiche) && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 						<input type="checkbox" name="keys" value="${chiaveRiga}"  />
 					</c:if>
 				</gene:campoLista>
@@ -72,17 +74,17 @@
 				<gene:campoLista title="" width="20">
 					<c:choose>
 					<c:when test='${datiRiga.VERIFICHE_STATO_VERIFICA eq "3"}'>
-						<span id="INFO_TOOLTIP${currentRow }" title="Scaduta">
+						<span id="INFO_TOOLTIP${currentRow}" title="Scaduta">
 							<IMG SRC="${contextPath}/img/controllo_e.gif"> </span>
 					</c:when>
 					<c:when test='${datiRiga.VERIFICHE_STATO_VERIFICA eq "2"}'>
-						<span id="INFO_TOOLTIP${currentRow }" title="In scadenza">
+						<span id="INFO_TOOLTIP${currentRow}" title="In scadenza">
 							<IMG SRC="${contextPath}/img/controllo_w.gif"> </span>
 					</c:when>
-					<c:otherwise>
-						<span id="INFO_TOOLTIP${currentRow }" title=" In corso">
-						    <IMG SRC="${contextPath}/img/controllo_i.gif"> </span>
-					</c:otherwise>
+					<c:when test='${datiRiga.VERIFICHE_STATO_VERIFICA eq "1"}'>
+						<span id="INFO_TOOLTIP${currentRow}" title="In corso">
+							<IMG SRC="${contextPath}/img/controllo_i.gif"> </span>
+					</c:when>
 					</c:choose>
 				</gene:campoLista>
 				
@@ -92,10 +94,10 @@
 			</gene:formLista>
 
 			<gene:PopUpItemResource variableJs="rigaPopUpMenu" resource="popupmenu.tags.lista.visualizza" title="Visualizza verifica"/>
-			<c:if test='${gene:checkProtFunz(pageContext, "MOD", "MOD") && "ou228" eq opzVerifiche}' >
+			<c:if test='${gene:checkProtFunz(pageContext, "MOD", "MOD") && "ou228" eq opzVerifiche && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}' >
 				<gene:PopUpItemResource variableJs="rigaPopUpMenu" resource="popupmenu.tags.lista.modifica" title="Modifica verifica" />
 			</c:if>
-			<c:if test='${gene:checkProtFunz(pageContext, "DEL", "DEL") && "ou228" eq opzVerifiche}' >
+			<c:if test='${gene:checkProtFunz(pageContext, "DEL", "DEL") && "ou228" eq opzVerifiche && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}' >
 				<gene:PopUpItemResource variableJs="rigaPopUpMenu" resource="popupmenu.tags.lista.elimina" title="Elimina verifica" />
 			</c:if>
 			<c:if test='${"ou228" eq opzVerifiche}' >
@@ -107,7 +109,7 @@
 
 	<gene:redefineInsert name="addToAzioni" >
 		<c:choose>
-			<c:when test='${updateLista eq 1 }'>
+			<c:when test='${updateLista eq 1 && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 				<c:if test='${"ou228" eq opzVerifiche}'>
 				<tr>
 					<td class="vocemenulaterale" >
@@ -122,7 +124,7 @@
 				</c:if>
 			</c:when>
 			<c:otherwise>
-				<c:if test='${"ou228" eq opzVerifiche}'>
+				<c:if test='${"ou228" eq opzVerifiche && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 				<tr>
 					<td class="vocemenulaterale" >
 						<a href="javascript:listaApriInModifica();" title="Modifica" tabindex="1501">Modifica</a>
@@ -130,7 +132,7 @@
 				</tr>	
 				<tr>
 					<td class="vocemenulaterale" >
-						<c:if test='${isNavigazioneDisattiva ne "1"}'>
+						<c:if test='${isNavigazioneDisattiva ne "1" && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 							<a href="javascript:apriPopupInsertPredefiniti('${codiceImpresa}')" title="Inserisci verifiche predefinite" tabindex="1502">
 						</c:if>
 							Inserisci verifiche predefinite
@@ -154,7 +156,7 @@
 		
 	<jsp:include page="/WEB-INF/pages/gene/verifiche/modalPopupDownloadAllegatiVerificheImpr.jsp" />
 	
-	<c:if test='${"ou228" eq opzVerifiche}'>
+	<c:if test='${"ou228" eq opzVerifiche && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 		<tr>
 			<td class="comandi-dettaglio" colSpan="2">
 				<c:choose>
@@ -177,7 +179,7 @@
 	</c:if>
 
 
-	<c:if test='${"ou228" ne opzVerifiche || updateLista eq 1}'>
+	<c:if test='${"ou228" ne opzVerifiche || updateLista eq 1 || fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 		<gene:redefineInsert name="listaEliminaSelezione" />
 	</c:if>
 

@@ -32,10 +32,10 @@
 		var confermaNo = document.getElementById("NoConfermaListaFiltri");
 
 		if(confermaSi.checked){
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD1';
+			href = 'WizardBase.do?pageTo=ORD1';
 		}
 		if(confermaNo.checked){
-			href = 'FiltriBase.do?'+csrfToken+'&metodo=annullaListaFiltri';
+			href = 'FiltriBase.do?metodo=annullaListaFiltri';
 		}
 		
 		if(href != ""){
@@ -49,10 +49,10 @@
 	function indietro(){
 	<c:choose>
 		<c:when test='${fn:length(filtroRicercaForm.progressivo) > 0}'>
-			document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL3';
+			document.location.href = 'WizardBase.do?pageTo=FIL3';
 		</c:when>
 		<c:otherwise>
-			document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL1';
+			document.location.href = 'WizardBase.do?pageTo=FIL1';
 		</c:otherwise>
 	</c:choose>
 	}
@@ -60,7 +60,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 	
@@ -70,10 +70,10 @@
 		var confermaNo = document.getElementById("NoConfermaListaFiltri");
 		
 		if(confermaSi.checked){
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=DG&pageFrom=FIL3';
+			href = 'WizardBase.do?pageTo=DG&pageFrom=FIL3';
 		}
 		if(confermaNo.checked){
-			href = 'FiltriBase.do?'+csrfToken+'&metodo=annullaListaFiltri&pageFrom=FIL3';
+			href = 'FiltriBase.do?metodo=annullaListaFiltri&pageFrom=FIL3';
 		}
 		if(href != ""){
 			bloccaRichiesteServer();
@@ -85,7 +85,7 @@
 	function eliminaFiltro(idFiltro){
 		if(confirm("Procedere con l'eliminazione del record?")){
 			bloccaRichiesteServer();
-			document.location.href = 'FiltriBase.do?'+csrfToken+'&metodo=elimina&id=' + idFiltro;
+			document.location.href = 'FiltriBase.do?metodo=elimina&id=' + idFiltro;
 		}
 	}
 

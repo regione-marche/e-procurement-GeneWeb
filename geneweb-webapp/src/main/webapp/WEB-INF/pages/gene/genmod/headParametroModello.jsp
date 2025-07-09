@@ -39,25 +39,25 @@
 	}
 
 	function creaModello(){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=creaModello';
+		document.location.href='Modello.do?metodo=creaModello';
 	}
 
 	function ricercaModelli(){
-		document.location.href='InitTrovaModelli.do?'+csrfToken;
+		document.location.href='InitTrovaModelli.do';
 	}
 	
 	function listaModelli(){
-		document.location.href='TrovaModelli.do?'+csrfToken+'&metodo=trovaModelli';
+		document.location.href='TrovaModelli.do?metodo=trovaModelli';
 	}
 
 <!-- Azioni invocate dal tab menu -->
 
 	function dettaglioModello(id){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=dettaglioModello&idModello='+id;
+		document.location.href='Modello.do?metodo=dettaglioModello&idModello='+id;
 	}
 
 	function listaGruppiModello(id){
-		document.location.href='GruppiModello.do?'+csrfToken+'&metodo=listaGruppiModello&idModello='+id;
+		document.location.href='GruppiModello.do?metodo=listaGruppiModello&idModello='+id;
 	}
 	
 	function listaParametriModello(id){
@@ -66,7 +66,7 @@
 	
 	function creaParametro(id){
 		var metodo = "creaParametroModello";
-		var url = 'ParametriModello.do?'+csrfToken+'&metodo=' + metodo + '&idModello=' + id;
+		var url = 'ParametriModello.do?metodo=' + metodo + '&idModello=' + id;
 		document.location.href = url;
 		
 	}
@@ -111,13 +111,13 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ParametriModello.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&idModello=${idModello}&progressivo=' + id + '&progressivoNew=' + posizioneSelezionata;
+				document.location.href = 'ParametriModello.do?metodo=spostaInPosizioneMarcata&idModello=${idModello}&progressivo=' + id + '&progressivoNew=' + posizioneSelezionata;
 			}
 		}
 	}
 	
 	function inviaRichiesta(id, progr, metodo){
-		var url = 'ParametriModello.do?'+csrfToken+'&metodo=' + metodo + '&idModello=' + id;
+		var url = 'ParametriModello.do?metodo=' + metodo + '&idModello=' + id;
 		if (progr != null)
 			url += '&progressivo=' + progr;
 		bloccaRichiesteServer();

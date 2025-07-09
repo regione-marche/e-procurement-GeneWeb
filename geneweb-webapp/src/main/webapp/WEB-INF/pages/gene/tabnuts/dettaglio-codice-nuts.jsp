@@ -15,7 +15,7 @@
 			param.modo 
 				Modo di apertura MODIFICA per modifica o VISUALIZZA per visualizzazione
 			param.campo 
-				Nome del campo in cui vi è il dettaglio
+				Nome del campo in cui vi e' il dettaglio
 			param.valore 
 				Valore del campo
 
@@ -108,7 +108,7 @@
 			var valore=getValue("CODICE");
 			if(valore!=null && valore!="")
 				valore=valore.toUpperCase();
-			document.location.href="${pageContext.request.contextPath}/ApriPagina.do?"+csrfToken+"&href=gene/tabnuts/dettaglio-codice-nuts.jsp&modo=MODIFICA&campo=${param.campo}&valore="+valore;
+			document.location.href="${pageContext.request.contextPath}/ApriPagina.do?href=gene/tabnuts/dettaglio-codice-nuts.jsp&modo=MODIFICA&campo=${param.campo}&valore="+valore;
 		}
 		
 		function conferma() {

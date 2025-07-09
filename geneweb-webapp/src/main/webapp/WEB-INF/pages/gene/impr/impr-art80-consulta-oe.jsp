@@ -91,7 +91,7 @@
 	<c:set var="codimp" value="${param.codimp}" />
 	<c:set var="codein" value="${sessionScope.uffint}" />
 
-	<gene:setString name="titoloMaschera" value="Art.80 - dettaglio dei documenti dell'operatore economico ${codimp}"  />
+	<gene:setString name="titoloMaschera" value="Verifica requisiti - dettaglio dei documenti dell'operatore economico ${codimp}"  />
 	<c:set var="r" value='${gene:callFunction3("it.eldasoft.gene.tags.functions.Art80ConsultaFunction",pageContext,codimp,codein)}'/>
 	<gene:redefineInsert name="corpo">
 		<table class="dettaglio-notab">
@@ -140,7 +140,7 @@
 												<b>
 												<c:choose>
 													<c:when test="${doc[1] eq 1}">
-														1. Attestazione ottemperanza legge 68/99 (Art. 80 - Comma 5.I)
+														1. Attestazione ottemperanza legge 68/99
 													</c:when>
 													<c:when test="${doc[1] eq 2}">
 														2. Certificato dell'Anagrafe delle sanzioni amministrative dipendenti da reato
@@ -158,7 +158,7 @@
 														6. Certificazione Regolarit&agrave; Contributiva (DURC INPS)
 													</c:when>	
 													<c:when test="${doc[1] eq 7}">
-														7. Attestazione di regolarit&agrave; fiscale, Art. 80 - Comma 4
+														7. Attestazione di regolarit&agrave; fiscale
 													</c:when>
 													<c:when test="${doc[1] eq 8}">
 														8. Estratto casellario ANAC

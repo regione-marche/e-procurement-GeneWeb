@@ -51,6 +51,16 @@ public class SqlMapAccountDao extends SqlMapClientDaoSupportBase implements
     return (Account) getSqlMapClientTemplate().queryForObject(
         "getAccountByLogin", hash);
   }
+  
+  @Override
+  public Account getAccountBySysCf(String cf) throws DataAccessException, SqlComposerException {
+    SqlComposer composer = SqlManager.getComposer(ConfigManager.getValore(CostantiGenerali.PROP_DATABASE));
+    HashMap<String, String> hash = new HashMap<String, String>();
+    hash.put("operatoreUpper", composer.getFunzioneUpperCase());
+    hash.put("codfisc", cf.toUpperCase());
+    return (Account) getSqlMapClientTemplate().queryForObject(
+        "getAccountBySysCf", hash);
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -555,4 +565,41 @@ public class SqlMapAccountDao extends SqlMapClientDaoSupportBase implements
     getSqlMapClientTemplate().delete("deleteLoginFallite", username.toLowerCase());
   }
 
+  @Override
+  public Integer getMaxLoaBySysconAndCodein(Integer idAccount, String uffint) {
+    HashMap<String, Object> hash = new HashMap<String, Object>();
+    hash.put("idAccount", idAccount);
+    hash.put("uffint", uffint);
+    return (Integer) getSqlMapClientTemplate().queryForObject("getMaxLoaBySysconAndCodein", hash);
+  }
+
+  @Override
+  public void insertUsrLoa(Integer idAccount, String uffint, String provider, int loa, Date authData) {
+    HashMap<String, Object> hash = new HashMap<String, Object>();
+    hash.put("idAccount", idAccount);
+    hash.put("uffint", uffint);
+    hash.put("provider", provider);
+    hash.put("loa", loa);
+    hash.put("authData", authData);
+    getSqlMapClientTemplate().update("insertUsrLoa", hash, 1);  
+  }
+
+  @Override
+  public void updateUsrLoa(Integer idAccount, String uffint, String provider, int loa, Date authData) {
+    HashMap<String, Object> hash = new HashMap<String, Object>();
+    hash.put("idAccount", idAccount);
+    hash.put("uffint", uffint);
+    hash.put("provider", provider);
+    hash.put("loa", loa);
+    hash.put("authData", authData);
+    getSqlMapClientTemplate().update("updateUsrLoa", hash, 1);
+  }
+
+  @Override
+  public void updateLdapUsr(Integer idAccount, String sysCf) {
+    HashMap<String, Object> hash = new HashMap<String, Object>();
+    hash.put("idAccount", idAccount);
+    hash.put("codfisc", sysCf);
+    getSqlMapClientTemplate().update("updateLdapUsr", hash, 1);
+  }
 }

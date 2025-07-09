@@ -56,7 +56,7 @@
 				<td class="etichetta-dato">Nome utente (*)</td>
      		<td class="valore-dato">
      			<c:choose>
-					<c:when test='${(account.idAccount eq 48) || (account.idAccount eq 49) || (account.idAccount eq 50)}'>
+					<c:when test='${(account.idAccount eq 48) || (account.idAccount eq 49) || (account.idAccount eq 50) || (account.idAccount gt 0 && !fn:contains(listaOpzioniUtenteAbilitate, "ou89#"))}'>
 						<c:out value="${account.login}"/>
 						<html:hidden property="login" styleId="login"/>
 					</c:when>
@@ -146,8 +146,16 @@
    	<tr id="rowCodfisc" >
 			<td class="etichetta-dato">Codice fiscale</td>
    		<td class="valore-dato">
-	 			<html:text property="codfisc" name="accountForm"  onchange="javascript:controllaCodfisc(this,'document.accountForm.codfisc');" maxlength="18" size="18"/>
-			</td>
+   			<c:choose>
+   			<c:when test='${account.idAccount gt 0 && !fn:contains(listaOpzioniUtenteAbilitate, "ou89#")}'>
+				<c:out value="${account.codfisc.toUpperCase()}"/>
+				<html:hidden property="codfisc" styleId="codfisc"/>
+			</c:when>
+			<c:otherwise>
+	 			<html:text property="codfisc" name="accountForm" onchange="javascript:controllaCodfisc(this,'document.accountForm.codfisc');" maxlength="30" size="30"/>
+			</c:otherwise>
+			</c:choose>
+		</td>
    	</tr>
   
   	<tr>
@@ -330,6 +338,12 @@
    					<input type="checkbox" name="opzioniUtenteSys" value="ou214" <c:if test='${fn:contains(listaOpzioniUtenteSys, "ou214#")}'>checked="checked" </c:if>/>
 				</td>
    		</tr>
+		<tr id="rowBloccaEditIMP" >
+			<td class="etichetta-dato" >Blocca utente nella modifica delle imprese</td>
+			<td class="valore-dato">
+				<input type="checkbox" name="opzioniUtenteSys" value="ou243" <c:if test='${fn:contains(listaOpzioniUtenteSys, "ou243#")}'>checked="checked" </c:if>/>
+			</td>
+		</tr>
    		<tr id="rowBloccaEliminazioneEntitaPrincipale" >
 				<td class="etichetta-dato" >Blocca eliminazione su entita principale</td>
    				<td class="valore-dato">
@@ -405,7 +419,7 @@
 	  	<c:if test="${!empty art80wsurl}">
 		  	<tr>
 				<td colspan="3">
-					<b>Verifiche Art.80</b>
+					<b>Verifica requisiti ditte (mediante servizio)</b>
 				</td>
 		  	</tr>
 		  	<tr id="rowCreateArt80">
@@ -425,7 +439,7 @@
  		<c:if test='${fn:contains(listaOpzioniDisponibili, "OP133#")}'>
 		  	<tr>
 				<td colspan="3">
-					<b>Verifiche interne Art.80</b>
+					<b>Verifica requisiti ditte (gestione interna)</b>
 				</td>
 		  	</tr>
 		  	<tr id="rowIntArt80" >
@@ -451,6 +465,10 @@
 <script type="text/javascript">
 <!--
 
+$(document).ready(function(){
+	$('input[name="codfisc"]').css("text-transform","uppercase");
+})
+	
 initVarGlobali();
 settaReport();
 

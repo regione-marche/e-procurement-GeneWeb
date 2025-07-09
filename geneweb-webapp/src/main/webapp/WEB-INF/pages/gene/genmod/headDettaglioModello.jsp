@@ -33,51 +33,51 @@
 	</elda:jsBodyPopup>
 
 	function creaModello(){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=creaModello';
+		document.location.href='Modello.do?metodo=creaModello';
 	}
 
 	function ricercaModelli(){
-		document.location.href='InitTrovaModelli.do?'+csrfToken;
+		document.location.href='InitTrovaModelli.do';
 	}
 	
 	function annulla(){
 		bloccaRichiesteServer();
-		document.location.href='Modello.do?'+csrfToken+'&metodo=annullaCrea';
+		document.location.href='Modello.do?metodo=annullaCrea';
 	}
 	
 	function listaModelli(){
-		document.location.href='TrovaModelli.do?'+csrfToken+'&metodo=trovaModelli';
+		document.location.href='TrovaModelli.do?metodo=trovaModelli';
 	}
 	
   function modifica(id){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=modificaModello&idModello='+id;
+		document.location.href='Modello.do?metodo=modificaModello&idModello='+id;
   }
   
   function mostraModello(id, nomeFile){
   	if(confirm('<fmt:message key="info.download.confirm"/>'))
-  		document.location.href='Modello.do?'+csrfToken+'&idModello='+id+'&da=dettaglio&metodo=downloadModello&nomeFile='+nomeFile;
+  		document.location.href='Modello.do?idModello='+id+'&da=dettaglio&metodo=downloadModello&nomeFile='+nomeFile;
   }
 
 <!-- Azioni invocate dal tab menu -->
 
 	function dettaglioModello(id){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=dettaglioModello&idModello='+id;
+		document.location.href='Modello.do?metodo=dettaglioModello&idModello='+id;
 	}
 
 	function listaGruppiModello(id){
-		document.location.href='GruppiModello.do?'+csrfToken+'&metodo=listaGruppiModello&idModello='+id;
+		document.location.href='GruppiModello.do?metodo=listaGruppiModello&idModello='+id;
 	}
 	
 	function listaParametriModello(id){
-		document.location.href='ParametriModello.do?'+csrfToken+'&metodo=listaParametriModello&idModello='+id;
+		document.location.href='ParametriModello.do?metodo=listaParametriModello&idModello='+id;
 	}
 	
 	function modificaAssModelliGruppo(id){
-		document.location.href='GruppiModello.do?'+csrfToken+'&metodo=modificaGruppiModello&idModello='+id;
+		document.location.href='GruppiModello.do?metodo=modificaGruppiModello&idModello='+id;
 	}
 	
 	function creaParametro(id){
-		document.location.href='ParametriModello.do?'+csrfToken+'&metodo=creaParametroModello&idModello='+id;
+		document.location.href='ParametriModello.do?metodo=creaParametroModello&idModello='+id;
 	}
 
 	function update(){
@@ -91,7 +91,7 @@
 		if (esito && !controllaCampoInputObbligatorio(document.modelliForm.nomeModello, 'Nome')){
 		  esito = false;
 		}
-		// Se si è in inserimento controllo che sia stato modificato il file
+		// Se si e' in inserimento controllo che sia stato modificato il file
 		if(document.modelliForm.nomeFile.value==""){
 			// alert(document.modelliForm.selezioneFile.value);
 			if (esito && !controllaCampoInputObbligatorio(document.modelliForm.selezioneFile, 'File')){
@@ -122,7 +122,7 @@
 	function popupFiltroEntita(){
 		var entitaSelezionata = document.modelliForm.entPrinc.value;
 		if(entitaSelezionata != null && entitaSelezionata != ""){
-			var href = csrfToken+'&metodo=apri&entita=' + entitaSelezionata;
+			var href = 'metodo=apri&entita=' + entitaSelezionata;
 			openPopUpAction('CreaFiltroEntita.do', href, 'popupFiltroEntita');
 		} else {
 			alert("Per definire una condizione di filtro e' necessario selezionare l'argomento principale");

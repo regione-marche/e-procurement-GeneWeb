@@ -44,7 +44,7 @@
 	<% // Fine variabili globali della pagina %>
 	
 	function listaGruppiAccount(id){
-		document.location.href='ListaGruppiAccount.do?'+csrfToken+'&idAccount=' + id;
+		document.location.href='ListaGruppiAccount.do?idAccount=' + id;
 	}
   
  	function obbligatorio() {
@@ -103,6 +103,9 @@
 	}
 
 	function schedaSalva(){
+		if(document.accountForm.codfisc.value != '') 
+			document.accountForm.codfisc.value=document.accountForm.codfisc.value.toUpperCase();
+		
 		if(document.accountForm.metodo.value == '')
 			document.accountForm.metodo.value = "inserisci";
 		
@@ -235,14 +238,14 @@
 	</c:when>
 	<c:otherwise>
 		function schedaAnnulla(){
-			document.location.href = 'DettaglioAccount.do?'+csrfToken+'&idAccount=${account.idAccount}&metodo=visualizza';
+			document.location.href = 'DettaglioAccount.do?idAccount=${account.idAccount}&metodo=visualizza';
 		}	
 	</c:otherwise>
 </c:choose>
 
 	function schedaNuovo(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioAccount.do?'+csrfToken+'&metodo=nuovo';
+		document.location.href = 'DettaglioAccount.do?metodo=nuovo';
 	}
 			
 	function avanzatoAbilitato(){

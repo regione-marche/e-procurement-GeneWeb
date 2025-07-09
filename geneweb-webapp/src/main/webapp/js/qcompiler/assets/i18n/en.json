@@ -24,6 +24,7 @@
     "load-error-generic": "Failed to load data from server.",
     "upload-error-generic": "Failed to upload file.",
     "download-error-generic": "Failed to download file.",
+    "upload-error-filename": "The document has been rejected because its name contains illegal characters. Rename the file using only alphanumeric characters, spaces and no other special characters except -_.",
     "pdf-error-generic": "Error in PDF generation.",
     "server-error-generic": "Communication error with the server.",
     "save-error-generic": "Error saving data.",
@@ -63,7 +64,11 @@
     "mdgue-part1": "Use the <b>M-DGUE</b> service integrated in the platform to compile the electronic <b>ESPD</b> and once the \"XML Response\" file has been produced, return here to upload it.<br>To compile a <b>new ESPD</b> retrieving the data entered in the platform (master data of the company or of the group leader in case of RTI, lots, etc.).",
     "mdgue-part2": "For any <b>further ESPDs</b> required to other parties (members of the group, auxiliary companies, subcontractors...) use or share",
     "mdgue-part3": "To modify or reuse an existing \"XML Response\", or to perform other operations",
-    "mdgue-click": "click here"
+    "mdgue-click": "click here",
+    "dgue-request-error": "Impossible to continue due to missing DGUE Request in the tender documents. Contact the contracting authority to correct the data",
+
+    "premiale-validity-end-date": "Validity until",
+    "premiale-display-validity-end-date": "expiring"
   },
   "primeng": {
     "startsWith": "Starts with",

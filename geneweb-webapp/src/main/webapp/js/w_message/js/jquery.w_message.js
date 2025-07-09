@@ -262,6 +262,10 @@
 			    			body: "",
 			    			read: "1"
 						},
+						error: function(e) {
+	    					$("#divmwait")
+	    					alert("Errore di lettura dei messaggi ricevuti");
+	    				},
 			    		complete: function() {
 			    			_aggiornaContatore();
 			    			_new.hide();		
@@ -282,6 +286,10 @@
 			    			body: "",
 			    			read: "0"
 						},
+						error: function(e) {
+	    					$("#divmwait")
+	    					alert("Errore di lettura dei messaggi ricevuti");
+	    				},
 			    		complete: function() {
 			    			_aggiornaContatore();
 			    			_new.show();		

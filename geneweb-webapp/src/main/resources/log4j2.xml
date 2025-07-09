@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd-MMM-yyyy HH.mm.ss} [${nomeWebapp}]|%-5p|%m%n" />
+            <Filters>
+                <ThresholdFilter level="${log4j.appender.stdout.threshold}" />
+            </Filters>
+        </Console>
+        <RollingFile name="ApplicationLog" fileName="${log4j.appender.pathLog}/${nomeWebapp}.log" append="true" filePattern="${log4j.appender.pathLog}/${nomeWebapp}.log.%d{'.'yyyy-MM-dd}">
+            <PatternLayout pattern="&lt;%-5p&gt; [%d] [%t] Classe: %c - Metodo: %M%n        Messaggio=%m%n%n" />
+            <Filters>
+                <!-- VARIAZIONE LIVELLO LOG --><ThresholdFilter level="${log4j.appender.applicationLog.threshold}" />
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="eventLog" fileName="${log4j.appender.pathLog}/${nomeWebapp}-events.log" append="true" filePattern="${log4j.appender.pathLog}/${nomeWebapp}-events.log.%d{'.'yyyy-MM-dd}">
+            <PatternLayout pattern="%m%n"/>
+            <Filters>
+                <ThresholdFilter level="INFO" />
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" />
+            </Policies>
+        </RollingFile>
+    </appenders>
+
+    <Loggers>
+        <Logger name="it.eldasoft" level="ALL" />
+        <Logger name="it.eldasoft.gene.commons.web.spring.DataSourceTransactionManagerBase" level="WARN" />
+        <Logger name="it.maggioli.eldasoft" level="ALL" />
+ 
+        <Logger name="java.sql.Connection" level="DEBUG" />
+		<Logger name="java.sql.Statement" level="DEBUG" />
+		<Logger name="java.sql.PreparedStatement" level="DEBUG" />
+        <Logger name="java.sql.ResultSet" level="DEBUG" />
+
+        <Logger name="org.apache.commons" level="ERROR" />
+ 		<Logger name="org.apache.struts" level="WARN" />
+        <Logger name="org.displaytag" level="ERROR" />
+        <Logger name="org.springframework" level="WARN" />
+        <Logger name="com.ibatis.db" level="WARN" />
+		<Logger name="org.apache.velocity" level="FATAL" />
+        <Logger name="org.displaytag" level="ERROR" />
+        <Logger name="org.owasp.csrfguard" level="ERROR" />
+
+        <Logger name="events" level="INFO" additivity="false">
+            <AppenderRef ref="eventLog"/>
+        </Logger>
+
+		<Root>
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="ApplicationLog"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

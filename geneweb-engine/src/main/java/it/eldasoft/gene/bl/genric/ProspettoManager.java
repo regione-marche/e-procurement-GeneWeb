@@ -153,7 +153,10 @@ public class ProspettoManager extends ModelliManager {
         if (object != null) {
           if (object instanceof Integer)
             chiave.append(((Integer) object).toString());
-          if (object instanceof String) chiave.append((String) object);
+          if (object instanceof String)
+			chiave.append((String) object);
+		  if (object instanceof Long)
+            chiave.append(((Long) object).toString());
         }
         if (i < elencoCampi.size() - 1) chiave.append(";");
       }

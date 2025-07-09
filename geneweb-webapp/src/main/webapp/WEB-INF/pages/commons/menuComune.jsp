@@ -15,7 +15,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 	<c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#" />
 	<c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
@@ -83,7 +82,7 @@
 		  		<span><img alt="Amministrazione" src="${contextPath}/img/Setting-10-16px-gray.png"></span>
 		  	</c:when>
 		  	<c:otherwise>
-		  	  <a id="lnavbarAmministrazione" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/system/dettCfgAmministrazione.jsp';" tabindex="1290">
+		  	  <a id="lnavbarAmministrazione" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/system/dettCfgAmministrazione.jsp';" tabindex="1290">
 		  	  	<img alt="Amministrazione" src="${contextPath}/img/Setting-10-16px-white.png">
 		  	  </a>
 		  	</c:otherwise>

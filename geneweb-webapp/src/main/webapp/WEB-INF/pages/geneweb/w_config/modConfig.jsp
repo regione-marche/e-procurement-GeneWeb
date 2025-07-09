@@ -50,7 +50,7 @@
 	}
 
 	function annulla() {
-		document.location.href='ApriPagina.do?'+csrfToken+'&href=geneweb/w_config/dettConfig.jsp&detail=${param.detail}';
+		document.location.href='ApriPagina.do?href=geneweb/w_config/dettConfig.jsp&detail=${param.detail}';
 	}
 
 	$(document).ready(function() {

@@ -162,7 +162,7 @@ public class GestoreInsertVerifichePredefinite extends
                 elencoCampi.add(new DataColumn("VERIFICHE.GG_AVVISO_SCADENZA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(defGGavvscadStr))));
               }
               elencoCampi.add(new DataColumn("VERIFICHE.IS_SILENZIO_ASSENSO", new JdbcParametro(JdbcParametro.TIPO_TESTO, "1")));
-              elencoCampi.add(new DataColumn("VERIFICHE.STATO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, new Long(1))));
+              elencoCampi.add(new DataColumn("VERIFICHE.STATO_VERIFICA", new JdbcParametro(JdbcParametro.TIPO_NUMERICO, null)));
 
               DataColumnContainer container = new DataColumnContainer(elencoCampi);
               container.insert("VERIFICHE", sqlManager);

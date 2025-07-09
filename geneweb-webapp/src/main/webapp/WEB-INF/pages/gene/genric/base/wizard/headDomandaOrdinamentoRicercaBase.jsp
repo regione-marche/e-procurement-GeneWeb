@@ -35,16 +35,16 @@
 		var ordinamentoNo = document.getElementById("ordinamentoNo");
 
 		if(ordinamentoSi.checked){
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD2';
+			href = 'WizardBase.do?pageTo=ORD2';
 		}
 		
 		if(ordinamentoNo.checked){
   <c:choose>
   	<c:when test='${fn:length(contenitore.elencoOrdinamenti) eq 0}'>
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=LAY';
+			href = 'WizardBase.do?pageTo=LAY';
 		</c:when>
 		<c:otherwise>
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=ORD3';
+			href = 'WizardBase.do?pageTo=ORD3';
 		</c:otherwise>
 	</c:choose>
 		}
@@ -58,17 +58,17 @@
 	}
 	
 	function fineWizard(){
-		document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=DG&pageFrom=ORD1';
+		document.location.href = 'WizardBase.do?pageTo=DG&pageFrom=ORD1';
 	}
 	
 	function indietro(){
 		var href = "";
 		<c:choose>
 		 	<c:when test='${fn:length(contenitore.elencoFiltri) eq 0}'>
-				href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL1';
+				href = 'WizardBase.do?pageTo=FIL1';
 			</c:when>
 			<c:otherwise>
-				href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL3';
+				href = 'WizardBase.do?pageTo=FIL3';
 			</c:otherwise>
 		</c:choose>
 		if(href != "")
@@ -78,7 +78,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 

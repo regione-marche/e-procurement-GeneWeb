@@ -10,6 +10,7 @@
  */
 package it.eldasoft.gene.bl.admin;
 
+import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.db.dao.AccountDao;
 import it.eldasoft.gene.db.dao.ProfiliDao;
 import it.eldasoft.gene.db.domain.admin.Account;
@@ -18,6 +19,7 @@ import it.eldasoft.gene.db.domain.admin.Gruppo;
 import it.eldasoft.gene.db.domain.admin.Profilo;
 import it.eldasoft.gene.db.domain.admin.ProfiloAccount;
 import it.eldasoft.utils.sicurezza.CriptazioneException;
+import it.eldasoft.utils.spring.UtilitySpring;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +43,7 @@ public class ProfiliManager {
 
   private AccountDao       accountDao;
   private ProfiliDao       profiliDao;
+  private SqlManager       sqlManager;
 
   /** Logger Log4J di classe */
   static Logger logger = Logger.getLogger(ProfiliManager.class);
@@ -60,6 +63,14 @@ public class ProfiliManager {
   public void setProfiliDao(ProfiliDao profiliDao) {
     this.profiliDao = profiliDao;
   }
+  
+  /**
+   * @param sqlManager
+   *        sqlManager da settare internamente alla classe.
+   */
+   public void setSqlManager(SqlManager sqlManager) {
+		this.sqlManager = sqlManager;
+   }  
 
   public List<?> getListaProfiliByCodApp(String codApp){
     return this.profiliDao.getProfiliByCodApp(codApp);
@@ -156,6 +167,31 @@ public class ProfiliManager {
    */
   public List<?> getProfiliAccountByCodApp(int idAccount, String codApp){
     return this.profiliDao.getProfiliUtenteByCodApp(idAccount, codApp);
+  }
+  
+  /**
+   * Estrazione della lista dei profili a cui un utente e' associato, filtrando
+   * per codice applicazione e ordinando per sezione, ord, nome .
+   * La lista dei record estratti prevede prima i valori con ord valorizzato e 
+   * alla fine i profili con campo ord non valorizzato.
+   *
+   * @param idAccount
+   * @param codApp codice applicazione.  Se il codice applicazione e' costituito
+   *        da piu' codici applicazione separati da ';', allora tale stringa
+   *        viene splittata per estrarre tutti i profili a cui l'utente e'
+   *        associato per ciascun codice applicativo
+   * @return Ritorna la lista dei profili a cui un utente e' associato, filtrando
+   *         sempre per codice applicazione e ordinando la lista per sezione, ord, nome
+   */
+  public List<?> getProfiliAccountByCodAppBySezione(int idAccount, String codApp){
+	  
+    // compongo il seguente ordinamento:
+	// ORDER BY W_PROFILI.ORD ASC, W_PROFILI.NOME ASC
+	String ordinamento = "ORDER BY "
+                         + sqlManager.getDBFunction("isnull", new String[] {"W_PROFILI.ORD",""+Integer.MAX_VALUE} ) 
+	                     + ", W_PROFILI.NOME ASC";
+	
+    return this.profiliDao.getProfiliUtenteByCodAppBySezione(idAccount, codApp, ordinamento);
   }
 
   /**

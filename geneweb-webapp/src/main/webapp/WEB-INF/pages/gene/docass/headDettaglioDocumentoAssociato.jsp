@@ -27,14 +27,14 @@
 	// Azioni di pagina
 
 	function modifica(){
-		document.location.href='DocumentoAssociato.do?'+csrfToken+'&metodo=modifica&id=${documento.id}';
+		document.location.href='DocumentoAssociato.do?metodo=modifica&id=${documento.id}';
 	}
 	
 	function mostraDocumento(){
 <c:choose>
 	<c:when test='${!empty download or !gene:checkProt(pageContext, "FUNZ.VIS.MOD.GENE.C0OGGASS-Scheda.MOD") or sessionScope.entitaPrincipaleModificabile ne "1"}'>
 		if(confirm('<fmt:message key="info.download.confirm"/>'))
-			document.location.href='DocumentoAssociato.do?'+csrfToken+'&metodo=download&id=${documento.id}';
+			document.location.href='DocumentoAssociato.do?metodo=download&id=${documento.id}';
 	</c:when>
 	<c:otherwise>
 		<c:set var="nomeCompleto" value="${documento.pathDocAss}${documento.nomeDocAss}"/>

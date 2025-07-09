@@ -17,12 +17,16 @@ import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.db.datautils.DataColumn;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
 import it.eldasoft.gene.db.domain.StoUffint;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcTable;
 import it.eldasoft.gene.tags.bl.AnagraficaManager;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.spring.UtilitySpring;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.transaction.TransactionStatus;
 
@@ -109,8 +113,7 @@ public class GestoreUFFINT extends AbstractGestoreEntita {
     // Gestione standard della sezione dinamica punti di contatto
     AbstractGestoreChiaveNumerica gestorePUNTICON = new DefaultGestoreEntitaChiaveNumerica(
         "PUNTICON", "NUMPUN", new String[] { "CODEIN" }, this.getRequest());
-    this.gestisciAggiornamentiRecordSchedaMultipla(status, impl, gestorePUNTICON,
-        "PUNTI", new DataColumn[] { impl.getColumn("UFFINT.CODEIN") }, null);
+
 
     //Gestione sezione Settori
     AbstractGestoreChiaveIDAutoincrementante gestoreUFFSET = new DefaultGestoreEntitaChiaveIDAutoincrementante(
@@ -138,7 +141,12 @@ public class GestoreUFFINT extends AbstractGestoreEntita {
   @Override
   public void preUpdate(TransactionStatus status, DataColumnContainer impl)
       throws GestoreException {
-    GeneManager gene = this.getGeneManager();
+
+      boolean paginaRicorsi = "true".equals(UtilityStruts.getParametroString(this.getRequest(), "paginaRicorsi"));
+      boolean paginaAltriDati = "true".equals(UtilityStruts.getParametroString(this.getRequest(), "paginaAltriDati"));
+
+
+      GeneManager gene = this.getGeneManager();
     String codimp = impl.getString("UFFINT.CODEIN");
     impl.getColumn("UFFINT.CODEIN").setChiave(true);
     // Aggiornamento delle intestazioni degli archivi in DB
@@ -164,8 +172,16 @@ public class GestoreUFFINT extends AbstractGestoreEntita {
     // Gestione standard della sezione dinamica punti di contatto
     AbstractGestoreChiaveNumerica gestorePUNTICON = new GestorePUNTICON();
 		gestorePUNTICON.setRequest(this.getRequest());
-    this.gestisciAggiornamentiRecordSchedaMultipla(status, impl, gestorePUNTICON,
-        "PUNTI", new DataColumn[] { impl.getColumn("UFFINT.CODEIN") }, null);
+
+    if(paginaRicorsi){
+        this.gestisciAggiornamentiRecordSchedaMultipla(status, impl, gestorePUNTICON, "ORGRICORSI", new DataColumn[] { impl.getColumn("UFFINT.CODEIN") }, null);
+    }else if(paginaAltriDati){
+        this.gestisciAggiornamentiRecordSchedaMultipla(status, impl, gestorePUNTICON, "PUNTI", new DataColumn[] { impl.getColumn("UFFINT.CODEIN") }, null);
+    }else{
+        this.gestisciAggiornamentiRecordSchedaMultipla(status, impl, gestorePUNTICON, "PUNTI", new DataColumn[] { impl.getColumn("UFFINT.CODEIN") }, null);
+    }
+    //this.gestisciAggiornamentiRecordSchedaMultipla(status, impl, gestorePUNTICON,
+    //        (paginaAltriDati ? "PUNTI" : "ORGRICORSI"), new DataColumn[] { impl.getColumn("UFFINT.CODEIN") }, null);
 
   //Gestione sezione Settori
     AbstractGestoreChiaveIDAutoincrementante gestoreUFFSET = new DefaultGestoreEntitaChiaveIDAutoincrementante(

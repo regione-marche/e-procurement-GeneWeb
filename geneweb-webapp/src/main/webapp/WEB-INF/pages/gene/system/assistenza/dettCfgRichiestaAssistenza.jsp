@@ -17,6 +17,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#" />
 
 <tiles:insert definition=".dettaglioNoTabDef" flush="true">
@@ -25,15 +28,15 @@
 		<script type="text/javascript">
 			<!--
 			function visualizza(modo) {
-				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?'+csrfToken+'&metodo=visualizza&modo='+modo;
+				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?metodo=visualizza&modo='+modo;
 			}
 
 			function modifica() {
-				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?'+csrfToken+'&metodo=modifica';
+				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?metodo=modifica';
 			}
 
 			function modificaPassword() {
-				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?'+csrfToken+'&metodo=modificaPassword';
+				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?metodo=modificaPassword';
 			}
 			-->
 		</script>
@@ -150,6 +153,24 @@
 						${cfgRichiestaAssistenzaForm.servizioFileSize}
 					</td>
 				</tr>
+			</c:if>
+			<tr>
+				<td colspan="2">
+					<input type="radio" name="radioCfg" <c:if test='${cfgRichiestaAssistenzaForm.modo eq "3"}'>checked="checked"</c:if> <c:if test='${cfgRichiestaAssistenzaForm.modo ne "3"}'>disabled="disabled"</c:if>>Contattaci</input>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="radio" name="radioCfg" <c:if test='${cfgRichiestaAssistenzaForm.modo eq "4"}'>checked="checked"</c:if> <c:if test='${cfgRichiestaAssistenzaForm.modo ne "4"}'>disabled="disabled"</c:if>>Richiedi assistenza o supporto tecnico normativo</input>
+				</td>
+			</tr>
+			<c:if test='${cfgRichiestaAssistenzaForm.modo eq "4" }'>
+			<tr>
+				<td class="etichetta-dato">URL supporto</td>
+				<td class="valore-dato">
+						${cfgRichiestaAssistenzaForm.urlSupportoEsterno}
+				</td>
+			</tr>
 			</c:if>
 			<tr>
 				<td class="comandi-dettaglio" colSpan="2">

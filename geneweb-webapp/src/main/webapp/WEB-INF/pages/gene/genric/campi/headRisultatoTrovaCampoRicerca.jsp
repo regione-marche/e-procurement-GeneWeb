@@ -25,12 +25,12 @@
   }
 
   function trova() {
-    document.location.href='InitTrovaCampoRicerca.do?'+csrfToken;
+    document.location.href='InitTrovaCampoRicerca.do';
   }
 
   function inserisciCampo(idCampo) {
 		bloccaRichiesteServer();
-    document.location.href='SalvaCampoTrovatoRicerca.do?'+csrfToken+'&campo='+idCampo;
+    document.location.href='SalvaCampoTrovatoRicerca.do?campo='+idCampo;
   }
 
 -->

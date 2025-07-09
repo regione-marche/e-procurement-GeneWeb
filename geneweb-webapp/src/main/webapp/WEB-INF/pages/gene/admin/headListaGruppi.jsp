@@ -37,21 +37,21 @@
 		}
 
 	function creaGruppo(){
-		document.location.href='CreaGruppo.do?'+csrfToken;
+		document.location.href='CreaGruppo.do';
 	}
 
   function visualizza(id){
-		document.location.href='DettaglioGruppo.do?'+csrfToken+'&idGruppo=' + id;
+		document.location.href='DettaglioGruppo.do?idGruppo=' + id;
   }
 
   function modifica(id){
-		document.location.href='EditGruppo.do?'+csrfToken+'&idGruppo=' + id;
+		document.location.href='EditGruppo.do?idGruppo=' + id;
   }
 
   function elimina(id) {
   	if(confirm("Procedere con l'eliminazione del record?")){
   		bloccaRichiesteServer();
-			document.location.href='GruppoDispatch.do?'+csrfToken+'&metodo=eliminaGruppo&idGruppo=' + id;
+			document.location.href='GruppoDispatch.do?metodo=eliminaGruppo&idGruppo=' + id;
 	  }
 	}
 	

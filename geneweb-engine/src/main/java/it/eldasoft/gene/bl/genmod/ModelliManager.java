@@ -10,21 +10,6 @@
  */
 package it.eldasoft.gene.bl.genmod;
 
-import it.eldasoft.gene.bl.GenChiaviManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.db.dao.ModelliDao;
-import it.eldasoft.gene.db.domain.admin.ModelloGruppo;
-import it.eldasoft.gene.db.domain.genmod.CacheParametroComposizione;
-import it.eldasoft.gene.db.domain.genmod.ContenitoreDatiModello;
-import it.eldasoft.gene.db.domain.genmod.DatiModello;
-import it.eldasoft.gene.db.domain.genmod.ParametroComposizione;
-import it.eldasoft.gene.db.domain.genmod.ParametroModello;
-import it.eldasoft.gene.db.domain.genmod.TrovaModelli;
-import it.eldasoft.gene.web.struts.genmod.CostantiGenModelli;
-import it.eldasoft.utils.properties.ConfigManager;
-import it.eldasoft.utils.sql.comp.SqlComposerException;
-import it.eldasoft.utils.utility.UtilityNumeri;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,6 +27,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+
+import it.eldasoft.gene.bl.FileAllegatoManager;
+import it.eldasoft.gene.bl.GenChiaviManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.db.dao.ModelliDao;
+import it.eldasoft.gene.db.domain.admin.ModelloGruppo;
+import it.eldasoft.gene.db.domain.genmod.CacheParametroComposizione;
+import it.eldasoft.gene.db.domain.genmod.ContenitoreDatiModello;
+import it.eldasoft.gene.db.domain.genmod.DatiModello;
+import it.eldasoft.gene.db.domain.genmod.ParametroComposizione;
+import it.eldasoft.gene.db.domain.genmod.ParametroModello;
+import it.eldasoft.gene.db.domain.genmod.TrovaModelli;
+import it.eldasoft.gene.web.struts.genmod.CostantiGenModelli;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.sql.comp.SqlComposerException;
+import it.eldasoft.utils.utility.UtilityNumeri;
 
 /**
  * Manager che si occupa di gestire tutte le operazioni di business logic sulla
@@ -853,6 +854,10 @@ public class ModelliManager {
             + nomeFileFisico
             + " non è gestito dal compositore",
             GestioneFileModelloException.ERROR_FILE_ESTENSIONE_NON_GESTITA);
+      } else if(!FileAllegatoManager.checkFileContent(fileData, nomeFileFisico)){
+        throw new GestioneFileModelloException(
+            "Il file " + nomeFileFisico + " selezionato da caricare viene scartato in quanto ha un contenuto in formato non valido",
+            GestioneFileModelloException.ERROR_CONTENUTO_NON_VALIDO);
       }
 
       File f = null;

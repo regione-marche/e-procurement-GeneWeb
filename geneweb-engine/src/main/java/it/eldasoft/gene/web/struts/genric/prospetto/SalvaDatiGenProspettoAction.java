@@ -19,6 +19,7 @@ import it.eldasoft.gene.bl.genmod.GestioneFileModelloException;
 import it.eldasoft.gene.bl.genric.GestoreVisibilitaDati;
 import it.eldasoft.gene.bl.genric.ProspettoManager;
 import it.eldasoft.gene.bl.genric.RicercheManager;
+import it.eldasoft.gene.commons.web.XSSRequestWrapper;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.domain.GestioneTab;
@@ -204,6 +205,10 @@ public class SalvaDatiGenProspettoAction extends
     try {
       datiGenProspettoForm = (DatiGenProspettoForm) form;
       datiGenProspettoForm.setCodApp(codApp);
+
+      // si proteggono i campi testuali da eventuali iniezioni di codice xss
+      datiGenProspettoForm.setNome(XSSRequestWrapper.stripXSS(datiGenProspettoForm.getNome()));
+      datiGenProspettoForm.setDescrRicerca(XSSRequestWrapper.stripXSS(datiGenProspettoForm.getDescrRicerca()));
 
       datiGenRicerca = datiGenProspettoForm.getDatiPerRicercaModel();
       datiModello = datiGenProspettoForm.getDatiPerModelloModel();
@@ -486,6 +491,10 @@ public class SalvaDatiGenProspettoAction extends
 
     try {
       datiGenProspettoForm = (DatiGenProspettoForm) form;
+
+      // si proteggono i campi testuali da eventuali iniezioni di codice xss
+      datiGenProspettoForm.setNome(XSSRequestWrapper.stripXSS(datiGenProspettoForm.getNome()));
+      datiGenProspettoForm.setDescrRicerca(XSSRequestWrapper.stripXSS(datiGenProspettoForm.getDescrRicerca()));
 
       datiGenRicerca = datiGenProspettoForm.getDatiPerRicercaModel();
       datiModello = datiGenProspettoForm.getDatiPerModelloModel();

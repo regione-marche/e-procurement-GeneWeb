@@ -20,10 +20,8 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-<c:set var="token"><csrf:token/></c:set>
 
 <c:if test="${!empty (querySql)}">
 	<jsp:include page="/WEB-INF/pages/gene/genric/debugRisultatiRicerca.jsp" />
@@ -32,7 +30,7 @@
 <table class="lista">
 	<tr>
 		<td>
-			<display:table name="listaRicerchePredefinite" id="ricercaForm" class="datilista"  requestURI="ListaRicerchePredefinite.do?${token}" pagesize="25" sort="list">
+			<display:table name="listaRicerchePredefinite" id="ricercaForm" class="datilista"  requestURI="ListaRicerchePredefinite.do" pagesize="25" sort="list">
 			<c:if test='${empty applicationScope.configurazioneChiusa || applicationScope.configurazioneChiusa eq "0"}'>
 				<display:column style="width:20px">  
 					<c:if test="${ricercaForm.personale == 'true'}">
@@ -40,7 +38,7 @@
 					</c:if>
 				</display:column>
 			</c:if>
-				<display:column property="nomeRicerca" title="Titolo" href="EseguiRicercaPredefinita.do?${token}&metodo=caricaPerEstrazione&" paramId="idRicerca"  
+				<display:column property="nomeRicerca" title="Titolo" href="EseguiRicercaPredefinita.do?metodo=caricaPerEstrazione&" paramId="idRicerca"  
 								paramProperty="idRicerca" sortable="true" headerClass="sortable" >  </display:column>
 				<display:column property="descrRicerca" title="Descrizione" sortable="true" headerClass="sortable" >  </display:column>
 			</display:table>

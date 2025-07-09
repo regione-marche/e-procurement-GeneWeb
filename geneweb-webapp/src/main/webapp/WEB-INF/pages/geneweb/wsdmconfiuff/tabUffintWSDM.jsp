@@ -34,12 +34,17 @@
 		<jsp:include page="/WEB-INF/pages/commons/iconeCheckUncheck.jsp" />
 	</gene:set>
 	
+	
+	
 	<table class="dettaglio-tab-lista">
 		
 		<c:if test="${modalita ne 'modifica'}">
+			<c:set var="where" value="WSDMCONFIUFF.IDCONFI = ?" />
+			<c:set var="parametri" value="N:${idconfi}"/>
+			${gene:callFunction4("it.eldasoft.gene.tags.functions.ImpostazioneFiltroFunction", pageContext, "WSDMCONFIUFF", where, parametri)}
 			<tr>
 				<td>
-					<gene:formLista entita="WSDMCONFIUFF" where="WSDMCONFIUFF.IDCONFI = ${idconfi}" pagesize="0" sortColumn="0" tableclass="datilista" gestisciProtezioni="true">
+					<gene:formLista entita="WSDMCONFIUFF" pagesize="0" sortColumn="0" tableclass="datilista" gestisciProtezioni="true">
 						<span>
 						<br>Nella pagina sono elencati gli uffici intestatari a cui è riferita la configurazione.
 						Se non viene indicato nessun ufficio, la configurazione viene intesa come 'default' e riferita a tutti gli uffici intestatari 
@@ -57,11 +62,13 @@
 		<c:if test="${modalita eq 'modifica'}">
 		
 		<c:set var="isNavigazioneDisabilitata" value="1" scope="request" />
+			<c:set var="validIdConfi" value ='${gene:callFunctionN("it.eldasoft.gene.tags.functions.GetSafeDataFromDB", pageContext, "select id from WSDMCONFI where id=?", idconfi)}'/>
 
 			<tr>
 				<td>
 					<gene:formLista entita="UFFINT" where="" pagesize="0" sortColumn="0" tableclass="datilista" gestisciProtezioni="true" gestore="it.eldasoft.gene.tags.gestori.submit.GestoreListaUffintWsdm">
-						<gene:campoLista campo="CODEIN" entita="WSDMCONFIUFF" visibile="false" where="WSDMCONFIUFF.CODEIN = UFFINT.CODEIN AND WSDMCONFIUFF.IDCONFI = ${idconfi}"/>	
+						<gene:campoLista campo="CODEIN" entita="WSDMCONFIUFF" visibile="false" where="WSDMCONFIUFF.CODEIN = UFFINT.CODEIN AND WSDMCONFIUFF.IDCONFI = ${validIdConfi}"/>	
+						
 						<gene:campoLista title="<center>Associato?<br>${icone}</center>" width="70" >
 								<center>
 								<input type="checkbox" name="keys" value="${datiRiga.UFFINT_CODEIN}" <c:if test="${not empty datiRiga.WSDMCONFIUFF_CODEIN}">checked="checked"</c:if> />
@@ -72,8 +79,6 @@
 						<gene:campoLista campo="NOMEIN" entita="UFFINT" />
 						<gene:campoLista campo="CFEIN" entita="UFFINT" />
 						<input type="hidden" name="idconfi" value="${param.idconfi}" >
-						<input type="hidden" name="descri" value="${param.descri}" >
-						<input type="hidden" name="codapp" value="${param.codapp}" >
 						<input type="hidden" name="wsdmProtocollo" value="${param.wsdmProtocollo}"/>
 						<input type="hidden" name="wsdmDocumentale" value="${param.wsdmDocumentale}"/>
 						<input type="hidden" name="tabTabellatiAttiva" value="${param.tabTabellatiAttiva}"/>

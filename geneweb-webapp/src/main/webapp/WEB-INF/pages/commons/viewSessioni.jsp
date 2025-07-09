@@ -59,7 +59,6 @@
 			<td><b>Primo accesso</b>
 			</td>
 			<td><b>Ultimo accesso</b></td>
-			<td><b>ID Sessione</b>
 			</td>
 		</tr>
 
@@ -79,8 +78,6 @@
 				<jsp:useBean id="dateValue" class="java.util.Date" /> 
 				<jsp:setProperty name="dateValue" property="time" value="${requestScope.sessioniUtenti[id].lastAccessedTime}" /> 
 				<fmt:formatDate value="${dateValue}" pattern="dd/MM/yyyy HH:mm:ss" />
-				</td>
-				<td><c:out value="${id}" />
 				</td>
 			</tr>
 		</c:forEach>

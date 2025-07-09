@@ -32,7 +32,7 @@ public class GestionePuntiDiContattoFunction extends
 		AbstractFunzioneTag {
 
 	public GestionePuntiDiContattoFunction() {
-		super(1, new Class[] { String.class });
+		super(-1, null);
 	}
 
 	@Override
@@ -42,7 +42,17 @@ public class GestionePuntiDiContattoFunction extends
 		if (!UtilityTags.SCHEDA_MODO_INSERIMENTO.equals(UtilityTags
 				.getParametro(pageContext,
 						UtilityTags.DEFAULT_HIDDEN_PARAMETRO_MODO))) {
-			String chiave = (String) params[0];
+			String chiave = (String) params[1];
+			String isOrgRicorsi = (String) params[2];
+
+			String valoreQueryIsOrgRicorsi, nomeAttributoLista;
+			if ("true".equals(isOrgRicorsi)) {
+				valoreQueryIsOrgRicorsi = "='1'";
+				nomeAttributoLista = "organizzazioniRicorsi";
+			} else {
+				valoreQueryIsOrgRicorsi = " is null";
+				nomeAttributoLista = "puntiContatto";
+			}
 
 			String codei = null;
 
@@ -54,14 +64,14 @@ public class GestionePuntiDiContattoFunction extends
 				List<?> listaPuntiContatto = sqlManager
 						.getListVector(
 								"select CODEIN, NUMPUN, NOMPUN, VIAEIN, NCIEIN, CITEIN, PROEIN, "
-						        + "CAPEIN, CODCIT, CODNAZ, TELEIN, FAXEIN, EMAIIN, EMAI2IN, INDWEB, CODFE, CODRES, CODCONS_NSO "
-						        + "from PUNTICON where CODEIN = ? order by NUMPUN",
+						        + "CAPEIN, CODCIT, CODNAZ, TELEIN, FAXEIN, EMAIIN, EMAI2IN, INDWEB, CODFE, CODRES, CODCONS_NSO, CFEIN, IVAEIN, ORGRICORSO "
+						        + "from PUNTICON where CODEIN = ? and orgricorso" + valoreQueryIsOrgRicorsi + " order by NUMPUN",
 								new Object[] { codei });
 				if (listaPuntiContatto != null
 						&& listaPuntiContatto.size() > 0) {
 				  List<String> listaNomTec = new ArrayList<String>(listaPuntiContatto.size());
 
-                  for (int i = 0; i < listaPuntiContatto.size(); i++) {
+                  for (int i = 0; !("true".equals(isOrgRicorsi)) && i < listaPuntiContatto.size(); i++) {
 
                       String nomtec = (String) sqlManager.getObject(
                               "select nomtec from tecni where CODTEC= ?",
@@ -73,10 +83,8 @@ public class GestionePuntiDiContattoFunction extends
                       listaNomTec.add(nomtec);
 
                   }
-					pageContext.setAttribute("puntiContatto",
-							listaPuntiContatto, PageContext.REQUEST_SCOPE);
-					pageContext.setAttribute("nomeTecnico", listaNomTec,
-                        PageContext.REQUEST_SCOPE);
+					pageContext.setAttribute(nomeAttributoLista, listaPuntiContatto, PageContext.REQUEST_SCOPE);
+					pageContext.setAttribute("nomeTecnico", listaNomTec, PageContext.REQUEST_SCOPE);
 
 				}
 			} catch (SQLException e) {

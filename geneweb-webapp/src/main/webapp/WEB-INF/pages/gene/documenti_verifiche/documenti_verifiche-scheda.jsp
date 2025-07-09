@@ -35,7 +35,7 @@
 <gene:redefineInsert name="corpo">
 	<gene:formScheda entita="DOCUMENTI_VERIFICHE" gestisciProtezioni="true"  gestore="it.eldasoft.gene.web.struts.tags.gestori.GestoreDocumentiVerifiche">
 		<gene:redefineInsert name="schedaNuovo"></gene:redefineInsert>
-		<c:if test='${opzVerifiche ne "ou228"}'>
+		<c:if test='${opzVerifiche ne "ou228" || fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 			<gene:redefineInsert name="schedaModifica"></gene:redefineInsert>
 		</c:if>
 		<gene:campoScheda campo="ID" visibile="false" />
@@ -80,14 +80,14 @@
 		 
 		<c:if test='${opzVerifiche eq "ou227" || opzVerifiche eq "ou228"}' >
 			<gene:campoScheda campo="DIGNOMDOC" entita="W_DOCDIG" visibile='${!(empty datiRiga.W_DOCDIG_IDDOCDIG && modo eq "MODIFICA")}' modificabile="false"
-		 	where="W_DOCDIG.IDPRG=DOCUMENTI_VERIFICHE.IDPRG AND W_DOCDIG.IDDOCDIG=DOCUMENTI_VERIFICHE.IDDOCDG" href="javascript:visualizzaFileDIGOGG('${datiRiga.DOCUMENTI_VERIFICHE_ID}', '${datiRiga.W_DOCDIG_DIGNOMDOC}','${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');" />
+		 	where="W_DOCDIG.IDPRG=DOCUMENTI_VERIFICHE.IDPRG AND W_DOCDIG.IDDOCDIG=DOCUMENTI_VERIFICHE.IDDOCDG" href="javascript:visualizzaFileDocumentiVerifiche('${datiRiga.DOCUMENTI_VERIFICHE_ID}', '${datiRiga.W_DOCDIG_DIGNOMDOC}');" />
 			<gene:campoScheda title="Nome file"  visibile='${empty datiRiga.W_DOCDIG_IDDOCDIG && modo eq "MODIFICA"}'>
 				<input type="file" name="selezioneFile" id="selezioneFile" onchange="javascript:scegliFile(this.value);" class="file" size="70" onkeydown="return bloccaCaratteriDaTastiera(event);" value=''/>
 			</gene:campoScheda>
 			<gene:campoScheda title="File da allegare" campo="FILEDAALLEGARE" campoFittizio="true" visibile="false" definizione="T70;0" />
 		</c:if>
 			
-		<c:if test='${opzVerifiche eq "ou228"}'>
+		<c:if test='${opzVerifiche eq "ou228" && !fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
 			<gene:redefineInsert name="pulsanteNuovo"></gene:redefineInsert>
 			<gene:campoScheda>
 				<jsp:include page="/WEB-INF/pages/commons/pulsantiScheda.jsp" />
@@ -206,12 +206,12 @@
 	}
 
 
-	function visualizzaFileDIGOGG(c0acod, dignomdoc,idprg,iddocdig) {
+	function visualizzaFileDocumentiVerifiche(digkey1, dignomdoc) {
 		var uffint= "${sessionScope.uffint}";
 		if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
 		{
-			var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-			document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + dignomdoc + "&digent=" + "DOCUMENTI_VERIFICHE" + "&uffint=" + uffint;
+			var href = "${pageContext.request.contextPath}/VisualizzaFileDocumentiVerifiche.do";
+			document.location.href = href+"?digkey1=" + digkey1 + "&dignomdoc=" + dignomdoc + "&uffint=" + uffint;
 		}
 	}
 

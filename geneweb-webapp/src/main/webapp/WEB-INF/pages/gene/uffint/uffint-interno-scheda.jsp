@@ -66,20 +66,26 @@
 			</c:if>
 		</gene:redefineInsert>
 	</c:if>
-	
+
 	<gene:gruppoCampi idProtezioni="GEN">
 		<gene:campoScheda>
 			<td colspan="2"><b>Dati generali</b></td>
 		</gene:campoScheda>
 		<gene:campoScheda campo="CODEIN" keyCheck="true" modificabile='${modoAperturaScheda eq "NUOVO"}' gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoCodificaAutomatica" obbligatorio="${isCodificaAutomatica eq 'false'}" />
 		<gene:campoScheda campo="NOMEIN" obbligatorio="true"/>
-		<gene:campoScheda campo="TIPOIN"/>
+		<gene:campoScheda campo="TIPOIN" visibile="false"/>
+		<gene:campoScheda campo="TIPOAMM"/>
+		<gene:campoScheda campo="ATTPRINC"/>
+		<gene:campoScheda campo="ATTSETT"/>
 		<gene:campoScheda campo="NATGIU"/>
 		<gene:campoScheda campo="CFEIN" obbligatorio='${obbligatorioCodFisc}'>
 			<gene:checkCampoScheda funzione='checkCodFisNazionalita("##",document.getElementById("UFFINT_CODNAZ"))' obbligatorio="${obbligatoriaCorrettezzaCodFisc}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
-		</gene:campoScheda>	
+		</gene:campoScheda>
 		<gene:campoScheda campo="IVAEIN" obbligatorio='${obbligatorioPIVA}'>
 			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("UFFINT_CODNAZ"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
+		</gene:campoScheda>
+		<gene:campoScheda campo="CODAUSA" speciale="true">
+			<gene:popupCampo titolo="Recupera codice AUSA da servizio" href="valorizzaCodausa('UFFINT_CODAUSA',getValue('UFFINT_CFEIN'))" />
 		</gene:campoScheda>
 		<gene:campoScheda campo="VIAEIN"/>
 		<gene:campoScheda campo="NCIEIN"/>
@@ -90,14 +96,14 @@
 			</c:if>
 		</gene:campoScheda>
 		<gene:archivio titolo="Comuni" obbligatorio="false" scollegabile="true"
-				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.CAPEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.PROEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.CITEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}' 
-				scheda="" 
-				schedaPopUp="" 
+				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.CAPEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.PROEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.CITEIN") and gene:checkProt(pageContext, "COLS.MOD.GENE.TEIM.CODCIT"),"gene/commons/istat-comuni-lista-popup.jsp","")}'
+				scheda=""
+				schedaPopUp=""
 				campi="G_COMUNI.PROVINCIA;G_COMUNI.CAP;G_COMUNI.DESCRI;G_COMUNI.CODISTAT"
 				functionId="${functionIdComuni}"
 				parametriWhere="${parametriWhereComuni}"
-				chiave="" 
-				formName="formComuni" 
+				chiave=""
+				formName="formComuni"
 				inseribile="false" >
 			<gene:campoScheda campoFittizio="true" campo="COM_PROEIN" definizione="T9" visibile="false"/>
 			<gene:campoScheda campo="CAPEIN"/>
@@ -119,19 +125,23 @@
 		<gene:campoScheda campo="ISCUC"/>
 		<gene:campoScheda campo="CFANAC" />
 		<gene:fnJavaScriptScheda funzione='visualizzaCFANAC("#UFFINT_ISCUC#")' elencocampi='UFFINT_ISCUC' esegui="true" />
+		<gene:campoScheda campo="CODAUSAANAC" speciale="true">
+			<gene:popupCampo titolo="Recupera codice AUSA da servizio" href="valorizzaCodausa('UFFINT_CODAUSAANAC',getValue('UFFINT_CFANAC'))" />
+		</gene:campoScheda>
+
 	</gene:gruppoCampi>
-	
+
 	<c:if test='${modoAperturaScheda ne "NUOVO" || (modoAperturaScheda eq "NUOVO" && (empty sessionScope.uffint or !fn:contains(archiviFiltrati,"TECNI")))}'>
-	
+
 	<gene:gruppoCampi idProtezioni="RESP">
 		<gene:campoScheda>
 			<td colspan="2"><b>Responsabile ${fn:toLowerCase(nomeEntitaSingolaParametrizzata)}</b></td>
 		</gene:campoScheda>
-		<gene:archivio titolo="Tecnici" 
-			lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.LAVO.UFFINT.CODRES"),"gene/tecni/tecni-lista-popup.jsp","")}' 
+		<gene:archivio titolo="Tecnici"
+			lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.LAVO.UFFINT.CODRES"),"gene/tecni/tecni-lista-popup.jsp","")}'
 			scheda='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda.jsp","")}'
 			schedaPopUp='${gene:if(gene:checkProtObj( pageContext, "MASC.VIS","GENE.SchedaTecni"),"gene/tecni/tecni-scheda-popup.jsp","")}'
-			campi="TECNI.CODTEC;TECNI.NOMTEC" 
+			campi="TECNI.CODTEC;TECNI.NOMTEC"
 			functionId="skip"
 			chiave="UFFINT_CODRES"
 			formName="formResponsabile"
@@ -142,12 +152,12 @@
 		<gene:campoScheda campo="RESINI"/>
 		<gene:campoScheda campo="RESFIN"/>
 	</gene:gruppoCampi>
-	
+
 	<c:set var="codiceUfficio" value='${gene:getValCampo(key, "UFFINT.CODEIN")}' />
 	<c:if test='${modo ne "NUOVO"}'>
 		<gene:callFunction obj="it.eldasoft.gene.tags.functions.GestioneAltrePersoneRiferimentoFunction" parametro="${key}" />
 	</c:if>
-		
+
 	<jsp:include page="/WEB-INF/pages/commons/interno-scheda-multipla.jsp" >
 		<jsp:param name="entita" value='G2FUNZ'/>
 		<jsp:param name="chiave" value='${codiceUfficio}'/>
@@ -162,27 +172,9 @@
 		<jsp:param name="msgRaggiuntoMax" value="e persone di riferimento" />
 		<jsp:param name="sezioneListaVuota" value="false"/>
 	</jsp:include>
-	
+
 	</c:if>
-	
-	<c:if test='${modo ne "NUOVO"}'>
-		<gene:callFunction obj="it.eldasoft.gene.tags.functions.GestionePuntiDiContattoFunction" parametro="${key}" />
-	</c:if>
-	<jsp:include page="/WEB-INF/pages/commons/interno-scheda-multipla.jsp" >
-		<jsp:param name="entita" value='PUNTICON'/>
-		<jsp:param name="chiave" value='${codiceUfficio}'/>
-		<jsp:param name="archiviFiltrati" value='${archiviFiltrati}'/>
-		<jsp:param name="nomeAttributoLista" value='puntiContatto' />
-		<jsp:param name="idProtezioni" value="PUNTI" />
-		<jsp:param name="jspDettaglioSingolo" value="/WEB-INF/pages/gene/punticon/puntiContatto.jsp" />
-		<jsp:param name="arrayCampi" value="'PUNTICON_CODEIN_', 'PUNTICON_NUMPUN_','PUNTICON_NOMPUN_', 'PUNTICON_VIAEIN_','PUNTICON_NCIEIN_','PUNTICON_CITEIN_','PUNTICON_PROEIN_','PUNTICON_CAPEIN_','PUNTICON_CODCIT_','PUNTICON_CODNAZ_','PUNTICON_TELEIN_','PUNTICON_FAXEIN_','PUNTICON_EMAIIN_','PUNTICON_EMAI2IN_','PUNTICON_INDWEB_','PUNTICON_CODFE_','PUNTICON_CODRES_','TECNI_NOMTE_','COM_PROEIN_','PUNTICON_CODCONS_NSO_'" />
-		<jsp:param name="titoloSezione" value="Punto di contatto" />
-		<jsp:param name="titoloNuovaSezione" value="Punto di contatto" />
-		<jsp:param name="descEntitaVociLink" value="punto di contatto" />
-		<jsp:param name="msgRaggiuntoMax" value="i punti di contatto" />
-		<jsp:param name="sezioneListaVuota" value="false"/>
-	</jsp:include>
-	
+
 	<c:if test='${modo ne "NUOVO"}'>
 		<gene:callFunction obj="it.eldasoft.gene.tags.functions.GestioneSettoriFunction" parametro="${key}" />
 	</c:if>
@@ -200,31 +192,32 @@
 		<jsp:param name="sezioneListaVuota" value="false"/>
 		<jsp:param name="usaContatoreLista" value="true"/>
 	</jsp:include>
-			
+
 	<gene:gruppoCampi idProtezioni="ALTRI">
 		<gene:campoScheda>
 			<td colspan="2"><b>Altri dati</b></td>
 		</gene:campoScheda>
 		<gene:campoScheda campo="NUMICC"/>
 		<gene:campoScheda campo="DATICC"/>
-		<gene:archivio titolo="Province" obbligatorio="false" 
-				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.PROICC"),"gene/commons/istat-province-lista-popup.jsp","")}' 
-				scheda="" 
-				schedaPopUp="" 
-				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC" 
+		<gene:archivio titolo="Province" obbligatorio="false"
+				lista='${gene:if(gene:checkProt(pageContext, "COLS.MOD.GENE.UFFINT.PROICC"),"gene/commons/istat-province-lista-popup.jsp","")}'
+				scheda=""
+				schedaPopUp=""
+				campi="TABSCHE.TABCOD2;TABSCHE.TABDESC"
 				functionId="skip"
-				chiave="" 
-				formName="formProvince" 
+				chiave=""
+				formName="formProvince"
 				inseribile="false" >
 			<gene:campoScheda campo="PROICC"/>
 			<gene:campoScheda entita="TABSCHE" campo="TABDESC" title="Provincia" where="TABCOD='S2003' and TABSCHE.TABCOD1='07' and UFFINT.PROICC = TABSCHE.TABCOD2" modificabile='${gene:checkProt( pageContext, "COLS.MOD.GENE.UFFINT.PROICC")}' visibile='${gene:checkProt( pageContext, "COLS.VIS.GENE.UFFINT.PROICC")}'/>
 		</gene:archivio>
-		
+
 		<gene:campoScheda campo="DOFEIN"/>
 		<gene:campoScheda campo="IDAMMIN"/>
 		<gene:campoScheda campo="NOTEIN" gestore="it.eldasoft.gene.tags.decorators.campi.gestori.GestoreCampoNote"/>
+		<gene:campoScheda campo="CODTIPOSTRUTTURA"/> <!-- nuovo campo GENEWEB-339 -->
 	</gene:gruppoCampi>
-	
+
 	<jsp:include page="/WEB-INF/pages/gene/attributi/sezione-attributi-generici.jsp">
 		<jsp:param name="entitaParent" value="UFFINT"/>
 	</jsp:include>
@@ -239,6 +232,8 @@
 	<gene:fnJavaScriptScheda funzione='setValueIfNotEmpty("UFFINT_PROEIN", "#COM_PROEIN#")' elencocampi='COM_PROEIN' esegui="false"/>
 	<gene:fnJavaScriptScheda funzione='aggiornaNazionalita("#UFFINT_CITEIN#", "${valoreItalia}", "UFFINT_CODNAZ")' elencocampi='UFFINT_CITEIN' esegui="false"/>
 	<gene:fnJavaScriptScheda funzione="gestioneOrdinanteIPA('#IS_ORDINANTE_IPA#')" elencocampi="IS_ORDINANTE_IPA" esegui="true" />
+
+	<input type="hidden" name="paginaDatigen" value="true"/>
 </gene:formScheda>
 
 <gene:javaScript>
@@ -250,9 +245,12 @@
 	function visualizzaCFANAC(valore){
 		if(valore == "1"){
 			showObj("rowUFFINT_CFANAC", true);
+			showObj("rowUFFINT_CODAUSAANAC", true);
 		} else {
 			showObj("rowUFFINT_CFANAC", false);
+			showObj("rowUFFINT_CODAUSAANAC", false);
 			setValue("UFFINT_CFANAC","");
+			setValue("UFFINT_CODAUSAANAC", "");
 		}
 	}
 
@@ -264,11 +262,11 @@
 	}
 	
 	function Utenti(){
-		document.location.href = '${pageContext.request.contextPath}/ApriPagina.do?'+csrfToken+'&href=gene/uffint/uffint-lista-utenti.jsp&key=${key}';
+		document.location.href = '${pageContext.request.contextPath}/ApriPagina.do?href=gene/uffint/uffint-lista-utenti.jsp&key=${key}';
 	}
 	
 	function DatiStorico(){
-		document.location.href = '${pageContext.request.contextPath}/ApriPagina.do?'+csrfToken+'&href=gene/sto_uffint/sto_uffint-lista.jsp&codiceUfficio=${codiceUfficio}';
+		document.location.href = '${pageContext.request.contextPath}/ApriPagina.do?href=gene/sto_uffint/sto_uffint-lista.jsp&codiceUfficio=${codiceUfficio}';
 	}
 	
 	<c:if test='${!(modo eq "VISUALIZZA")}'>
@@ -343,7 +341,7 @@
 			</c:if>
 		</c:if>
 	</c:if>
-	
+
 	function gestioneOrdinanteIPA(isoipa){
 		if (isoipa == '1' ){
 			$("#rowUFFINT_CODIPA").show();
@@ -355,5 +353,52 @@
 			$("#UFFINT_ENDPOINT_NSO").val("");
 		}
 	}
-	 
+
+	function valorizzaCodausa(target,cfein){
+	var cfCUC = target==='UFFINT_CODAUSAANAC';
+	var msg = "Confermi la lettura e l'assegnazione del codice AUSA "+(cfCUC?"fittizio ":"")+"da servizio?";
+	var msgSuccess = "Codice AUSA "+(cfCUC?"fittizio ":"")+"recuperato con successo";
+		if(confirm(msg)){
+
+			setTimeout(() => {
+				$.ajax({
+					type: "POST",
+					dataType: "json",
+					url: "ValorizzaCodiceAUSA.do",
+					data: {
+						cfEin: cfein,
+						cfCUC: cfCUC
+					},
+					async: false,
+					success: function(json) {
+						console.log(json)
+						if(json.pgMessage){
+							if(json.pgMessage=='JSONObject["items"] is not a JSONArray.')
+								alert("Nessun codice AUSA trovato");
+							else
+								alert(json.pgMessage);
+						} else {
+							if(json.done == 'N')
+								alert("Errore durante l'operazione di interrogazione del servizio");
+							else{
+								$('#'+target).val(json.codausa);
+								alert(msgSuccess);
+							}
+						}
+					},
+					error:
+					function(json) {
+						alert("Errore durante l'operazione di interrogazione del servizio: "+json)
+					},
+				});
+			},150);
+		}
+	}
+
+	$(document).ready(function(){
+		$('#rowLinkAddORGRICORSI').hide();
+		$('#rowtitoloORGRICORSI_1').find('#tdTitoloDestra_1').hide();
+		$('#rowtitoloORGRICORSI_1').find('b').text('Organizzazione competente per i ricorsi')
+	});
+
 </gene:javaScript>

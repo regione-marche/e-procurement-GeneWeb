@@ -347,6 +347,12 @@
 		<gene:redefineInsert name="schedaModifica"/>
 		<gene:redefineInsert name="pulsanteModifica" />
 	</c:if>
+	<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+		<gene:redefineInsert name="schedaModifica"/>
+		<gene:redefineInsert name="pulsanteModifica" />
+		<gene:redefineInsert name="pulsanteNuovo"/>
+		<gene:redefineInsert name="schedaNuovo"/>
+	</c:if>
 	
 	<gene:redefineInsert name="pulsanteSalva">
 		<INPUT type="button" class="bottone-azione" value="Salva" title="Salva modifiche" onclick="javascript:schedaConfermaCategorie();">

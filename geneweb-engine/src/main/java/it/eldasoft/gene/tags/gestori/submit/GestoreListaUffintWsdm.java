@@ -18,6 +18,7 @@ import java.util.List;
 import org.springframework.transaction.TransactionStatus;
 
 import it.eldasoft.gene.bl.SqlManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
 import it.eldasoft.gene.web.struts.tags.gestori.AbstractGestoreEntita;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
@@ -66,7 +67,7 @@ public class GestoreListaUffintWsdm  extends AbstractGestoreEntita{
     // TODO Auto-generated method stub
     String[] listaUffintSelezionati = this.getRequest().getParameterValues("keys");
     String idconfi=this.getRequest().getParameter("idconfi");
-    String codapp=this.getRequest().getParameter("codapp");
+    String codapp=(String) this.getRequest().getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
    
     String uffintToDelete = "";
     String uffintDaControllare = "";

@@ -17,6 +17,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <tiles:insert definition=".dettaglioNoTabDef" flush="true">
 
 	<tiles:put name="head" type="string">
@@ -25,10 +28,7 @@
 <!--
 function gestisciSubmit(){
 	var continua = true;
-	if(!controllaCampoPassword(document.cfgMailForm.password,0,false)) {
-		continua = false;
-	}
-	if(continua && document.cfgMailForm.password.value != document.cfgMailForm.newPassword.value) {
+	if(document.cfgMailForm.password.value != document.cfgMailForm.newPassword.value) {
 		alert("Nuova password e conferma nuova password non coincidono");
 		continua = false;
 	}
@@ -41,7 +41,7 @@ function gestisciSubmit(){
 }
 
 function annulla(){
-	document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=visualizza&idcfg=${param.idcfg}';
+	document.location.href='ConfigurazioneMail.do?metodo=visualizza&idcfg=${param.idcfg}';
 }
 -->
 </script>	</tiles:put>

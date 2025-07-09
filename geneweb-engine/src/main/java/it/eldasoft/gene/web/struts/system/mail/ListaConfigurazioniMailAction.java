@@ -17,6 +17,7 @@ import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.commons.web.struts.DispatchActionBase;
 import it.eldasoft.gene.commons.web.struts.ListaForm;
+import it.eldasoft.gene.tags.utils.KeyParamValidator;
 import it.eldasoft.utils.profiles.CheckOpzioniUtente;
 import it.eldasoft.utils.sicurezza.CriptazioneException;
 
@@ -138,6 +139,9 @@ public class ListaConfigurazioniMailAction extends DispatchActionBase {
     String paramIdcfg = request.getParameter("idcfg");
     String codapp = (String) request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
     try {
+      String chiaveDaValidare = "UFFINT.CODEIN=T:" + paramIdcfg;
+      KeyParamValidator.validate(chiaveDaValidare);
+
       this.mailManager.getConfigurazioneMailManager().deleteConfigurazioneMail(codapp, paramIdcfg);
       List<?> listaConfigurazioniMail = this.mailManager.getListaConfigurazioni((String)request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO));
       request.setAttribute("listaConfigurazioniMailForm", listaConfigurazioniMail);
@@ -150,6 +154,11 @@ public class ListaConfigurazioniMailAction extends DispatchActionBase {
     } catch (CriptazioneException e) {
       target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
       String messageKey = e.getChiaveResourceBundle();
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
+    } catch (RuntimeException e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      String messageKey = "errors.applicazione.inaspettataException";
       logger.error(this.resBundleGenerale.getString(messageKey), e);
       this.aggiungiMessaggio(request, messageKey);
     }
@@ -180,6 +189,9 @@ public class ListaConfigurazioniMailAction extends DispatchActionBase {
     String codapp = (String) request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
     try {
       for(int i=0; i < listaIdConfigurazioneMail.getId().length; i++){
+        String chiaveDaValidare = "UFFINT.CODEIN=T:" + listaIdConfigurazioneMail.getId()[i];
+        KeyParamValidator.validate(chiaveDaValidare);
+
         this.mailManager.getConfigurazioneMailManager().deleteConfigurazioneMail(codapp,listaIdConfigurazioneMail.getId()[i]);
         List<?> listaConfigurazioniMail = this.mailManager.getListaConfigurazioni((String)request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO));
         request.setAttribute("listaConfigurazioniMailForm", listaConfigurazioniMail);

@@ -18,6 +18,9 @@
 
 <gene:template file="scheda-nomenu-template.jsp">
 	<gene:redefineInsert name="head">
+		<script type="text/javascript">
+		var _captcha = "${sessionScope.captchaRegistrazione}";
+		</script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.min.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.realperson.min.js"></script>
 
@@ -122,6 +125,16 @@
 	</c:when>
 	<c:otherwise>
 		<gene:formScheda entita="USRSYS" gestore="it.eldasoft.gene.tags.gestori.submit.GestoreFormRegistrazione" >
+			<c:if test='${!empty requestScope.isModelloFacSimile}' >
+			<gene:campoScheda>
+				<td colspan="2">
+					<br>ATTENZIONE!
+					<br>Prima di procedere con la registrazione è necessario compilare il modulo di abilitazione qui accessibile. Il modulo di abilitazione firmato digitalmente deve essere allegato al presente form nella sezione documenti. L'abilitazione all'uso dei servizi sarà comunicata sulla email indicata all'atto di registrazione.
+					<br><br><a class="link-229" href="javascript:apriModelloAbilitazioneServizio();" >Cliccare qui per scaricare il documento</a> 
+					<br><br>
+				</td>
+			</gene:campoScheda> 
+			</c:if>
 			<gene:campoScheda>
 				<td colspan="2"><br><b>Dati anagrafici dell'utente</b></td>
 			</gene:campoScheda>
@@ -145,7 +158,7 @@
 				</c:otherwise>
 			</c:choose>
 			<gene:campoScheda campo="LOGIN" campoFittizio="true" definizione="T16;;;;" title="Login" obbligatorio="true" visibile="${visLogin}" modificabile="${empty requestScope.login}" value="${requestScope.login}" />
-			<gene:campoScheda campo="CODFISC" campoFittizio="true" definizione="T16;;;;" title="${titleCF}" obbligatorio="true" visibile='${requestScope.flagLdap ne "3" || !(requestScope.isLoginCF eq "1")}' modificabile="${empty requestScope.codfisc}" value="${requestScope.codfisc}"/>
+			<gene:campoScheda campo="CODFISC" campoFittizio="true" definizione="T30;;;;" title="${titleCF}" obbligatorio="true" modificabile="${empty requestScope.codfisc}" value="${requestScope.codfisc}"/>
 			<gene:campoScheda campo="SYSCON" visibile="false"/>
 			<gene:campoScheda campo="SYSUTE" visibile="false"/>
 			<gene:campoScheda campo="SYSNOM" visibile="false" title="Login" entita="USRSYS" where="usrsys.syscon = utent.syscon"/>
@@ -238,7 +251,7 @@
 			<gene:campoScheda>
 				<td colspan="2"><br><b>Ulteriori indicazioni</b></td>
 			</gene:campoScheda>
-			<gene:campoScheda campo="MSGAMM" campoFittizio="true" definizione="T2000;0;;NOTE;" title="Messaggio per l'amministratore" />
+			<gene:campoScheda campo="MSGAMM" campoFittizio="true" definizione="T2000;0;;NOTE;" title="Eventuale messaggio per il Gestore del servizio (verrà inviato insieme agli altri dati del presente modulo)" />
 			
 			
 			<c:if test='${requestScope.isUffintAbilitati eq "1" }'>
@@ -246,7 +259,7 @@
 					<td colspan="2"><br><b>Ente</b></td>
 				</gene:campoScheda>
 				<gene:campoScheda entita="UFFINT" campo="CODEIN" /> 
-				<gene:campoScheda title="Codice fiscale" entita="UFFINT" campo="CFEIN" obbligatorio="true"/>
+				<gene:campoScheda title="Codice fiscale Ente o Stazione Appaltante" entita="UFFINT" campo="CFEIN" obbligatorio="true"/>
 				<gene:campoScheda addTr="false">
 	
 				<tr id="rowUFFINT_AVVISO">
@@ -272,19 +285,6 @@
 			
 			
 			<c:if test='${!empty requestScope.isModelloFacSimile}' >
-			<gene:campoScheda>
-			<td colspan="2">
-				<br>
-				<b>Scarica il modello di abilitazione al servizio</b>
-				<br>
-				Per completare la registrazione &egrave; necessario scaricare il presente
-				<c:if test='${!empty requestScope.isModelloFacSimile}' >
-					<a class="link-229" href="javascript:apriModelloAbilitazioneServizio();" >
-				</c:if>
-				modello di abilitazione al servizio</a> , compilarlo, firmarlo digitalmente e <br>
-				allegarlo alla presente scheda di registrazione (vedi "Allega documenti").
-			</td>
-			</gene:campoScheda> 
 			<gene:campoScheda nome="ALLDOC">
 				<td colspan="2">
 				<br>
@@ -298,18 +298,18 @@
 				<gene:campoScheda title="Nome file" visibile="true">
 					<input type="file" name="selezioneFile" id="selezioneFile" class="file" size="70" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange='javascript:scegliFile();'/>
 			</gene:campoScheda>
-			</c:if>
+			</c:if>	
 
 			<gene:campoScheda> 
 				<td colspan="2">
 					<br>
-					<b>Informativa trattamento dati personali ai sensi del D.Lgs. n. 196/2003</b>
+					<b>Informativa ai sensi dell'art. 13 del Regolamento (UE) 2016/67</b>
 					<br>
-					Ai sensi dell'art. 13 del D. Lgs. n. 196/2003 (ex art. 10 della legge n. 675/96), si informa che i dati personali 
-					forniti ed acquisiti contestualmente alla registrazione ai servizi scelti, nonche' i dati necessari 
-					all'erogazione di tali servizi, saranno trattati, nel rispetto delle garanzie di riservatezza e delle misure di sicurezza 
-			        previste dalla normativa vigente attraverso strumenti informatici, telematici e manuali, con logiche strettamente 
-			        correlate alle finalita' del trattamento.
+					Ai sensi e per gli effetti dell'art.13 del Regolamento Generale sulla Protezione dei Dati Personali (Regolamento UE 2016/679, di seguito Regolamento),
+					si informa che i dati personali si informa che i dati personali forniti ed acquisiti contestualmente alla registrazione ai servizi scelti,
+					nonché i dati necessari all'erogazione di tali servizi, saranno trattati,
+					nel rispetto delle garanzie di riservatezza e delle misure di sicurezza previste dalla normativa vigente attraverso strumenti informatici,
+					telematici e manuali, con logiche strettamente correlate alle finalità del trattamento.
 			       	<br>	
 			       	<br>		       					
 					<c:if test="${not empty moduloCondizioniDuso}">
@@ -365,6 +365,7 @@
 		
 		document.forms[0].encoding="multipart/form-data";
 		
+		
 			var changeUFFINT = false;	
 
 			document.getElementById("NOME").size= 25;			
@@ -379,7 +380,7 @@
 			
 			
 			function gestioneAction() {
-				var nuovaAction = contextPath + "/SchedaNoSessione.do?" + csrfToken;
+				var nuovaAction = contextPath + "/SchedaNoSessione.do";
 				document.forms[0].action = nuovaAction;
 				nuovaAction = "commons/redirect.jsp";
 				document.forms[0].jspPathTo.value = nuovaAction;
@@ -527,8 +528,7 @@
    			            realperson:
 			            {
 			            	required: true,
-			            	minlength: 6,
-			            	isCodiceControlloCorretto: true
+			            	minlength: 6
 			            }	            
 			        },
 			        messages:
@@ -607,7 +607,7 @@
 				       	}
 					}
 				});
-			});		
+			});			
 					
 		
 			function upperCase(campo, valore){
@@ -664,7 +664,7 @@
 				var h = 500;
 				var l = Math.floor((screen.width-w)/2);
 				var t = Math.floor((screen.height-h)/2);
-				document.location.href='ModelloRegistrazione.do?'+csrfToken+'&metodo=download';
+				document.location.href='ModelloRegistrazione.do?metodo=download';
 			}
 			
 			
@@ -809,32 +809,6 @@
 					return result;
 			}
 			
-	        function isCodiceControlloCorretto() {
-					var isCodiceControlloCorretto = false;
-	                $.ajax({
-	                    type: "GET",
-	                    dataType: "json",
-	                    async: false,
-	                    beforeSend: function(x) {
-	        			if(x && x.overrideMimeType) {
-	            			x.overrideMimeType("application/json;charset=UTF-8");
-					       }
-	    				},
-	                    url: "${pageContext.request.contextPath}/IsCodiceControlloCorretto.do",
-	                    data: "realpersonHash=" + $("input[name=realpersonHash]").val() + "&realperson=" + $("#realperson").val(),
-	                    success: function(data){
-	                    	if (data.codiceControlloCorretto == true) {
-	                        	isCodiceControlloCorretto = true;
-	                        } else {
-	                        	isCodiceControlloCorretto = false;
-	                        }
-	                    },
-	                    error: function(e){
-	                        isCodiceControlloCorretto = false;
-	                    }
-	                });
-	                return isCodiceControlloCorretto;
-	        }
 	        
 	        function SetApplicativiDisponibili(){
 				var appdisp = '';

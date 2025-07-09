@@ -36,8 +36,10 @@ public class TokenContent {
 	private String error;
 	@JsonProperty(value = "cod_error")
 	private String codError;
-	
-	
+	@JsonProperty(value = "maggiolitributi")
+	private String maggioliTributi;
+
+
 	public String getUtente() {
 		return utente;
 	}
@@ -128,5 +130,10 @@ public class TokenContent {
 	public void setCodError(String codError) {
 		this.codError = codError;
 	}
-	
+	public String getMaggioliTributi() {
+		return maggioliTributi;
+	}
+	public void setMaggioliTributi(String maggioliTributi) {
+		this.maggioliTributi = maggioliTributi;
+	}
 }

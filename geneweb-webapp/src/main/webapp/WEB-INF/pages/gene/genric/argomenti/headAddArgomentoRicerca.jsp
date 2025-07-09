@@ -48,7 +48,7 @@
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab){
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina
@@ -72,12 +72,12 @@
 	}
 
 	function modifica(progr){
-		document.location.href='EditArgomentoRicerca.do?'+csrfToken+'&metodo=edit&prog=' + prog;
+		document.location.href='EditArgomentoRicerca.do?metodo=edit&prog=' + prog;
 	}
 	
 	function elimina(progr){
 		bloccaRichiesteServer();
-		document.location.href='EditArgomentoRicerca.do?'+csrfToken+'&metodo=elimina&prog=' + prog;
+		document.location.href='EditArgomentoRicerca.do?metodo=elimina&prog=' + prog;
 	}
 
 <%

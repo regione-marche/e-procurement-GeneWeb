@@ -762,7 +762,7 @@ public class UtilityTags {
 						throw new RuntimeException(
 								"Attenzione il parametro: " + campo + " non � di tipo JdbcParametro !");
 				} else
-					pos = 0;
+					pos = -1;
 			}
 		} while (pos >= 0);
 		ret.append(sql);
@@ -1019,7 +1019,7 @@ public class UtilityTags {
 		objRet = (UtilityHistory) session.getAttribute(SESSION_VAR_HISTORY_TAG);
 		// Se non esiste ancora l'oggetto lo creo
 		if (objRet == null) {
-			objRet = new UtilityHistory(session);
+			objRet = new UtilityHistory();
 			session.setAttribute(SESSION_VAR_HISTORY_TAG, objRet);
 		}
 
@@ -1575,12 +1575,12 @@ public class UtilityTags {
 		if (peek != null)
 			peek.addCreatedDeftrova(sessionKey);
 	}
-	
+
 	/**
 	 * Quando necessario, salva una mappa "deftrova", descritta dall'entit� e dal numero popup, negli attributi della request.
 	 * Utilizzato principalmente quando c'� la necessit� o l'obbligo di eliminare tale mappa dalla sessione. Se in sessione
 	 * non � presente la mappa cercata, il programma continua con il suo normale funzionamento.
-	 * 
+	 *
 	 * @param request
 	 * 				Request HTTP della servlet
 	 * @param sessionKey
@@ -1591,8 +1591,8 @@ public class UtilityTags {
 	public static void saveHashAttributeForSqlBuild(final HttpServletRequest request, final String sessionKey, final int popupLevel) {
 		final HttpSession session = request.getSession();
 		final String key = UtilityTags.SESSION_PENDICE_DEF_TROVA + sessionKey + "-" + popupLevel;
-		
-		
+
+
 		@SuppressWarnings("unchecked")
 		final Map<String, String> defTrovaToSave = (Map<String, String>) session.getAttribute(key);
 		if (defTrovaToSave != null) {
@@ -1601,11 +1601,11 @@ public class UtilityTags {
 			if (logger.isDebugEnabled()) logger.warn("Non � stato trovato un deftrova per l'entit�" + sessionKey);
 		}
 	}
-	
+
 	/**
 	 * Ripristina una mappa "deftrova", precedentemente salvata tra gli attributi della request, nella sessione.
 	 * Se non la mappa non � presente nella request, il programma continua con il suo normale funzionamento.
-	 * 
+	 *
 	 * @param request
 	 * 				Request HTTP della servlet
 	 * @param sessionKey
@@ -1616,11 +1616,11 @@ public class UtilityTags {
 	public static void restoreHashAttributeForSqlBuild(final HttpServletRequest request, final String sessionKey, final int popupLevel) {
 		final HttpSession session = request.getSession();
 		final String key = UtilityTags.SESSION_PENDICE_DEF_TROVA + sessionKey + "-" + popupLevel;
-		
+
 		@SuppressWarnings("unchecked")
 		final Map<String, String> savedDeftrova = (Map<String, String>) request.getAttribute(key + "_SAVED");
 		if (request.getAttribute(key + "_SAVED") != null) {
-			
+
 			session.setAttribute(key, savedDeftrova);
 			request.removeAttribute(key + "_SAVED");
 		} else {
@@ -1630,7 +1630,7 @@ public class UtilityTags {
 
 	/**
 	 * Rimuove una mappa "deftrova", descritta dall'entit� interrogata e dal livello di popup, dalla sessione.
-	 * 
+	 *
 	 * @param session
 	 * 				Sessione HTTP
 	 * @param sessionKey
@@ -1641,10 +1641,10 @@ public class UtilityTags {
 	public static void deleteHashAttributesForSqlBuild(HttpSession session, String sessionKey, int popupLevel) {
 		session.removeAttribute(SESSION_PENDICE_DEF_TROVA + sessionKey + "-" + popupLevel);
 	}
-	
+
 	/**
 	 * Rimuove un entry da una mappa "deftrova", descritta dall'entit� interrogata e dal livello di popup, in sessione
-	 * 
+	 *
 	 * @param session
 	 * 				Sessione HTTP
 	 * @param sessionKey
@@ -1654,13 +1654,13 @@ public class UtilityTags {
 	 * @param attributeName
 	 * 				Nome dell'attributo da rimuovere
 	 */
-	public static void removeAttributeForSqlBuild(final HttpSession session, final String sessionKey, final int popupLevel, 
+	public static void removeAttributeForSqlBuild(final HttpSession session, final String sessionKey, final int popupLevel,
 			final String attributeName) {
 		final String key = UtilityTags.SESSION_PENDICE_DEF_TROVA + sessionKey + "-" + popupLevel;
-		
+
 		@SuppressWarnings("unchecked")
 		final Map<String, String> deftrova = (Map<String, String>) session.getAttribute(key);
-		// Elimino l'attributo solo se trovo la mappa. 
+		// Elimino l'attributo solo se trovo la mappa.
 		// TODO verificare se necessario notificare la presenza di tale mappa nella sessione tramite il logger.
 		if (deftrova != null) {
 			deftrova.remove(attributeName);
@@ -1669,14 +1669,14 @@ public class UtilityTags {
 
 	/**
 	 * Indica se � gi� stato creato o meno un attributo hash in sessione.
-	 * 
+	 *
 	 * @param session    Sessione HTTP
 	 * @param sessionKey Identificativo oggetto di sessione, da concatenare al
 	 *                   prefisso che indica gli oggetti memorizzati per questo
 	 *                   scopo
 	 * @param popupLevel Livello di popup (0 = pagina principale, 1 = popup di primo
 	 *                   livello, 2 = popup di secondo livello, ...)
-	 * 
+	 *
 	 * @return True se l'hash � gi� stato creato
 	 */
 	public static boolean existsHashAttributeForSqlBuild(HttpSession session, String sessionKey, int popupLevel) {
@@ -1688,7 +1688,7 @@ public class UtilityTags {
 	/**
 	 * Costruisce in sessione una hash temporanea per la memorizzazione di alcune
 	 * condizioni where che hanno la necessit� di essere passate tra liste/archivi.
-	 * 
+	 *
 	 * @param session    Sessione HTTP
 	 * @param sessionKey Chiave di sessione
 	 */
@@ -1735,7 +1735,7 @@ public class UtilityTags {
 			defTrovaSession.put(attributeName, value);
 		}
 	}
-	
+
 	public static void putAttributeForSqlBuild(HttpSession session, String sessionKey, int popupLevel,
 			String attributeName, String value, boolean force) {
 		// si costruisce la chiave con un prefisso, l'identificativo ricevuto come
@@ -1756,7 +1756,7 @@ public class UtilityTags {
 	/**
 	 * Inserisce nella hash temporanea i dati necessari per la corretta costruzione
 	 * della query SQL.
-	 * 
+	 *
 	 * @param session       Sessione HTTP
 	 * @param sessionKey    Chiave di sessione
 	 * @param attributeName Nome dell'attributo
@@ -1809,11 +1809,11 @@ public class UtilityTags {
 	 * Estrae dalla hash temporanea il valore di un attributo specificato da
 	 * 'attributeName' e lo rimuove. Se, una volta rimosso l'elemento, l'hash �
 	 * vuota, la elimina dalla sessione.
-	 * 
+	 *
 	 * @param session       Sessione HTTP
 	 * @param sessionKey    Chiave della sessione
 	 * @param attributeName Nome dell'attributo
-	 * 
+	 *
 	 * @return Valore dell'attributo
 	 */
 	public static String popTempAttributeForSqlBuild(HttpSession session, String sessionKey, String attributeName) {

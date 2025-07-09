@@ -107,7 +107,12 @@
         <put name="head" value="/WEB-INF/pages/gene/login/headControlliJS.jsp"/>
    		<put name="eventiDiPagina" value=""/>
         <put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
-        <put name="areaDestra" value="/WEB-INF/pages/gene/login/formLogin.jsp"/>
+    </definition>
+    
+     <definition name="loginFormDef" path="/WEB-INF/pages/gene/login/formLogin.jsp">
+        <put name="head" value="/WEB-INF/pages/gene/login/headControlliJS.jsp"/>
+   		<put name="eventiDiPagina" value=""/>
+        <put name="testata" value="/WEB-INF/pages/commons/testata.jsp"/>
     </definition>
 
     <definition name="errorDef" path="/WEB-INF/pages/templates/error.jsp">

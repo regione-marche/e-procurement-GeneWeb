@@ -16,6 +16,7 @@
 				<ref bean="impostaStatoVerificheSchedulerTrigger" />
 				<ref bean="inviaConversazioniSchedulerTrigger" />
 				<ref bean="riconciliazionePECSchedulerTrigger" />
+				<ref bean="objectStorageSyncTaskJobTrigger" />
 			</list>
 		</property>
 		<property name="waitForJobsToCompleteOnShutdown" value="true" />

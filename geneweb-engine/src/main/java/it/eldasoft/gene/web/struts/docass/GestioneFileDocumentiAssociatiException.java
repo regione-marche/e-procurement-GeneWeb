@@ -29,11 +29,10 @@ public class GestioneFileDocumentiAssociatiException extends EldaCheckedExceptio
   public static final String ERROR_UPLOAD_RENAMING_KO   = "UPLOAD_RENAMING_KO";
   public static final String ERROR_UPLOAD_FILE_KO       = "UPLOAD_FILE_KO";
   public static final String ERROR_ESTENSIONE_NON_AMMESSA = "ESTENSIONE_NON_AMMESSA";
+  public static final String ERROR_CONTENUTO_NON_VALIDO = "CONTENUTO_NON_VALIDO";
+  public static final String ERROR_CONTENUTO_NON_SICURO = "CONTENUTO_NON_SICURO";
   public static final String ERROR_UPLOAD_DB_KO         = "UPLOAD_DB_KO";
   public static final String ERROR_UPLOAD_DELETE_TMP_KO = "UPLOAD_DELETE_TMP_KO";
-  public static final String ERROR_INASPETTATO_UPLOAD   = "ERRORE_INASPETTATO_UPLOAD";
-
-  public static final String ERROR_DOWNLOAD_DEFAULT_PATH_KO = "DOWNLOAD_DEFAULT_PATH_KO";
 
   public static final String CODICE_ERRORE_KO_CANCELLA_FILE_PIU_OCCORRENZE = "DELETE_FILE_PIU_OCCORRENZE";
 

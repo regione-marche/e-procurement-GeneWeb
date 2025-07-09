@@ -14,6 +14,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <gene:template file="ricerca-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="W_CONFIG-Trova">
 
 <gene:redefineInsert name="addHistory">
@@ -28,7 +31,7 @@
 	  	<gene:formTrova entita="W_CONFIG" gestisciProtezioni="true">
 	  		<gene:campoTrova campo="SEZIONE" gestore="it.eldasoft.gene.tags.gestori.decoratori.GestoreCampoSezione"/>
 			<gene:campoTrova title="Configurazione" campo="CHIAVE"/>
-			<gene:campoTrova campo="VALORE"/>
+			<gene:campoTrova campo="VALORE" where="CRIPTATO IS NULL"/>
 			<gene:campoTrova campo="DESCRIZIONE"/>
 		</gene:formTrova>
 	</gene:redefineInsert>

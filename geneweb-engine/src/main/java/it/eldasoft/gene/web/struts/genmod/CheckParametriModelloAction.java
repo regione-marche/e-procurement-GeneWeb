@@ -127,7 +127,19 @@ public class CheckParametriModelloAction extends ActionBaseNoOpzioni {
           parametroModello.setNome(UtilityStringhe.convStringHTML(
               parametroModello.getNome()));
         }
-        if (elencoParametri.size() > 1) {
+        //check se ci sono parametri che richiedono un input da parte dell'utente
+        boolean gestioneConForm=false;
+        int countParametriUoUI = 0;
+        Iterator checkTipoParametri = elencoParametri.iterator();
+        while(checkTipoParametri.hasNext()) {
+          ParametroModello parametro = (ParametroModello) checkTipoParametri.next();
+          if(!"U".equals(parametro.getTipo()) && !"UI".equals(parametro.getTipo())) {
+            gestioneConForm = true;
+            break;
+          } else
+            countParametriUoUI++;
+        }
+        if (gestioneConForm) {
           target = "setParametri";
 
           request.setAttribute("listaParametri", elencoParametri);
@@ -187,79 +199,18 @@ public class CheckParametriModelloAction extends ActionBaseNoOpzioni {
           }
 
         } else {
-          // Il modello richiede un solo parametro: bisogna controllare se
-          // quell'unico parametro e' di tipo U (cioè Identificativo utente) o
-          // meno. Se il parametro e' di tipo U, bisogna inserire nel request
-          // l'attributo ParametriModelloForm contentente nell'attributo
-          // parametriModello (di tipo String[]) l'idAccount dell'utente
-          // che sta lanciando la composizione del modello
-          ParametroModello defParametro = (ParametroModello) elencoParametri.get(0);
-          if ("U".equals(defParametro.getTipo())) {
             target = "salvaEComponi";
 
             ParametriModelloForm parametriModelloForm = new ParametriModelloForm(
                 componiModelloForm);
-            String[] tmp = new String[] { "" + profiloUtente.getId() };
+            String[] tmp = new String[countParametriUoUI];
 
-            // Set dell'unico parametro nell'array dei valori dei parametri
+            // Set dei parametri
             parametriModelloForm.setParametriModello(tmp);
 
-            // new String[]{"" + profiloUtente.getId()});
             request.setAttribute("parametriModelloconIdUtenteForm",
                 parametriModelloForm);
-          } else {
-            target = "setParametri";
 
-            request.setAttribute("listaParametri", elencoParametri);
-
-            valore = this.modelliManager.getCacheParametroModello(
-                profiloUtente.getId(), componiModelloForm.getIdModello(),
-                defParametro.getCodice());
-            listaValori.add(valore);
-
-            // Inserimento identificativo utente nel request per popolare il
-            // parametro hidden nella lista dei parametri per comporre il
-            // modello
-            // stesso
-            request.setAttribute("idAccount",
-                new Integer(profiloUtente.getId()));
-
-            // se il parametro è di tipo Tabellato mettiamo
-            // nel request la lista degli elementi, il nome della lista sarà
-            // composto da "lista" + codice tabellato
-
-            List listaTabellato = null;
-            String nomeLista = "lista";
-
-            if ("T".equalsIgnoreCase(defParametro.getTipo())) {
-
-              // nell'attributo tabellato troviamo il mnemonico del campo
-              // associato al
-              // tabellato che dobbiamo presentare
-              Campo campo = dizCampi.get(defParametro.getTabellato());
-              if (campo != null) {
-                if (this.checkMnemoniciParametriTabellati(campo, codiceProfilo)) {
-                  listaTabellato = tabellatiManager.getTabellato(campo.getCodiceTabellato());
-
-                  request.setAttribute(nomeLista + defParametro.getTabellato(),
-                      listaTabellato);
-                } else {
-                  target = FORWARD_ERROR_LISTA_MODELLI;
-                  messageKey = "errors.modelli.componi.parametriNonVisibili";
-                  logger.error(this.resBundleGenerale.getString(messageKey));
-                  ActionBase.aggiungiMessaggioInSessione(request, messageKey, null);
-                  continua = false;
-                }
-              } else {
-                target = FORWARD_ERROR_LISTA_MODELLI;
-                messageKey = "errors.modelli.componi.parametrierrati";
-                logger.error(this.resBundleGenerale.getString(messageKey));
-                ActionBase.aggiungiMessaggioInSessione(request, messageKey, null);
-                continua = false;
-              }
-            }
-
-          }
         }
         componiModelloForm.setIdSessione(0);
       } else {

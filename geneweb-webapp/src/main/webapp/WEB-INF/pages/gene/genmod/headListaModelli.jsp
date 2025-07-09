@@ -23,26 +23,26 @@
 <elda:jsFunctionOpzioniListaRecord contextPath="${pageContext.request.contextPath}"/>
 
 	function apriTrovaModelli(){
-		document.location.href='InitTrovaModelli.do?'+csrfToken;
+		document.location.href='InitTrovaModelli.do';
   }
 	function listaModelli(){
-		document.location.href='TrovaModelli.do?'+csrfToken+'&metodo=trovaModelli';
+		document.location.href='TrovaModelli.do?metodo=trovaModelli';
 	}
 
   function creaNuovoModello(){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=creaModello';
+		document.location.href='Modello.do?metodo=creaModello';
   }
 	
 	function visualizza(idModello){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=dettaglioModello&idModello='+idModello;
+		document.location.href='Modello.do?metodo=dettaglioModello&idModello='+idModello;
 	}
 	function modifica(idModello){
-	  document.location.href='Modello.do?'+csrfToken+'&metodo=modificaModello&idModello='+idModello;
+	  document.location.href='Modello.do?metodo=modificaModello&idModello='+idModello;
 	}
 	function elimina(idModello){
 	  if(confirm("Procedere con l'eliminazione del modello ?","Eliminazione modello")){
 	  	bloccaRichiesteServer();
-	 		document.location.href='Modello.do?'+csrfToken+'&metodo=deleteModello&idModello='+idModello;
+	 		document.location.href='Modello.do?metodo=deleteModello&idModello='+idModello;
 		}
 	}
 
@@ -58,5 +58,7 @@
 	    }
 		}
 	}
+
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

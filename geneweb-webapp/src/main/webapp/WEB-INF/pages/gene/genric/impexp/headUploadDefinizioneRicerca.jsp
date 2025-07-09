@@ -58,12 +58,12 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExport.do?'+csrfToken;
+		  document.location.href='AnnullaImportExport.do';
 		}
 	}
 	
 	function indietro(){
-		document.location.href='InitFunzAvanzate.do?'+csrfToken;
+		document.location.href='InitFunzAvanzate.do';
 	}
 	
 -->

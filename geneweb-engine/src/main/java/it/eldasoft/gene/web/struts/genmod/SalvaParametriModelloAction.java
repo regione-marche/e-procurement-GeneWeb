@@ -184,6 +184,15 @@ public class SalvaParametriModelloAction extends
         // un numero decimale ha come separatore dei decimali il "."
         if ("F".equals(defParametro.getTipo()))
           valore = UtilityStringhe.replace(valore, ",", ".");
+        if ("U".equals(defParametro.getTipo())){
+          ProfiloUtente profiloUtente = (ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE);
+          valore = ""+profiloUtente.getId();
+        }
+        if ("UI".equals(defParametro.getTipo())){
+          valore = ""+request.getSession().getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
+        }
+
+        // un numero decimale ha come separatore dei decimali il "."
 
         parametro.setValore(valore);
       }

@@ -16,12 +16,16 @@ public class ComponiWhereTEIMFunction extends AbstractComponiWhereFunction {
   // Function IDs
   private static final String FILTERED_WLEG_ID = "filteredWleg";
   private static final String FILTERED_WDTE_ID = "filteredWdte";
+  private static final String FILTERED_CODIMP_ID = "filteredCodimp";
   
   // Where conditions
   private static final String FILTERED_WLEG_WHERE = 
       "teim.codtim IN (SELECT codleg FROM impleg WHERE codimp2 = ?)";
   private static final String FILTERED_WDTE_WHERE = 
       "teim.codtim IN (SELECT coddte FROM impdte WHERE codimp3 = ?)";
+  private static final String FILTERED_CODIMP_WHERE =
+          "(teim.codtim IN (SELECT codleg FROM impleg WHERE codimp2 = ?) or teim.codtim IN (SELECT coddte FROM impdte WHERE codimp3 = ?)" +
+                  "or teim.codtim IN (SELECT codtec FROM impazi WHERE codimp4 = ?) or teim.codtim IN (SELECT codtec FROM g_impcol WHERE codimp = ?))";
   
   // Costruttori
   public ComponiWhereTEIMFunction() {
@@ -36,6 +40,8 @@ public class ComponiWhereTEIMFunction extends AbstractComponiWhereFunction {
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 0);
     } else if (functionId.equals(FILTERED_WLEG_ID) || functionId.equals(FILTERED_WDTE_ID)) {
       ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 1);
+    } else if (functionId.equals(FILTERED_CODIMP_ID)) {
+      ComponiWhereUtils.expectedParamsCountCheck(pageContext, LOGGER, ENTITA, 4);
     } else {
       throw ComponiWhereUtils.getUnknownFunctionIdException(functionId, ENTITA, LOGGER);
     }
@@ -49,12 +55,16 @@ public class ComponiWhereTEIMFunction extends AbstractComponiWhereFunction {
         where += " AND (" + FILTERED_WLEG_WHERE + ")";
       } else if (functionId.equals(FILTERED_WDTE_ID)) {
         where += " AND (" + FILTERED_WDTE_WHERE + ")";
+      } else if (functionId.equals(FILTERED_CODIMP_ID)) {
+        where += " AND " + FILTERED_CODIMP_WHERE;
       }
     } else {
       if (functionId.equals(FILTERED_WLEG_ID)) {
         where = FILTERED_WLEG_WHERE;
       } else if (functionId.equals(FILTERED_WDTE_ID)) {
         where = FILTERED_WDTE_WHERE;
+      } else if (functionId.equals(FILTERED_CODIMP_ID)) {
+        where = FILTERED_CODIMP_WHERE;
       } else if (functionId.equals(SKIP_ID)) {
         where = "";
       }

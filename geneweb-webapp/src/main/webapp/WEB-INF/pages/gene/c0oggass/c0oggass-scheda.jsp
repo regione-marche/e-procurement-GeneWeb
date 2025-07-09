@@ -14,6 +14,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<c:set var="isVerificaPDFA" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "uploadFile.verifica.pdfA")}'/>
 <c:set var="richiestaFirma" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "documentiDb.richiestaFirma")}'/>
 <c:set var="firmaProvider" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "digital-signature-provider")}'/>
 <c:if test='${firmaProvider eq 2}'>
@@ -93,7 +94,8 @@
 			<c:set var="key1" value='${gene:getValCampo(param.keyAdd, "C0AKEY1")}' />
 			<gene:campoScheda campo="IDDOCDIG" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and CAST(W_DOCDIG.DIGKEY1 AS INT) = C0OGGASS.C0ACOD"  visibile='false'/>
 			<gene:campoScheda campo="DIGNOMDOC" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and CAST(W_DOCDIG.DIGKEY1 AS INT) = C0OGGASS.C0ACOD"  visibile='false'/>
-			<gene:campoScheda campo="DIGFIRMA" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and W_DOCDIG.DIGKEY1='${c0acod }'"  visibile='false'/>
+			<gene:campoScheda campo="DIGFIRMA" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and CAST(W_DOCDIG.DIGKEY1 AS INT) = C0OGGASS.C0ACOD"  visibile='false'/>
+			<gene:campoScheda campo="DIGTIPDOC" entita="W_DOCDIG" where="W_DOCDIG.IDPRG='${sessionScope.moduloAttivo}' and W_DOCDIG.DIGENT='C0OGGASS' and CAST(W_DOCDIG.DIGKEY1 AS INT) = C0OGGASS.C0ACOD"  visibile='false'/>
 			<c:if test="${richiestaFirma eq '1' and modo eq 'NUOVO' and modo eq 'MODIFICA'}">
 				<gene:campoScheda title="Nome file in sostituzione" nome="selezioneFile">
 					<input type="file" name="selezioneFile" id="selezioneFile" class="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange='javascript:scegliFileDocumentoAssociato();'/>
@@ -102,10 +104,13 @@
 			
 			<c:if test='${modo eq "VISUALIZZA"}'>
 				<gene:campoScheda campo="VISUALIZZA_FILE_${param.contatore}" title="Nome file"
-					campoFittizio="true" modificabile="false" definizione="T200;0" >		
+					campoFittizio="true" modificabile="false" definizione="T200;0" >
 						<c:set var="nomDoc" value="${gene:string4Js(datiRiga.C0OGGASS_C0ANOMOGG)}"/>
 						<c:set var="nomDoc" value="${fn:replace(nomDoc,'\"','&#34;')}"/>
 						<a href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', ${nomDoc},'${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');">${datiRiga.C0OGGASS_C0ANOMOGG}</a>
+						<c:if test="${isVerificaPDFA eq '1' && datiRiga.W_DOCDIG_DIGTIPDOC eq 'pdf/a'}">
+							&nbsp;<img src="${pageContext.request.contextPath}/img/pdfa.png" title="File conforme al formato PDF/A" alt="File conforme al formato PDF/A">
+						</c:if>
 						<c:if test="${(richiestaFirma eq '1' or firmaDocumento eq '1') and datiRiga.W_DOCDIG_DIGFIRMA eq '1'}">
 							<span style="float:right;"><img width="16" height="16" src="${pageContext.request.contextPath}/img/isquantimod.png"/>&nbsp;In attesa di firma</span>
 						</c:if>
@@ -125,6 +130,8 @@
 			<c:if test='${modo eq "NUOVO"}'>
 				<gene:campoScheda title="Nome file" nome="selezioneFile" obbligatorio="true">
 					<input type="file" name="selezioneFile" id="selezioneFile" class="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange='javascript:scegliFileDocumentoAssociato();'/>
+					<span id="checkPDFaDocMessage" style="display:none; color: blue;"><b>ATTENZIONE:</b> file non conforme al formato PDF/A</span>
+					<img id="imgCheckPDFaDocMessage" style="display:none;" src="${pageContext.request.contextPath}/img/pdfa.png" title="File conforme al formato PDF/A" alt="File conforme al formato PDF/A">
 					<c:if test="${richiestaFirma eq '1'}">
 						<span style="float:right;">Richiesta firma?<input type="checkbox" name="richiestaFirma" id="richiestaFirma" class="file" size="50" ></span>
 					</c:if>
@@ -137,9 +144,14 @@
 						<c:set var="nomDoc" value="${gene:string4Js(datiRiga.C0OGGASS_C0ANOMOGG)}"/>
 						<c:set var="nomDoc" value="${fn:replace(nomDoc,'\"','&#34;')}"/>
 						<a href="javascript:visualizzaFileDIGOGG('${datiRiga.C0OGGASS_C0ACOD}', ${nomDoc}, '${sessionScope.moduloAttivo}','${datiRiga.W_DOCDIG_IDDOCDIG}');">${datiRiga.C0OGGASS_C0ANOMOGG}</a>
+						<c:if test="${isVerificaPDFA eq '1' && datiRiga.W_DOCDIG_DIGTIPDOC eq 'pdf/a'}">
+							&nbsp;<img src="${pageContext.request.contextPath}/img/pdfa.png" title="File conforme al formato PDF/A" alt="File conforme al formato PDF/A">
+						</c:if>
 				</gene:campoScheda>				
 				<gene:campoScheda title="Nome file in sostituzione" nome="selezioneFile">
 					<input type="file" name="selezioneFile" id="selezioneFile" class="file" size="50" onkeydown="return bloccaCaratteriDaTastiera(event);" onchange='javascript:scegliFileDocumentoAssociato();'/>
+					<span id="checkPDFaDocMessage" style="display:none; color: blue;"><b>ATTENZIONE:</b> file non conforme al formato PDF/A</span>
+					<img id="imgCheckPDFaDocMessage" style="display:none;" src="${pageContext.request.contextPath}/img/pdfa.png" title="File conforme al formato PDF/A" alt="File conforme al formato PDF/A">
 					<c:if test="${richiestaFirma eq '1'}">
 						<span style="float:right;">Richiesta firma?<input type="checkbox" name="richiestaFirma" id="richiestaFirma" class="file" size="50" <c:if test="${datiRiga.W_DOCDIG_DIGFIRMA eq '1'}">checked</c:if>></span>
 					</c:if>
@@ -196,9 +208,12 @@
 				if(digfirma==1){
 					alert("Il documento è in attesa di firma, non è possibile modificare il file");
 					document.getElementById("selezioneFile").value = "";
+					$('#checkPDFaDocMessage').css("display", "none");
+					$('#imgCheckPDFaDocMessage').css("display", "none");
 					return;
 				}
 			}
+			var filecheck = document.getElementById("selezioneFile").files[0];
 			var file = $("#selezioneFile").val();
 			var lunghezza_stringa = file.length;
 			var posizione_barra = file.lastIndexOf("\\");
@@ -206,6 +221,15 @@
 			var estensione = file.substring(posizione_punto+1, lunghezza_stringa).toUpperCase();
 			var nomeFileDocumentoAssociato = file.substring(posizione_barra+1,lunghezza_stringa).toUpperCase();
 			setValue("C0OGGASS_C0ANOMOGG", nomeFileDocumentoAssociato);
+			
+			<c:if test="${isVerificaPDFA eq '1'}">
+				if(nomeFileDocumentoAssociato.includes('.PDF')){
+					checkValiditaPDFA(filecheck);
+				} else {
+					$('#checkPDFaDocMessage').css("display", "none");
+					$('#imgCheckPDFaDocMessage').css("display", "none");
+				}
+			</c:if>
 		}
 	
 		function visualizzaFileDIGOGG(c0acod, dignomdoc,idprg,iddocdig) {
@@ -222,7 +246,7 @@
 						if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
 						{
 							var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-							document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
+							document.location.href = href+"?c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
 						}
 					}
 				</c:when>
@@ -238,7 +262,7 @@
 						if (confirm("Si sta per scaricare (download) una copia del file in locale. Ogni modifica verrà apportata alla copia locale ma non all\'originale. Continuare?"))
 						{
 							var href = "${pageContext.request.contextPath}/VisualizzaFileDIGOGG.do";
-							document.location.href = href+"?"+csrfToken+"&c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
+							document.location.href = href+"?c0acod=" + c0acod + "&dignomdoc=" + encodeURIComponent(dignomdoc);
 						}
 					}
 					
@@ -253,6 +277,65 @@
 				$("#btnRileggiDati").show();
 			}
 		</c:if>
+		
+		
+		function checkValiditaPDFA(file) {
+			if(file != undefined){
+				var formdata = false;
+				if (window.FormData) {
+					formdata = new FormData();
+				}
+				if (formdata) {
+					formdata.append("file", file);
+				}
+				_wait();
+				$.ajax({
+					url: "CheckFormatoFilePDFa.do",
+					data: formdata,
+					enctype: 'multipart/form-data',
+					type: 'POST',
+					cache: false,
+					contentType: false,
+					processData: false,
+					dataType: "json",
+					success: function(res) {
+						console.log(res);
+						if(res.esito == 'ko'){
+							$('#checkPDFaDocMessage').css("display", "contents");
+							$('#imgCheckPDFaDocMessage').css("display", "none");
+							setValue("W_DOCDIG_DIGTIPDOC","pdf");
+						} else {
+							$('#checkPDFaDocMessage').css("display", "none");
+							$('#imgCheckPDFaDocMessage').css("display", "unset");
+							setValue("W_DOCDIG_DIGTIPDOC","pdf/a");
+						}
+					},
+					error: function(e) {
+						alert('Errore nella verifica del file!');
+					},
+					complete: function() {
+						_nowait();
+					}
+				});
+			} else {
+				$('#checkPDFaDocMessage').css("display", "none");
+				$('#imgCheckPDFaDocMessage').css("display", "none");
+				setValue("W_DOCDIG_DIGTIPDOC",null);
+			}
+		}
+			
+		function _wait() {
+			document.getElementById('bloccaScreen').style.visibility = 'visible';
+			$('#bloccaScreen').css("width", $(document).width());
+			$('#bloccaScreen').css("height", $(document).height());
+			document.getElementById('wait').style.visibility = 'visible';
+			$("#wait").offset({ top: $(window).height() / 2, left: ($(window).width() / 2) - 200 });
+		}
+
+		function _nowait() {
+			document.getElementById('bloccaScreen').style.visibility = 'hidden';
+			document.getElementById('wait').style.visibility = 'hidden';
+		}
 		
 	</gene:javaScript>
 	

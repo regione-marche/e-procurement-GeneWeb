@@ -51,12 +51,12 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.schedRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href='DettaglioSchedRic.do?metodo=annullaCrea';
 		}
 	}
 	
 	function indietro(){
-	  document.location.href='WizardSchedRic.do?'+csrfToken+'&pageTo=RIS';
+	  document.location.href='WizardSchedRic.do?pageTo=RIS';
 	}
 -->
 </script>

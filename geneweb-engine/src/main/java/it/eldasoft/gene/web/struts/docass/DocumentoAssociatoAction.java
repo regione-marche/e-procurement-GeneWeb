@@ -15,6 +15,7 @@ import it.eldasoft.gene.bl.FileManager;
 import it.eldasoft.gene.bl.FileManagerException;
 import it.eldasoft.gene.bl.TabellatiManager;
 import it.eldasoft.gene.bl.docass.DocumentiAssociatiManager;
+import it.eldasoft.gene.commons.web.XSSRequestWrapper;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.commons.web.struts.DispatchActionBaseNoOpzioni;
@@ -54,7 +55,7 @@ public class DocumentoAssociatoAction extends DispatchActionBaseNoOpzioni {
   private static final String ERROR_DOWNLOAD_LISTA     = "errorDownloadLista";
   private static final String ERROR_DOWNLOAD_DETTAGLIO = "errorDownloadDettaglio";
   private static final String ERROR_MODIFICA           = "errorModifica";
-  private static final String ERROR_INSERT             = "errorModifica"; //"ritornaAInsertDoc";
+  private static final String ERROR_INSERT             = "errorInsert";
 
   /** Logger Log4J di classe */
   static Logger logger = Logger.getLogger(DocumentoAssociatoAction.class);
@@ -410,6 +411,9 @@ public class DocumentoAssociatoAction extends DispatchActionBaseNoOpzioni {
 
     DocumentoAssociatoForm docAssForm = (DocumentoAssociatoForm) form;
 
+    docAssForm.setTitolo(XSSRequestWrapper.stripXSS(docAssForm.getTitolo()));
+    docAssForm.setAnnotazioni(XSSRequestWrapper.stripXSS(docAssForm.getAnnotazioni()));
+
     // Memorizzo il nome del file del documento associato, prima dell'update,
     // per poter ripristinare tale attrbituo nel caso di modifica di un documento
     // associato con upload di un file di dimensione nulla (0 byte)
@@ -436,6 +440,14 @@ public class DocumentoAssociatoAction extends DispatchActionBaseNoOpzioni {
             GestioneFileDocumentiAssociatiException gfda = new GestioneFileDocumentiAssociatiException(GestioneFileDocumentiAssociatiException.ERROR_ESTENSIONE_NON_AMMESSA);
             gfda.setParametri(new Object[] { docAssForm.getSelezioneFile().getFileName() });
             throw gfda;
+          } else if(!FileAllegatoManager.checkFileContent(docAssForm.getSelezioneFile().getFileData(), docAssForm.getSelezioneFile().getFileName())){
+            GestioneFileDocumentiAssociatiException gfda = new GestioneFileDocumentiAssociatiException(GestioneFileDocumentiAssociatiException.ERROR_CONTENUTO_NON_VALIDO);
+            gfda.setParametri(new Object[] { docAssForm.getSelezioneFile().getFileName() });
+            throw gfda;
+          } else if(docAssForm.getSelezioneFile().getFileName().toLowerCase().endsWith(".pdf") && FileAllegatoManager.isMaliciousPdf(docAssForm.getSelezioneFile().getFileData(), docAssForm.getSelezioneFile().getFileName())){
+            GestioneFileDocumentiAssociatiException gfda = new GestioneFileDocumentiAssociatiException(GestioneFileDocumentiAssociatiException.ERROR_CONTENUTO_NON_SICURO);
+            gfda.setParametri(new Object[] { docAssForm.getSelezioneFile().getFileName() });
+            throw gfda;
           }
         }
 
@@ -452,11 +464,6 @@ public class DocumentoAssociatoAction extends DispatchActionBaseNoOpzioni {
           // Eccezione durante l'accesso alla base dati
           target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
           messageKey = "errors.database.dataAccessException";
-          logger.error(this.resBundleGenerale.getString(messageKey), gfda);
-          this.aggiungiMessaggio(request, messageKey);
-        } else if(GestioneFileDocumentiAssociatiException.ERROR_INASPETTATO_UPLOAD.equals(gfda.getCodiceErrore())){
-          target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
-          messageKey = "errors.applicazione.inaspettataException";
           logger.error(this.resBundleGenerale.getString(messageKey), gfda);
           this.aggiungiMessaggio(request, messageKey);
         } else if(GestioneFileDocumentiAssociatiException.ERROR_UPLOAD_FILE_VUOTO.equals(gfda.getCodiceErrore())){
@@ -508,6 +515,14 @@ public class DocumentoAssociatoAction extends DispatchActionBaseNoOpzioni {
             GestioneFileDocumentiAssociatiException gfda = new GestioneFileDocumentiAssociatiException(GestioneFileDocumentiAssociatiException.ERROR_ESTENSIONE_NON_AMMESSA);
             gfda.setParametri(new Object[] { docAssForm.getSelezioneFile().getFileName() });
             throw gfda;
+          } else if(!FileAllegatoManager.checkFileContent(docAssForm.getSelezioneFile().getFileData(), docAssForm.getSelezioneFile().getFileName())){
+            GestioneFileDocumentiAssociatiException gfda = new GestioneFileDocumentiAssociatiException(GestioneFileDocumentiAssociatiException.ERROR_CONTENUTO_NON_VALIDO);
+            gfda.setParametri(new Object[] { docAssForm.getSelezioneFile().getFileName() });
+            throw gfda;
+          } else if(docAssForm.getSelezioneFile().getFileName().toLowerCase().endsWith(".pdf") && FileAllegatoManager.isMaliciousPdf(docAssForm.getSelezioneFile().getFileData(), docAssForm.getSelezioneFile().getFileName())){
+            GestioneFileDocumentiAssociatiException gfda = new GestioneFileDocumentiAssociatiException(GestioneFileDocumentiAssociatiException.ERROR_CONTENUTO_NON_SICURO);
+            gfda.setParametri(new Object[] { docAssForm.getSelezioneFile().getFileName() });
+            throw gfda;
           }
         }
 
@@ -523,11 +538,6 @@ public class DocumentoAssociatoAction extends DispatchActionBaseNoOpzioni {
           // Eccezione durante l'accesso alla base dati
           target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
           messageKey = "errors.database.dataAccessException";
-          logger.error(this.resBundleGenerale.getString(messageKey), gfda);
-          this.aggiungiMessaggio(request, messageKey);
-        } else if(GestioneFileDocumentiAssociatiException.ERROR_INASPETTATO_UPLOAD.equals(gfda.getCodiceErrore())){
-          target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
-          messageKey = "errors.applicazione.inaspettataException";
           logger.error(this.resBundleGenerale.getString(messageKey), gfda);
           this.aggiungiMessaggio(request, messageKey);
         } else if(GestioneFileDocumentiAssociatiException.ERROR_UPLOAD_FILE_VUOTO.equals(gfda.getCodiceErrore())){

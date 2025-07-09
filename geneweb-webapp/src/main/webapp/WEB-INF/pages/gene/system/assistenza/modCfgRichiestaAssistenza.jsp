@@ -17,6 +17,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <tiles:insert definition=".dettaglioNoTabDef" flush="true">
 
 	<tiles:put name="head" type="string">
@@ -49,6 +52,11 @@
 					document.cfgRichiestaAssistenzaForm.servizioFileSize.focus();
 					continua = false;
 				}
+				if (modo == "4") {
+					if (continua && !controllaCampoInputObbligatorio(document.cfgRichiestaAssistenzaForm.urlSupportoEsterno, 'URL supporto')) {
+						continua = false;
+					}
+				}
 				
 				if (continua && modo != oldModo) {
 					continua = confirm('Le precedenti impostazioni verranno cancellate. Sei sicuro di voler procedere?');
@@ -60,11 +68,11 @@
 			}
 
 			function modifica(modo) {
-				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?'+csrfToken+'&metodo=modifica&modo=' + modo;
+				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?metodo=modifica&modo=' + modo;
 			}
 
 			function annulla() {
-				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?'+csrfToken+'&metodo=visualizza';
+				document.location.href = 'ConfigurazioneRichiestaAssistenza.do?metodo=visualizza';
 			}
 -->
 		</script>
@@ -178,6 +186,24 @@
 							<html:text property="servizioFileSize" size="10" maxlength="10"/>
 						</td>
 					</tr>
+				</c:if>
+				<tr>
+					<td colspan="2">
+						<input type="radio" name="radioCfg" onclick="javascript:modifica(3);" <c:if test='${cfgRichiestaAssistenzaForm.modo eq "3"}'>checked="checked"</c:if>>Contattaci</input>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="radio" name="radioCfg" onclick="javascript:modifica(4);" <c:if test='${cfgRichiestaAssistenzaForm.modo eq "4"}'>checked="checked"</c:if>>Richiedi assistenza o supporto tecnico normativo</input>
+					</td>
+				</tr>
+				<c:if test='${cfgRichiestaAssistenzaForm.modo eq "4" }'>
+				<tr>
+					<td class="etichetta-dato">URL supporto (*)</td>
+					<td class="valore-dato">
+						<html:text property="urlSupportoEsterno" size="50" maxlength="2000"/>
+					</td>
+				</tr>
 				</c:if>
 				<tr>
 					<td class="comandi-dettaglio" colSpan="2">

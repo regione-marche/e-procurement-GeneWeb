@@ -37,7 +37,7 @@
 	
 	function annullaModifiche(){
 		bloccaRichiesteServer();
-		document.location.href='ListaGruppiProspetto.do?'+csrfToken+'&metodo=visualizzaLista&idRicerca=${idOggetto}';
+		document.location.href='ListaGruppiProspetto.do?metodo=visualizzaLista&idRicerca=${idOggetto}';
 	}
 
 -->

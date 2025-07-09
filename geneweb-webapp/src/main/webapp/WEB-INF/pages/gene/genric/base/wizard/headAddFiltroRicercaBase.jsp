@@ -52,17 +52,17 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href='DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 
 	function indietro(){
 	<c:choose>
 		<c:when test='${fn:length(filtroRicercaForm.progressivo) > 0}'>
-			document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL3';
+			document.location.href = 'WizardBase.do?pageTo=FIL3';
 		</c:when>
 		<c:otherwise>
-			document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=FIL1';
+			document.location.href = 'WizardBase.do?pageTo=FIL1';
 		</c:otherwise>
 	</c:choose>
 	}

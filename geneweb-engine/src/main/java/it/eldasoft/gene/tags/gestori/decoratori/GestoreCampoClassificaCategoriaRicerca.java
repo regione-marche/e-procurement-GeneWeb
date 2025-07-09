@@ -62,7 +62,7 @@ public class GestoreCampoClassificaCategoriaRicerca extends AbstractGestoreCampo
           "' when tab1cod='G_036' then '" + descTipologia[3] +
           "' when tab1cod='G_037' then '" + descTipologia[1] +
           "' else '" + descTipologia[4] + "' end " + select + " tab1desc tipo_desc " +
-    		"from tab1 where tab1cod in ('A1015', 'G_035', 'G_036', 'G_037', 'G_049') and (tab1arc is null or tab1arc<>1) order by tab1cod,tab1nord,tab1tip", null);
+    		"from tab1 where tab1cod in ('A1015', 'G_035', 'G_036', 'G_037', 'G_049') and (tab1arc is null or tab1arc<>'1') order by tab1cod,tab1nord,tab1tip", null);
   }
 
 }

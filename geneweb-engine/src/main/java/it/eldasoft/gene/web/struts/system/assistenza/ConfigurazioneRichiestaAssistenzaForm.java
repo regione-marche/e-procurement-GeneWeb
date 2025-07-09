@@ -62,6 +62,11 @@ public class ConfigurazioneRichiestaAssistenzaForm extends DispatchForm {
    */
   private String            servizioFileSize;
 
+  /**
+   * Indirizzo del servizio esterno di richiesta assistenza.
+   */
+  private String            urlSupportoEsterno;
+
   public ConfigurazioneRichiestaAssistenzaForm() {
     super();
     this.codapp = null;
@@ -72,6 +77,7 @@ public class ConfigurazioneRichiestaAssistenzaForm extends DispatchForm {
     this.servizioUsr = null;
     this.servizioPwd = null;
     this.servizioFileSize = null;
+    this.urlSupportoEsterno = null;
 		this.oldModo = null;
   }
 
@@ -91,6 +97,7 @@ public class ConfigurazioneRichiestaAssistenzaForm extends DispatchForm {
     this.servizioUsr = cfg.getServizioUsr();
     this.servizioPwd = cfg.getServizioPwd();
     this.servizioFileSize = cfg.getServizioFileSize();
+    this.urlSupportoEsterno = cfg.getUrlSupportoEsterno();
 		this.oldModo = cfg.getOldModo();
   }
 
@@ -109,6 +116,7 @@ public class ConfigurazioneRichiestaAssistenzaForm extends DispatchForm {
     cfg.setServizioUsr(this.getServizioUsr());
     cfg.setServizioPwd(this.getServizioPwd());
     cfg.setServizioFileSize(this.getServizioFileSize());
+    cfg.setUrlSupportoEsterno(this.getUrlSupportoEsterno());
 		cfg.setOldModo(this.getOldModo());
     return cfg;
   }
@@ -231,6 +239,21 @@ public class ConfigurazioneRichiestaAssistenzaForm extends DispatchForm {
    */
   public void setServizioFileSize(String servizioFileSize) {
     this.servizioFileSize = servizioFileSize;
+  }
+
+  /**
+   * @param urlSupportoEsterno
+   *        the urlSupportoEsterno to set
+   */
+  public void setUrlSupportoEsterno(String urlSupportoEsterno) {
+    this.urlSupportoEsterno = urlSupportoEsterno;
+  }
+
+  /**
+   * @return the urlSupportoEsterno
+   */
+  public String getUrlSupportoEsterno() {
+    return urlSupportoEsterno;
   }
 
 	/**

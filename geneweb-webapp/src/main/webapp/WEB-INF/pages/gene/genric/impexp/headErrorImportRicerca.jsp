@@ -17,7 +17,7 @@
 
 	function annulla(){
 		bloccaRichiesteServer();
-		document.location.href='AnnullaImportExport.do?'+csrfToken;		
+		document.location.href='AnnullaImportExport.do';		
 	}
 	
 -->

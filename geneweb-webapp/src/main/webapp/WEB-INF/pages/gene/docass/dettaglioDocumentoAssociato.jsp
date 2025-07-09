@@ -21,11 +21,13 @@
 <gene:setIdPagina schema="GENE" maschera="C0OGGASS-Scheda" />
 
 <table class="dettaglio-notab">
+<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADAT")}'>
   <tr>
     <td class="etichetta-dato">Data</td>
     <td class="valore-dato">${documento.dataInserimento}
     </td>
   </tr>
+</c:if>
   <tr>
     <td class="etichetta-dato">Titolo</td>
     <td class="valore-dato">${documento.titolo}</td>
@@ -59,26 +61,34 @@
     <td class="valore-dato">${documento.dataScadenzaDocumento}
     </td>
   </tr>
+<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ANPROT")}'>
   <tr>
     <td class="etichetta-dato">Numero protocollo</td>
     <td class="valore-dato">${documento.numeroProtocollo}
     </td>
   </tr>
+</c:if>
+<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADPROT")}'>
   <tr>
     <td class="etichetta-dato">Data protocollo</td>
     <td class="valore-dato">${documento.dataProtocollo}
     </td>
   </tr>
+</c:if>
+<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ANATTO")}'>
   <tr>
     <td class="etichetta-dato">Numero atto</td>
     <td class="valore-dato">${documento.numeroAtto}
     </td>
   </tr>
+</c:if>
+<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADATTO")}'>
   <tr>
     <td class="etichetta-dato">Data atto</td>
     <td class="valore-dato">${documento.dataAtto}
     </td>
   </tr>
+</c:if>
   <tr>
     <td class="etichetta-dato">Annotazioni</td>
     <td class="valore-dato">${documento.annotazioni}</td>

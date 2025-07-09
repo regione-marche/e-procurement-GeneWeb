@@ -1,17 +1,5 @@
 package it.eldasoft.gene.web.struts.login.cohesion;
 
-import it.eldasoft.gene.bl.LoginManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.admin.Account;
-import it.eldasoft.gene.web.struts.admin.CostantiDettaglioAccount;
-import it.eldasoft.gene.web.struts.login.IsUserLoggedAction;
-import it.eldasoft.gene.web.struts.login.cohesion.AccountCohesion;
-import it.eldasoft.gene.web.struts.login.cohesion.error.AuthenticationException;
-import it.eldasoft.gene.web.struts.login.cohesion.error.CohesionAuthenticationException;
-import it.eldasoft.utils.properties.ConfigManager;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -33,6 +21,17 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.w3c.dom.Document;
 
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.AccountSSO;
+import it.eldasoft.gene.db.domain.admin.Account;
+import it.eldasoft.gene.web.struts.admin.CostantiDettaglioAccount;
+import it.eldasoft.gene.web.struts.login.IsUserLoggedAction;
+import it.eldasoft.gene.web.struts.login.cohesion.error.AuthenticationException;
+import it.eldasoft.gene.web.struts.login.cohesion.error.CohesionAuthenticationException;
+import it.eldasoft.utils.properties.ConfigManager;
+import it.eldasoft.utils.utility.UtilityStringhe;
+
 /**
  * Action per la gestione della risposta di Cohesion alla login
  *
@@ -44,28 +43,29 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
    * Logger di classe.
    */
   private static Logger logger = Logger.getLogger(CohesionLoginResponseAction.class);
-
-  // private boolean forceLogout = false;
-
-  private LoginManager loginManager;
-
-  public void setLoginManager(LoginManager loginManager) {
-    this.loginManager = loginManager;
-  }
+  
+  /** property per decriptare il token per la autenticazione SSO Cohesion */
+  private static final String   PROP_SSO_COHESION_ENCRYPTION_KEY                   = "auth.sso.cohesion.encryption.key";
+  private static final String   PROP_SSO_COHESION_LOGIN_URL                        = "auth.sso.cohesion.login.url"; 
+  private static final String   PROP_SSO_COHESION_MAPPING_LASTNAME                 = "auth.sso.cohesion.mapping.lastName";
+  private static final String   PROP_SSO_COHESION_MAPPING_FIRSTNAME                = "auth.sso.cohesion.mapping.firstName";
+  private static final String   PROP_SSO_COHESION_MAPPING_EMAIL                    = "auth.sso.cohesion.mapping.email";
+  private static final String   PROP_SSO_COHESION_MAPPING_LOGIN                    = "auth.sso.cohesion.mapping.login"; 
+  private static final String   COHESION_TOKEN                                     = "cohesion_token";
 
   @Override
   protected ActionForward runAction(ActionMapping mapping, ActionForm form,
       HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     String target = CostantiGeneraliStruts.FORWARD_OK;
 
-    AccountCohesion accountCohesion = null;
+    AccountSSO accountSSO = null;
 
     // parso l'xml per recuperare la username del tipo che si e' autenticato
 
-    String cohesionServlet = ConfigManager.getValore(CostantiGenerali.PROP_SSO_LOGIN_URL);
+    String cohesionServlet = ConfigManager.getValore(PROP_SSO_COHESION_LOGIN_URL);
     cohesionServlet = UtilityStringhe.convertiNullInStringaVuota(cohesionServlet);
 
-    String encryptionKey = ConfigManager.getValore(CostantiGenerali.PROP_SSO_COHESION_ENCRYPTION_KEY);
+    String encryptionKey = ConfigManager.getValore(PROP_SSO_COHESION_ENCRYPTION_KEY);
 
     try {
       //token della richiesta di autenticazione in cohesion
@@ -81,10 +81,10 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
           }
         }
 
-        String attributeKeyLogin = ConfigManager.getValore(CostantiGenerali.PROP_SSO_ATTRIBUTE_LOGIN);
-        String attributeKeyFirstName = ConfigManager.getValore(CostantiGenerali.PROP_SSO_ATTRIBUTE_FIRST_NAME);
-        String attributeKeyLastName = ConfigManager.getValore(CostantiGenerali.PROP_SSO_ATTRIBUTE_LAST_NAME);
-        String attributeKeyMail = ConfigManager.getValore(CostantiGenerali.PROP_SSO_ATTRIBUTE_EMAIL);
+        String attributeKeyLogin = ConfigManager.getValore(PROP_SSO_COHESION_MAPPING_LOGIN);
+        String attributeKeyFirstName = ConfigManager.getValore(PROP_SSO_COHESION_MAPPING_FIRSTNAME);
+        String attributeKeyLastName = ConfigManager.getValore(PROP_SSO_COHESION_MAPPING_LASTNAME);
+        String attributeKeyMail = ConfigManager.getValore(PROP_SSO_COHESION_MAPPING_EMAIL);
 
         // lettura dei dati ricevuti e significativi
         Document cohesionResponseXML = getXmlDocFromString(cohesionResponse);
@@ -93,22 +93,71 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
         String nome = getCohesionElement(cohesionResponseXML, attributeKeyFirstName);
         String cognome = getCohesionElement(cohesionResponseXML, attributeKeyLastName);
         String email = getCohesionElement(cohesionResponseXML, attributeKeyMail);
-        String tipoAutenticazione = getCohesionElement(cohesionResponseXML, "tipo_autenticazione");
+        
+        if("true".equals((String) request.getSession().getAttribute(CostantiGenerali.PAIRING_SSO))) {//pairing utenza base con utenzaSSO
+          return mapping.findForward(this.pairUtenteLdap0WithSSO(request, login, CostantiGenerali.PROP_SSO_COHESION));
+        }
+        
+        String standardProvider = null;
+        Integer loa = 2;
+        //recupero info di autenticazione
+        try {
+          String base64info = getCohesionElement(cohesionResponseXML,"samlResponseBase64");
+          String info =  new String(base64Decode(base64info));
+          Document infoXML = getXmlDocFromString(info);
+          infoXML.getDocumentElement().normalize();
+          
+          String saml = "saml2:";
+          if (getCohesionElement(infoXML, saml + "Assertion") == null) {
+            // per autenticazione SPID e CIE si riceve un inner xml con namespace saml2, mentre per utente/psw si riceve saml
+            saml = "saml:";
+          }
+          String issuer=getCohesionElement(infoXML, saml + "Issuer");
+          
+          if(StringUtils.isNotBlank(issuer)) {
+            String authnContextClassRef = getCohesionElement(infoXML, saml + "AuthnContextClassRef");
+            if ("cohesion2.regione.marche.it:idp".equals(issuer)) {
+              // autenticazione user+psw, eventualmente con PIN oppure OTP
+              if ("urn:oasis:names:tc:SAML:2.0:ac:classes:Smartcard".equals(authnContextClassRef)) {
+                // autenticazione con PIN oppure OTP viene considerata L2 SPID (LoA3)
+                loa = 3;
+              } else if ("urn:oasis:names:tc:SAML:2.0:ac:classes:Password".equals(authnContextClassRef)) {
+                // autenticazione con PIN oppure OTP viene considerata L1 SPID (LoA2)
+                loa = 2;
+              } else if ("urn:oasis:names:tc:SAML:2.0:ac:classes:Kerberos".equals(authnContextClassRef)) {
+                // autenticazione di DOMINIO, viene considerata L1 SPID (LoA2)
+                loa = 2;
+              }
+            } else if ("https://idserver.servizicie.interno.gov.it/idp/profile/SAML2/POST/SSO".equals(issuer)) {
+              // autenticazione CIE
+              standardProvider=CostantiGenerali.PROP_SSO_CIE;
+              loa=Integer.parseInt(authnContextClassRef.split("SpidL")[1])+1;
+            } else {
+              // autenticazione SPID
+              standardProvider=CostantiGenerali.PROP_SSO_SPID;
+              loa=Integer.parseInt(authnContextClassRef.split("SpidL")[1])+1;
+            }
+          }
+            
+        } catch (Exception ex) {
+          throw new CohesionAuthenticationException(CohesionAuthenticationException.GENERIC_ERROR);
+        }
         
 		logger.info("Autenticazione Cohesion: login=" + login + ", nome=" + nome + ", cognome=" + cognome + ", email="
-				+ email + ", tipoAutenticazione=" + tipoAutenticazione);
+				+ email);
 
         // l'utente e' gia' presente e abilitato, quindi lo mando alla homepase dell'applicazione,
         // prima pero' setto l'attributo accountCohesion in sessione
-        accountCohesion = new AccountCohesion();
-        accountCohesion.setLogin(login);
-        accountCohesion.setNome(nome);
-        accountCohesion.setCognome(cognome);
-        accountCohesion.setEmail(email);
-        accountCohesion.setTipoAutenticazione(tipoAutenticazione);
-        accountCohesion.setCohesionLogin(true);
+		accountSSO = new AccountSSO();
+        accountSSO.setLogin(login);
+        accountSSO.setNome(nome);
+        accountSSO.setCognome(cognome);
+        accountSSO.setEmail(email);
+        accountSSO.setLoginProvider(CostantiGenerali.PROP_SSO_COHESION);
+        accountSSO.setStandardProvider(standardProvider);
+        accountSSO.setCurrentLoa(loa);
 
-        Account account = this.loginManager.getAccountByLogin(login);
+        Account account = this.accountManager.getAccountBySysCf(login);
         if (account == null) {
           //Settaggio dei vari parametri nella form di registrazione
           request.setAttribute("nome", nome);
@@ -122,22 +171,22 @@ public class CohesionLoginResponseAction extends IsUserLoggedAction {
             return this.forwardToRegistrationForm(request);
           }else{
             target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
-            String messageKey = "errors.login.unknown";
-            this.aggiungiMessaggio(request, messageKey, login);
+            String messageKey = "errors.login.unknownUser";
+            this.aggiungiMessaggio(request, messageKey);
           }
         } else if (account != null && (account.getUtenteDisabilitato() != null && CostantiDettaglioAccount.DISABILITATO.equals(account.getUtenteDisabilitato().toString()))) {
             throw new AuthenticationException(AuthenticationException.USER_NOT_ACTIVE);
         } else {
 
-          request.getSession().setAttribute(AccountCohesion.ID_ATTRIBUTO_SESSIONE_ACCOUNT_COHESION,
-              accountCohesion);
+          request.getSession().setAttribute(CostantiGenerali.ID_ATTRIBUTO_SESSIONE_ACCOUNT_SSO,
+              accountSSO);
 
           request.setAttribute("username", account.getLogin());
           request.setAttribute("password", account.getPassword());
 
         }
       } else {
-        if (request.getSession().getAttribute(AccountCohesion.ID_ATTRIBUTO_SESSIONE_COHESION_TOKEN) == null) {
+        if (request.getSession().getAttribute(COHESION_TOKEN) == null) {
           try {
             response.sendRedirect(cohesionServlet);
           } catch (IOException ex) {

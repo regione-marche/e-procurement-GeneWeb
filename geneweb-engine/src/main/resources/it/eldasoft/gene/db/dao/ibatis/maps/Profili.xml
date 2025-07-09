@@ -10,6 +10,8 @@
 	  <result property="profiloInterno" column="flag_interno" columnIndex="5"/>
 	  <result property="discriminante" column="discriminante" columnIndex="6"/>
 	  <result property="codiceCliente" column="cod_cliente" columnIndex="7"/>
+	  <result property="sezione" column="sezione" columnIndex="8"/>
+	  <result property="ord" column="ord" columnIndex="9"/>
 	</resultMap>
 
 	<!-- Oggetto account in versione ridotta rispetto allo stesso  -->
@@ -21,7 +23,7 @@
   </resultMap>
 
   <select id="getProfiliByCodAppOrderByNome" resultMap="resultProfilo" parameterClass="java.util.HashMap">
-		SELECT COD_PROFILO, CODAPP, NOME, DESCRIZIONE, FLAG_INTERNO, DISCRIMINANTE, COD_CLIENTE
+		SELECT COD_PROFILO, CODAPP, NOME, DESCRIZIONE, FLAG_INTERNO, DISCRIMINANTE, COD_CLIENTE, SEZIONE, ORD
 		FROM W_PROFILI
 		WHERE W_PROFILI.CODAPP IN 
  			 <iterate property="listaCodApp" open="(" close=")" conjunction=", " >
@@ -31,7 +33,7 @@
   </select>
   
   <select id="getProfiloByPK" resultMap="resultProfilo">
-		SELECT COD_PROFILO, CODAPP, NOME, DESCRIZIONE, FLAG_INTERNO, DISCRIMINANTE, COD_CLIENTE
+		SELECT COD_PROFILO, CODAPP, NOME, DESCRIZIONE, FLAG_INTERNO, DISCRIMINANTE, COD_CLIENTE, SEZIONE, ORD
 		FROM W_PROFILI
 		WHERE W_PROFILI.COD_PROFILO = #codiceProfilo#
   </select>
@@ -63,9 +65,9 @@
   <insert id="insertAssociazioneAccountProfilo" parameterClass="java.util.HashMap">
   	INSERT INTO W_ACCPRO (ID_ACCOUNT, COD_PROFILO) VALUES (#idAccount#, #codiceProfilo#)
   </insert>
-
+	
 	<select id="getProfiliUtenteByCodApp" resultMap="resultProfilo" parameterClass="java.util.HashMap">
-		SELECT W_PROFILI.COD_PROFILO, W_PROFILI.CODAPP, W_PROFILI.NOME, W_PROFILI.DESCRIZIONE, W_PROFILI.FLAG_INTERNO, W_PROFILI.DISCRIMINANTE, W_PROFILI.COD_CLIENTE
+		SELECT W_PROFILI.COD_PROFILO, W_PROFILI.CODAPP, W_PROFILI.NOME, W_PROFILI.DESCRIZIONE, W_PROFILI.FLAG_INTERNO, W_PROFILI.DISCRIMINANTE, W_PROFILI.COD_CLIENTE, W_PROFILI.SEZIONE, W_PROFILI.ORD
 		  FROM W_PROFILI, W_ACCPRO
 		 WHERE W_ACCPRO.ID_ACCOUNT = #idAccount#
 		   AND W_PROFILI.COD_PROFILO = W_ACCPRO.COD_PROFILO 
@@ -73,8 +75,15 @@
 				 <iterate property="listaCodApp" open="(" close=")" conjunction=", " >
 	    		 #listaCodApp[]#
 			   </iterate>
-	ORDER BY W_PROFILI.NOME ASC
+		<isEmpty property="defOrdinamento">
+		    ORDER BY W_PROFILI.NOME ASC
+		</isEmpty>
+		<isNotEmpty property="defOrdinamento">
+		    $defOrdinamento$
+		</isNotEmpty>	   	    
 	</select>
+	
+	
   
   <select id="getAccountDiProfilo" resultMap="resultUtenteDiProfilo" parameterClass="java.lang.String">
     SELECT USRSYS.SYSCON, USRSYS.syslogin, USRSYS.SYSUTE

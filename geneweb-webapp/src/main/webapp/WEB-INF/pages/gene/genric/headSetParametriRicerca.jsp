@@ -59,15 +59,15 @@
 	// Azioni invocate dal menu contestuale
 
 	function apriTrovaRicerche() {
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function listaRicerche() {
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function creaNuovaRicerca() {
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 
 	function vaiDettaglioRicerca() {
@@ -81,12 +81,7 @@
 	// Azioni di pagina
 
 	function svuotaInput() {
-		if (elencoFormatoParametri.length == 1) {
-			document.parametriRicercaForm.parametriRicerca.value="";
-		} else {
-			for (var i = 0; i < elencoFormatoParametri.length; i++)
-				document.parametriRicercaForm.parametriRicerca[i].value="";
-		}
+        $("input[name^='parametriRicerca']:visible").val("");
 		<c:if test="${requestScope.kronos eq 1}">
 		document.parametriRicercaForm.KRDATINVAL.value="";
 		document.parametriRicercaForm.KRDATFINVAL.value="";

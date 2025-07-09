@@ -21,10 +21,10 @@
 	function avanti(){
 		var href = "";
 		if(document.getElementById("importa").checked){
-			href = 'WizardImportRicerca.do?'+csrfToken+'&pageTo=UPL';
+			href = 'WizardImportRicerca.do?pageTo=UPL';
 		}
 		if(document.getElementById("annullaImporta").checked){
-			href = 'AnnullaImportExport.do?'+csrfToken;
+			href = 'AnnullaImportExport.do';
 		}
 		if(href != ""){
 			document.location.href = href;

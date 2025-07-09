@@ -37,7 +37,7 @@ public class ComponiWhereIMPRFunction extends AbstractComponiWhereFunction {
   private static final String DITTE_DITG_SMAT_WHERE =
       "(v_impr_smat.tipimp <> 3 AND v_impr_smat.tipimp <> 10) OR v_impr_smat.tipimp IS NULL";
   private static final String PERP_WHERE =
-      "impr.codimp IN (SELECT dittao FROM ditg WHERE ngara5 = ? AND invoff = 1 AND (fasgar IS NULL OR fasgar > 1))";
+      "impr.codimp IN (SELECT dittao FROM ditg WHERE ngara5 = ? AND invoff = '1' AND (fasgar IS NULL OR fasgar > 1))";
   private static final String PERP_INVOFF_WHERE =
       "impr.codimp IN (SELECT dittao FROM ditg WHERE ngara5 = ? AND (invoff IN ('0', '1') OR invoff IS NULL) AND (fasgar IS NULL OR fasgar = 0 OR fasgar > 1))";
   private static final String ANTICOR_WHERE =

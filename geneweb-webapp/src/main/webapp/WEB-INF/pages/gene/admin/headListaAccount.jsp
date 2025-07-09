@@ -219,7 +219,7 @@
 %>
 	
 	function modifica(id){
-		document.location.href='DettaglioAccount.do?'+csrfToken+'&metodo=modifica&idAccount=' + id;
+		document.location.href='DettaglioAccount.do?metodo=modifica&idAccount=' + id;
   }
   	
 	function visualizza(id){
@@ -228,13 +228,13 @@
 	}
 	
 	function schedaNuovo(){
-		document.location.href = 'InitCreaAccount.do?'+csrfToken;
+		document.location.href = 'InitCreaAccount.do';
 	}
 
 	function elimina(id){
 		if (confirm("Confermi l'eliminazione dell'utente?")){
 			bloccaRichiesteServer();
-			document.location.href = 'ListaAccount.do?'+csrfToken+'&metodo=elimina&idAccount=' + id;
+			document.location.href = 'ListaAccount.do?metodo=elimina&idAccount=' + id;
 		}
 	}
 	
@@ -252,15 +252,17 @@
 	}
 	
 	function cambiaPassword(id) {
-		document.location.href = 'InitCambiaPasswordAdmin.do?'+csrfToken+'&metodo=cambioAdmin&idAccount=' + id;
+		document.location.href = 'InitCambiaPasswordAdmin.do?metodo=cambioAdmin&idAccount=' + id;
 	}
 
 	function attiva(id){
-		document.location.href='DettaglioAccount.do?'+csrfToken+'&metodo=abilita&idAccount=' + id;
+		document.location.href='DettaglioAccount.do?metodo=abilita&idAccount=' + id;
   	}
 	
 	function disattiva(id){
-		document.location.href='DettaglioAccount.do?'+csrfToken+'&metodo=disabilita&idAccount=' + id;
+		document.location.href='DettaglioAccount.do?metodo=disabilita&idAccount=' + id;
   	}
+
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

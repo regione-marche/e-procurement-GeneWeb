@@ -3,7 +3,7 @@
   <parent>
     <groupId>it.maggioli.eldasoft.commons</groupId>
     <artifactId>geneweb-pom</artifactId>
-    <version>2.34.1-regmarche</version>
+    <version>2.52.0-reg-marche</version>
   </parent>
   <artifactId>geneweb-webapp</artifactId>
   <packaging>war</packaging>

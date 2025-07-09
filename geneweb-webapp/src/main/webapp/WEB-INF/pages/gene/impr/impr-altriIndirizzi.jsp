@@ -25,7 +25,7 @@
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="CODIMP5_${param.contatore}" visibile="false" campoFittizio="true" definizione="T10;1;;;CODIMP5" value="${codiceImpresaPadre}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDCON_${param.contatore}" visibile="false"  campoFittizio="true" definizione="N10;1;;;INDCON" value="${indcon[param.contatore - 1]}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDTIP_${param.contatore}" title="Tipo"      campoFittizio="true" definizione="T30;0;Ag030;;INDTIP" value="${indtip[param.contatore - 1]}" />
-		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDIND_${param.contatore}" title="Indirizzo" campoFittizio="true" definizione="T60;0;;;INDIND" value="${indind[param.contatore - 1]}" />
+		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDIND_${param.contatore}" title="Indirizzo" campoFittizio="true" definizione="T100;0;;;INDIND" value="${indind[param.contatore - 1]}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDNC_${param.contatore}"  title="N.Civico"  campoFittizio="true" definizione="T10;0;;;INDNC" value="${indnc[param.contatore - 1]}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDPRO_${param.contatore}" title="Provincia" campoFittizio="true" definizione="T4040;0;Agx15;;INDPROI" value="${indpro[param.contatore - 1]}">
             <c:set var="functionId" value="default_${!empty indpro[param.contatore - 1]}" />
@@ -60,7 +60,7 @@
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="CODIMP5_${param.contatore}" visibile="false" campoFittizio="true" definizione="T10;1;;;CODIMP5" value="${datiRiga.IMPR_CODIMP}" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDCON_${param.contatore}"  visibile="false" campoFittizio="true" definizione="N10;1;;;INDCON"  />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDTIP_${param.contatore}" title="Tipo" campoFittizio="true"      definizione="T30;0;Ag030;;INDTIP"  />
-		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDIND_${param.contatore}" title="Indirizzo" campoFittizio="true" definizione="T60;0;;;INDIND" />
+		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDIND_${param.contatore}" title="Indirizzo" campoFittizio="true" definizione="T100;0;;;INDIND" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDNC_${param.contatore}"  title="N.Civico" campoFittizio="true"  definizione="T10;0;;;INDNC" />
 		<gene:campoScheda entita="IMPIND" where="IMPR.CODIMP = IMPIND.CODIMP5" campo="INDPRO_${param.contatore}" title="Provincia" campoFittizio="true" definizione="T40;0;Agx15;;INDPROI">
             <c:set var="functionId" value="default_${!empty indpro[param.contatore - 1]}" />

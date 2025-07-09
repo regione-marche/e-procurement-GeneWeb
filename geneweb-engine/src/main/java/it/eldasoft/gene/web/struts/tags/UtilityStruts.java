@@ -202,7 +202,10 @@ public class UtilityStruts {
       isJsp = relativePath.substring(0, queryParams).endsWith(".jsp");
     }
 
-    boolean valid = !StringUtils.contains(relativePath, "../") && isJsp;
+    boolean valid = !(    StringUtils.contains(relativePath, "../") 
+    		           || StringUtils.contains(relativePath, "..\\")
+    		         ) 
+    		        && isJsp;
     return valid;
   }
 
@@ -359,6 +362,5 @@ public class UtilityStruts {
     // creo l'array con i dati estratti
     return (DataColumn[]) campiAdd.toArray(new DataColumn[0]);
   }
-
-
+  
 }

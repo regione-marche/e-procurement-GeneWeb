@@ -17,6 +17,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#" />
 
 <tiles:insert definition=".dettaglioNoTabDef" flush="true">
@@ -25,24 +28,24 @@
 <script type="text/javascript">
 <!--
 	function visualizza(type){
-		document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=visualizza&idcfg='+idcfg;
+		document.location.href='ConfigurazioneMail.do?metodo=visualizza&idcfg='+idcfg;
 	}
 
 	function verifica(idcfg){
-		document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=apriVerificaConfigurazione&idcfg='+idcfg;
+		document.location.href='ConfigurazioneMail.do?metodo=apriVerificaConfigurazione&idcfg='+idcfg;
 	}
 
 	function modifica(idcfg){
-		document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=modifica&idcfg='+idcfg;
+		document.location.href='ConfigurazioneMail.do?metodo=modifica&idcfg='+idcfg;
 	}
 
 	function modificaPassword(idcfg){
-		document.location.href='ConfigurazioneMail.do?'+csrfToken+'&metodo=modificaPassword&idcfg='+idcfg;
+		document.location.href='ConfigurazioneMail.do?metodo=modificaPassword&idcfg='+idcfg;
 	}
 
 	function sincronizza(idcfg){
 		if (confirm("Vuoi procedere con la sincronizzazione della presente configurazione sul portale?"))
-			document.location.href='SincronizzaConfigurazioneMailPortale.do?'+csrfToken+'&idcfg='+idcfg;
+			document.location.href='SincronizzaConfigurazioneMailPortale.do?idcfg='+idcfg;
 	}
 -->
 </script>

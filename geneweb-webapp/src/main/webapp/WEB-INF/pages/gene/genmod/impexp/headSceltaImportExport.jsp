@@ -47,11 +47,11 @@
 		var exporta = document.getElementById("export");
 
 		if(importa.checked){
-			href = 'WizardImportModello.do?'+csrfToken+'&pageTo=UPL';
+			href = 'WizardImportModello.do?pageTo=UPL';
 		}
 		
 		if(exporta.checked){
-			href = 'InitTrovaModelliExport.do?'+csrfToken;
+			href = 'InitTrovaModelliExport.do';
 		}
 		
 		if(href != ""){
@@ -62,7 +62,7 @@
 	}
 
 	function annulla(){
-		document.location.href = 'AnnullaImportExportModelli.do?'+csrfToken;
+		document.location.href = 'AnnullaImportExportModelli.do';
 	}
 
 -->

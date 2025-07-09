@@ -24,6 +24,7 @@
     "load-error-generic": "Fehler beim Laden der Daten vom Server.",
     "upload-error-generic": "Fehler beim Hochladen der Datei.",
     "download-error-generic": "Sie können die Datei nicht herunterladen.",
+    "upload-error-filename": "Das Dokument wurde verworfen, da der Dateiname nicht zugelassene Zeichen enthält. Bitte die Datei neu benennen und dabei nur alphanumerische Zeichen, Leerzeichen und keine anderen Sonderzeichen außer -_ verwenden.",
     "pdf-error-generic": "Fehler bei der PDF-Generierung.",
     "server-error-generic": "Kommunikationsfehler mit dem Server.",
     "save-error-generic": "Fehler beim Speichern von Daten.",
@@ -63,7 +64,11 @@
     "mdgue-part1": "Verwenden Sie den plattformintegrierten dienst <b>M-DGUE</b>, um die elektronische <b>ESPD</b> auszufüllen und nach der Produktion kehrt die Datei \"XML Response\" hierher zurück, um sie hochzuladen.<br>Um eine <b>neue ESPD</b> durch Abrufen der in der Plattform eingegebenen Daten (personenbezogene Daten des Unternehmens oder der möglichen Muttergesellschaft im Falle von RTI, Losen usw.) auszufüllen)",
     "mdgue-part2": "Für alle <b>weitere ESPD</b>, die von anderen Parteien (Mitglieder der Gruppe, Hilfsunternehmen, Subunternehmer...) angefordert werden, verwenden oder teilen",
     "mdgue-part3": "So ändern oder verwenden Sie eine vorhandene \"XML-Antwort\" oder andere Hilfsvorgänge aus",
-    "mdgue-click": "klicken sie hier"
+    "mdgue-click": "klicken sie hier",
+    "dgue-request-error": "Fortfahren wegen fehlender DGUE-Anfrage in den Ausschreibungsunterlagen nicht möglich. Vergabebehörde kontaktieren, um die Daten zu korrigieren.",
+
+    "premiale-validity-end-date": "Gültig bis",
+    "premiale-display-validity-end-date": "mit Ablauf"
   },
   "primeng": {
     "startsWith": "Beginnt mit",

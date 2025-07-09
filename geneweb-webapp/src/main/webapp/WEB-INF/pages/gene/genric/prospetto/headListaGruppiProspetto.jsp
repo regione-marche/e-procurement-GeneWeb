@@ -26,32 +26,32 @@
 	// Azioni invocate dal menu contestuale
 	
 	function creaNuovaRicerca(){
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	// Azioni invocate dal tab menu
 	function datiGenProspetto(idProspetto) {
-		document.location.href='DettaglioProspetto.do?'+csrfToken+'&metodo=visualizza&idRicerca='+idProspetto;
+		document.location.href='DettaglioProspetto.do?metodo=visualizza&idRicerca='+idProspetto;
 	}
 
 	function listaGruppiProspetto(idProspetto) {
-		document.location.href='ListaGruppiProspetto.do?'+csrfToken+'&metodo=visualizzaLista&idRicerca='+idProspetto;
+		document.location.href='ListaGruppiProspetto.do?metodo=visualizzaLista&idRicerca='+idProspetto;
 	}
 
 	function listaParametriProspetto(idProspetto) {
-		document.location.href='ParametriProspetti.do?'+csrfToken+'&metodo=listaParametriModello&idRicerca='+idProspetto;
+		document.location.href='ParametriProspetti.do?metodo=listaParametriModello&idRicerca='+idProspetto;
 	}
 
 
 	// Azioni di pagina
 
 	function modifica(){
-		document.location.href='ListaGruppiProspetto.do?'+csrfToken+'&metodo=editLista&idRicerca=${idOggetto}';
+		document.location.href='ListaGruppiProspetto.do?metodo=editLista&idRicerca=${idOggetto}';
 	}
 	
 	function eseguiRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='CheckParametriProspetto.do?'+csrfToken+'&idRicerca=${idOggetto}&fromPage=dettaglioRicerca';
+		document.location.href='CheckParametriProspetto.do?idRicerca=${idOggetto}&fromPage=dettaglioRicerca';
 	}
 
 -->

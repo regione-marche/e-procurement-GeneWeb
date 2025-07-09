@@ -22,12 +22,12 @@
 <!-- 
 
   function listaRicerchePredefinite(){
-		document.location.href='ListaRicerchePredefinite.do?'+csrfToken;
+		document.location.href='ListaRicerchePredefinite.do';
   }
 
   function parametriRicerca(){
   	bloccaRichiesteServer();
-		document.location.href='VerificaParametriRicercaPredefinita.do?'+csrfToken;
+		document.location.href='VerificaParametriRicercaPredefinita.do';
   }
 
   function apriPopupGenModelli(){
@@ -57,7 +57,7 @@
 		var h = 400;
 		var l = Math.floor((screen.width-w)/2);
 		var t = Math.floor((screen.height-h)/2); 
-		var popup = window.open('${pageContext.request.contextPath}/geneGenric/StampaRisultatoRicerca.do?'+csrfToken,
+		var popup = window.open('${pageContext.request.contextPath}/geneGenric/StampaRisultatoRicerca.do',
 			'stampa',"status=1,resizable=1,scrollbars=1,width=" + w + ",height=" + h + ",top=" + t + ",left=" + l); 
 		popup.focus();
   }

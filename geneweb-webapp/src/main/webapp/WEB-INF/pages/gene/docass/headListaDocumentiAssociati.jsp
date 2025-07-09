@@ -44,13 +44,13 @@
 	}
 
   function download(id){
-		document.location.href='DocumentoAssociato.do?'+csrfToken+'&metodo=download&id=' + id;
+		document.location.href='DocumentoAssociato.do?metodo=download&id=' + id;
   }
 
 <c:if test='${sessionScope.entitaPrincipaleModificabile eq "1"}'>
 <c:if test='${gene:checkProtFunz(pageContext, "MOD","MOD")}'>
   function modifica(id){
-	  document.location.href='DocumentoAssociato.do?'+csrfToken+'&metodo=modifica&id=' + id;
+	  document.location.href='DocumentoAssociato.do?metodo=modifica&id=' + id;
   }
 </c:if>
 
@@ -63,7 +63,7 @@
 </c:if>
 
   function visualizza(id){
-  	var href = 'DocumentoAssociato.do?'+csrfToken+'&metodo=visualizza&id=' + id;
+  	var href = 'DocumentoAssociato.do?metodo=visualizza&id=' + id;
   	if(document.documentoAssociatoForm.keyParent.value != '')
   		href += '&keyParent='+document.documentoAssociatoForm.keyParent.value;
   	if(document.documentoAssociatoForm.key.value != '')
@@ -92,9 +92,9 @@
 	function eseguiCancellazione(id){
    	bloccaRichiesteServer();
    	if(document.getElementById("cancellazioneFile").value == 1)
-			document.location.href='ListaDocumentiAssociati.do?'+csrfToken+'&metodo=elimina&delete=1&id=' + id;
+			document.location.href='ListaDocumentiAssociati.do?metodo=elimina&delete=1&id=' + id;
 		else
-			document.location.href='ListaDocumentiAssociati.do?'+csrfToken+'&metodo=elimina&id=' + id;
+			document.location.href='ListaDocumentiAssociati.do?metodo=elimina&id=' + id;
 	}
 </c:if>
 </c:if>
@@ -166,7 +166,7 @@
 	<c:when test='${!empty download or !gene:checkProt(pageContext, "FUNZ.VIS.MOD.GENE.C0OGGASS-Scheda.MOD") or sessionScope.entitaPrincipaleModificabile ne "1"}'>
 
 	if(confirm('<fmt:message key="info.download.confirm"/>'))
-			document.location.href='DocumentoAssociato.do?'+csrfToken+'&metodo=download&id=' + id;
+			document.location.href='DocumentoAssociato.do?metodo=download&id=' + id;
 	</c:when>
 	<c:otherwise>
 		apriDocumento(nomeCompleto);

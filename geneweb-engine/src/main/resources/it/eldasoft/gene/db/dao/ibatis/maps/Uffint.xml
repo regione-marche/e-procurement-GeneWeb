@@ -72,7 +72,7 @@
 		WHERE UFFINT.CODEIN = #codice#
 	</sql>
 	<sql id="uffintFromWithNationAndWherePk">
-		FROM UFFINT LEFT JOIN TAB2 on TAB2.TAB2TIP = CAST(UFFINT.CODNAZ AS VARCHAR(5)) AND TAB2.TAB2COD = 'G_z23'
+		FROM UFFINT LEFT JOIN g_nazioni on g_nazioni.codice = UFFINT.CODNAZ
 		<include refid="uffintBaseWherePk"/>
 	</sql>
 	<select id="getUfficiIntestatari" resultMap="resultUffint">
@@ -88,12 +88,12 @@
 	
 	<select id="getUfficioIntestatarioByPKWithAddressAndNation" resultMap="resultUffintWithAddressAndNation" parameterClass="java.lang.String">
 		<include refid="uffintBaseSelect"/>
-			,TAB2.TAB2D1 as CODNAZ 
+			,codiso as CODNAZ
 		<include refid="uffintFromWithNationAndWherePk"/>
 	</select>
 	<select id="getUfficioIntestatarioFullByPKWithNation" resultMap="resultUffintFullWithNation" parameterClass="java.lang.String">
 		<include refid="uffintFullSelect"/>
-			,TAB2.TAB2D1 as CODNAZ 
+			,codiso as CODNAZ
 		<include refid="uffintFromWithNationAndWherePk"/>
 	</select>
 

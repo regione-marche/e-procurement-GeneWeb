@@ -25,11 +25,11 @@
 
   function annullaModifiche(id){
     bloccaRichiesteServer();
-		document.location.href='ListaUfficiIntestatariAccount.do?'+csrfToken+'&metodo=visualizza&idAccount=' + id;
+		document.location.href='ListaUfficiIntestatariAccount.do?metodo=visualizza&idAccount=' + id;
   }
   
   function schedaVisualizza(id){
-		document.location.href = 'DettaglioAccount.do?'+csrfToken+'&metodo=carica&idAccount=' + id + '&modo=visualizza';
+		document.location.href = 'DettaglioAccount.do?metodo=carica&idAccount=' + id + '&modo=visualizza';
 	}
 
 </script>

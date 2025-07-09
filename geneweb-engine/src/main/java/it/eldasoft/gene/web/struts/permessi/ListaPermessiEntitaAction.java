@@ -243,6 +243,8 @@ public class ListaPermessiEntitaAction extends DispatchActionBaseNoOpzioni {
     String messageKey = null;
 
     try {
+      String uffint = (String) request.getSession().getAttribute("uffint");
+      
       String campoChiave = request.getParameter("campoChiave");
       if(campoChiave == null)
         campoChiave = (String) request.getAttribute("campoChiave");
@@ -308,7 +310,7 @@ public class ListaPermessiEntitaAction extends DispatchActionBaseNoOpzioni {
 
       if(this.permessiManager.hasAccountCondivisionePredefinita(
           new Integer(utenteDiRiferimento),
-          this.getValorePredefinitoEntita(codApp)))
+          this.getValorePredefinitoEntita(codApp), uffint))
         request.setAttribute("esisteCondivisionePredefinita", "1");
 
       List<Tabellato> listaRuoli = this.tabellatiManager.getTabellato(TabellatiManager.RUOLO_ME);
@@ -360,6 +362,7 @@ public class ListaPermessiEntitaAction extends DispatchActionBaseNoOpzioni {
     String messageKey = null;
 
     try {
+      String uffint = (String) request.getSession().getAttribute("uffint");
       String campoChiave = request.getParameter("campoChiave");
       if(campoChiave == null)
         campoChiave = (String) request.getAttribute("campoChiave");
@@ -410,7 +413,7 @@ public class ListaPermessiEntitaAction extends DispatchActionBaseNoOpzioni {
           try {
             this.permessiManager.insertPermessiPredefiniti(campoChiave,
                 valoreChiave, new Integer(utenteDiRiferimento),
-                this.getValorePredefinitoEntita(codApp), listaPermessiEntita);
+                this.getValorePredefinitoEntita(codApp), listaPermessiEntita, uffint);
             inserito = true;
           } catch (DataIntegrityViolationException div) {
             if (numeroTentativi < CostantiGenerali.NUMERO_MAX_TENTATIVI_INSERT) {

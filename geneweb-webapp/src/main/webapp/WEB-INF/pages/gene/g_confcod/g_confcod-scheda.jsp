@@ -14,6 +14,9 @@
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <!--N.B.: E' POSSIBILE RIDEFINIRE CONTROLLI CUSTOMIZZATI IMPLEMENTANDO UNA g_confcod_schedaCustom A LIVELLO DI SINGOLO PROGETTO-->
 
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="G_CONFCOD-scheda">

@@ -28,6 +28,7 @@
 
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#"/>
 <c:set var="isPopolatatW_PUSER" value='${gene:callFunction("it.eldasoft.gene.tags.functions.isPopolatatW_PUSERFunction", pageContext)}' />
+<c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
 	
 <gene:template file="popup-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="lista-imprese-popup">
 	<gene:setString name="titoloMaschera" value="Selezione dell'impresa"/>
@@ -74,4 +75,9 @@
 			</c:if>
 		</gene:formLista>
   </gene:redefineInsert>
+	<gene:javaScript>
+		<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+			document.getElementById("btnNuovo").style.visibility = "hidden";
+		</c:if>
+	</gene:javaScript>
 </gene:template>

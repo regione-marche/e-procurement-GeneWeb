@@ -108,7 +108,7 @@
  	  else if(pageFrom == "CAM")
  	  	href = 'WizardBase.do?pageTo=CAM';
  	  else if(pageFrom == "ARG")
-			href = 'WizardBase.do?'+csrfToken+'&pageTo=ARG';
+			href = 'WizardBase.do?pageTo=ARG';
 
 		if(href != "")
 			document.location.href = href;
@@ -117,7 +117,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 

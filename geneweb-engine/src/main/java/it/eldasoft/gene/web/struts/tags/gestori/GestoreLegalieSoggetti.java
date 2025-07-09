@@ -12,7 +12,15 @@ package it.eldasoft.gene.web.struts.tags.gestori;
 
 import it.eldasoft.gene.db.datautils.DataColumn;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import it.eldasoft.gene.utils.LogEventiUtils;
 import org.springframework.transaction.TransactionStatus;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Gestore della pagina 'Legali e altri soggetti': contiene sezini multiple per le entità IMPLEG, IMPDTE e IMPAZI
  *
@@ -78,10 +86,64 @@ public class GestoreLegalieSoggetti extends AbstractGestoreEntita {
           gestoreG_IMPCOL, "G_IMPCOL",
           new DataColumn[] { impl.getColumn("IMPR.CODIMP") }, null);
     }
+
+    LogEvento logevento = LogEventiUtils.createLogEvento(this.getRequest());
+    logevento.setLivEvento(1);
+    logevento.setOggEvento(impl.getString("IMPR.CODIMP"));
+    logevento.setCodEvento("IMPR_EDIT");
+    logevento.setDescr("Modifica anagrafica impresa (legali e soggetti)");
+    logevento.setErrmsg(elaboraModifiche(impl));
+    LogEventiUtils.insertLogEventi(logevento);
   }
 
   @Override
   public void postUpdate(DataColumnContainer impl) throws GestoreException {
+  }
+
+  private String elaboraModifiche(DataColumnContainer datiForm) throws GestoreException {
+    String descrErrMsg = "Dettaglio modifiche:";
+    HashMap<String, DataColumn> hm = datiForm.getColonne();
+    Iterator<?> it = hm.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry<String, DataColumn> pair = (Map.Entry<String, DataColumn>) it.next();
+      if (pair.getValue().isModified()) {
+        if(pair.getKey().indexOf("MOD_")>=0 || pair.getKey().indexOf("INDICE_")>=0 )
+          continue;
+        if (!"".equals(descrErrMsg)) {
+          descrErrMsg += "\n";
+        }
+        if (pair.getKey().indexOf("DEL_IMPLEG") > 0) {
+          descrErrMsg += "Eliminato dai legali rappresentanti il soggetto "+datiForm.getColumn("IMPLEG.CODLEG_"+pair.getKey().substring(pair.getKey().indexOf("DEL_IMPLEG_")+11)).getOriginalValue();
+        } else if(pair.getKey().indexOf("DEL_IMPAZI") > 0) {
+          descrErrMsg += "Eliminato il soggetto incaricato "+datiForm.getColumn("IMPAZI.CODTEC_"+pair.getKey().substring(pair.getKey().indexOf("DEL_IMPAZI_")+11)).getOriginalValue();
+        } else if(pair.getKey().indexOf("DEL_IMPDTE") > 0) {
+          descrErrMsg += "Eliminato il direttore tecnico "+datiForm.getColumn("IMPDTE.CODDTE_"+pair.getKey().substring(pair.getKey().indexOf("DEL_IMPDTE_")+11)).getOriginalValue();
+        } else if(pair.getKey().indexOf("DEL_G_IMPCOL") > 0) {
+          descrErrMsg += "Eliminato dai collaboratori il soggetto "+datiForm.getColumn("G_IMPCOL.CODTEC_"+pair.getKey().substring(pair.getKey().indexOf("DEL_G_IMPCOL_")+13)).getOriginalValue();
+        }else {
+          JdbcParametro paramOrigin = pair.getValue().getOriginalValue();
+          String valOriginale = "";
+          if (paramOrigin != null) {
+            valOriginale = paramOrigin.toString();
+          }
+          JdbcParametro paramNuovo = pair.getValue().getValue();
+          String valNuovo = "";
+          if (paramNuovo != null) {
+            valNuovo = paramNuovo.toString();
+          }
+          if ("".equals(valOriginale)) {
+            valOriginale = "NULL";
+          }
+          if ("".equals(valNuovo)) {
+            valNuovo = "NULL";
+          }
+          descrErrMsg += pair.getKey() + ": ";
+          descrErrMsg += "valore vecchio= " + valOriginale + ", ";
+          descrErrMsg += "valore nuovo= " + valNuovo;
+        }
+      }
+    }
+    return descrErrMsg;
   }
 
  }

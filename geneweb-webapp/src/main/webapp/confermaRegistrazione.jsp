@@ -14,7 +14,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 
-<c:set var="protocolloSSO" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetProtocolloSSOFunction",  pageContext)}' scope="request"/>
 <c:set var="isRegistrazioneAutomatica" value='${gene:callFunction("it.eldasoft.gene.tags.functions.IsRegistrazioneAutomaticaFunction",  pageContext)}' scope="request"/>
 
 <!-- Dati anagrafica utente -->

@@ -237,17 +237,17 @@ public class PermessiManager {
    *        permessi predefiniti
    */
   public void insertPermessiPredefiniti(String campoChiave, String valoreChiave,
-      Integer utenteDiRiferimento, Integer predefinito, List<?> listaPermessiEntita) {
+      Integer utenteDiRiferimento, Integer predefinito, List<?> listaPermessiEntita, String codein) {
     if(logger.isDebugEnabled())
       logger.debug("insertPermessiPredefiniti: inizio metodo");
 
     int numeroPermessiPredefinitiSuDb =
-        this.permessiDao.getNumeroPermessiPredefiniti(utenteDiRiferimento, predefinito);
+        this.permessiDao.getNumeroPermessiPredefiniti(utenteDiRiferimento, predefinito, codein);
 
     // Cancellazione dell'eventuale configurazione predefinita dell’utente
     // corrente precedentemente definita
     if(numeroPermessiPredefinitiSuDb > 0)
-      this.permessiDao.deletePermessiPredefinitiByIdAccount(utenteDiRiferimento, predefinito);
+      this.permessiDao.deletePermessiPredefinitiByIdAccount(utenteDiRiferimento, predefinito, codein);
 
     Iterator<?> iterator = listaPermessiEntita.iterator();
 
@@ -274,6 +274,7 @@ public class PermessiManager {
         permessoEntita.setValoreChiave(valoreChiave);
         permessoEntita.setPredefinito(predefinito);
         permessoEntita.setRiferimento(utenteDiRiferimento);
+        permessoEntita.setCodein(codein);
 
         // Inserimento dell'i-esimo permesso predefinito
         this.permessiDao.insertPermessoPredefinito(permessoEntita,
@@ -296,14 +297,14 @@ public class PermessiManager {
    *         il tipo di entità in analisi, false altrimenti
    */
   public boolean hasAccountCondivisionePredefinita(Integer riferimento,
-      Integer predefinito){
+      Integer predefinito, String codein){
 
     if(logger.isDebugEnabled())
       logger.debug("hasAccountCondivisionePredefinita: inizio metodo");
 
     boolean result = false;
     int numeroPermessiPredefiniti = this.permessiDao.getNumeroPermessiPredefiniti(
-        riferimento, predefinito);
+        riferimento, predefinito, codein);
 
     if(numeroPermessiPredefiniti > 0)
       result = true;

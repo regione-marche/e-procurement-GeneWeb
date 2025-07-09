@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -43,9 +42,7 @@ import it.eldasoft.gene.bl.FileAllegatoManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.db.domain.BlobFile;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
-import it.eldasoft.utils.utility.UtilityWeb;
-import it.maggioli.eldasoft.security.EncryptionConstants;
-import it.maggioli.eldasoft.security.SymmetricEncryptionUtils;
+import it.maggioli.eldasoft.security.*;
 import it.eldasoft.gene.bl.TabellatiManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 
@@ -132,13 +129,7 @@ public class ScaricaDocumentiVerificheManager {
 	    String nomeFile = (String)sqlManager.getObject("select dignomdoc from w_docdig where idprg = ? and iddocdig = ?", new Object[] {idprg,iddocdg});
 	    nomeFile = idprg +iddocdg + "_" + nomeFile;
 	    if("false".equals(archivioCreato)){
-	      zipOut = new ZipOutputStream(new FileOutputStream(pathArchivioDocumenti + "/" + nomeArchivio));
-	      zipOut.setMethod(ZipOutputStream.DEFLATED);
-	      zipOut.setLevel(Deflater.DEFAULT_COMPRESSION);
 	      this.addFileToArchive(nomeArchivio,pathArchivioDocumenti,idprg,iddocdg,nomeFile,zipOut,nomeCartella,allegatiVerifica,idEntita,uffint,response);
-	      zipOut.closeEntry();
-	      zipOut.flush();
-	      zipOut.close();
 	    }else{
 	      addFilesToZip(pathArchivioDocumenti + "/" + nomeArchivio,idprg, iddocdg ,nomeFile,cambioTipo,nomeCartella,allegatiVerifica,idEntita,uffint,response);
 	    }
@@ -153,18 +144,26 @@ public class ScaricaDocumentiVerificheManager {
   public void addFileToArchive(String nomeArchivio, String pathArchivioDocumenti, String idprg, Long iddocdig, String nome, ZipOutputStream zipOut, String nomeCartella,Boolean allegatiVerifica,Long idEntita,String uffint,HttpServletResponse response) throws Exception {
 	    BlobFile file = this.fileAllegatoManager.getFileAllegato(idprg,iddocdig);
 	    byte[] fileDecod = this.decifraAllegato(nome,file, "DOCUMENTI_VERIFICHE",idEntita,uffint,response);
-	    OutputStream out = new FileOutputStream(pathArchivioDocumenti + "/" + nomeArchivio);
-	    out.write(fileDecod);
-	    out.close();
+	    //OutputStream out = new FileOutputStream(pathArchivioDocumenti + "/" + nomeArchivio);
+	    //out.write(fileDecod);
+	    //out.close();
 	    //Aggiungo il file allo zip
 	    try {
-	    	if(allegatiVerifica) {
-	    		zipOut.putNextEntry(new ZipEntry(nomeCartella+"/"));
-	    		zipOut.putNextEntry(new ZipEntry(nomeCartella+"/"+nome));
-	    	}else {
-	    		zipOut.putNextEntry(new ZipEntry(nome));
-	    	}
-	        zipOut.write(fileDecod, 0, fileDecod.length);
+	      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(pathArchivioDocumenti + "/" + nomeArchivio));
+	      out.setMethod(ZipOutputStream.DEFLATED);
+	      out.setLevel(Deflater.DEFAULT_COMPRESSION);
+	      
+	      if(allegatiVerifica) {
+	        out.putNextEntry(new ZipEntry(nomeCartella+"/"));
+	        out.putNextEntry(new ZipEntry(nomeCartella+"/"+nome));
+	      }else {
+	        out.putNextEntry(new ZipEntry(nome));
+	      }
+	      out.write(fileDecod, 0, fileDecod.length);
+	      out.closeEntry();
+	      out.flush();
+	      out.close();
+	      zipOut = out;
 	    } catch (ZipException e) {
 	        // il file è già presente nello zip .., lo ignoro
 	        String logMessageKey;
@@ -252,7 +251,7 @@ public class ScaricaDocumentiVerificheManager {
 	        zin.close();
 	        tmpZip.delete();
 	    }catch(Exception e){
-	    	throw new GestoreException("Export verifiche Art.80, si e' verificato un errore durante l'aggiunta di un file allo zip  " + e,
+	    	throw new GestoreException("Export verifica requisiti, si e' verificato un errore durante l'aggiunta di un file allo zip  " + e,
 	    	          "art80.export.addfile", e);
 	    }
 	  }

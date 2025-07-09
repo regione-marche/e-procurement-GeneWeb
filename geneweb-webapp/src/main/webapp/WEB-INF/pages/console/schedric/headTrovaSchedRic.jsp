@@ -35,11 +35,11 @@
 	}
 	
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaSchedRic.do?'+csrfToken;
+		document.location.href='InitTrovaSchedRic.do';
   }
 
 	function creaNuovaSchedRic(){
-		document.location.href='WizardSchedRic.do?'+csrfToken+'&pageTo=REP';
+		document.location.href='WizardSchedRic.do?pageTo=REP';
 	}
 	
 	function gestisciVisualizzazioneAvanzata() {

@@ -250,7 +250,7 @@
 	<!-- OWASP CSRFGuard filter used to validate CSRF token-->
 	<filter>
 		<filter-name>CSRFGuard</filter-name>
-		<filter-class>org.owasp.csrfguard.CsrfGuardFilter</filter-class>
+		<filter-class>it.eldasoft.gene.commons.web.CsrfGuardFilter</filter-class>
 	</filter>
 
 	<!-- OWASP CSRFGuard filter mapping used to validate CSRF token-->

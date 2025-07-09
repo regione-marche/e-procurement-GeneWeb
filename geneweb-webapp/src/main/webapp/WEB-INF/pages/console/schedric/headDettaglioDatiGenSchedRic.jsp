@@ -26,20 +26,20 @@
 	// Azioni invocate dal menu contestuale
 
 	function creaNuovaSchedRicWizard(){
-		document.location.href='WizardSchedRic.do?'+csrfToken+'&pageTo=REP';
+		document.location.href='WizardSchedRic.do?pageTo=REP';
 	}
 	
 	
 	// Azioni invocate dal tab menu
 
 	function cambiaTab() {
-		document.location.href = 'DettaglioSchedRic.do?'+csrfToken+'&metodo=visualizzaSchedulazione&idSchedRic=${schedRicForm.idSchedRic}';
+		document.location.href = 'DettaglioSchedRic.do?metodo=visualizzaSchedulazione&idSchedRic=${schedRicForm.idSchedRic}';
 	}
 
 	// Azioni di pagina
 
 	function modifica(id){
-		document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=modificaDettaglio&idSchedRic='+id;
+		document.location.href='DettaglioSchedRic.do?metodo=modificaDettaglio&idSchedRic='+id;
 	}
 
 

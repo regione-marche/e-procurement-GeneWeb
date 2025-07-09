@@ -37,14 +37,14 @@
   
 <div id="dialog-form-download-allegati" style="display:none">
 	<br>
-	<b>Esporta documenti verifiche su file zip</b>
+	<b>Esporta documenti verifica requisiti su file zip</b>
 	<br>
 	<div id="progressbardiv" style="display:none">
 		<img src="${pageContext.request.contextPath}/img/${applicationScope.pathCss}progressbar.gif" alt=""/>
 		<br><br>Esportazione in corso...
 	</div>
 	<p class="validateTips">
-	<span id="tipMsg">Mediante questa funzione è possibile esportare in un unico file zip i documenti delle verifiche art.80.</span>
+	<span id="tipMsg">Mediante questa funzione &egrave; possibile esportare in un unico file zip i documenti della verifica requisiti.</span>
 	<span id= "tipConfirm"><br><br>Confermi l'operazione ?</span>
 	<span id="tipWaiting">Esportazione dei documenti in corso.</span>
 	<br><br></p>
@@ -155,7 +155,7 @@ function _wait() {
 			return $("#dialog-form-download-allegati").dialog( "close" );
 		}else{
 			if(counter > maxCount && archivioCreato == "true"){
-			document.location.href='pg/ScaricaTuttiAllegatiVerifiche.do?'+csrfToken+'&metodo=download&path='+encodeURIComponent(path);
+			document.location.href='pg/ScaricaTuttiAllegatiVerifiche.do?metodo=download&path='+encodeURIComponent(path);
 			return $("#dialog-form-download-allegati").dialog( "close" );
 		}
 		var allegatiVerifica = "true";
@@ -197,7 +197,7 @@ function _wait() {
 				if (counter < maxCount){
 					ajaxCallDownload(counter,path,maxCount,listaDoc,uffint);
 				}else{
-					document.location.href='ScaricaTuttiAllegatiVerifiche.do?'+csrfToken+'&metodo=download&path='+encodeURIComponent(path);
+					document.location.href='ScaricaTuttiAllegatiVerifiche.do?metodo=download&path='+encodeURIComponent(path);
 					return $("#dialog-form-download-allegati").dialog( "close" );
 				}
 			}

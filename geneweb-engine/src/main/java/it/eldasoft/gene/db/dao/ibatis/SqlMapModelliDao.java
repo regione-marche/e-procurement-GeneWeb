@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.dao.DataAccessException;
 
 /**
@@ -142,13 +144,13 @@ public class SqlMapModelliDao extends SqlMapClientDaoSupportBase implements
     //this.setOperatoreMatch(map, trovaModelli.getFileModello(), "operatoreFile");
     map.put("operatoreFile", trovaModelli.getOperatoreFileModello());
     map.put("escapeFileModello", trovaModelli.getEscapeFileModello());
-    map.put("disponibile", trovaModelli.getDisponibile());
+    map.put("disponibile", NumberUtils.createInteger(StringUtils.stripToNull(trovaModelli.getDisponibile())));
     map.put("idGruppo", trovaModelli.getIdGruppo());
     map.put("codiceApplicazione", trovaModelli.getCodiceApplicazione());
     map.put("codiceProfilo", trovaModelli.getCodiceProfiloAttivo());
     //F.D. 09/03/07 aggiungo al map per la query i due campi per il filtro per i modelli personali
-    map.put("owner", trovaModelli.getOwner());
-    map.put("personale", trovaModelli.getPersonale());
+    map.put("owner", NumberUtils.createInteger(StringUtils.stripToNull(trovaModelli.getOwner())));
+    map.put("personale", NumberUtils.createInteger(StringUtils.stripToNull(trovaModelli.getPersonale())));
     map.put("tabTipoModelli", TabellatiManager.TIPO_MODELLI);
     if(trovaModelli.isNoCaseSensitive()){
       SqlComposer composer = SqlManager.getComposer(ConfigManager.getValore(CostantiGenerali.PROP_DATABASE));
@@ -176,9 +178,9 @@ public class SqlMapModelliDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      map.put("adattaQueryPerDB2", "1");
+      map.put("adattaQueryPerPG", "1");
 
     return this.getSqlMapClientTemplate().queryForList("getModelli", map);
   }
@@ -190,8 +192,8 @@ public class SqlMapModelliDao extends SqlMapClientDaoSupportBase implements
   public List<?> getModelliPredefiniti(int idAccount, String codiceApplicazione,
       String codiceProfilo, String entita, boolean riepilogativo)
       throws DataAccessException {
-    String disponibile = "1"; // solo per leggibilita' del codice
-    String personale = "1"; // solo per leggibilita' del codice
+    Integer disponibile = 1; // solo per leggibilita' del codice
+    Integer personale = 1; // solo per leggibilita' del codice
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("idAccount", new Integer(idAccount));
     hash.put("codApp", codiceApplicazione);

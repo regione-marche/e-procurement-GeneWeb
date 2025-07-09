@@ -15,6 +15,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
@@ -52,9 +53,17 @@ $(document).ready(function(){
 <div>
 			<!-- <a id="link-info-tecniche" href="#" class="link-generico" title="Visualizza le informazioni di registrazione"> -->Informazioni tecniche:<!-- </a> -->
 			<div id="info-tecniche">
-			Nome prodotto: ${applicationScope.appTitle}<br/>
+			Nome prodotto: <b>${applicationScope.appTitle}</b><br/>
 			Versione: ${sessionScope.versioneModuloAttivo}<br/>
-			Registrato da: ${requestScope.acquirente}<br/>
+		<c:if test='${not (empty applicationScope.nomeComponente or empty applicationScope.versioneComponente)}'>
+		    Nome componente: <b>${applicationScope.nomeComponente}</b><br/>
+		    Versione: ${applicationScope.versioneComponente}<br/>
+		</c:if>
+		<c:if test='${not (empty applicationScope.nomePiattaforma or empty applicationScope.versionePiattaforma)}'>
+		    Nome piattaforma: <b>${applicationScope.nomePiattaforma}</b><br/>
+		    Versione: ${applicationScope.versionePiattaforma}<br/>
+		</c:if>
+
 		<c:if test='${(!empty codiceProdotto) and (!empty chiaveAccesso)}'>
 			Configurazione installata: ${codiceProdotto}<br/>
 			Chiave di accesso: ${chiaveAccesso}<br/>

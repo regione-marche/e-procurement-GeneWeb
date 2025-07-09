@@ -596,7 +596,8 @@ public class CampoDecoratorImpl {
             ValoreTabellato valoreTabellato = (ValoreTabellato) this.valori.get(i);
             if ("1".equals(valoreTabellato.getArc())) {
               if (this.getValue() != null && this.getValue().equals(valoreTabellato.getValore())) {
-                buf.append(((ValoreTabellato) this.valori.get(i)).toString(this.getValue()));
+                ValoreTabellato tabellatoArc = new ValoreTabellato(valoreTabellato.getValore(), valoreTabellato.getDescr()+" [VOCE DISMESSA]",valoreTabellato.getArc());
+                buf.append((tabellatoArc).toString(this.getValue()));
               }
             } else {
               buf.append(((ValoreTabellato) this.valori.get(i)).toString(this.getValue()));
@@ -801,7 +802,10 @@ public class CampoDecoratorImpl {
         int index = indexOf(this.getValue());
         if (index >= 0) {
           ValoreTabellato value = (ValoreTabellato) this.valori.get(index);
-          return UtilityStringhe.convStringHTML(value.toString());
+          String stringValue=value.toString();
+          if("1".equals(value.getArc()))
+            stringValue+=" [VOCE DISMESSA]";
+          return UtilityStringhe.convStringHTML(stringValue);
         } else
           return "";
       }

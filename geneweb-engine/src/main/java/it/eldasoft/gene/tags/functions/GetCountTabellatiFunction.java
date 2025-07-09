@@ -39,7 +39,7 @@ AbstractFunzioneTag{
     
       try {
           if (id!=null && !"".equals(id)){
-            String select="select count(*) from wsdmtab where idcftab = ? and  idconfi = ? and (isarchi = 2 or isarchi is null)";
+            String select="select count(*) from wsdmtab where idcftab = ? and  idconfi = ? and (isarchi = '2' or isarchi is null)";
             Long count = (Long) sqlManager.getObject(select, new Object[]{new Long(id),new Long(idconfi)});
             if(count!=null && count.intValue()>0)
               result = count.toString();

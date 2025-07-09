@@ -13,12 +13,16 @@ package it.eldasoft.gene.web.struts.tags.gestori;
 import it.eldasoft.gene.bl.GeneManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
 import it.eldasoft.gene.tags.bl.AnagraficaManager;
+import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
+import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.spring.UtilitySpring;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -51,15 +55,15 @@ public class GestoreTECNI extends AbstractGestoreEntita {
 
 	@Override
   public void preDelete(TransactionStatus status, DataColumnContainer impl)
-					throws GestoreException {
+      throws GestoreException {
 
-		//Prima di procedere con l'eliminazione si deve controllare
-		//che non sia collegato a qualche entita
-		GeneManager gene = getGeneManager();
-		String codiceTecni = impl.getString("TECNI.CODTEC");
-		gene.checkConstraints("TECNI", new String[]{codiceTecni});
+	  //Prima di procedere con l'eliminazione si deve controllare
+	  //che non sia collegato a qualche entita
+	  GeneManager gene = getGeneManager();
+	  String codiceTecni = impl.getString("TECNI.CODTEC");
+	  gene.checkConstraints("TECNI", new String[]{codiceTecni});
 
-		/*String toDel[] = new String[]{
+	  /*String toDel[] = new String[]{
 		 "impdte", "codimp3", "impleg", "codimp2", "impind", "codimp5", "impazi",
 		 "codimp4", "impope", "codimp", "cate", "codimp1", "ragimp", "codime9",
 		 "impcase", "codimp"};
@@ -70,7 +74,34 @@ public class GestoreTECNI extends AbstractGestoreEntita {
 		 gene.deleteTabelle(new String[]{toDel[i]}, toDel[i + 1] + " = ?",
 		 params);
 		 }*/
+
+	  
+
 	}
+	
+  @Override
+  public void afterDeleteEntita(TransactionStatus status, DataColumnContainer impl) throws GestoreException {
+	  
+    try {
+      String codiceApplicazione = (String) this.getRequest().getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
+      codiceApplicazione = UtilityStringhe.convertiNullInStringaVuota(codiceApplicazione);
+      if("".equals(codiceApplicazione)){
+        codiceApplicazione = ConfigManager.getValore(CostantiGenerali.PROP_CODICE_APPLICAZIONE);
+      }
+      
+      LogEvento logEvento = LogEventiUtils.createLogEvento(this.getRequest());
+      logEvento.setCodApplicazione(codiceApplicazione);
+      logEvento.setLivEvento(1);
+      logEvento.setOggEvento(impl.getString("TECNI.CODTEC"));
+      logEvento.setCodEvento("TECNI_DELETE");
+      logEvento.setDescr("Cancellazione del tecnico (cod.tecnico "+impl.getString("TECNI.CODTEC")+")");
+      logEvento.setErrmsg("");
+      LogEventiUtils.insertLogEventi(logEvento);
+    } catch (Exception le) {
+      logger.error("Errore inaspettato durante la tracciatura su w_logeventi", le);
+    }
+    
+  }
 
   @Override
   public void preInsert(TransactionStatus status, DataColumnContainer impl)
@@ -90,7 +121,30 @@ public class GestoreTECNI extends AbstractGestoreEntita {
       this.verificaCodiceFiscalePartitaIVA(impl, null);
     }
 
-
+  }
+  
+  @Override
+  public void afterInsertEntita(TransactionStatus status, DataColumnContainer datiForm) throws GestoreException {
+	  
+    try {
+        String codiceApplicazione = (String) this.getRequest().getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
+        codiceApplicazione = UtilityStringhe.convertiNullInStringaVuota(codiceApplicazione);
+        if("".equals(codiceApplicazione)){
+          codiceApplicazione = ConfigManager.getValore(CostantiGenerali.PROP_CODICE_APPLICAZIONE);
+        }
+        
+        LogEvento logEvento = LogEventiUtils.createLogEvento(this.getRequest());
+        logEvento.setCodApplicazione(codiceApplicazione);
+        logEvento.setLivEvento(1);
+        logEvento.setOggEvento(datiForm.getString("TECNI.CODTEC"));
+        logEvento.setCodEvento("TECNI_INSERT");
+        logEvento.setDescr("Inserimento del tecnico (cod.tecnico "+datiForm.getString("TECNI.CODTEC")+")");
+        logEvento.setErrmsg("");
+        LogEventiUtils.insertLogEventi(logEvento);
+      } catch (Exception le) {
+        logger.error("Errore inaspettato durante la tracciatura su w_logeventi", le);
+      }
+	  
   }
 
   @Override
@@ -111,7 +165,31 @@ public class GestoreTECNI extends AbstractGestoreEntita {
     }
 
   }
-
+  
+  @Override
+  public void afterUpdateEntita(TransactionStatus status, DataColumnContainer datiForm) throws GestoreException {
+	  
+    try {
+        String codiceApplicazione = (String) this.getRequest().getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
+        codiceApplicazione = UtilityStringhe.convertiNullInStringaVuota(codiceApplicazione);
+        if("".equals(codiceApplicazione)){
+          codiceApplicazione = ConfigManager.getValore(CostantiGenerali.PROP_CODICE_APPLICAZIONE);
+        }
+        
+        LogEvento logEvento = LogEventiUtils.createLogEvento(this.getRequest());
+        logEvento.setCodApplicazione(codiceApplicazione);
+        logEvento.setLivEvento(1);
+        logEvento.setOggEvento(datiForm.getString("TECNI.CODTEC"));
+        logEvento.setCodEvento("TECNI_EDIT");
+        logEvento.setDescr("Modifica del tecnico (cod.tecnico "+datiForm.getString("TECNI.CODTEC")+")");
+        logEvento.setErrmsg("");
+        LogEventiUtils.insertLogEventi(logEvento);
+      } catch (Exception le) {
+        logger.error("Errore inaspettato durante la tracciatura su w_logeventi", le);
+      }
+	  
+  }
+  
   /**
    * Funzione che verifica i duplicati della partita iva e codice fiscale
    *
@@ -168,7 +246,14 @@ public class GestoreTECNI extends AbstractGestoreEntita {
             }
           }else{
             if("REGISTRAZIONE".equals(modo)){
-              controlloBloccanteCodFisc = true;
+              if(msgControlloCodFisc.split(" , ").length > 1) // se il blocco è dovuto a un solo tecnico, non blocco e aggiorno l'anagrafica del tecnico! GENEWEB-369
+                controlloBloccanteCodFisc = true;
+              else{
+                String codtec = msgControlloCodFisc.split(" - ")[0];
+                impl.setOriginalValue("TECNI.CODTEC", new JdbcParametro(JdbcParametro.TIPO_TESTO, codtec));
+                impl.setValue("TECNI.CODTEC", codtec);
+                impl.getColumn("TECNI.CODTEC").setChiave(true);
+              }
             }else{
               if(anagraficaManager.campoVisibileModificabile("TECNI", "CFTEC", profiloAttivo)){
                 controlloBloccanteCodFisc = true;

@@ -26,9 +26,12 @@ import java.util.Vector;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
 import it.eldasoft.utils.properties.ConfigManager;
 import it.eldasoft.utils.sicurezza.CriptazioneException;
@@ -59,7 +62,7 @@ public class Art80Manager {
   private static final int    ART80_SET_SERVICE_RICHIESTA    = 20;
 
   private static final String ART80_201                      = "L'operatore economico e' stato creato con successo nel sistema di verifica";
-  private static final String ART80_409                      = "I dati dell'operatore economico sono gia' stati inviati in precedenza. E' stato aggiornato lo 'Stato documentale' nella sezione 'Verifiche Art. 80' della scheda dell'impresa.";
+  private static final String ART80_409                      = "I dati dell'operatore economico sono gia' stati inviati in precedenza. E' stato aggiornato lo 'Stato documentale' nella sezione 'Verifica requisiti' della scheda dell'impresa.";
 
   private static final String ART80_SET_SERVICE_201          = "La richiesta di aggiornamento dell'operatore economico e' stata inoltrata con successo nel sistema di verifica";
   private static final String ART80_SET_SERVICE_409          = "I dati dell'operatore economico non sono presenti nel sistema di verifica. La richiesta di aggiornamento non puo' essere inoltrata";
@@ -145,31 +148,25 @@ public class Art80Manager {
           String jsonOutputStatus = jsonOutput.getString("status");
           if (!"200".equals(jsonOutputStatus)) {
             String jsonOutputMessage = jsonOutput.getString("status_message");
-            throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + jsonOutputStatus + " - " + jsonOutputMessage,
+            throw new GestoreException("Verifica requisiti, si e' verificato l'errore " + jsonOutputStatus + " - " + jsonOutputMessage,
                 "art80.ws.remote.generic", new Object[] { jsonOutputStatus, jsonOutputMessage }, null);
           }
           
           token = jsonOutput.getString("token");
           
         } else if (responseCode == 400) {
-          throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+          throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
         } else if (responseCode == 401) {
-          throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+          throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
         } else {
-          throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+          throw new GestoreException("Verifica requisiti, si e' verificato l'errore " + responseCode + " - " + responseMessage,
               "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
         }
       } else {
-        throw new GestoreException("Verifiche Art.80, valorizzare i parametri per il collegamento al servizio", "art80.ws.remote.undef");
+        throw new GestoreException("Verifica requisiti, valorizzare i parametri per il collegamento al servizio", "art80.ws.remote.undef");
       }
-    } catch (CriptazioneException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
-          "art80.ws.remote.error", e);
-    } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
-          "art80.ws.remote.error", e);
-    } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+    } catch (Exception e) {
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -315,8 +312,8 @@ public class Art80Manager {
         }
       }
 
-    } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+    } catch (Exception e) {
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi",
           "art80.ws.remote.error", e);
     }
 
@@ -422,7 +419,7 @@ public class Art80Manager {
       }
 
     } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi",
           "art80.ws.remote.error", e);
     }
 
@@ -448,7 +445,11 @@ public class Art80Manager {
     HttpURLConnection conn = null;
 
     int responseCode = 0;
-
+    boolean doCommit = true;
+    int livEvento = 1;
+    String errMsgEvento = "";
+    String msgTracciaturaEvento = "";
+    TransactionStatus status = null;
     try {
 
       String selectIMPR = "select nomest, " // 0
@@ -474,7 +475,7 @@ public class Art80Manager {
         String cfimp = (String) SqlManager.getValueFromVectorParam(datiIMPR, 2).getValue();
         
         if (nomest == null || cfimp == null) {
-          throw new GestoreException("Verifiche Art.80, e' obbligatorio indicare ragione sociale e codice fiscale",
+          throw new GestoreException("Verifica requisiti, e' obbligatorio indicare ragione sociale e codice fiscale",
               "art80.mandatory");
         } 
         
@@ -573,8 +574,8 @@ public class Art80Manager {
         String responseMessage = conn.getResponseMessage();
 
         boolean b_gateway_multiuffint = __art80TestGatewayMultiUffint();
-        
         if (responseCode == 201) {
+          msgTracciaturaEvento = "Richiesta di aggiornamento";
           if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
             // Configurazione "standard": si aggiornano i campi della tabella
             // IMPR
@@ -587,6 +588,7 @@ public class Art80Manager {
             Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?",
                 new Object[] { codimp, codein });
             if (cnt == null || (cnt != null && cnt.longValue() == 0)) {
+              status = this.sqlManager.startTransaction();
               this.sqlManager.update("insert into art80 (codimp, stato, data_richiesta, codein, service) values (?,?,?,?,?)",
                   new Object[] { codimp, new Long(ART80_STATO_ANAGRAFICA_INVIATA), new Date(), codein, status_service });
             } else {
@@ -595,6 +597,7 @@ public class Art80Manager {
             }
           }
         } else if (responseCode == 409) {
+          msgTracciaturaEvento = "Nuova richiesta di verifica";
           // In questo caso l'impresa e' gia' stata inviata, si provvede a
           // leggere "direttamente" lo stato aggiornato.
           if (b_gateway == false || (b_gateway == true && b_gateway_multiuffint == false)) {
@@ -608,6 +611,9 @@ public class Art80Manager {
             Long cnt = (Long) this.sqlManager.getObject("select count(*) from art80 where codimp = ? and codein = ?",
                 new Object[] { codimp, codein });
             if (cnt == null || (cnt != null && cnt.longValue() == 0)) {
+              if(status == null) {
+                status = this.sqlManager.startTransaction();
+              }
               this.sqlManager.update("insert into art80 (codimp, data_richiesta, codein, service) values (?,?,?,?)",
                   new Object[] { codimp, new Date(), codein, status_service });
             } else {
@@ -617,29 +623,51 @@ public class Art80Manager {
           }
           art80AggiornaStatoImpresaCODIMP(codimp, codein);
         } else if (responseCode == 422) {
-          throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+          throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
         } else if (responseCode == 400) {
-          throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+          throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
         } else if (responseCode == 401) {
-          throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+          throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
         } else {
-          throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+          throw new GestoreException("Verifica requisiti, si e' verificato l'errore " + responseCode + " - " + responseMessage,
               "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
         }
 
       }
 
-    } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
-          "art80.ws.remote.error", e);
-    } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
-          "art80.ws.remote.error", e);
-    } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+    } catch (Exception e) {
+      doCommit = false;
+      livEvento = 3;
+      errMsgEvento = "Errore in Crea OE: "+e.getMessage();
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
+      if (status != null) {
+        try {
+          if (doCommit) {
+            this.sqlManager.commitTransaction(status);
+          } else {
+            this.sqlManager.rollbackTransaction(status);
+          }
+        } catch (SQLException ex) {
+          throw new GestoreException("","",ex);
+        }
+      }
+      try{
+        LogEvento logEvento =  new LogEvento();
+        logEvento.setCodApplicazione("PG");
+        logEvento.setLivEvento(livEvento);
+        String oggetto = msgTracciaturaEvento;
+        logEvento.setOggEvento(oggetto);
+        logEvento.setCodEvento("VERIFICAREQ_SERVIZIO_IMPR");
+        logEvento.setDescr("Creazione OE utilizzando i seguenti dati: Codice impresa '"+codimp+"', codice ufficio intestatario '"+codein+"', tipologia di controllo '"+status_service+"'");
+        logEvento.setErrmsg(errMsgEvento);
+        LogEventiUtils.insertLogEventi(logEvento);
+      }catch(Exception e){
+        logger.error("Errore inaspettato durante la tracciatura su w_logeventi");
+      }
+    
     }
 
     return responseCode;
@@ -674,7 +702,7 @@ public class Art80Manager {
         String nomest = (String) SqlManager.getValueFromVectorParam(datiIMPR, 0).getValue();
         String cfimp = (String) SqlManager.getValueFromVectorParam(datiIMPR, 1).getValue();
         if (nomest == null || cfimp == null) {
-          throw new GestoreException("Verifiche Art.80, e' obbligatorio indicare la ragione sociale ed il codice fiscale",
+          throw new GestoreException("Verifica requisiti, e' obbligatorio indicare la ragione sociale ed il codice fiscale",
               "art80.mandatory");
         }
 
@@ -758,28 +786,28 @@ public class Art80Manager {
             }
           }
         } else if (responseCode == 409) {
-          throw new GestoreException("Verifiche Art.80, operatore economico non trovato", "art80.ws.remote.oenotfound");
+          throw new GestoreException("Verifica requisiti, operatore economico non trovato", "art80.ws.remote.oenotfound");
         } else if (responseCode == 422) {
-          throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+          throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
         } else if (responseCode == 400) {
-          throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+          throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
         } else if (responseCode == 401) {
-          throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+          throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
         } else {
-          throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+          throw new GestoreException("Verifica requisiti, si e' verificato l'errore " + responseCode + " - " + responseMessage,
               "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
         }
 
       }
 
     } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -869,7 +897,7 @@ public class Art80Manager {
       }
 
     } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     }
   }
@@ -965,13 +993,13 @@ public class Art80Manager {
           if (responseCode == 200) {
             // Operazione andata a buon fine, non serve alcuna operazione
           } else if (responseCode == 422) {
-            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+            throw new GestoreException("Verifica requisiti (gestione dei collegamenti degli studi associati o dei raggruppamenti), parametri di input mancanti", "art80.ws.remote.missinginputparameters");
           } else if (responseCode == 400) {
-            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+            throw new GestoreException("Verifica requisiti (gestione dei collegamenti degli studi associati o dei raggruppamenti), la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
           } else if (responseCode == 401) {
-            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+            throw new GestoreException("Verifica requisiti (gestione dei collegamenti degli studi associati o dei raggruppamenti), l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
           } else {
-            throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato l'errore " + responseCode + " - " + responseMessage,
+            throw new GestoreException("Verifica requisiti (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato l'errore " + responseCode + " - " + responseMessage,
                 "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
           }
 
@@ -980,14 +1008,8 @@ public class Art80Manager {
         break;
       }
 
-    } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
-          "art80.ws.remote.error", e);
-    } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
-          "art80.ws.remote.error", e);
-    } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80 (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
+    } catch (Exception e) {
+      throw new GestoreException("Verifica requisiti (gestione dei collegamenti degli studi associati o dei raggruppamenti), si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1142,8 +1164,8 @@ public class Art80Manager {
         }
       }
 
-    } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+    } catch (Exception e) {
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     }
 
@@ -1235,24 +1257,24 @@ public class Art80Manager {
           }
         }
       } else if (responseCode == 422) {
-        throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
       } else if (responseCode == 400) {
-        throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
       } else if (responseCode == 401) {
-        throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
       } else {
-        throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+        throw new GestoreException("Verifica requisiti, si e' verificato l'errore " + responseCode + " - " + responseMessage,
             "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
       }
 
     } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1424,27 +1446,27 @@ public class Art80Manager {
 
         }
       } else if (responseCode == 422) {
-        throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
       } else if (responseCode == 400) {
-        throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
       } else if (responseCode == 401) {
-        throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
       } else {
-        throw new GestoreException("Verifiche Art.80, si e' verificato l'errore " + responseCode + " - " + responseMessage,
+        throw new GestoreException("Verifica requisiti, si e' verificato l'errore " + responseCode + " - " + responseMessage,
             "art80.ws.remote.generic", new Object[] { responseCode, responseMessage }, null);
       }
 
     } catch (MalformedURLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (IOException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (NumberFormatException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1614,14 +1636,14 @@ public class Art80Manager {
           }
         }
       } else if (responseCode == 422) {
-        throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
       } else if (responseCode == 400) {
-        throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
       } else if (responseCode == 401) {
-        throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
       }
     } catch (Exception e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi",
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1692,14 +1714,14 @@ public class Art80Manager {
           }
         }
       } else if (responseCode == 422) {
-        throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
       } else if (responseCode == 400) {
-        throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
       } else if (responseCode == 401) {
-        throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
       }
     } catch (Exception e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi",
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1801,14 +1823,14 @@ public class Art80Manager {
         }
 
       } else if (responseCode == 422) {
-        throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
       } else if (responseCode == 400) {
-        throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
       } else if (responseCode == 401) {
-        throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
       }
     } catch (Exception e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi",
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1894,14 +1916,14 @@ public class Art80Manager {
         }
 
       } else if (responseCode == 422) {
-        throw new GestoreException("Verifiche Art.80, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
+        throw new GestoreException("Verifica requisiti, parametri di input mancanti", "art80.ws.remote.missinginputparameters");
       } else if (responseCode == 400) {
-        throw new GestoreException("Verifiche Art.80, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
+        throw new GestoreException("Verifica requisiti, la richiesta non rispetta il formato previsto", "art80.ws.remote.invalidrequest");
       } else if (responseCode == 401) {
-        throw new GestoreException("Verifiche Art.80, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
+        throw new GestoreException("Verifica requisiti, l'utente indicato non e' autorizzato", "art80.ws.remote.unauthorized");
       }
     } catch (Exception e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi",
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi",
           "art80.ws.remote.error", e);
     } finally {
       if (conn != null) conn.disconnect();
@@ -1989,19 +2011,19 @@ public class Art80Manager {
 
       // Verifica esistenza codice della stazione appaltante
       if (codein == null || (codein != null && "".equals(codein.trim()))) {
-        throw new GestoreException("Verifiche Art.80: per procedere e' necessario configurare l'ufficio (stazione appaltante)",
+        throw new GestoreException("Verifica requisiti: per procedere e' necessario configurare l'ufficio (stazione appaltante)",
             "art80.ws.remote.missingcodein");
       }
 
       // Lettura e verifica esistenza codice fiscale della stazione appaltante
       cfein = (String) sqlManager.getObject("select cfein from uffint where codein = ?", new Object[] { codein });
       if (cfein == null || (cfein != null && "".equals(cfein.trim()))) {
-        throw new GestoreException("Verifiche Art.80: il codice fiscale dell'ufficio (stazione appaltante) non e' valorizzato",
+        throw new GestoreException("Verifica requisiti: il codice fiscale dell'ufficio (stazione appaltante) non e' valorizzato",
             "art80.ws.remote.missingcfein");
       }
 
-    } catch (SQLException e) {
-      throw new GestoreException("Verifiche Art.80, si e' verificato un errore durante l'interazione con i servizi: " + e,
+    } catch (Exception e) {
+      throw new GestoreException("Verifica requisiti, si e' verificato un errore durante l'interazione con i servizi: " + e,
           "art80.ws.remote.error", e);
     }
 

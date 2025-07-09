@@ -54,6 +54,7 @@
 		      <form-property name="firmacheckts" type="java.util.Date"/>
 		      <form-property name="nomeFile" type="java.lang.String"/>
 		      <form-property name="firma" type="it.eldasoft.gene.web.struts.model.FirmaCheck"/>
+		      <form-property name="exceptionMessage" type="java.lang.String"/>
 		</form-bean>
 		
 	</form-beans>
@@ -62,13 +63,32 @@
 	</global-forwards>
 
 	<action-mappings>
-		<action path="/InitLogin" type="it.eldasoft.gene.web.struts.login.IsUserLoggedAction"
+		<action path="/InitLogin" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false">
 			<forward name="success" path="loginDef" />
 		</action>
+		
+		<action path="/PairingSSO" type="it.eldasoft.gene.web.struts.login.PairSSOAction"
+			scope="request" validate="false">
+			<forward name="success" path="loginDef"/>
+		</action>
+		
+		<action path="/InitLoginForm" type="it.eldasoft.gene.commons.web.struts.ForwardAction" scope="request" parameter="loginFormDef" />
 
 		<action path="/InfoAccessibilita" type="it.eldasoft.gene.commons.web.struts.ForwardAction" scope="request" parameter="/WEB-INF/pages/commons/accessibilita.jsp" />
-
+		
+		<action path="/ListaEntiLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/index.jsp"/>
+			<forward name="successLista" path="/WEB-INF/pages/gene/uffint/sceltaEnteLogin.jsp"/>
+		</action>
+	
+		<action path="/SetEnteLogin"
+			type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/index.jsp"/>
+		</action>
+		
 		<action path="/Login" name="loginForm" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false">
             <forward name="success" path="/CheckProfilo.do"/>
@@ -77,23 +97,7 @@
             <forward name="successCambiaPassword" path="/WEB-INF/pages/gene/admin/cambiaPswScaduta.jsp"/>
         </action>
 
-		<action path="/ShibbolethLogin" type="org.springframework.web.struts.DelegatingActionProxy"
-			scope="request" validate="false">
-			<forward name="success" path="/CheckProfilo.do" />
-			<forward name="successSkipProfili" path="/CheckVersione.do" />
-		</action>
-
-		<action path="/BartLogin" type="org.springframework.web.struts.DelegatingActionProxy"
-			scope="request" validate="false">
-			<forward name="success" path="/CheckProfilo.do" />
-			<forward name="successSkipProfili" path="/CheckVersione.do" />
-		</action>
-
-		<action path="/OpenIDLogin" type="org.springframework.web.struts.DelegatingActionProxy"
-			scope="request" validate="false">
-			<forward name="success" path="/CheckProfilo.do" />
-			<forward name="successSkipProfili" path="/CheckVersione.do" />
-		</action>
+		<action path="/LoginExt" type="it.eldasoft.gene.commons.web.struts.ForwardAction" scope="request" parameter="/Login.do" />
 
 		<action path="/CohesionLoginResponseAction" scope="request" type="org.springframework.web.struts.DelegatingActionProxy" validate="false">
 			<forward name="success" path="/WEB-INF/pages/gene/login/fwLogin.jsp" module="/" />
@@ -104,7 +108,28 @@
 			<forward name="successPrepareLogin" path="/WEB-INF/pages/commons/redirect.jsp"/>
 		</action>
 		
+		<action path="/SpidBusinessLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="successPrepareLogin" path="/WEB-INF/pages/commons/redirect.jsp"/>
+		</action>
+		
 		<action path="/SpidLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+		<action path="/SpidBusinessLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+		
+				<action path="/CieLogin" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="successPrepareLogin" path="/WEB-INF/pages/commons/redirect.jsp"/>
+		</action>
+		
+		<action path="/CieLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false">
 			<forward name="success" path="/CheckProfilo.do" />
 			<forward name="successSkipProfili" path="/CheckVersione.do" />
@@ -116,6 +141,24 @@
 		</action>
 		
 		<action path="/SSOGatewayLoginResponse" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+		
+		<action path="/WebserverLogin1" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+
+		<action path="/WebserverLogin2" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false">
+			<forward name="success" path="/CheckProfilo.do" />
+			<forward name="successSkipProfili" path="/CheckVersione.do" />
+		</action>
+
+		<action path="/WebserverLogin3" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false">
 			<forward name="success" path="/CheckProfilo.do" />
 			<forward name="successSkipProfili" path="/CheckVersione.do" />
@@ -170,6 +213,8 @@
 			scope="request" validate="false">
 			<forward name="success" path="/OpenApplication.do"/>
 			<forward name="successLista" path="/WEB-INF/pages/gene/uffint/sceltaUfficioIntestatario.jsp"/>
+			<forward name="successMultiEnte" path="/OpenApplication.do"/>
+			<forward name="logout" path="/Logout.do"/>
 		</action>
 		
 		<action path="/SetUfficioIntestatario"
@@ -198,12 +243,14 @@
 			type="org.springframework.web.struts.DelegatingActionProxy" scope="request"
 			validate="false">
 			<forward name="logoutSSO" path="/WEB-INF/pages/commons/redirect.jsp"/>
+			<forward name="selezioneInizialeEnte" path="/ListaEntiLogin.do" />
 		</action>
 
 		<action path="/SessionTimeOut"
 			type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false">
 			<forward name="logoutSSO" path="/WEB-INF/pages/commons/redirect.jsp"/>
+			<forward name="selezioneInizialeEnte" path="/ListaEntiLogin.do"/>
 		</action>
 
 		<action path="/InformazioniSu"
@@ -274,6 +321,7 @@
 			<forward name="successAnnulla" path="/ListaDocumentiAssociati.do?metodo=visualizza" />
 			<forward name="errorModifica" path="/DocumentoAssociato.do?metodo=modifica" />
 			<forward name="ritornaAInsertDoc" path="editDocumentoAssociatoDef"/>
+			<forward name="errorInsert" path="/DocumentoAssociato.do?metodo=nuovo"/>
 		</action>
 
 		<action path="/ListaDocumentiAssociati" name="listaDocAssForm"
@@ -515,6 +563,9 @@
 		<action path="/VisualizzaFileDIGOGG" type="org.springframework.web.struts.DelegatingActionProxy" 
 			scope="request" validate="false">
 		</action>
+		<action path="/VisualizzaFileDocumentiVerifiche" type="org.springframework.web.struts.DelegatingActionProxy"
+				scope="request" validate="false">
+		</action>
 
 		<action path="/DownloadDocumentoFirmato" type="org.springframework.web.struts.DelegatingActionProxy" 
 			scope="request" validate="false">
@@ -566,6 +617,12 @@
 		
 		<action path="/SetFirmaDigitaleRemota" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false" parameter="metodo" />
+			
+		<action path="/RiattivaVerificaDURC" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" parameter="metodo" />
+			
+		<action path="/CheckFormatoFilePDFa" name="uploadFileForm" type="org.springframework.web.struts.DelegatingActionProxy"
+			scope="request" validate="false" />
 		
 		<action path="/RichiestaOTP" type="org.springframework.web.struts.DelegatingActionProxy"
 			scope="request" validate="false" parameter="metodo" />
@@ -641,8 +698,14 @@
 		<action path="/VerificaFirmaServizioEsterno" type="org.springframework.web.struts.DelegatingActionProxy" 
 						scope="request" validate="false" name="verificaFirmaForm">
 			<forward name="success" path="/WEB-INF/pages/gene/system/firmadigitale/verifica-firma-digitale-html.jsp" module="/" />
+			<forward name="error" path="/WEB-INF/pages/gene/system/firmadigitale/verifica-firma-digitale-html.jsp" module="/" />
 		</action>
 		
+		<action path="/PingSessioneAttiva" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false"/>
+
+		<action path="/ValorizzaCodiceAUSA" type="org.springframework.web.struts.DelegatingActionProxy" scope="request" validate="false"/>
+
+		<action path="/GetCSRFToken" type="it.eldasoft.gene.web.struts.GetCSRFTokenAction" scope="request" validate="false" />
 
 	</action-mappings>
 			

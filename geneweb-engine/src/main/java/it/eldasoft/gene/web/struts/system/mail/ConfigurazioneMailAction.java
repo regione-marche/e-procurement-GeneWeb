@@ -19,6 +19,7 @@ import it.eldasoft.gene.commons.web.struts.DispatchActionBase;
 import it.eldasoft.gene.db.domain.Tabellato;
 import it.eldasoft.gene.db.domain.system.ConfigurazioneMail;
 import it.eldasoft.gene.db.sql.sqlparser.JdbcParametro;
+import it.eldasoft.gene.tags.utils.KeyParamValidator;
 import it.eldasoft.gene.utils.MailUtils;
 import it.eldasoft.utils.mail.IMailSender;
 import it.eldasoft.utils.mail.MailSenderException;
@@ -112,8 +113,16 @@ public class ConfigurazioneMailAction extends DispatchActionBase {
     String target = FORWARD_SUCCESS_VISUALIZZA;
     String codapp = (String) request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
     String paramIdcfg = request.getParameter("idcfg");
-
-    target = this.getConfig(target, request, codapp, paramIdcfg);
+    String chiaveDaValidare = "UFFINT.CODEIN=T:" + paramIdcfg;
+    try {
+      KeyParamValidator.validate(chiaveDaValidare);
+      target = this.getConfig(target, request, codapp, paramIdcfg);
+    } catch (RuntimeException e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      String messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
+    }
 
     logger.debug("visualizza: fine metodo");
     return mapping.findForward(target);
@@ -231,9 +240,17 @@ public class ConfigurazioneMailAction extends DispatchActionBase {
     String codapp = (String) request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
     String idcfg = request.getParameter("idcfg");
 
-    target = this.getConfig(target, request, codapp, idcfg);
-
-    request.setAttribute(CostantiGenerali.NAVIGAZIONE_DISABILITATA, CostantiGenerali.DISABILITA_NAVIGAZIONE);
+    String chiaveDaValidare = "UFFINT.CODEIN=T:" + idcfg;
+    try {
+      KeyParamValidator.validate(chiaveDaValidare);
+      target = this.getConfig(target, request, codapp, idcfg);
+      request.setAttribute(CostantiGenerali.NAVIGAZIONE_DISABILITATA, CostantiGenerali.DISABILITA_NAVIGAZIONE);
+    } catch (RuntimeException e) {
+      target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+      String messageKey = "errors.applicazione.inaspettataException";
+      logger.error(this.resBundleGenerale.getString(messageKey), e);
+      this.aggiungiMessaggio(request, messageKey);
+    }
 
     logger.debug("modifica: fine metodo");
     return mapping.findForward(target);
@@ -294,51 +311,64 @@ public class ConfigurazioneMailAction extends DispatchActionBase {
 
     String target = FORWARD_SUCCESS_VISUALIZZA;
     String paramIdcfg = request.getParameter("idcfg");
+
     String codapp = (String) request.getSession().getAttribute(CostantiGenerali.MODULO_ATTIVO);
     String messageKey = null;
     String destinatario = StringUtils.stripToNull(request.getParameter("mail"));
 
-    boolean creazioneMailSender = false;
+    String chiaveDaValidare = "UFFINT.CODEIN=T:" + paramIdcfg;
     try {
-
-      // qui va istanziato un mail sender ed inviata una mail
-      IMailSender mailSender = MailUtils.getInstance(this.mailManager, codapp, paramIdcfg);
-      creazioneMailSender = true;
-      mailSender.send(destinatario, "TEST invio mail",
-          "Se hai ricevuto questa mail di prova vuol dire che la configurazione di posta inserita funziona!");
-
-      // non è andato in errore significa che ha connesso il server senza problemi
-      messageKey = "info.mail.testCompletato";
-      logger.info(this.resBundleGenerale.getString(messageKey));
-      this.aggiungiMessaggio(request, messageKey);
-
-    } catch (DataAccessException e) {
+      KeyParamValidator.validate(chiaveDaValidare);
+    } catch (RuntimeException e) {
       target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
-      messageKey = "errors.database.dataAccessException";
+      messageKey = "errors.applicazione.inaspettataException";
       logger.error(this.resBundleGenerale.getString(messageKey), e);
       this.aggiungiMessaggio(request, messageKey);
-    } catch (MailSenderException ms) {
-      String logMessageKey = ms.getChiaveResourceBundle();
-      String logMessageError = this.resBundleGenerale.getString(logMessageKey);
-      for (int i = 0; ms.getParametri() != null && i < ms.getParametri().length; i++)
-        logMessageError = logMessageError.replaceAll(UtilityStringhe.getPatternParametroMessageBundle(i), (String) ms.getParametri()[i]);
-      logger.error(logMessageError, ms);
+    }
 
-      if (!creazioneMailSender) {
-        this.aggiungiMessaggio(request, "errors.applicazione.inaspettataException");
-      } else {
-        logMessageKey = "errors.mail.test.connessioneFallita";
-        this.aggiungiMessaggio(request, logMessageKey);
-      }
-    } catch (Throwable t) {
-      messageKey = "errors.mail.test.connessioneFallita";
-      logger.error(this.resBundleGenerale.getString(messageKey), t);
-      this.aggiungiMessaggio(request, messageKey);
-    } finally {
-      if (FORWARD_SUCCESS_VISUALIZZA.equals(target)) {
-        // si ricaricano i dati della configurazione per riaprire la pagina di
-        // dettaglio, senza riaggiornare il target
-        this.getConfig(target, request, codapp, paramIdcfg);
+    if (FORWARD_SUCCESS_VISUALIZZA.equals(target)) {
+      boolean creazioneMailSender = false;
+      try {
+
+        // qui va istanziato un mail sender ed inviata una mail
+        IMailSender mailSender = MailUtils.getInstance(this.mailManager, codapp, paramIdcfg);
+        creazioneMailSender = true;
+        mailSender.send(destinatario, "TEST invio mail",
+                "Se hai ricevuto questa mail di prova vuol dire che la configurazione di posta inserita funziona!");
+
+        // non è andato in errore significa che ha connesso il server senza problemi
+        messageKey = "info.mail.testCompletato";
+        logger.info(this.resBundleGenerale.getString(messageKey));
+        this.aggiungiMessaggio(request, messageKey);
+
+      } catch (DataAccessException e) {
+        target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+        messageKey = "errors.database.dataAccessException";
+        logger.error(this.resBundleGenerale.getString(messageKey), e);
+        this.aggiungiMessaggio(request, messageKey);
+      } catch (MailSenderException ms) {
+        String logMessageKey = ms.getChiaveResourceBundle();
+        String logMessageError = this.resBundleGenerale.getString(logMessageKey);
+        for (int i = 0; ms.getParametri() != null && i < ms.getParametri().length; i++)
+          logMessageError = logMessageError.replaceAll(UtilityStringhe.getPatternParametroMessageBundle(i), (String) ms.getParametri()[i]);
+        logger.error(logMessageError, ms);
+
+        if (!creazioneMailSender) {
+          this.aggiungiMessaggio(request, "errors.applicazione.inaspettataException");
+        } else {
+          logMessageKey = "errors.mail.test.connessioneFallita";
+          this.aggiungiMessaggio(request, logMessageKey);
+        }
+      } catch (Throwable t) {
+        messageKey = "errors.mail.test.connessioneFallita";
+        logger.error(this.resBundleGenerale.getString(messageKey), t);
+        this.aggiungiMessaggio(request, messageKey);
+      } finally {
+        if (FORWARD_SUCCESS_VISUALIZZA.equals(target)) {
+          // si ricaricano i dati della configurazione per riaprire la pagina di
+          // dettaglio, senza riaggiornare il target
+          this.getConfig(target, request, codapp, paramIdcfg);
+        }
       }
     }
 

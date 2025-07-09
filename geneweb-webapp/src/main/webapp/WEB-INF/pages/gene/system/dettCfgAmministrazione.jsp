@@ -18,7 +18,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="https://owasp.org/www-project-csrfguard/Owasp.CsrfGuard.tld" prefix="csrf" %>
+
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#" />
@@ -63,7 +67,7 @@
 			$(document).ready(function() {
 				$(document).on('keydown', 'return', function(e) {
 					if (e.shiftKey && e.altKey && e.which == 53) {
-						document.location.href="ApriPagina.do?<csrf:token/>&href=commons/lista-c0campi.jsp";
+						document.location.href="ApriPagina.do?href=commons/lista-c0campi.jsp";
 					}
 				});
 			});
@@ -99,11 +103,11 @@
 			<%-- Inizio riga per la configurazione server di posta --%>
 			<c:if test='${isConfigMailAbilitato}' >
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ListaConfigurazioniMail.do?<csrf:token/>&metodo=lista';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ListaConfigurazioniMail.do?metodo=lista';">
 					<img alt="Configurazione server di posta" src="${contextPath}/img/Communication-41.png"></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ListaConfigurazioniMail.do?<csrf:token/>&metodo=lista';">Server di posta</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ListaConfigurazioniMail.do?metodo=lista';">Server di posta</a>
 					</b>
 				</p>
 			</c:if>
@@ -112,11 +116,11 @@
 			<%-- Inizio riga per la configurazione del server LDAP --%>
 			<c:if test='${isConfigLdapAbilitato}' >
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneLdap.do?<csrf:token/>&metodo=visualizza';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneLdap.do?metodo=visualizza';">
 					<img alt="Configurazione server LDAP" src="${contextPath}/img/Hardware-5.png"></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneLdap.do?<csrf:token/>&metodo=visualizza';">Server LDAP</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneLdap.do?metodo=visualizza';">Server LDAP</a>
 					</b>
 				</p>
 			</c:if>
@@ -125,11 +129,11 @@
 			<%-- Inizio riga per la configurazione della richiesta di assistenza --%>
 			<c:if test='${isRichAssistenzaAbilitato}'>
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneRichiestaAssistenza.do?<csrf:token/>&metodo=visualizza';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneRichiestaAssistenza.do?metodo=visualizza';">
 					<img alt="Configurazione della richiesta di assistenza" src="${contextPath}/img/Communication-23.png" ></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneRichiestaAssistenza.do?<csrf:token/>&metodo=visualizza';">Richiesta assistenza</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ConfigurazioneRichiestaAssistenza.do?metodo=visualizza';">Richiesta assistenza</a>
 					</b>
 				</p>
 			</c:if>
@@ -142,22 +146,22 @@
 		<div id="monitoraggio" class="sez-accordion">
 			<c:if test='${isTracciaturaEventiAbilitata}' >
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_logeventi/w_logeventi-trova.jsp';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_logeventi/w_logeventi-trova.jsp';">
 					<img alt="Tracciatura eventi" src="${contextPath}/img/Programing-56.png"></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_logeventi/w_logeventi-trova.jsp';">Visualizzazione eventi</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_logeventi/w_logeventi-trova.jsp';">Visualizzazione eventi</a>
 					</b>
 				</p>
 			</c:if>
 
 			<c:if test='${isStoriaModificheAbilitato}' >
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/st_trg/st_trg-trova.jsp';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/st_trg/st_trg-trova.jsp';">
 					<img alt="Tracciatura delle modifiche" src="${contextPath}/img/Programing-56.png"></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/st_trg/st_trg-trova.jsp';">Visualizzazione modifiche</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/st_trg/st_trg-trova.jsp';">Visualizzazione modifiche</a>
 					</b>
 				</p>
 			</c:if>
@@ -171,22 +175,22 @@
 			<%-- Inizio riga per la configurazione eventi scadenzario --%>
 			<c:if test='${isScadenzarioAbilitato}'>
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/g_eventiscadenz/g_eventiscadenz-trova.jsp';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/g_eventiscadenz/g_eventiscadenz-trova.jsp';">
 					<img alt="Eventi scadenzario" src="${contextPath}/img/Time-3.png" ></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/g_eventiscadenz/g_eventiscadenz-trova.jsp';">Eventi scadenzario</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/g_eventiscadenz/g_eventiscadenz-trova.jsp';">Eventi scadenzario</a>
 					</b>
 				</p>
 			</c:if>
 			<%-- Fine riga per la configurazione eventi scadenzario --%>
 			
 			<p>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=commons/lista-c0campi.jsp';">
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=commons/lista-c0campi.jsp';">
 				<img alt="Gestione dati tabellati" src="${contextPath}/img/Files-62.png"></a>
 				&nbsp;&nbsp;&nbsp;
 				<b>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=commons/lista-c0campi.jsp';">Lista mnemonici</a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=commons/lista-c0campi.jsp';">Lista mnemonici</a>
 				</b>
 			</p>
 			
@@ -197,68 +201,68 @@
 		<h2 id="tit-parametri" style="height: 25px; padding-top: 10px; padding-left: 30px;">Configurazioni</h2>
 		<div id="parametri" class="sez-accordion">
 			<p>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/v_tab4_tab6/v_tab4_tab6-trova.jsp';">
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/v_tab4_tab6/v_tab4_tab6-trova.jsp';">
 				<img alt="Gestione dati tabellati" src="${contextPath}/img/Files-62.png"></a>
 				&nbsp;&nbsp;&nbsp;
 				<b>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/v_tab4_tab6/v_tab4_tab6-trova.jsp';">Gestione dati tabellati</a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/v_tab4_tab6/v_tab4_tab6-trova.jsp';">Gestione dati tabellati</a>
 				</b>
 			</p>
 			<p>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/w_config/w_config-trova.jsp';">
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/w_config/w_config-trova.jsp';">
 				<img alt="Gestione configurazioni" src="${contextPath}/img/Status-30.png"></a>
 				&nbsp;&nbsp;&nbsp;
 				<b>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/w_config/w_config-trova.jsp';">Gestione configurazioni</a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/w_config/w_config-trova.jsp';">Gestione configurazioni</a>
 				</b>
 			</p>
 			<p>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_quartz/w_quartz-lista.jsp';">
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_quartz/w_quartz-lista.jsp';">
 				<img alt="Gestione pianificazioni" src="${contextPath}/img/Time-3.png"></a>
 				&nbsp;&nbsp;&nbsp;
 				<b>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_quartz/w_quartz-lista.jsp';">Gestione pianificazioni</a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_quartz/w_quartz-lista.jsp';">Gestione pianificazioni</a>
 				</b>
 			</p>
 			<p>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_tags/w_tags-lista.jsp';">
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_tags/w_tags-lista.jsp';">
 				<img alt="Configurazione etichette per le integrazioni" src="${contextPath}/img/Vote-7.png"></a>
 				&nbsp;&nbsp;&nbsp;
 				<b>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_tags/w_tags-lista.jsp';">Configurazione etichette per le integrazioni</a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_tags/w_tags-lista.jsp';">Configurazione etichette per le integrazioni</a>
 				</b>
 			</p>
 			
 			<%-- Inizio riga per la configurazione codifica automatica --%>
 			<c:if test='${isConfigCodificaAutomatica}'>
 				<p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/g_confcod/g_confcod-lista.jsp';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/g_confcod/g_confcod-lista.jsp';">
 					<img alt="Codifica automatica" src="${contextPath}/img/ConfigCodificaAutomatica.png" ></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/g_confcod/g_confcod-lista.jsp';">Codifica automatica</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/g_confcod/g_confcod-lista.jsp';">Codifica automatica</a>
 					</b>
 				</p>
 			</c:if>
 			
 			  <c:if test='${isCredenzialiServiziPubblicazioneAbilitata}' >
 			  <p>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/g_confcod/g_confcod-lista.jsp';">
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/g_confcod/g_confcod-lista.jsp';">
 					<img alt="Credenziali servizi di pubblicazione" src="${contextPath}/img/credenziali_pubb.png" ></a>
 					&nbsp;&nbsp;&nbsp;
 					<b>
-					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=geneweb/w_application_keys/w_application_keys-trova.jsp';">Credenziali servizi di pubblicazione</a>
+					<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=geneweb/w_application_keys/w_application_keys-trova.jsp';">Credenziali servizi di pubblicazione</a>
 					</b>
 				</p>
   			 </c:if>
 			<%-- Fine riga per la configurazione codifica automatica --%>
 			
 			<p>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/system/art80/art80formagiuridica.jsp';">
-				<img alt="Art.80 - Associazione tabellati forma giuridica" src="${contextPath}/img/Files-62.png"></a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/system/art80/art80formagiuridica.jsp';">
+				<img alt="Verifica requisiti ditte (mediante servizio) - Associazione tabellati forma giuridica" src="${contextPath}/img/Files-62.png"></a>
 				&nbsp;&nbsp;&nbsp;
 				<b>
-				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?<csrf:token/>&href=gene/system/art80/art80formagiuridica.jsp';">Art.80 - Associazione tabellati forma giuridica</a>
+				<a class="link-generico" href="javascript:document.location.href='${contextPath}/ApriPagina.do?href=gene/system/art80/art80formagiuridica.jsp';">Verifica requisiti ditte (mediante servizio) - Associazione tabellati forma giuridica</a>
 				</b>
 			</p>
 			

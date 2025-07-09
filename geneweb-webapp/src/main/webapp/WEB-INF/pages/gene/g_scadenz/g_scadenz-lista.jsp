@@ -84,21 +84,33 @@
 	<c:if test='${not empty chiave}'>
 		<c:set var="campiKey" value='${fn:split(chiave,";")}' />
 		<c:set var="addKeyRiga" value="" />
+		<c:set var="parametri" value=""/>
 		<c:forEach begin="1" end="${fn:length(campiKey)}" step="1" varStatus="indicekey">
 			<c:set var="strTmp" value='${fn:substringAfter(campiKey[indicekey.index-1], ":")}' />
+			<c:if test="${not empty parametri}">
+				<c:set var="parametri" value="${parametri};"/>
+			</c:if>
+			<c:set var="parametri" value='${parametri}T:${strTmp}'/>
 			<c:choose>
 				<c:when test="${indicekey.last}">
 					<c:set var="addKeyRiga" value='${addKeyRiga}G_SCADENZ.KEY${indicekey.index}=T:${strTmp}' />
-					<c:set var="whereKey" value='${whereKey} G_SCADENZ.KEY${indicekey.index}=${gene:concat(gene:concat("\'", strTmp), "\'")}' />
+					<c:set var="whereKey" value='${whereKey} G_SCADENZ.KEY${indicekey.index}= ? ' />
 				</c:when>
 				<c:otherwise>
 					<c:set var="addKeyRiga" value='${addKeyRiga}G_SCADENZ.KEY${indicekey.index}=T:${strTmp};' />
-					<c:set var="whereKey" value='${whereKey} G_SCADENZ.KEY${indicekey.index}=${gene:concat(gene:concat("\'", strTmp), "\'")} AND ' />
+					<c:set var="whereKey" value='${whereKey} G_SCADENZ.KEY${indicekey.index}= ? AND ' />
 				</c:otherwise>
 			</c:choose>
 		</c:forEach>
 
-		<c:set var="whereKey" value="${whereKey} AND G_SCADENZ.ENT='${entitaPartenza}' AND G_SCADENZ.PREV=0" />
+		<c:set var="whereKey" value="${whereKey} AND G_SCADENZ.ENT= ? AND G_SCADENZ.PREV=0" />
+		<c:if test="${not empty parametri}">
+				<c:set var="parametri" value="${parametri};"/>
+		</c:if>
+		<c:set var="parametri" value='${parametri}T:${entitaPartenza}'/>
+		
+		${gene:callFunction4("it.eldasoft.gene.tags.functions.ImpostazioneFiltroFunction", pageContext, "G_SCADENZ", whereKey, parametri)}
+		
 	</c:if>
 
 		<table class="lista">
@@ -119,8 +131,7 @@
 			<tr>
 				<td>
 
-		<gene:formLista entita="G_SCADENZ" pagesize="50" tableclass="datilista" sortColumn="3" gestisciProtezioni="true"
-				where="${whereKey}" >
+		<gene:formLista entita="G_SCADENZ" pagesize="50" tableclass="datilista" sortColumn="3" gestisciProtezioni="true">
 		<c:if test='${not empty chiave}'>
 			<c:set var="key" value="${chiave}" />
 			<c:set var="keyParent" value="${chiave}" />
@@ -301,12 +312,12 @@
 	
 	function calendarioSingolo(entita, chiave) {
 		bloccaRichiesteServer();
-		document.location.href="${pageContext.request.contextPath}/CalScadenzario.do?"+csrfToken+"&entita=" + entita + "&chiave=" + chiave;
+		document.location.href="${pageContext.request.contextPath}/CalScadenzario.do?entita=" + entita + "&chiave=" + chiave;
 	}
 	
 	function cronoprogramma(entita, chiave) {
 		bloccaRichiesteServer();
-		document.location.href="${pageContext.request.contextPath}/Cronoprogramma.do?"+csrfToken+"&entita=" + entita + "&chiave=" + chiave;
+		document.location.href="${pageContext.request.contextPath}/Cronoprogramma.do?entita=" + entita + "&chiave=" + chiave;
 	}
 
 	function timeline(entita, chiave) {

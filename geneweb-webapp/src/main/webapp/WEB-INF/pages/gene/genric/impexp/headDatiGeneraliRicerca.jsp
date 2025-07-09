@@ -42,10 +42,10 @@
 	<c:if test='${(contenitore.esisteReport and !contenitore.famigliaUguale)}'>
 	<% 
 	 /* Codice Javascript da eseguire nel seguente caso:
-	  * - l'utente ha la gestione personale report, nella basi dati esiste già un
+	  * - l'utente ha la gestione personale report, nella basi dati esiste gia' un
 	  *   report con lo stesso titolo (e stesso CODAPP), il report in importazione
 	  *   ha la famiglia diversa rispetto al report presente nella base dati;
-		* In questo caso l'utente può solamente effettuare l'importazione del report
+		* In questo caso l'utente puo' solamente effettuare l'importazione del report
 		* cambiandogli il titolo
 	  */
 	%>
@@ -75,9 +75,9 @@
 	<c:if test='${(contenitore.esisteReport and contenitore.famigliaUguale)}' >
 	<%
 	 /* Codice Javascript da eseguire nel seguente caso:
-	  * 1. nella basi dati esiste già un report con lo stesso titolo
+	  * 1. nella basi dati esiste gia' un report con lo stesso titolo
 	  *    (e stessi CODAPP e PROFILO_OWNER)
-		* L'utente può decidere se sovrascrivere il report o se	inserirne uno nuovo
+		* L'utente puo' decidere se sovrascrivere il report o se inserirne uno nuovo
 		* con un titolo diverso
 	  */
 	%>
@@ -125,7 +125,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExport.do?'+csrfToken;
+		  document.location.href='AnnullaImportExport.do';
 		}
 	}
 	
@@ -139,7 +139,7 @@
 	}
 	
 	function indietro(){
-		document.location.href = 'WizardImportRicerca.do?'+csrfToken+'&pageTo=UPL';
+		document.location.href = 'WizardImportRicerca.do?pageTo=UPL';
 	}
 	
 -->

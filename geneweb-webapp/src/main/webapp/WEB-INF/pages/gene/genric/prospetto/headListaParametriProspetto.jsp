@@ -38,33 +38,33 @@
 	}
 
 	function creaNuovaRicerca(){
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 
 <!-- Azioni invocate dal tab menu -->
 
 	function datiGenProspetto(idProspetto) {
-		document.location.href='DettaglioProspetto.do?'+csrfToken+'&metodo=visualizza&idRicerca='+idProspetto;
+		document.location.href='DettaglioProspetto.do?metodo=visualizza&idRicerca='+idProspetto;
 	}
 
 	function listaGruppiProspetto(idProspetto) {
-		document.location.href='ListaGruppiProspetto.do?'+csrfToken+'&metodo=visualizzaLista&idRicerca='+idProspetto;
+		document.location.href='ListaGruppiProspetto.do?metodo=visualizzaLista&idRicerca='+idProspetto;
 	}
 
 	function listaParametriProspetto(idProspetto) {
-		document.location.href='ParametriProspetti.do?'+csrfToken+'&metodo=listaParametriModello&idRicerca='+idProspetto;
+		document.location.href='ParametriProspetti.do?metodo=listaParametriModello&idRicerca='+idProspetto;
 	}
 
 	
 	function creaParametro(id){
 		var metodo = "creaParametroModello";
-		var url = 'ParametriProspetti.do?'+csrfToken+'&metodo=' + metodo + '&idModello=' + id;
+		var url = 'ParametriProspetti.do?metodo=' + metodo + '&idModello=' + id;
 		document.location.href = url;
 	}
 	
 	function modifica(id) {
 		var metodo = "modificaParametroModello";
-		var url = 'ParametriProspetti.do?'+csrfToken+'&metodo=' + metodo + '&idModello=${idModello}' + '&progressivo=' + id;
+		var url = 'ParametriProspetti.do?metodo=' + metodo + '&idModello=${idModello}' + '&progressivo=' + id;
 		document.location.href = url;
 	}
 
@@ -109,13 +109,13 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ParametriProspetti.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&idModello=${idModello}&progressivo=' + id + '&progressivoNew=' + posizioneSelezionata;
+				document.location.href = 'ParametriProspetti.do?metodo=spostaInPosizioneMarcata&idModello=${idModello}&progressivo=' + id + '&progressivoNew=' + posizioneSelezionata;
 			}
 		}
 	}
 	
 	function inviaRichiesta(id, progr, metodo){
-		var url = 'ParametriProspetti.do?'+csrfToken+'&metodo=' + metodo + '&idModello=' + id;
+		var url = 'ParametriProspetti.do?metodo=' + metodo + '&idModello=' + id;
 		if (progr != null)
 			url += '&progressivo=' + progr;
 		bloccaRichiesteServer();
@@ -155,7 +155,7 @@
 	
 	function eseguiRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='CheckParametriProspetto.do?'+csrfToken+'&idRicerca=${idOggetto}&fromPage=dettaglioRicerca';
+		document.location.href='CheckParametriProspetto.do?idRicerca=${idOggetto}&fromPage=dettaglioRicerca';
 	}
 
 -->

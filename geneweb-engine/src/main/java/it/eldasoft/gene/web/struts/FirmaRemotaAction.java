@@ -13,6 +13,8 @@ package it.eldasoft.gene.web.struts;
 import it.eldasoft.gene.bl.FileAllegatoManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.bl.integrazioni.FirmaRemotaManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
 import it.eldasoft.gene.db.domain.BlobFile;
@@ -66,7 +68,16 @@ public class FirmaRemotaAction extends ActionBaseNoOpzioni {
     String target = FORWARD_SUCCESS;
     String messageKey = null;
 
+    String codiceProfilo = null;
+    String ip = null;
+    Integer idUtente = null;
     try {
+      codiceProfilo = (String) request.getSession().getAttribute(CostantiGenerali.PROFILO_ATTIVO);
+      if(request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE) != null){
+        int idUtenteInt = ((ProfiloUtente) request.getSession().getAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE)).getId();
+        idUtente = new Integer(idUtenteInt);
+      }
+      ip = request.getRemoteAddr();
 
       String idprg = request.getParameter("idprg");
       Long iddocdig = null;
@@ -91,7 +102,7 @@ public class FirmaRemotaAction extends ActionBaseNoOpzioni {
       } else if ("estrae".equals(operazione)) {
         bfOriginal = firmaRemotaManager.extract(idprg, iddocdig);
       } else if ("firma".equals(operazione)) {
-        firmaRemotaManager.sign(idprg, iddocdig, modalita, formato, alias, pin, otp);
+        firmaRemotaManager.sign(idprg, iddocdig, modalita, formato, alias, pin, otp, codiceProfilo, idUtente, ip);
       } else if ("richiesta-otp".equals(operazione)) {
         requestOtpStatus = firmaRemotaManager.remoteRequestOtp(alias);
       }

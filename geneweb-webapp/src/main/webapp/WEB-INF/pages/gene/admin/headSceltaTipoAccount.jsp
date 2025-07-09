@@ -36,13 +36,13 @@
 		var account = document.getElementById("account");
 
 		if(accountLdap.checked){
-			href = 'FiltroAccountLdap.do?'+csrfToken;
+			href = 'FiltroAccountLdap.do';
 			document.location.href = href;
 			bloccaRichiesteServer();
 			
 		} else {
 			if (account.checked) {
-	  			href = 'DettaglioAccount.do?'+csrfToken+'&metodo=nuovo';
+	  			href = 'DettaglioAccount.do?metodo=nuovo';
 				bloccaRichiesteServer();
 				document.location.href = href;
 			} else {
@@ -55,7 +55,7 @@
 	function annulla(){
 		if (confirm("Annullare l'inserimento di un nuovo utente?")){
 			bloccaRichiesteServer();
-			document.location.href = 'SalvaAccount.do?'+csrfToken+'&metodo=annulla';
+			document.location.href = 'SalvaAccount.do?metodo=annulla';
 		}
 	}
 

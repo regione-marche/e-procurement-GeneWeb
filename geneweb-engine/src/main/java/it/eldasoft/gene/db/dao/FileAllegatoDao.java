@@ -3,6 +3,7 @@ package it.eldasoft.gene.db.dao;
 import java.util.List;
 import java.util.Map;
 
+import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
 import org.springframework.dao.DataAccessException;
 
 import it.eldasoft.gene.db.domain.BlobFile;
@@ -20,7 +21,7 @@ public interface FileAllegatoDao {
    * 
    * @throws DataAccessException
    */
-  BlobFile getFileAllegato(String idProgramma, Long idDocumento) throws DataAccessException;
+  BlobFile getFileAllegato(String idProgramma, Long idDocumento) throws DataAccessException, GestoreException;
   
   /**
    * Estrae i file allegati secondo le chiavi in input

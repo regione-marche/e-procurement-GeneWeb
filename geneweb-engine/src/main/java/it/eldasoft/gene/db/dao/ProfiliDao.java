@@ -34,6 +34,7 @@ public interface ProfiliDao {
    */
   public List<?> getProfiliByCodApp(String codApp);
   
+  
   /** 
    * Metodo per estrarre un profilo a partire del codice profilo
    * 
@@ -99,6 +100,26 @@ public interface ProfiliDao {
    *         filtrando per codice applicazione
    */
   public List<?> getProfiliUtenteByCodApp(int idAccount, String codApp);
+  
+ 
+  /**
+   * Metodo per estrarre la lista dei profili a cui un utente e' associato,
+   * filtrando per codice applicazione e ordinando usando l'ORDER BY passata
+   * nel parametro ordinamento
+   * 
+   * @param idAccount id account 
+   * @param codApp codice applicazione. Se il codice applicazione e' costituito
+   *        da piu' codici applicazione separati da ';', allora tale stringa 
+   *        viene splittata per estrarre tutti i profili a cui l'utente e'
+   *        associato per ciascun codice applicativo
+   * @param ordinamento stringa contenente l'ORDER BY di ordinamento
+   * @return Ritorna la lista dei profili a cui un utente e' associato,
+   *         filtrando per codice applicazione e usando l'ORDER BY passata
+   *         nel parametro ordinamento
+   */
+  public List<?> getProfiliUtenteByCodAppBySezione(int idAccount, String codApp, String ordinamento); 
+  
+  
   
   /**
    * Delete da W_ACCPRO di tutti i profili che erano associati ad un utente ed

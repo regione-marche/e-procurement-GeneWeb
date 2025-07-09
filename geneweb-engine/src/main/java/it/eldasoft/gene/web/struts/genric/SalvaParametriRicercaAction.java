@@ -17,10 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import it.eldasoft.utils.utility.UtilityStringhe;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.chain.commands.UnauthorizedActionException;
 import org.springframework.dao.DataAccessException;
 
 /**
@@ -80,6 +82,21 @@ public class SalvaParametriRicercaAction extends ActionBaseNoOpzioni {
     for (int i = 0; i < contenitore.getElencoParametri().size(); i++) {
       parametro = new CacheParametroEsecuzione();
       parametro.setCodice(contenitore.estraiParametro(i).getCodiceParametro());
+      try { //Geneweb-412: si controlla che i parametri di sessione non siano stati modificati (syscon e uffint)
+        if ("UC".equals(contenitore.estraiParametro(i).getTipoParametro()) && !String.valueOf(profiloUtente.getId()).equals(datiDalForm.getParametriRicerca()[i])) {
+          throw new UnauthorizedActionException("Richiesta bloccata: rilevato tentativo di sostituzione del valore dell'utente corrente.");
+        } else if ("UI".equals(contenitore.estraiParametro(i).getTipoParametro()) && !(sessione.getAttribute(CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO)).equals(datiDalForm.getParametriRicerca()[i])) {
+          throw new UnauthorizedActionException("Richiesta bloccata: rilevato tentativo di sostituzione del valore dell'ufficio intestatario corrente.");
+        }
+      }catch (UnauthorizedActionException e){
+        target = CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE;
+        String messageKey = "errors.generico";
+        logger.error(UtilityStringhe.replaceParametriMessageBundle(
+                this.resBundleGenerale.getString(messageKey),
+                new String[] {e.getMessage()}));
+        this.aggiungiMessaggio(request, messageKey, e.getMessage());
+        return mapping.findForward(target);
+      }
       parametro.setValore(datiDalForm.getParametriRicerca()[i]);
       elencoParametri.add(parametro);
     }

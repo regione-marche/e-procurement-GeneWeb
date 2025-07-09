@@ -60,7 +60,7 @@
    		<tr id="rowCodfisc" >
 			<td class="etichetta-dato">Codice fiscale</td>
    			<td class="valore-dato">
-	 			<html:text property="codfisc" name="mioAccountForm" maxlength="18" size="18"/>
+	 			<html:text property="codfisc" name="mioAccountForm" maxlength="30" size="30"/>
 			</td>
    		</tr>
   		<jsp:include page="/WEB-INF/pages/gene/admin/sottoSezioniMioAccount.jsp" />

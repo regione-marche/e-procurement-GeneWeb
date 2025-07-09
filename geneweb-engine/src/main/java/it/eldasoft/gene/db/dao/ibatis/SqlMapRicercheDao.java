@@ -33,6 +33,8 @@ import it.eldasoft.utils.sql.comp.SqlManager;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -61,9 +63,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
 
     return this.getSqlMapClientTemplate().queryForList("getRicercheDiGruppo",
         hash);
@@ -84,9 +86,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
    
     return this.getSqlMapClientTemplate().queryForList(
         "getAllRicercheByCodApp", hash);
@@ -146,7 +148,7 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     hash.put("codApp", trovaRicerche.getCodiceApplicazione());
     hash.put("idGruppo", trovaRicerche.getIdGruppo());
     hash.put("idTipoRicerca", trovaRicerche.getTipoRicerca());
-    hash.put("disponibile", trovaRicerche.getDisponibile());
+    hash.put("disponibile", NumberUtils.createInteger(StringUtils.stripToNull(trovaRicerche.getDisponibile())));
     //this.setOperatoreMatch(hash, trovaRicerche.getNomeRicerca(), "operatoreNome");
     hash.put("operatoreNome", trovaRicerche.getOperatoreNomeRicerca());
     hash.put("nomeRicerca", trovaRicerche.getNomeRicerca());
@@ -160,8 +162,8 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     hash.put("famiglia", trovaRicerche.getFamiglia());
     if(!mostraReportBase)
       hash.put("mostraReportBase", new Integer(CostantiGenRicerche.REPORT_BASE));
-    hash.put("owner", trovaRicerche.getOwner());
-    hash.put("personale", trovaRicerche.getPersonale());
+    hash.put("owner", NumberUtils.createInteger(StringUtils.stripToNull(trovaRicerche.getOwner())));
+    hash.put("personale", NumberUtils.createInteger(StringUtils.stripToNull(trovaRicerche.getPersonale())));
     if(trovaRicerche.isNoCaseSensitive()){
       SqlComposer composer = SqlManager.getComposer(ConfigManager.getValore(CostantiGenerali.PROP_DATABASE));
       hash.put("operatoreUpper", composer.getFunzioneUpperCase());
@@ -180,9 +182,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
-            ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
+          ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
+        hash.put("adattaQueryPerPG", "1");
 
     return this.getSqlMapClientTemplate().queryForList("getRicerche", hash);
   }
@@ -193,8 +195,8 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
    */
   public List<?> getRicerchePredefinite(int idAccount, String codiceApplicazione,
       String codiceProfilo, boolean mostraReportBase, boolean mostraReportSql) {
-    String disponibile = "1"; // solo per leggibilita' del codice
-    String personale = "1"; // solo per leggibilita' del codice
+    Integer disponibile = 1; // solo per leggibilita' del codice
+    Integer personale = 1; // solo per leggibilita' del codice
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("idAccount", new Integer(idAccount));
     hash.put("codApp", codiceApplicazione);
@@ -214,9 +216,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if (it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
-            ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+    if (it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
+        ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
+      hash.put("adattaQueryPerPG", "1");
 
     return this.getSqlMapClientTemplate().queryForList(
         "getRicerchePredefinite", hash);
@@ -233,7 +235,7 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     hash.put("codiceProfilo", trovaRicerche.getProfiloOwner());
     hash.put("idGruppo", trovaRicerche.getIdGruppo());
     hash.put("idTipoRicerca", trovaRicerche.getTipoRicerca());
-    hash.put("disponibile", trovaRicerche.getDisponibile());
+    hash.put("disponibile", NumberUtils.createInteger(StringUtils.stripToNull(trovaRicerche.getDisponibile())));
     //this.setOperatoreMatch(hash, trovaRicerche.getNomeRicerca(), "operatoreNome");
     hash.put("operatoreNome", trovaRicerche.getOperatoreNomeRicerca());
     hash.put("nomeRicerca", trovaRicerche.getNomeRicerca());
@@ -247,8 +249,8 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     hash.put("famiglia", trovaRicerche.getFamiglia());
     if(!mostraReportBase)
       hash.put("mostraReportBase", new Integer(CostantiGenRicerche.REPORT_BASE));
-    hash.put("owner", trovaRicerche.getOwner());
-    hash.put("personale", trovaRicerche.getPersonale());
+    hash.put("owner", NumberUtils.createInteger(StringUtils.stripToNull(trovaRicerche.getOwner())));
+    hash.put("personale", NumberUtils.createInteger(StringUtils.stripToNull(trovaRicerche.getPersonale())));
     if(trovaRicerche.isNoCaseSensitive()){
       SqlComposer composer = SqlManager.getComposer(ConfigManager.getValore(CostantiGenerali.PROP_DATABASE));
       hash.put("operatoreUpper", composer.getFunzioneUpperCase());
@@ -268,9 +270,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
 
     return this.getSqlMapClientTemplate().queryForList("getRicercheSenzaParametri", hash);
   }
@@ -281,8 +283,8 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
    */
   public List<?> getRicerchePredefiniteSenzaParametri(int idAccount,
       String codiceApplicazione, String codiceProfilo, boolean mostraReportBase) {
-    String disponibile = "1"; // solo per leggibilita' del codice
-    String personale = "1"; // solo per leggibilita' del codice
+    Integer disponibile = 1; // solo per leggibilita' del codice
+    Integer personale = 1; // solo per leggibilita' del codice
     HashMap<String, Object> hash = new HashMap<String, Object>();
     hash.put("idAccount", new Integer(idAccount));
     hash.put("codApp", codiceApplicazione);
@@ -299,9 +301,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
 
     return this.getSqlMapClientTemplate().queryForList(
         "getRicerchePredefiniteSenzaParametri", hash);
@@ -319,9 +321,9 @@ public class SqlMapRicercheDao extends SqlMapClientDaoSupportBase implements
     // che tale valore sia tipizzato anche se null. In questo caso, si esegue
     // il cast al tipo di dato della colonna che si estrae nelle altre query in
     // union.
-    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_DB2.equals(
+    if(it.eldasoft.utils.sql.comp.SqlManager.DATABASE_POSTGRES.equals(
             ConfigManager.getValore(CostantiGenerali.PROP_DATABASE)))
-      hash.put("adattaQueryPerDB2", "1");
+      hash.put("adattaQueryPerPG", "1");
 
     return (DatiGenRicerca) this.getSqlMapClientTemplate().queryForObject(
         "getTestataRicercaByIdRicerca", hash);

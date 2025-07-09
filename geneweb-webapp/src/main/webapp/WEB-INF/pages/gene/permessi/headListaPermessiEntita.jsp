@@ -24,7 +24,7 @@
 <!--
 
   function modificaCondivisioneLavoro(){
-		document.location.href='ListaPermessiEntita.do?'+csrfToken+'&metodo=modifica&campoChiave=${campoChiave}&valoreChiave=${valoreChiave}&genereGara=${genereGara}';
+		document.location.href='ListaPermessiEntita.do?metodo=modifica&campoChiave=${campoChiave}&valoreChiave=${valoreChiave}&genereGara=${genereGara}';
   }
 
 <c:if test='${empty setPermessiPredefiniti}'>
@@ -38,7 +38,7 @@
 	</c:otherwise>
 </c:choose>
 			bloccaRichiesteServer();
-			document.location.href='ListaPermessiEntita.do?'+csrfToken+'&metodo=setPermessiPredefiniti&campoChiave=${campoChiave}&valoreChiave=${valoreChiave}&genereGara=${genereGara}';
+			document.location.href='ListaPermessiEntita.do?metodo=setPermessiPredefiniti&campoChiave=${campoChiave}&valoreChiave=${valoreChiave}&genereGara=${genereGara}';
 		}
 	}
 </c:if>

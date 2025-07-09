@@ -58,12 +58,12 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.genMod.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExportModelli.do?'+csrfToken;
+		  document.location.href='AnnullaImportExportModelli.do';
 		}
 	}
 	
 	function indietro(){
-		document.location.href='InitFunzAvanzateModelli.do?'+csrfToken;
+		document.location.href='InitFunzAvanzateModelli.do';
 	}
 	
 -->

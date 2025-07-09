@@ -28,50 +28,50 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaETrovaRicerche();
 		//else
 		//</c:if>
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=DG';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=DG';
 	}
 	
 	function salvaRicercaEListaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaELista&tab=DG';
+		document.location.href='DettaglioRicerca.do?metodo=salvaELista&tab=DG';
 	}
 	
 	function creaNuovaRicerca(){
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 
 	// Azioni invocate dal tab menu
 	function datiGenProspetto(idProspetto) {
-		document.location.href='DettaglioProspetto.do?'+csrfToken+'&metodo=visualizza&idRicerca='+idProspetto;
+		document.location.href='DettaglioProspetto.do?metodo=visualizza&idRicerca='+idProspetto;
 	}
 
 	function listaGruppiProspetto(idProspetto) {
-		document.location.href='ListaGruppiProspetto.do?'+csrfToken+'&metodo=visualizzaLista&idRicerca='+idProspetto;
+		document.location.href='ListaGruppiProspetto.do?metodo=visualizzaLista&idRicerca='+idProspetto;
 	}
 
 	function listaParametriProspetto(idProspetto) {
-		document.location.href='ParametriProspetti.do?'+csrfToken+'&metodo=listaParametriModello&idRicerca='+idProspetto;
+		document.location.href='ParametriProspetti.do?metodo=listaParametriModello&idRicerca='+idProspetto;
 	}
 
 	// Azioni di pagina
 
 	function modifica(){
-		document.location.href='EditDatiGenProspetto.do?'+csrfToken+'&idRicerca=${idOggetto}';
+		document.location.href='EditDatiGenProspetto.do?idRicerca=${idOggetto}';
 	}
 	
 	function eseguiRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='CheckParametriProspetto.do?'+csrfToken+'&idRicerca=${idOggetto}&fromPage=dettaglioRicerca';
+		document.location.href='CheckParametriProspetto.do?idRicerca=${idOggetto}&fromPage=dettaglioRicerca';
 	}
 
   function mostraProspetto(id, nomeFile){
   	if(confirm('<fmt:message key="info.download.confirm"/>'))
-  		document.location.href='DettaglioProspetto.do?'+csrfToken+'&metodo=downloadModello&nomeFile='+nomeFile+'&idRicerca='+id;
+  		document.location.href='DettaglioProspetto.do?metodo=downloadModello&nomeFile='+nomeFile+'&idRicerca='+id;
   }
 -->
 </script>

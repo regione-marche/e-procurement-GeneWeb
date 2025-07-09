@@ -38,21 +38,18 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.CommunicationException;
 
-import it.eldasoft.gene.bl.LoginManager;
-import it.eldasoft.gene.bl.admin.AccountManager;
-import it.eldasoft.gene.bl.system.LdapManager;
 import it.eldasoft.gene.commons.web.LimitatoreConnessioniUtenti;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.domain.CostantiIntegrazioneKronos;
 import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
 import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.AccountSSO;
 import it.eldasoft.gene.db.domain.LogEvento;
 import it.eldasoft.gene.db.domain.admin.Account;
 import it.eldasoft.gene.db.domain.admin.AccountLdap;
 import it.eldasoft.gene.utils.LogEventiUtils;
 import it.eldasoft.gene.web.struts.admin.CostantiDettaglioAccount;
-import it.eldasoft.gene.web.struts.login.cohesion.AccountCohesion;
 import it.eldasoft.utils.profiles.CheckOpzioniUtente;
 import it.eldasoft.utils.profiles.OpzioniUtente;
 import it.eldasoft.utils.properties.ConfigManager;
@@ -88,43 +85,6 @@ public class LoginAction extends IsUserLoggedAction {
    */
   private static final String PROP_PARAMETRI_ACCESSO_DIRETTO = "it.eldasoft.accessoDiretto.parametri";
 
-  /** Reference alla classe di business logic per l'estrazione dell'account */
-  protected LoginManager      loginManager;
-
-  private AccountManager      accountManager;
-
-  private LdapManager         ldapManager;
-
-  /**
-   * @param ldapManager
-   *        The ldapManager to set.
-   */
-  public void setLdapManager(LdapManager ldapManager) {
-    this.ldapManager = ldapManager;
-  }
-
-  /**
-   * @param loginManager
-   *        loginManager da settare internamente alla classe.
-   */
-  public void setLoginManager(LoginManager loginManager) {
-    this.loginManager = loginManager;
-  }
-
-  /**
-   * @return Ritorna LoginManager.
-   */
-  public LoginManager getLoginManager() {
-    return this.loginManager;
-  }
-  /**
-   * @param accountManager
-   *        accountManager da settare internamente alla classe.
-   */
-  public void setAccountManager(AccountManager accountManager) {
-    this.accountManager = accountManager;
-  }
-
   /**
    * @see org.apache.struts.action.Action#execute(org.apache.struts.action.ActionMapping,
    *      org.apache.struts.action.ActionForm,
@@ -156,14 +116,11 @@ public class LoginAction extends IsUserLoggedAction {
 
     target = this.testSkipProfili(request, target);
 
-    boolean autenticazioneSSO = false;
-    String propProtSSO = StringUtils.stripToNull(ConfigManager.getValore(CostantiGenerali.PROP_SSO_PROTOCOLLO));
-    if("2".equals(propProtSSO)){
-      // Cohesion: autenticazione SSO con Cohesion se ho memorizzato in sessione l'account cohesion
-      autenticazioneSSO = request.getSession().getAttribute(AccountCohesion.ID_ATTRIBUTO_SESSIONE_ACCOUNT_COHESION) != null;
-    }
+    AccountSSO accountSSO = (AccountSSO) request.getSession().getAttribute(
+        CostantiGenerali.ID_ATTRIBUTO_SESSIONE_ACCOUNT_SSO);
+    
     target = this.checkLogin(((LoginForm) form).getUsername(),
-        ((LoginForm) form).getPassword(), request, autenticazioneSSO, target);
+        ((LoginForm) form).getPassword(), request, accountSSO, target);
 
     if (logger.isDebugEnabled()) {
       logger.debug("runAction: fine metodo");
@@ -220,7 +177,7 @@ public class LoginAction extends IsUserLoggedAction {
    */
   @SuppressWarnings("unchecked")
   protected String checkLogin(String username, String password,
-      HttpServletRequest request, boolean autenticazioneSSO, String target) {
+      HttpServletRequest request, AccountSSO accountSSO, String target) {
     String messageKey = null;
     String targetChiamato = null;
     // utile per deallocare il lock su una connessione all'applicativo nel
@@ -230,6 +187,7 @@ public class LoginAction extends IsUserLoggedAction {
 
     int livEvento = 1;
     String errMsgEvento = "";
+    String dettaglioSSO = "";
 
 
     if (username == null && password == null) {
@@ -239,7 +197,26 @@ public class LoginAction extends IsUserLoggedAction {
       this.aggiungiMessaggio(request, messageKey);
     } else {
 
-      HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
+		String uffintOriginale = "";
+		if (session.getAttribute("uffint") != null) {
+			uffintOriginale = session.getAttribute("uffint").toString();
+		}
+		String nomeUffintOriginale = "";
+		if (session.getAttribute("nomeUffint") != null) {
+			nomeUffintOriginale = session.getAttribute("nomeUffint").toString();
+		}
+		String sentinellaSelezionaUffintOriginale = "";
+		if (session.getAttribute("sentinellaSelezionaUffint") != null) {
+			sentinellaSelezionaUffintOriginale = session.getAttribute("sentinellaSelezionaUffint").toString();
+		}
+		if (session!=null && !session.isNew()) {
+			session.invalidate();
+		}
+		session = request.getSession(true);
+		session.setAttribute("uffint", uffintOriginale);
+		session.setAttribute("nomeUffint", nomeUffintOriginale);
+		session.setAttribute("sentinellaSelezionaUffint", sentinellaSelezionaUffintOriginale);
       if (!LimitatoreConnessioniUtenti.getInstance().allocaConnessione(
           session.getId())) {
         // se l'applicativo ha raggiunto il numero massimo di utenti connessi
@@ -273,7 +250,7 @@ public class LoginAction extends IsUserLoggedAction {
             // F.D. 02/09/08 gestione login in lower per dati non case sensitive
             // estrazione dell'account
             account = this.getAccount(username, password);
-            if (autenticazioneSSO) {
+            if (accountSSO != null) {
               // si esegue una forzatura del valore quando l'utenza viene autenticata esternamente e quindi agganciata.
               // in questo modo si riesce ad effettuare una dopia autenticazione sia dall'esterno che ad esempio LDAP
               account.setFlagLdap(3);
@@ -344,7 +321,7 @@ public class LoginAction extends IsUserLoggedAction {
               // il profilo dell'utente in sessione
               utente = this.loginManager.getProfiloUtente(
                   account, ConfigManager.getValore(CostantiGenerali.PROP_CODICE_APPLICAZIONE));
-              utente.setAutenticazioneSSO(autenticazioneSSO);
+              utente.setAutenticazioneSSO(accountSSO != null);
 
               // SS 24/02/2010
               // si memorizza la password inserita in modo da consentire eventuali
@@ -389,6 +366,30 @@ public class LoginAction extends IsUserLoggedAction {
                   utente.getParametriUtente().put(nomiParametri[i],
                       parametroEsterno);
                 }
+              }
+              //andiamo a recuperare le info dalla USR_LOA per determinare il LoA con cui l'utente può operare
+              if(accountSSO!=null) {
+                dettaglioSSO = ", Provider SSO = "+ accountSSO.getLoginProvider();
+                if (accountSSO.getStandardProvider() != null && !accountSSO.getLoginProvider().equals(accountSSO.getStandardProvider())) {
+                  dettaglioSSO += " (" + accountSSO.getStandardProvider() + ")";
+                }
+                dettaglioSSO += ", LoA = "+accountSSO.getCurrentLoa();
+                String codein="STD"; 
+                String uffint=(String) request.getSession().getAttribute( CostantiGenerali.UFFICIO_INTESTATARIO_ATTIVO);
+                if("1".equals(ConfigManager.getValore(CostantiGenerali.PROP_LOGIN_MULTI_ENTE)) && StringUtils.isNotBlank(uffint))
+                  codein=uffint;
+                  Integer maxLoa = this.loginManager.getMaxLoaBySysconAndCodein(utente.getId(), codein);
+                if(accountSSO.isProviderStandard()) {//provider standard => inserisco/aggiorno la USR_LOA e non ricalcolo il LOA
+                    if(maxLoa==null)
+                        this.loginManager.insertUsrLoa(utente.getId(), codein, accountSSO.getStandardProvider(), accountSSO.getCurrentLoa(), new Date());
+                    else if(accountSSO.getCurrentLoa()>=maxLoa)
+                        this.loginManager.updateUsrLoa(utente.getId(), codein, accountSSO.getStandardProvider(), accountSSO.getCurrentLoa(), new Date());
+                    
+                }else { //provider non standard => se non ho record in USR_LOA, il livello calcolato sarà 2. Altrimenti procedo col calcolo
+                  if(maxLoa==null) maxLoa=2;
+                  accountSSO.setCurrentLoa(Math.min(maxLoa, accountSSO.getCurrentLoa())); //si prende il livello minimo tra i due
+                }
+                session.setAttribute(CostantiGenerali.ID_ATTRIBUTO_SESSIONE_ACCOUNT_SSO,accountSSO); //lo impostiamo comunque anche se SSO custom, serve almeno per il logout
               }
 
               session.setAttribute(CostantiGenerali.PROFILO_UTENTE_SESSIONE, utente);
@@ -580,7 +581,7 @@ public class LoginAction extends IsUserLoggedAction {
             LogEvento logEvento = LogEventiUtils.createLogEvento(request);
             logEvento.setLivEvento(livEvento);
             logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_LOGIN);
-            logEvento.setDescr("Login id sessione = " + request.getSession().getId());
+            logEvento.setDescr("Login " + dettaglioSSO);
             logEvento.setErrmsg(errMsgEvento);
             LogEventiUtils.insertLogEventi(logEvento);
             

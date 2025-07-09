@@ -570,7 +570,7 @@ public final class ComponiWhereUtils {
           throw new JspException("Errore durante la lettura del campo UFFINT.ISCUC", e);
         }
         
-        if (StringUtils.isNotEmpty(iscuc) && !iscuc.equals("1")) {
+        if (!"1".equals(iscuc)) {
           filtroUffint = "AND EXISTS (SELECT codlav FROM peri WHERE codlav = appa.codlav AND cenint = '" + uffint + "')";
         }
       }

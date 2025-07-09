@@ -40,48 +40,48 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaETrovaRicerche();
 		//else
 		//</c:if>
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=LAY';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=LAY';
 	}
 	
 	function listaRicerche(){
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function salvaRicercaEListaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaELista&tab=LAY';
+		document.location.href='DettaglioRicerca.do?metodo=salvaELista&tab=LAY';
 	}
 	
 	function creaNuovaRicerca(){
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 		//document.location.href='DettaglioRicerca.do?metodo=crea';
 	}
 	
 	function salvaRicercaECreaRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaECrea&tab=LAY';
+		document.location.href='DettaglioRicerca.do?metodo=salvaECrea&tab=LAY';
 	}
 	
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicercaBase.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicercaBase.do?tab=' + codiceTab;
 	}
 
 	// Azioni invocate dalle opzioni sul singolo record
 	
 	function modifica(id){
 		var metodo = "modifica";
-		document.location.href = 'ListaTitoliCampiRicercaBase.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaTitoliCampiRicercaBase.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function modificaTutti(){
-		document.location.href = 'EditTitoliCampiRicerca.do?'+csrfToken;
+		document.location.href = 'EditTitoliCampiRicerca.do';
 	}
 
 	function elimina(id) {
@@ -100,7 +100,7 @@
 
 	function inviaRichiesta(id, metodo){
 		bloccaRichiesteServer();
-		document.location.href = 'ListaTitoliCampiRicercaBase.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaTitoliCampiRicercaBase.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function spostaInPosizioneMarcata(id){
@@ -125,7 +125,7 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ListaTitoliCampiRicercaBase.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
+				document.location.href = 'ListaTitoliCampiRicercaBase.do?metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
 			}
 		}
 	}
@@ -136,20 +136,20 @@
 
 	function salvaRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salva&tab=LAY'
+		document.location.href='DettaglioRicerca.do?metodo=salva&tab=LAY'
 	}
 
 	function ripristinaRicercaSalvata(){
 		if (confirm('<fmt:message key="info.genRic.ripristinaRicerca"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
+		  document.location.href='DettaglioRicerca.do?metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
 		}
 	}
 	
 	function annullaCreazioneRicerca(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		  document.location.href='InitTrovaRicerche.do';
 		}
 	}
 
@@ -159,16 +159,16 @@
 		//else
 		//</c:if>
 		bloccaRichiesteServer();
-		document.location.href='ControllaDatiRicercaBase.do?'+csrfToken+'&tab=LAY'
+		document.location.href='ControllaDatiRicercaBase.do?tab=LAY'
 	}
 	
 	function salvaRicercaEEseguiRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaEEsegui&tab=LAY';
+		document.location.href='DettaglioRicerca.do?metodo=salvaEEsegui&tab=LAY';
 	}
 
 	function esportaRicerca(){
-		document.location.href='EsportaRicerca.do?'+csrfToken;
+		document.location.href='EsportaRicerca.do';
 	}	
 -->
 </script>

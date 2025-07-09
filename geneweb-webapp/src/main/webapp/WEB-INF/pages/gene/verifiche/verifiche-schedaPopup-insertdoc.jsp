@@ -116,6 +116,7 @@
 	}
 	
 	function calcoloDataScadenza(tipo,giornidasommare,dataInvioRichiesta,dataEmissione,esito){
+	<c:if test='${RISULTATO ne "OK"}' >
 	 if(tipo==1){
 			showObj("rowDOCUMENTI_VERIFICHE_DATA_INVIO_RICHIESTA", true);	
 			showObj("rowDOCUMENTI_VERIFICHE_DATA_SILENZIO_ASSENSO", true);
@@ -180,6 +181,7 @@
 				}
 			}
 	 }
+	 </c:if>
 	}
 
 	function ritornaData(dataPartenza, giornidasommare,operazione){

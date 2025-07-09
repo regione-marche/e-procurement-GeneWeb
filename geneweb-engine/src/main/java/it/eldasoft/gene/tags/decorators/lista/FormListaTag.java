@@ -659,9 +659,12 @@ public class FormListaTag extends BodyTagSupportGene {
             UtilityTags.DEFAULT_HIDDEN_PATH_SCHEDA_POPUP,
             this.getPathSchedaPopUp()));
 
-        // {MF021106} Aggiungo l'eventuale chiave esterna
-
-        buf.append(UtilityTags.getHtmlHideInput(
+        // Metodo invocato dalla lista 
+        String metodo = pageContext.getRequest().getParameter("metodo");		
+        if (! StringUtils.containsIgnoreCase(metodo, "elimina")) {
+        
+        	// {MF021106} Aggiungo l'eventuale chiave esterna
+        	buf.append(UtilityTags.getHtmlHideInput(
             UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT,
             UtilityTags.getParametro(pageContext,
                 UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT) == null
@@ -669,6 +672,11 @@ public class FormListaTag extends BodyTagSupportGene {
                     UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA)
                 : UtilityTags.getParametro(pageContext,
                     UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT)));
+        } else {
+        	buf.append(UtilityTags.getHtmlHideInput(UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT,
+              UtilityStringhe.convertiNullInStringaVuota(UtilityTags.getParametro(pageContext,
+                  UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA_PARENT))));
+        }
         buf.append(UtilityTags.getHtmlHideInput(
             UtilityTags.DEFAULT_HIDDEN_NOME_GESTORE, this.getGestore()));
         // Aggiungo tutti gli hidden del paginatore

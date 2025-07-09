@@ -28,10 +28,16 @@ public class BlobFile implements Serializable {
   private static final long serialVersionUID = 1433610022709943152L;
   private byte[]            stream;
   private String            nome;
+  private String            bucketRef;
+  private String            bucketUuid;
+  private String            hash;
 
   public BlobFile() {
     this.stream = null;
     this.nome = null;
+    this.bucketRef = null;
+    this.bucketUuid = null;
+    this.hash = null;
   }
 
   /**
@@ -64,4 +70,27 @@ public class BlobFile implements Serializable {
     this.nome = nome;
   }
 
+    public String getBucketRef() {
+        return bucketRef;
+    }
+
+    public void setBucketRef(String bucketRef) {
+        this.bucketRef = bucketRef;
+    }
+
+    public String getBucketUuid() {
+        return bucketUuid;
+    }
+
+    public void setBucketUuid(String bucketUuid) {
+        this.bucketUuid = bucketUuid;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
 }

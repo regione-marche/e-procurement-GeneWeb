@@ -193,8 +193,20 @@ public class NotificaPromemoriaScadenzariScheduler {
               // Invio della mail
               IMailSender iMailSender = MailUtils.getInstance(mailManager,
                   ConfigManager.getValore(CostantiGenerali.PROP_CODICE_APPLICAZIONE),CostantiGenerali.PROP_CONFIGURAZIONE_MAIL_STANDARD);
-              iMailSender.send(inviaA.toArray(new String[inviaA.size()]), null, null, oggetto, testo, null);
-
+              String arrayDestinatari[] = inviaA.toArray(new String[inviaA.size()]);
+              for (int contatoreDestinatari=0; contatoreDestinatari<inviaA.size(); contatoreDestinatari++) {
+	        	  String arraySingoloDestinatario[] = new String[] {arrayDestinatari[contatoreDestinatari]};
+	        	  if (arraySingoloDestinatario[0] != null) {
+	        		  iMailSender.send(arraySingoloDestinatario, null, null, oggetto, testo, null);
+		        	  if (iMailSender.getDelay() != null) {
+		                try {
+		                  TimeUnit.MILLISECONDS.sleep(iMailSender.getDelay());
+		                } catch (InterruptedException e) {
+		                  logger.error("Errore durante l'attesa tra un invio di una mail e la successiva schedulata", e);
+		                }
+		              }
+	        	  }
+              }
               // L'invio della mail e' avvenuto correttamente, imposto il valore del campo STPROMEM
               this.sqlManager.update("update g_scadenz set stpromem = ? where id = ?", new Object[] {new Long(1), id});
 

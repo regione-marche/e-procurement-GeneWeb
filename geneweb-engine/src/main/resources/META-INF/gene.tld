@@ -2300,6 +2300,23 @@
 	</function>
 	
 	<function>
+		<name>callFunctionN</name>
+		<description>
+			Funzione che esegue il richiamo di una funzione di un oggetto. (Ereditato da AbstractFunzioneTag)
+			In:
+				String callFunction(className,parametro1, parametro2, parametro3,..., parametroN)
+					className
+						Nome completo della classe
+					parametri
+						Eventuale parametri di passaggio
+		</description>
+		<function-class>it.eldasoft.gene.tags.functions.GeneralTagsFunction</function-class>
+		<function-signature>
+			java.lang.String callFunctionN(java.lang.String,java.lang.Object[])
+		</function-signature>
+	</function>
+	
+	<function>
 		<name>if</name>
 		<description>
 			Funzione di condizione

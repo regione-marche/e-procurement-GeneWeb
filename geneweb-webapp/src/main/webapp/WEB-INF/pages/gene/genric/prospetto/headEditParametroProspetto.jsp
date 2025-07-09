@@ -40,18 +40,18 @@
 	}
 
 	function creaModello(){
-		document.location.href='Modello.do?'+csrfToken+'&metodo=creaModello';
+		document.location.href='Modello.do?metodo=creaModello';
 	}
 
 <!-- Azioni invocate dal tab menu -->
 	
 	function annulla() {
 		bloccaRichiesteServer();
-		document.location.href='ParametriProspetti.do?'+csrfToken+'&metodo=listaParametriModello&idRicerca=${idOggetto}';
+		document.location.href='ParametriProspetti.do?metodo=listaParametriModello&idRicerca=${idOggetto}';
 	}
 	
 	function inviaRichiesta(id, progr, metodo){
-		var url = 'ParametriModello.do?'+csrfToken+'&metodo=' + metodo + '&idModello=' + id;
+		var url = 'ParametriModello.do?metodo=' + metodo + '&idModello=' + id;
 		if (progr != null)
 			url += '&progressivo=' + progr;
 		document.location.href = url;

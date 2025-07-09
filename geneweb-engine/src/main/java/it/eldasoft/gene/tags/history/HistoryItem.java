@@ -97,10 +97,13 @@ public class HistoryItem implements Serializable {
     // per semplificare le modifiche ed evitare di modificare tutte le chiamate get che entrano
     // nell'history, si verifica se tra i parametri è presente il token csrf, e se manca lo si aggiunge in automatico
     CsrfGuard csrfGuard = CsrfGuard.getInstance();
-    String tokenName = csrfGuard.getTokenName();
-    String tokenValue = csrfGuard.getTokenValue(req, null);
-    if (!this.parametri.keySet().contains(tokenName)) {
-      this.parametri.put(tokenName, tokenValue);
+    if (csrfGuard.isEnabled()) {
+      String tokenName = csrfGuard.getTokenName();
+      String tokenValue = csrfGuard.getTokenService().getMasterToken(req.getSession().getId());
+
+      if (!this.parametri.keySet().contains(tokenName)) {
+        this.parametri.put(tokenName, tokenValue);
+      }
     }
 //    this.setSession(req);
 

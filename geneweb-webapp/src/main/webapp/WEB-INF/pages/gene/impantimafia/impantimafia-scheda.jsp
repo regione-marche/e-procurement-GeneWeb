@@ -16,6 +16,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
+<c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
+
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="IMPANTIMAFIA-scheda" >
 	<gene:setString name="titoloMaschera" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.GetTitleFunction",pageContext,"IMPANTIMAFIA")}' />
 	<gene:redefineInsert name="noteAvvisi" />
@@ -100,9 +102,11 @@
 				<gene:campoScheda campo="PROCON"/>
 			</gene:gruppoCampi>
 
-			<gene:campoScheda>
-				<jsp:include page="/WEB-INF/pages/commons/pulsantiScheda.jsp" />
-			</gene:campoScheda>
+			<c:if test='${!fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+				<gene:campoScheda>
+					<jsp:include page="/WEB-INF/pages/commons/pulsantiScheda.jsp" />
+				</gene:campoScheda>
+			</c:if>
 
 			<gene:fnJavaScriptScheda funzione='modifyTIPRIC("#IMPANTIMAFIA_TIPRIC#")' elencocampi="IMPANTIMAFIA_TIPRIC" esegui="true" />
 			<gene:fnJavaScriptScheda funzione='modifyENTRIC("#IMPANTIMAFIA_ENTRIC#")' elencocampi="IMPANTIMAFIA_ENTRIC" esegui="true" />
@@ -114,6 +118,10 @@
 			<gene:fnJavaScriptScheda funzione='modifyRICCON("#IMPANTIMAFIA_RICCON#")' elencocampi="IMPANTIMAFIA_RICCON" esegui="true" />
 			
 		</gene:formScheda>
+		<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+			<gene:redefineInsert name="schedaModifica"/>
+			<gene:redefineInsert name="schedaNuovo"/>
+		</c:if>
 
 		<gene:javaScript>
 			//Visualizzazione campi relativi all'appalto

@@ -30,7 +30,7 @@
 	// Azioni di pagina
 
 	function avanti(){
-		var href = "PubblicaImportModello.do?"+csrfToken+"&";
+		var href = "PubblicaImportModello.do?";
 		var pubblicaSi = document.getElementById("pubblicaSi");
 		var pubblicaNo = document.getElementById("pubblicaNo");
 
@@ -50,13 +50,13 @@
 	}
 	
 	function indietro(){
-		document.location.href = 'WizardImportModello.do?'+csrfToken+'&pageTo=DG';
+		document.location.href = 'WizardImportModello.do?pageTo=DG';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genMod.annullaImport"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='AnnullaImportExportModelli.do?'+csrfToken;
+		  document.location.href='AnnullaImportExportModelli.do';
 		}
 	}
 

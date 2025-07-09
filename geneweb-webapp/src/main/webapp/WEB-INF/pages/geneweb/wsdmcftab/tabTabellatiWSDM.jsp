@@ -30,36 +30,41 @@
 	
 	<c:choose>
 		<c:when test="${not empty param.wsdmProtocollo && not empty param.wsdmDocumentale}">
-			<c:set var="where" value=" (sistema = '${param.wsdmProtocollo}' or sistema = '${param.wsdmDocumentale}')"/>
+			<c:set var="where" value=" (sistema = ? or sistema = ?)"/>
+			<c:set var="parametri" value="T:${param.wsdmProtocollo};T:${param.wsdmDocumentale}"/>
 		</c:when>
 		<c:when test="${not empty param.wsdmDocumentale}">
-			<c:set var="where" value=" sistema = '${param.wsdmDocumentale}' "/>
+			<c:set var="where" value=" sistema = ? "/>
+			<c:set var="parametri" value="T:${param.wsdmDocumentale}"/>
 		</c:when>
 		<c:otherwise>
-			<c:set var="where" value=" sistema = '${param.wsdmProtocollo}'"/>
+			<c:set var="where" value=" sistema = ? "/>
+			<c:set var="parametri" value="T:${param.wsdmProtocollo}"/>
 		</c:otherwise>
 	</c:choose>
-	<c:if test="${not empty where and not empty param.codapp}">
-		<c:set var="where" value="${where} and codapp = '${param.codapp}'"/>
+	<c:if test="${not empty where and not empty sessionScope.moduloAttivo}">
+		<c:set var="where" value="${where} and codapp = ?"/>
+		<c:set var="parametri" value="${parametri};T:${sessionScope.moduloAttivo}"/>
 	</c:if>
 	
 	<c:set var="where" value="${where} and (isarchi!='1' or isarchi is null)"/>
 	
+	${gene:callFunction4("it.eldasoft.gene.tags.functions.ImpostazioneFiltroFunction", pageContext, "WSDMCFTAB", where, parametri)}
 	
 	<table class="dettaglio-tab">
 	
 		<tr>
 			<td>
-			<gene:formLista entita="WSDMCFTAB" where="${where}" distinct="true" pagesize="20" sortColumn="2" tableclass="datilista" gestisciProtezioni="true" >
+			<gene:formLista entita="WSDMCFTAB" distinct="true" pagesize="20" sortColumn="2" tableclass="datilista" gestisciProtezioni="true" >
 				<gene:campoLista title="Opzioni" width="50">
 					<c:if test="${currentRow >= 0}">
 						<gene:PopUp variableJs="rigaPopUpMenu${currentRow}"	onClick="chiaveRiga='${chiaveRigaJava}'">
-							<gene:PopUpItem title="Visualizza dettaglio" href="javascript:apriDettaglio('${datiRiga.WSDMCFTAB_CODICE}','${datiRiga.WSDMCFTAB_DESCRI}','${datiRiga.WSDMCFTAB_ID}','${datiRiga.WSDMCFTAB_SISTEMA}');"/>
+							<gene:PopUpItem title="Visualizza dettaglio" href="javascript:apriDettaglio('${datiRiga.WSDMCFTAB_CODICE}','${datiRiga.WSDMCFTAB_ID}','${datiRiga.WSDMCFTAB_SISTEMA}');"/>
 						</gene:PopUp>
 					</c:if>
 				</gene:campoLista>
 				<gene:campoLista campo="ID" visibile="false"/>
-				<gene:campoLista campo="CODICE" href="javascript:apriDettaglio('${datiRiga.WSDMCFTAB_CODICE}','${datiRiga.WSDMCFTAB_DESCRI}','${datiRiga.WSDMCFTAB_ID}','${datiRiga.WSDMCFTAB_SISTEMA}');"/>
+				<gene:campoLista campo="CODICE" href="javascript:apriDettaglio('${datiRiga.WSDMCFTAB_CODICE}','${datiRiga.WSDMCFTAB_ID}','${datiRiga.WSDMCFTAB_SISTEMA}');"/>
 				<gene:campoLista campo="DESCRI"/>
 				<gene:campoLista campo="SISTEMA"/>
 				<gene:campoLista title="N. valori" campo="COUNT" campoFittizio="true" definizione="T10;0;;;" width="80">
@@ -68,8 +73,6 @@
 				</gene:campoLista>
 				<gene:campoLista campo="CODAPP" visibile="false"/>
 				<input type="hidden" name="idconfi" value="${param.idconfi}" >
-				<input type="hidden" name="descri" value="${param.descri}" >
-				<input type="hidden" name="codapp" value="${param.codapp}" >
 				<input type="hidden" name="wsdmProtocollo" value="${param.wsdmProtocollo}"/>
 				<input type="hidden" name="wsdmDocumentale" value="${param.wsdmDocumentale}"/>
 						
@@ -82,8 +85,6 @@
 			<input type="hidden" name="codice" value="" />
 			<input type="hidden" name="idcftab" value="" />
 			<input type="hidden" name="idconfi" value="${param.idconfi}" >
-			<input type="hidden" name="descri" value="" />
-			<input type="hidden" name="codapp" value="${param.codapp}" />
 			<input type="hidden" name="metodo" value="apri" />
 			<input type="hidden" name="sistema" value="" />
 		</form>
@@ -99,9 +100,8 @@
 		$('table.datilista > thead > tr').find('th:eq(3)').css('width','100px');
 		$('table.datilista > tbody > tr').find('td:eq(3)').css('width','100px');
 		
-		function apriDettaglio(codice,descri,id,sistema) {
+		function apriDettaglio(codice,id,sistema) {
 			document.listaTAB.href.value = "/geneweb/wsdmtab/wsdmtab-lista.jsp";
-			document.listaTAB.descri.value = descri;
 			document.listaTAB.idcftab.value = id;
 			document.listaTAB.codice.value = codice;
 			document.listaTAB.sistema.value = sistema;

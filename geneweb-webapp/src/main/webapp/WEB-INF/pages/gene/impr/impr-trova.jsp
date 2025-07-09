@@ -16,6 +16,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <c:set var="listaOpzioniDisponibili" value="${fn:join(opzDisponibili,'#')}#"/>
+<c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
 
 <gene:template file="ricerca-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="TrovaImprese" >
 
@@ -72,6 +73,10 @@
 			</gene:gruppoCampi>
 			<input type="hidden" id="tipoAppalto" name="tipoAppalto" />
 		</gene:formTrova>
+
+		<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}' >
+			<gene:redefineInsert name="trovaCreaNuovo"></gene:redefineInsert>
+		</c:if>
 
 		<gene:javaScript>
 			function gestioneNumcla(numcla){

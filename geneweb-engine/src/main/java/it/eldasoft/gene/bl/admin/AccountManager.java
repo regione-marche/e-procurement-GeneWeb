@@ -41,6 +41,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -388,6 +389,36 @@ public class AccountManager {
 
     return utente;
 
+  }
+
+  /**
+   * Estrae un utente a partire dalla sua login
+   *
+   * @param login
+   *        login dell'utente
+   * @return account associato all'utente, oppure null
+   * @throws CriptazioneException
+   * @throws SqlComposerException
+   * @throws DataAccessException
+   */
+  public Account getAccountBySysCf(String cf) throws CriptazioneException, DataAccessException, SqlComposerException {
+
+    Account account = null;
+    
+    if (StringUtils.isNotBlank(cf)) {
+      account = this.accountDao.getAccountBySysCf(cf);
+      if (account != null) {
+        if (account.getPassword() != null) {
+          ICriptazioneByte decriptatorePsw = FactoryCriptazioneByte.getInstance(
+              ConfigManager.getValore(CostantiGenerali.PROP_TIPOLOGIA_CIFRATURA_DATI),
+              account.getPassword().getBytes(),
+              ICriptazioneByte.FORMATO_DATO_CIFRATO);
+          account.setPassword(new String(decriptatorePsw.getDatoNonCifrato()));
+        }
+      }
+    }
+
+    return account;
   }
 
   /**
@@ -852,7 +883,11 @@ public class AccountManager {
    *         verificati problemi durante l'accesso ai dati
    */
   public List<AccountCodFiscDuplicati> getListaUtentiUgualeCodfisc(int idAccount, String codfisc){
-    return this.accountDao.getListaUtentiUgualeCodfisc(idAccount,codfisc);
+    List<AccountCodFiscDuplicati> risultato = new ArrayList<AccountCodFiscDuplicati>();
+    if (StringUtils.isNotBlank(codfisc)) {
+      risultato = this.accountDao.getListaUtentiUgualeCodfisc(idAccount,codfisc);
+    }
+    return risultato;
   }
 
   /**
@@ -1013,5 +1048,15 @@ public class AccountManager {
   public List<LogEvento> getUltimiAccessi(Long idUtente){
     return this.logEventiDao.getUltimiAccessi(idUtente);
   }
+  
+  /**
+   * 
+   * @param idUtente 
+   *         id dell'utente loggato
+   * @return la lista degli eventi di login/logout associati all'utente
+   */
+   public void updateLdapUsr(Integer idUtente, String sysCf){
+     this.accountDao.updateLdapUsr(idUtente,sysCf);
+   }
 
 }

@@ -153,6 +153,11 @@ public class CostantiGeneraliAccount {
   public static final String   OPZIONI_BLOCCO_ELIMINAZIONE_ENTITA_PRINCIPALE = "ou215";
 
   /**
+   * Opzioni utente blocco modifica dati dell'anagrafica imprese
+   */
+  public static final String   OPZIONI_BLOCCO_MODIFICA_IMPR = "ou243";
+
+  /**
    * Prefisso opzioni utente
    */
   public static final String   PREFISSO_OPZIONI_PRIVILEGI        = "UT";
@@ -171,8 +176,8 @@ public class CostantiGeneraliAccount {
   /**
    * lista valori per DropDownList opzioni privilegi
    */
-  public static final String[] LISTA_VALUE_PRIVILEGI             = { "",
-      "ou11|ou12", CONDIZIONE_LETTURA_ADMIN                                       };
+  public static final String[] LISTA_VALUE_PRIVILEGI             = {
+      "nonou11", "ou11|ou12", CONDIZIONE_LETTURA_ADMIN };
 
   /**
    * lista testo per DropDownList opzioni generatore ricerche

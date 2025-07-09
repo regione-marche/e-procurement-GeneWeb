@@ -15,6 +15,7 @@ public class FirmaCheck {
 	private List<Timestamp> timestamps;
 	List<String> listOfInvalidSignatures;
 	List<String> listOfInvalidTimestamps;
+	String errorMessage;
 
 	public boolean getVerified() {
 		return verified;
@@ -73,6 +74,20 @@ public class FirmaCheck {
 	public void setListOfInvalidTimestamps(List<String> listOfInvalidTimestamps) {
 		this.listOfInvalidTimestamps = listOfInvalidTimestamps;
 	}
+	
+	/**
+     * @return the errorMessage
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    /**
+     * @param errorMessage the errorMessage to set
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
 	@Override
 	public String toString() {

@@ -17,7 +17,7 @@
 <%@ taglib uri="http://www.eldasoft.it/tags" prefix="elda" %>
 <%@ taglib uri="http://www.eldasoft.it/genetags" prefix="gene"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib uri="http://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project/Owasp.CsrfGuard.tld" prefix="csrf" %>
+<%@ taglib uri="https://owasp.org/www-project-csrfguard/Owasp.CsrfGuard.tld" prefix="csrf" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
@@ -98,6 +98,7 @@
 
 <c:set var="isMessaggiInterniAbilitatiFunction" value='${gene:callFunction("it.eldasoft.gene.tags.functions.IsMessaggiInterniAbilitatiFunction",  pageContext)}' scope="request"/>
 <c:set var="listaOpzioniUtenteAbilitate" value="${fn:join(profiloUtente.funzioniUtenteAbilitate,'#')}#" />
+<c:set var="loginMultiEnte" value='${gene:callFunction("it.eldasoft.gene.tags.functions.GetPropertyFunction", "loginMultiEnte")}'/>
 
 <c:if test='${(!empty sessionScope.profiloUtente) && isMessaggiInterniAbilitatiFunction eq "true"}'>
 
@@ -163,6 +164,12 @@ $(document).ready(function(){
 		var reg = new RegExp("^[A-Za-z0-9-_()\\s\\.\\[\\]]+$", "g");
 		return (reg.test(filename));
 	}
+
+	document.addEventListener("copy", function (e) {
+		let selection = window.getSelection().toString();
+		e.clipboardData.setData("text/plain", selection);
+		e.preventDefault();
+	});
 	
 });
 
@@ -175,14 +182,17 @@ $(document).ready(function(){
 			<c:if test='${(profiloUtente.utenteLdap == 0 && !profiloUtente.autenticazioneSSO) and gene:checkProt(pageContext,"SUBMENU.VIS.UTILITA.Cambia-password")}'>
 				<elda:jsVocePopup functionJS="utLogCambiaPassword()" descrizione="Cambia password"/>	
 			</c:if>
+			<c:if test='${(empty profiloUtente.codiceFiscale)}'>
+				<elda:jsVocePopup functionJS="utPairingSSO()" descrizione="Abilita SPID, CIE o altro"/>	
+			</c:if>
 		<c:choose>
 			<c:when test='${sessionScope.sentinellaCodProfiloUnico eq "1"}'>
-				<c:if test='${sentinellaSelezionaUffint eq "1"}'>
+				<c:if test='${(sentinellaSelezionaUffint eq "1") and !(loginMultiEnte eq "1")}'>
 					<elda:jsVocePopup functionJS="utLogCambiaUfficioIntestatario()" descrizione="Cambia ${fn:toLowerCase(nomeEntitaParametrizzata)}"/>	
 				</c:if>
 			</c:when>
 			<c:otherwise>
-				<c:if test='${sentinellaSelezionaUffint eq "1"}'>
+				<c:if test='${(sentinellaSelezionaUffint eq "1") and !(loginMultiEnte eq "1")}'>
 					<elda:jsVocePopup functionJS="utLogCambiaUfficioIntestatario()" descrizione="Cambia ${fn:toLowerCase(nomeEntitaParametrizzata)}"/>	
 				</c:if>
 				<elda:jsVocePopup functionJS="utLogCambiaProfilo()" descrizione="Cambia profilo"/>	
@@ -201,23 +211,27 @@ $(document).ready(function(){
 		}
 		
 		function utLogCambiaPassword() {
-			document.location.href="${pageContext.request.contextPath}/geneAdmin/InitCambiaPasswordAdmin.do?<csrf:token/>&metodo=cambioBase&provenienza=menu";
+			document.location.href="${pageContext.request.contextPath}/geneAdmin/InitCambiaPasswordAdmin.do?metodo=cambioBase&provenienza=menu";
+		}
+		
+		function utPairingSSO() {
+			document.location.href="${pageContext.request.contextPath}/PairingSSO.do";
 		}
 		
 		function utLogMioAccount() {
-			document.location.href="${pageContext.request.contextPath}/geneAdmin/InitEditMioAccount.do?<csrf:token/>&metodo=modifica";
+			document.location.href="${pageContext.request.contextPath}/geneAdmin/InitEditMioAccount.do?metodo=modifica";
 		}
 		
 		function utLogCambiaProfilo() {
-			document.location.href="${pageContext.request.contextPath}/CheckProfilo.do?<csrf:token/>";
+			document.location.href="${pageContext.request.contextPath}/CheckProfilo.do";
 		}
 		
 		function utLogCambiaUfficioIntestatario() {
-			document.location.href="${pageContext.request.contextPath}/CheckUfficioIntestatario.do?<csrf:token/>";
+			document.location.href="${pageContext.request.contextPath}/CheckUfficioIntestatario.do";
 		}
 		
 		function utLogUltimiAccessi() {
-			document.location.href="${pageContext.request.contextPath}/UltimiAccessi.do?<csrf:token/>";
+			document.location.href="${pageContext.request.contextPath}/UltimiAccessi.do";
 		}
 		
 		function utLogEsci() {

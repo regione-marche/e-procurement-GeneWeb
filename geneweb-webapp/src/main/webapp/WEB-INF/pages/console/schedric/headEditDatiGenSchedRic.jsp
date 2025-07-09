@@ -108,7 +108,7 @@
 	
 	function annullaModifiche(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioSchedRic.do?'+csrfToken+'&metodo=visualizzaDettaglio&idSchedRic=${schedRicForm.idSchedRic}';
+		document.location.href = 'DettaglioSchedRic.do?metodo=visualizzaDettaglio&idSchedRic=${schedRicForm.idSchedRic}';
 	}
 
 <c:set var="array" value='var elencoFamiglie = new Array ('/>

@@ -110,6 +110,7 @@
 			<bean class="it.eldasoft.gene.bl.admin.ProfiliManager">
 				<property name="profiliDao" ref="profiliDao" />
 				<property name="accountDao" ref="accountDao" />
+				<property name="sqlManager" ref="sqlManager" />
 			</bean>
 		</property>
 	</bean>

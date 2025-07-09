@@ -531,6 +531,7 @@
 			<bean class="it.eldasoft.gene.tags.bl.RegImpresaPortaleManager" >
 				<property name="sqlManager" ref="sqlManager" />
 				<property name="anagraficaManager" ref="anagraficaManager" />
+				<property name="genChiaviManager" ref="genChiaviManager" />
 			</bean>
 		</property>
 	</bean>
@@ -875,21 +876,42 @@
 
 	<!-- ========================= STRUTS ACTION DEFINITIONS ========================= -->
 
-	<bean name="/Login"
-		class="it.eldasoft.gene.web.struts.login.LoginAction">
+	<bean name="/InitLogin"
+		class="it.eldasoft.gene.web.struts.login.IsUserLoggedAction">
 		<property name="loginManager" ref="loginManager" />
 		<property name="accountManager" ref="accountManager" />
 		<property name="ldapManager" ref="ldapManager" />
 	</bean>
 	
-	<bean name="/ShibbolethLogin"
-		class="it.eldasoft.gene.web.struts.login.shibboleth.ShibbolethLoginAction" parent="/Login" />
-	
-	<bean name="/BartLogin"
-		class="it.eldasoft.gene.web.struts.login.bart.BartLoginAction" parent="/Login" />
 
-	<bean name="/OpenIDLogin"
-		class="it.eldasoft.gene.web.struts.login.openid.OpenIDLoginAction" parent="/Login" />
+	<bean name="/Login"
+		class="it.eldasoft.gene.web.struts.login.LoginAction" parent="/InitLogin">
+	</bean>
+
+	<bean name="/ListaEntiLogin"
+		class="it.eldasoft.gene.web.struts.ListaEntiLoginAction">
+		<property name="uffintManager" ref="uffintManager" />
+	</bean>
+
+	<bean name="/SetEnteLogin"
+		class="it.eldasoft.gene.web.struts.SetEnteLoginAction">
+		<property name="uffintManager" ref="uffintManager" />
+	</bean>
+	
+	<bean name="/WebserverLogin1"
+		class="it.eldasoft.gene.web.struts.login.webserver.WebserverLoginAction" parent="/Login">
+		<property name="configurazione" value="1" />
+	</bean>
+
+	<bean name="/WebserverLogin2"
+		class="it.eldasoft.gene.web.struts.login.webserver.WebserverLoginAction" parent="/Login">
+		<property name="configurazione" value="2" />
+	</bean>
+
+	<bean name="/WebserverLogin3"
+		class="it.eldasoft.gene.web.struts.login.webserver.WebserverLoginAction" parent="/Login">
+		<property name="configurazione" value="3" />
+	</bean>
 
 	<bean name="/Logout"
 		class="it.eldasoft.gene.web.struts.login.LogoutAction">
@@ -899,16 +921,29 @@
 		class="it.eldasoft.gene.web.struts.login.SessionTimeOutAction">
 	</bean>
 	
-	<bean name="/CohesionLoginResponseAction" class="it.eldasoft.gene.web.struts.login.cohesion.CohesionLoginResponseAction" >
-		<property name="loginManager" ref="loginManager" />
+	<bean name="/CohesionLoginResponseAction" 
+		class="it.eldasoft.gene.web.struts.login.cohesion.CohesionLoginResponseAction" parent="/InitLogin">
 	</bean>
 	
 	<bean name="/SpidLogin"
 		class="it.eldasoft.gene.web.struts.login.spid.SpidLoginAction">
 	</bean>
+	<bean name="/SpidBusinessLogin"
+		class="it.eldasoft.gene.web.struts.login.spid.SpidBusinessLoginAction">
+	</bean>
 	
 	<bean name="/SpidLoginResponse"
 		class="it.eldasoft.gene.web.struts.login.spid.SpidLoginResponseAction" parent="/Login" />
+		
+	<bean name="/SpidBusinessLoginResponse"
+		class="it.eldasoft.gene.web.struts.login.spid.SpidLoginResponseAction" parent="/Login" />
+		
+	<bean name="/CieLogin"
+		class="it.eldasoft.gene.web.struts.login.cie.CieLoginAction">
+	</bean>
+	
+	<bean name="/CieLoginResponse"
+		class="it.eldasoft.gene.web.struts.login.cie.CieLoginResponseAction" parent="/Login" />
 
 	<bean name="/SSOGatewayLogin"
 		class="it.eldasoft.gene.web.struts.login.gateway.SSOGatewayLoginAction"/>
@@ -1143,6 +1178,11 @@
 	<bean name="/VisualizzaFileDIGOGG" class="it.eldasoft.gene.web.struts.VisualizzaFileDIGOGGAction">
 		<property name="fileAllegatoManager" ref="fileAllegatoManager" />
 		<property name="sqlManager" ref="sqlManager" />
+		<property name="geneManager" ref="geneManager" />
+	</bean>
+
+	<bean name="/VisualizzaFileDocumentiVerifiche" class="it.eldasoft.gene.web.struts.VisualizzaFileDocumentiVerificheAction">
+		<property name="sqlManager" ref="sqlManager" />
 		<property name="verificheInterneManager" ref="verificheInterneManager" />
 	</bean>
 	
@@ -1209,11 +1249,21 @@
 		<property name="sqlManager" ref="sqlManager" />
 	</bean>
 	
+	<bean name="/CheckFormatoFilePDFa" class="it.eldasoft.gene.web.struts.CheckFormatoFilePDFaAction">
+
+	</bean>
+	
 	<bean name="/SetFirmaDigitaleRemota" class="it.eldasoft.gene.web.struts.SetFirmaDigitaleRemotaAction" >
 		<property name="firmaRemotaManager" ref="firmaRemotaManager" />
 		<property name="sqlManager" ref="sqlManager" />
 		<property name="genChiaviManager" ref="genChiaviManager" />
 	</bean>
+	
+	<bean name="/RiattivaVerificaDURC" class="it.eldasoft.gene.web.struts.RiattivaVerificaDURCAction">
+		<property name="sqlManager" ref="sqlManager" />
+		<property name="genChiaviManager" ref="genChiaviManager" />
+	</bean>
+	
 	
 	<bean name="/RichiestaOTP" class="it.eldasoft.gene.web.struts.RichiestaOTPAction" >
 		
@@ -1276,6 +1326,51 @@
 	
 	<bean name="/ConfigurazioneTabellatiFG" class="it.eldasoft.gene.web.struts.ConfigurazioneTabellatiFGAction" >
 		<property name="sqlManager" ref="sqlManager" />
+	</bean>
+	
+	<bean name="/PingSessioneAttiva" class="it.eldasoft.gene.web.struts.PingSessioneAttivaAction"/>
+	
+	<bean name="/ValorizzaCodiceAUSA" class="it.eldasoft.gene.web.struts.ValorizzaCentroDiCostoAction"/>
+
+	<bean id="objectStorageManagerTransactionProxy"
+		  class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		  abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="rollbackFile">PROPAGATION_REQUIRES_NEW</prop>
+				<prop key="deleteFile">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="objectStorageManager" parent="objectStorageManagerTransactionProxy">
+		<property name="target">
+			<bean class="it.eldasoft.gene.ws.objectstorage.ObjectStorageManager">
+				<property name="genChiaviManager"	ref="genChiaviManager" />
+				<property name="sqlManager" ref="sqlManager" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="objectStorageSyncTask" class="it.eldasoft.gene.bl.tasks.ObjectStorageSyncTask">
+		<property name="sqlManager" ref="sqlManager" />
+		<property name="fileAllegatoManager" ref="fileAllegatoManager" />
+		<property name="objectStorageManager" ref="objectStorageManager" />
+	</bean>
+
+	<bean id="objectStorageSyncTaskJob"
+		  class="it.eldasoft.gene.commons.web.spring.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="objectStorageSyncTask" />
+		<property name="targetMethod" value="sincronizzaBucket" />
+		<property name="concurrent" value="false"/>
+	</bean>
+
+	<bean id="objectStorageSyncTaskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="objectStorageSyncTaskJob" />
+		<property name="cronExpression">
+			<value>0 0 0 1 1 ? 2099</value>
+		</property>
 	</bean>
 	
 	</beans>

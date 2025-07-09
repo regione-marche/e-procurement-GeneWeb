@@ -59,7 +59,7 @@
 	
 	function annulla(){
 		bloccaRichiesteServer();
-		document.location.href='CambiaPasswordAdmin.do?'+csrfToken+'&metodo=annulla';
+		document.location.href='CambiaPasswordAdmin.do?metodo=annulla';
 	}
 -->
   </script>

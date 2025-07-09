@@ -10,6 +10,7 @@
  */
 package it.eldasoft.gene.tags.bl;
 
+import it.eldasoft.gene.bl.GenChiaviManager;
 import it.eldasoft.gene.bl.SqlManager;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
@@ -34,6 +35,8 @@ public class RegImpresaPortaleManager {
 
   private AnagraficaManager       anagraficaManager;
 
+  private GenChiaviManager genChiaviManager;
+
 
 
   /**
@@ -51,6 +54,15 @@ public class RegImpresaPortaleManager {
   public void setAnagraficaManager(AnagraficaManager anagraficaManager) {
     this.anagraficaManager = anagraficaManager;
   }
+
+  /**
+   *
+   * @param genChiaviManager
+   */
+  public void setGenChiaviManager(GenChiaviManager genChiaviManager) {
+    this.genChiaviManager = genChiaviManager;
+  }
+
 
 
   /**
@@ -98,16 +110,9 @@ public class RegImpresaPortaleManager {
           return ret;
         }
 
-        long newIdUser=0;
-        select="select max(IDUSER) from W_PUSER";
-        Long maxIdUseer = (Long) sqlManager.getObject(select, null);
-        if (maxIdUseer==null || maxIdUseer.longValue()==0)
-          newIdUser++;
-        else
-          newIdUser = maxIdUseer.longValue() + 1;
-
+        Long newIdUser = new Long(genChiaviManager.getNextId("W_PUSER"));
         String update="insert into W_PUSER (IDUSER,USERNOME,USERDESC,USERENT,USERKEY1) values (?,?,?,?,?) ";
-        this.sqlManager.update(update, new Object[] { new Long(newIdUser), user,ragSoc,"IMPR",ditta});
+        this.sqlManager.update(update, new Object[] {newIdUser, user,ragSoc,"IMPR",ditta});
 
 
         //Chiamata al servizio

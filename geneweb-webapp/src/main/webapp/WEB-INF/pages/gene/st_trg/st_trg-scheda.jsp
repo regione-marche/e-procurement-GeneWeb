@@ -14,6 +14,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="SttrgScheda" >
 	<gene:setString name="titoloMaschera" value='Dettaglio tracciatura modifiche su DB' />
 	<gene:redefineInsert name="corpo">

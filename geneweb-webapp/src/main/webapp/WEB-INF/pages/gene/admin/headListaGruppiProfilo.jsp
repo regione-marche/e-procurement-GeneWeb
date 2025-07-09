@@ -20,15 +20,15 @@
 <!-- Azioni invocate dal tab menu -->
 
 	function listaAccountProfilo(id){
-		document.location.href='ListaAccountProfilo.do?'+csrfToken+'&metodo=visualizza&codPro=' + id;
+		document.location.href='ListaAccountProfilo.do?metodo=visualizza&codPro=' + id;
 	}
 
 	function dettaglioProfilo(id){
-		document.location.href='DettaglioProfilo.do?'+csrfToken+'&codPro=' + id;
+		document.location.href='DettaglioProfilo.do?codPro=' + id;
 	}
 	
 	function listaGruppiProfilo(id){
-		document.location.href='ListaGruppiProfilo.do?'+csrfToken+'&metodo=visualizza&codPro=' + id;
+		document.location.href='ListaGruppiProfilo.do?metodo=visualizza&codPro=' + id;
 	}
 	
 -->

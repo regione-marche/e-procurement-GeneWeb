@@ -66,7 +66,7 @@
 	}
 	
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaCodaSched.do?'+csrfToken;
+		document.location.href='InitTrovaCodaSched.do';
   }
 
 	function controllaInputData(unCampoDiInput){

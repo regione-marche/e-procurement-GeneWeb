@@ -10,13 +10,13 @@
  */
 package it.eldasoft.gene.commons.web;
 
-import it.eldasoft.gene.db.domain.LogEvento;
-import it.eldasoft.gene.utils.LogEventiUtils;
-
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.log4j.Logger;
+
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.utils.LogEventiUtils;
 
 /**
  * Listener per la gestione del numero massimo di utenti che possono connettersi
@@ -45,7 +45,7 @@ public class ListenerSessioniUtente implements HttpSessionListener {
     LogEvento logEvento = LogEventiUtils.createLogEvento(arg0);
     logEvento.setLivEvento(livEvento);
     logEvento.setCodEvento(LogEventiUtils.COD_EVENTO_LOGOUT);
-    logEvento.setDescr("Logout id sessione = " + arg0.getSession().getId());
+    logEvento.setDescr("Logout");
     logEvento.setErrmsg(errMsgEvento);
     LogEventiUtils.insertLogEventi(logEvento);
 

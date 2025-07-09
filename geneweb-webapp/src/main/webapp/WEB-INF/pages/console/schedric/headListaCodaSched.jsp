@@ -22,17 +22,17 @@
 		
    
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaCodaSched.do?'+csrfToken;
+		document.location.href='InitTrovaCodaSched.do';
   }
 
   
   function elimina(id) {
   		if(confirm("Procedere con l'eliminazione del record?")){
   			bloccaRichiesteServer();
-  			document.location.href='DettaglioCodaSched.do?'+csrfToken+'&metodo=elimina&idCodaSched=' + id;
+  			document.location.href='DettaglioCodaSched.do?metodo=elimina&idCodaSched=' + id;
   		}
   }
 
-	
+	$(document).ready(function (){ clearCsrfTokenFromHref(); });
 -->
 </script>

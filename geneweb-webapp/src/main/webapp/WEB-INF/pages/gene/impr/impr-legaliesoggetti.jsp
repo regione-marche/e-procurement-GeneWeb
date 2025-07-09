@@ -119,6 +119,12 @@
 		<gene:redefineInsert name="schedaModifica"/>
 		<gene:redefineInsert name="pulsanteModifica" />
 	</c:if>
+	<c:if test='${fn:contains(listaOpzioniUtenteAbilitate, "ou243#")}'>
+		<gene:redefineInsert name="schedaModifica"/>
+		<gene:redefineInsert name="pulsanteModifica" />
+		<gene:redefineInsert name="pulsanteNuovo"/>
+		<gene:redefineInsert name="schedaNuovo"/>
+	</c:if>
 	
 	
 

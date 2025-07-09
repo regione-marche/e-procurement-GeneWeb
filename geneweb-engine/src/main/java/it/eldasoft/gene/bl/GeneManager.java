@@ -22,6 +22,7 @@ import it.eldasoft.gene.tags.decorators.wizard.FormSchedaWizardTag;
 import it.eldasoft.gene.tags.utils.UtilityTags;
 import it.eldasoft.gene.web.struts.docass.CostantiDocumentiAssociati;
 import it.eldasoft.gene.web.struts.tags.gestori.GestoreException;
+import it.eldasoft.gene.ws.objectstorage.ObjectStorageUtils;
 import it.eldasoft.utils.metadata.cache.DizionarioCampi;
 import it.eldasoft.utils.metadata.cache.DizionarioTabelle;
 import it.eldasoft.utils.metadata.domain.Campo;
@@ -438,6 +439,14 @@ public class GeneManager {
         eliminaOccorrenzeGeneratoreAttributi(tables[i], where, param);
         eliminaOccorrenzeEntitaFiglie1N(tables[i], where, param);
         try {
+          if("W_DOCDIG".equals(tables[i])) {
+            List<Vector> bucketRefs = this.sql.getListVector("select bucket_ref, bucket_uuid from W_DOCDIG where " + where + " and bucket_ref is not null and bucket_uuid is not null", param);
+            if (bucketRefs != null && !bucketRefs.isEmpty()) {
+              for (Vector v : bucketRefs) {
+                ObjectStorageUtils.deleteFile((String) SqlManager.getValueFromVectorParam(v, 0).getValue(), (String) SqlManager.getValueFromVectorParam(v, 1).getValue());
+              }
+            }
+          }
           this.sql.update("delete from " + tables[i] + " where " + where, param);
         } catch (SQLException e) {
           throw new GestoreException(
@@ -525,6 +534,14 @@ public class GeneManager {
       buf.append(" ) ");
       // Eseguo la vera e proprie eliminazione dell'entità collegata
       try {
+        //nel caso i documenti fossero registrati su bucket, vanno eliminati
+        List<Vector> bucketRefs = this.sql.getListVector(bufW.toString().replace("delete from","select bucket_ref, bucket_uuid from")+" and bucket_ref is not null and bucket_uuid is not null",ent.getParams(param));
+        if(bucketRefs!=null && !bucketRefs.isEmpty()) {
+          for(Vector v : bucketRefs){
+            ObjectStorageUtils.deleteFile((String)SqlManager.getValueFromVectorParam(v,0).getValue(),(String)SqlManager.getValueFromVectorParam(v,1).getValue());
+          }
+        }
+
         this.sql.update(bufW.toString(), ent.getParams(param));
         this.sql.update(buf.toString(), ent.getParams(param));
       } catch (SQLException e) {

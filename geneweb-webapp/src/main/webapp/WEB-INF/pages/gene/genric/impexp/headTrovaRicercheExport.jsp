@@ -40,17 +40,17 @@
 	}
 	
   function apriTrovaRicerche(){
-		document.location.href='InitTrovaRicercheExport.do?'+csrfToken;
+		document.location.href='InitTrovaRicercheExport.do';
   }
 
 	function annulla(){
 		if(confirm('<fmt:message key="info.genRic.annullaExport"/>')){
-		  document.location.href='AnnullaImportExport.do?'+csrfToken;
+		  document.location.href='AnnullaImportExport.do';
 		}		
 	}
 
 	function indietro(){
-		document.location.href='InitFunzAvanzate.do?'+csrfToken;
+		document.location.href='InitFunzAvanzate.do';
 	}
 
 	function gestisciVisualizzazioneAvanzata() {

@@ -30,7 +30,7 @@
 	}
 
 	function creaNuovoAccount(){
-		document.location.href='InitCreaAccount.do?'+csrfToken;
+		document.location.href='InitCreaAccount.do';
 	}
 
 	function gestisciVisualizzazioneAvanzata() {

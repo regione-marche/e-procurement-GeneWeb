@@ -122,7 +122,15 @@
     "err-bid-weight-value": "Please enter a weight between 0 and 1.",
     "err-group-basevalue-empty": "Please enter a bid base value.",
     "save-error-mdgue-not-allowed": "Questions of type DGUE not allowed",
-    "save-error-mdgue-multiple": "You can only have a single DGUE question in the survey"
+    "save-error-mdgue-multiple": "You can only have a single DGUE question in the survey",
+    "lbl-question-preminale-weight-min": "Minimum weight assignable to the criterion",
+    "lbl-question-preminale-weight-max": "Maximum weight assignable to the criterion",
+    "lbl-question-premiale-options": "Value List / Rankings   WARNING: The value with ID 0 indicates 'Not owned'; the value 0 is ignored during acquisition.",
+    "lbl-question-premiale-option-code": "ID",
+    "lbl-question-premiale-option-value": "Description / Ranking",
+    "lbl-question-premiale-request-validity-end": "Request end date of validity?",
+    "lbl-question-premiale-validity-chip": "Request end date of validity",
+    "lbl-question-premiale-not-owned": "Not owned"
   },
   "controlTypes": {
     "text-title": "Short answer",
@@ -151,7 +159,11 @@
     "printpdf-description": "Generate a summary in PDF and upload the signed version",
     "mdgue-title": "DGUE with M-DGUE",
     "mdgue-description": "Generate DGUE with M-DGUE* and upload the signed XML",
-    "mdgue-description2": "*Optional module"
+    "mdgue-description2": "*Optional module",
+    "premyesno-title": "Reward Element \"Yes/No\"",
+    "premyesno-description": "Question related to a reward element with a Yes or No answer",
+    "premrating-title": "Reward Element \"Rating or Progressive Ranking\"",
+    "premrating-description": "Question related to a reward element with a progressive value list (e.g. 3 stars also includes 1 and 2 stars)."
   },
   "primeng": {
     "startsWith": "Starts with",
@@ -313,6 +325,7 @@
      "bid-weight": "Weight",
      "wd-type": "Weighted discount",
      "import_err_group_base_value": "Weighted discount request group must have a bid base value larger than 0.",
-     "import_err_weight_value": "Weight must be a value between 0 and 1."
+     "import_err_weight_value": "Weight must be a value between 0 and 1.",
+     "premialeRequestValidityEndDate": "Request end date of validity Y/N"
   }
 }

@@ -88,20 +88,61 @@
 				  		Selezionare il nome del profilo desiderato per entrare nell'applicativo.
 				  	</td>
 				  </tr>
-				<c:forEach items="${listaProfiliAccount}" var="profilo" varStatus="indice">
-				  <tr>
-				  	<td colspan="2" class="voce">
-                    <p>
-				    					<b>
-								    		<a class="link-generico" href="javascript:gestisciSubmit('${profilo.codiceProfilo}');" tabindex="${2001 + indice.index}">${profilo.nome}</a>
-							        </b>
-							      </p>
-							      <p>
-							      	${profilo.descrizione}
-							      </p>
+
+				<c:if test="${!isPresenteSezione}">
+					<%-- caso di default, ovvero assenza di sezioni i profili stanno tutti allo stesso livello --%>
+					<c:forEach items="${listaProfiliAccount}" var="profilo" varStatus="indice">
+					  <tr>
+						<td colspan="2" class="voce">
+						<p>
+											<b>
+												<a class="link-generico" href="javascript:gestisciSubmit('${profilo.codiceProfilo}');" tabindex="${2001 + indice.index}">${profilo.nome}</a>
+										</b>
+									  </p>
+									  <p>
+										${profilo.descrizione}
+									  </p>
+							</td>
+					  </tr>
+					</c:forEach>
+				</c:if>
+				<c:if test="${isPresenteSezione}">
+					<tr>
+						<td colspan="2" class="voce" style="border-bottom: 0">
+					<%-- caso con raggruppamenti a sezione: si crea una nuova tabella per ogni sezione definita --%>
+					<c:set var="sezionePrecedente" value="" />
+					<c:forEach items="${listaProfiliAccount}" var="profilo" varStatus="indice">
+						<c:set var="sezioneAttuale" value="${profilo.sezione}" />
+						<c:if test="${empty profilo.sezione}">
+							<%-- normalizzazione titolo di sezione per i profili senza sezione definita --%>
+							<c:set var="sezioneAttuale" value="ALTRI PROFILI" />
+						</c:if>
+						
+						<c:if test="${sezioneAttuale ne sezionePrecedente}">
+							<c:if test="${!indice.first}">
+						</table>
+							</c:if>
+						<h3 <c:if test="${!indice.first}">style="margin-top: 40px"</c:if>>${sezioneAttuale}</h3>
+						<table class="dettaglio-home">
+						</c:if>
+					<tr>
+						<td class="voce">
+							  <p>
+								<b><a class="link-generico" href="javascript:gestisciSubmit('${profilo.codiceProfilo}');" tabindex="${2001 + indice.index}">${profilo.nome}</a></b>
+							  </p>
+							  <p>
+								${profilo.descrizione}
+							  </p>
 						</td>
-				  </tr>
-				</c:forEach>
+					</tr>
+						<c:if test="${indice.last}">
+						</table>
+						</c:if>
+						<c:set var="sezionePrecedente" value="${sezioneAttuale}" />
+					</c:forEach>	
+						</td>
+					</tr>
+				</c:if>
 				</table>
 			</TD>
 		</TR>

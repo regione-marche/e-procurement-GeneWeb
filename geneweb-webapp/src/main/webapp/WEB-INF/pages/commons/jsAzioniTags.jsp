@@ -32,7 +32,7 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
 	// Inizializzazioni
 	var lAction=document.forms[0].action;
 	var lTarget=document.forms[0].target;
-	var lNewAction="${pageContext.request.contextPath}/ApriPagina.do?"+csrfToken+"&href=commons/conferma-popup.jsp";
+	var lNewAction="${pageContext.request.contextPath}/ApriPagina.do?href=commons/conferma-popup.jsp";
 	
 	if(fnConferma==null)fnConferma="";
 	if(fnAnnulla==null)fnAnnulla="";
@@ -48,6 +48,7 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
 	document.forms[0].isPopUp.value="1";
 	document.forms[0].target=win.name;
 	document.forms[0].submit();
+
 	if(win!=null)
 		win.focus();
 	// Ripristino l'azione
@@ -390,6 +391,15 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
 		document.forms[0].submit();
 	}
 	function schedaAnnulla(){
+      //if (document.forms[0].enctype == "multipart/form-data") {
+      //	var actionValue = document.forms[0].action;
+      //	if (actionValue.includes("?")) {
+      //		document.forms[0].action += "&";
+      //	} else {
+      //		document.forms[0].action += "?";
+      //	}
+      //	document.forms[0].action += csrfToken;
+      //}
 		document.forms[0].metodo.value="annulla";
 		bloccaRichiesteServer();
 		document.forms[0].submit();
@@ -447,6 +457,16 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
 	}
 
 	function schedaConferma(){
+		//if (document.forms[0].enctype == "multipart/form-data") {
+		//	var actionValue = document.forms[0].action;
+		//	if (actionValue.includes("?")) {
+		//		document.forms[0].action += "&";
+		//	} else {
+		//		document.forms[0].action += "?";
+		//	}
+		//	document.forms[0].action += csrfToken;
+		//}
+
 		if(classeSchedaConfermaPopUp==null){
 			document.forms[0].metodo.value="update";
 			schedaConfermaPopUp();
@@ -473,6 +493,13 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
 	// Funzione che esegue la selezione di una pagina
 	function selezionaPagina(pageNumber){
 		document.pagineForm.activePage.value=pageNumber;
+		if(!document.pagineForm.CSRFToken){
+			var csrfT = document.createElement("input");
+			csrfT.type = "hidden";
+			csrfT.value = csrfToken.split("=")[1];
+			csrfT.name = "CSRFToken";
+			document.pagineForm.appendChild(csrfT);
+		}
 		document.pagineForm.submit();
 	}
 	
@@ -505,7 +532,7 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
         valori = document.forms[0].keys.value;
 		  }
 		  
-		  var href = contextPath+'/ListaDocumentiAssociati.do?'+csrfToken+'&metodo=visualizza&entita='+entita+'&valori='+valori;
+		  var href = contextPath+'/ListaDocumentiAssociati.do?metodo=visualizza&entita='+entita+'&valori='+valori;
 			if(document.forms[0].key.value != '')
 				href += '&key='+ document.forms[0].key.value;
 			if(document.forms[0].keyParent.value != '')
@@ -518,7 +545,7 @@ function showConfermaPopUp(tipo,classe,variabileKey,fnConferma,fnAnnulla ){
 	}
 	
 	function noteAvvisi(){
-		var href = contextPath + "/ApriPagina.do?"+csrfToken+"&href=gene/g_noteavvisi/g_noteavvisi-lista.jsp&entita=" + document.forms[0].entita.value + "&chiave=" + document.forms[0].key.value;
+		var href = contextPath + "/ApriPagina.do?href=gene/g_noteavvisi/g_noteavvisi-lista.jsp&entita=" + document.forms[0].entita.value + "&chiave=" + document.forms[0].key.value;
 		document.location.href = href;
 	}
 	

@@ -56,13 +56,13 @@
 	}
 		
 	function indietro(){
-		document.location.href = 'WizardBase.do?'+csrfToken+'&pageTo=PUB';
+		document.location.href = 'WizardBase.do?pageTo=PUB';
 	}
 
 	function annulla(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-			document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+			document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 

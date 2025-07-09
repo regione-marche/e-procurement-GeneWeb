@@ -24,9 +24,6 @@
 <gene:template file="scheda-template.jsp" gestisciProtezioni="true" schema="GENE" idMaschera="VerificheScheda" >
 	<c:set var="entita" value="VERIFICHE" />
 	<c:set var="descrizione" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.GetDescrizioneTipoVerificaFunction", pageContext, key)}'/>
-	<!-- Settaggio delle stringhe utilizate nel template
-	<gene:setString name="titoloMaschera" value="Verifica art.80 ID=${gene:getValCampo(key, 'VERIFICHE.ID')}"/>
-	 -->
 	 
 	<gene:setString name="titoloMaschera" value="${descrizione}"/>
 	<gene:redefineInsert name="corpo">

@@ -29,7 +29,7 @@
 
 	function annulla(){
 		bloccaRichiesteServer();
-		document.location.href='GruppoDispatch.do?'+csrfToken+'&metodo=annulla';
+		document.location.href='GruppoDispatch.do?metodo=annulla';
 	}
 
 	function gestisciSubmit() {

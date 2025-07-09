@@ -42,7 +42,8 @@
 		<gene:campoScheda campo="INCTEC"/>
 		<gene:campoScheda campo="CFTEC" obbligatorio='${obbligatorioCodFisc}'>
 			<gene:checkCampoScheda funzione='checkCodFisNazionalita("##",document.getElementById("TECNI_NAZTEI"))' obbligatorio="${obbligatoriaCorrettezzaCodFisc}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
-		</gene:campoScheda>	
+		</gene:campoScheda>
+		<gene:fnJavaScriptScheda funzione='upperCase("TECNI_CFTEC", "#TECNI_CFTEC#")' elencocampi='TECNI_CFTEC' esegui="false" />
 		<gene:campoScheda campo="PIVATEC" obbligatorio='${obbligatorioPIVA}'>
 			<gene:checkCampoScheda funzione='checkPivaNazionalita("##",document.getElementById("TECNI_NAZTEI"))' obbligatorio="${obbligatoriaCorrettezzaPIVA}" messaggio='Il valore specificato non è valido.' onsubmit="false"/>
 		</gene:campoScheda>
@@ -98,6 +99,7 @@
 		<gene:campoScheda campo="EMA2TEC"/>
 		<gene:campoScheda campo="MGSFLG"/>
 		<gene:campoScheda campo="CGENTEI" defaultValue="${gene:if(! empty sessionScope.uffint && fn:contains(archiviFiltrati,'TECNI'),sessionScope.uffint,'')}" visibile="false"/>
+		<gene:campoScheda campo="DOFTEC"/>
 		
 	</gene:gruppoCampi>
 
@@ -239,6 +241,14 @@ function changeComuneNas(provincia, nomeUnCampoInArchivio) {
  	}
  	
  	schedaConferma =   schedaConferma_Custom;
+ 	
+ 	$(document).ready(function(){
+		$("#TECNI_CFTEC").css("text-transform","uppercase");
+	})
+ 	
+ 	function upperCase(campo, valore){
+				document.getElementById(campo).value=valore.toUpperCase();
+			}
  </c:if>
 
 </gene:javaScript>

@@ -26,7 +26,7 @@ public class HistoryClearTag extends TagSupportGene{
 			UtilityTags.saveHashAttributeForSqlBuild((HttpServletRequest) pageContext.getRequest(), entity, UtilityTags.getNumeroPopUp(this.pageContext));
 		}
 		
-		UtilityTags.getUtilityHistory(this.pageContext.getSession()).clear(UtilityTags.getNumeroPopUp(this.pageContext));
+		UtilityTags.getUtilityHistory(this.pageContext.getSession()).clear(UtilityTags.getNumeroPopUp(this.pageContext), this.pageContext.getSession());
 		
 		return SKIP_BODY;
 	}

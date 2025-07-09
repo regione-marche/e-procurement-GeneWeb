@@ -29,12 +29,12 @@
 		if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaETrovaRicerche();
 		else
 		</c:if>
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=DG';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=DG';
 	}
 	
 	function listaRicerche(){
@@ -42,12 +42,12 @@
 		if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaEListaRicerche();
 		else
 		</c:if>
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function salvaRicercaEListaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaELista&tab=DG';
+		document.location.href='DettaglioRicerca.do?metodo=salvaELista&tab=DG';
 	}
 	
 	function creaNuovaRicerca(){
@@ -55,16 +55,16 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaECreaRicerca();
 		//else
 		//</c:if>
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	function salvaRicercaECreaRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaECrea&tab=DG';
+		document.location.href='DettaglioRicerca.do?metodo=salvaECrea&tab=DG';
 	}
   
 	function vaiDettaglioRicerca(){
-		document.location.href='CambiaTabRicerca.do?'+csrfToken+'';
+		document.location.href='CambiaTabRicerca.do';
 	}
 
   function apriPopupGenModelli(){
@@ -89,7 +89,7 @@
   
 	function parametriRicerca(){
 		bloccaRichiesteServer();
-		document.location.href='VerificaParametriRicerca.do?'+csrfToken;
+		document.location.href='VerificaParametriRicerca.do';
 	}
 
 	function stampa(){

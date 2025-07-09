@@ -129,7 +129,7 @@ public class AccessoDirettoAction extends LoginAction {
 
       if (!CostantiGeneraliStruts.FORWARD_ERRORE_GENERALE.equals(target)) {
         target = this.checkLogin(username, null,
-            request, false, target);
+            request, null, target);
       }
 
     } else {

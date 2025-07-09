@@ -19,6 +19,7 @@ import it.eldasoft.gene.bl.genmod.CompositoreException;
 import it.eldasoft.gene.bl.genmod.GestioneFileModelloException;
 import it.eldasoft.gene.bl.genmod.ModelliManager;
 import it.eldasoft.gene.bl.genric.GestoreVisibilitaDati;
+import it.eldasoft.gene.commons.web.XSSRequestWrapper;
 import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
 import it.eldasoft.gene.commons.web.domain.CostantiGeneraliAccount;
 import it.eldasoft.gene.commons.web.domain.GestioneTab;
@@ -562,6 +563,9 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
       // modelliForm.getSelezioneFile().getFileData());
       datiModello.setNomeFile(modelliForm.getSelezioneFile().getFileName().replaceAll("[^a-zA-Z0-9_.-?()=\\[\\]]", "_"));
       datiModello.setCodiceApplicativo((String) session.getAttribute(CostantiGenerali.MODULO_ATTIVO));
+      // si proteggono i campi testuali da eventuali iniezioni di codice xss
+      datiModello.setNomeModello(XSSRequestWrapper.stripXSS(datiModello.getNomeModello()));
+      datiModello.setDescrModello(XSSRequestWrapper.stripXSS(datiModello.getDescrModello()));
 
       ProfiloUtente profiloUtente = (ProfiloUtente) request.getSession().getAttribute(
           CostantiGenerali.PROFILO_UTENTE_SESSIONE);
@@ -866,6 +870,10 @@ public class ModelliAction extends AbstractDispatchActionBaseGenModelli {
       }
 
       if (CostantiGenModelli.FORWARD_OK_UPDATE_MODELLO.equals(target)) {
+        // si proteggono i campi testuali da eventuali iniezioni di codice xss
+        datiModello.setNomeModello(XSSRequestWrapper.stripXSS(datiModello.getNomeModello()));
+        datiModello.setDescrModello(XSSRequestWrapper.stripXSS(datiModello.getDescrModello()));
+
         if (modelliForm.getSelezioneFile() != null
             && modelliForm.getSelezioneFile().getFileName() != null
             && modelliForm.getSelezioneFile().getFileName().length() > 0) {

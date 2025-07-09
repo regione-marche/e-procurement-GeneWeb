@@ -37,10 +37,24 @@
 							<html:multibox property="id">${documentoAssociatoForm.id}</html:multibox>
 						</c:if>
 				  </display:column>
-					<display:column property="dataInserimento" title="Data" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.DataOraDecorator" style="width:135px"></display:column>
+					<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADAT")}'>
+						<display:column property="dataInserimento" title="Data" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.DataOraDecorator" style="width:135px"></display:column>
+					</c:if>
 					<display:column property="titolo" title="Titolo" sortable="true" headerClass="sortable" ></display:column>
 					<display:column title="Nome File" sortable="false" headerClass="sortable"><a href="javascript:mostraDocumento(${documentoAssociatoForm.id});">${documentoAssociatoForm.nomeDocAss}</a>
 					</display:column>
+					<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ANPROT")}'>
+						<display:column property="numeroProtocollo" title="Numero protocollo" sortable="false" headerClass="sortable"></display:column>
+					</c:if>
+					<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADPROT")}'>
+						<display:column property="dataProtocollo" title="Data protocollo" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.DataDecorator" style="width:70px"></display:column>
+					</c:if>
+					<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ANATTO")}'>
+						<display:column property="numeroAtto" title="Numero atto" sortable="false" headerClass="sortable"></display:column>
+					</c:if>
+					<c:if test='${gene:checkProt(pageContext, "COLS.VIS.GENE.C0OGGASS.C0ADATTO")}'>
+						<display:column property="dataAtto" title="Data atto" sortable="true" headerClass="sortable" decorator="it.eldasoft.gene.commons.web.displaytag.DataDecorator" style="width:70px"></display:column>
+					</c:if>
 				</display:table>
 			</td>
 		</tr>

@@ -233,8 +233,17 @@
 			
 		}
 		var parentFormName = eval('window.opener.activeArchivioForm');
-		eval("window.opener.document." + parentFormName + ".archFunctionId").value = "default_load:filtroLotto";
-		eval("window.opener.document." + parentFormName + ".archWhereParametriLista").value = "N:" + tipoCategoria;
+	  	let parametriLista = "";
+	  	if ("${param.archFunctionId}" === "categorieGaraLotto_save:filtroLotto" && ${not empty param.archWhereParametriLista}) {
+	 		 eval("window.opener.document." + parentFormName + ".archFunctionId").value = "${param.archFunctionId}";
+	  		let parametriOriginali = "${param.archWhereParametriLista}";
+	  		parametriOriginali = parametriOriginali.substring(0,parametriOriginali.lastIndexOf(";") + 1);
+	  		parametriLista = parametriOriginali;
+	  	} else {
+	  		eval("window.opener.document." + parentFormName + ".archFunctionId").value = "default_load:filtroLotto";
+	  	}
+	  	parametriLista += "N:" + tipoCategoria
+	    eval("window.opener.document." + parentFormName + ".archWhereParametriLista").value = parametriLista;
     	var nomeCampoArchivio = null;
 		
 		/*

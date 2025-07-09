@@ -104,10 +104,10 @@
 		  AND W_SCHEDRIC.PROFILO_OWNER = #codiceProfilo#
 		UNION
 		SELECT W_SCHEDRIC.ID_SCHEDRIC AS ID_SCHEDRIC, W_SCHEDRIC.ID_RICERCA AS ID_RICERCA,
-		<isPropertyAvailable property="adattaQueryPerDB2">
+		<isPropertyAvailable property="adattaQueryPerPG">
 			CAST(NULL AS VARCHAR(50)) AS NOME_RICERCA,
 		</isPropertyAvailable>
-		<isNotPropertyAvailable property="adattaQueryPerDB2">
+		<isNotPropertyAvailable property="adattaQueryPerPG">
 			NULL AS NOME_RICERCA,
 		</isNotPropertyAvailable>
 			   W_SCHEDRIC.TIPO AS TIPO, TAB3.TAB3DESC AS DESCTIPO, W_SCHEDRIC.ATTIVO AS ATTIVO, W_SCHEDRIC.NOME AS NOME,

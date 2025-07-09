@@ -122,7 +122,15 @@
     "err-bid-weight-value": "Inserire un peso compreso tra 0 e 1.",
     "err-group-basevalue-empty": "Inserire un valore a base di gara.",
     "save-error-mdgue-not-allowed": "Quesiti di tipo DGUE non consentiti",
-    "save-error-mdgue-multiple": "E' possibile avere un solo quesito di tipo DGUE nel questionario"
+    "save-error-mdgue-multiple": "E' possibile avere un solo quesito di tipo DGUE nel questionario",
+    "lbl-question-preminale-weight-min": "Peso minimo assegnabile al criterio",
+    "lbl-question-preminale-weight-max": "Peso massimo assegnabile al criterio",
+    "lbl-question-premiale-options": "Lista valori / Classifiche   ATTENZIONE: Il valore con ID 0 indica 'Non posseduto'; il valore 0 viene ignorato in acquisizione",
+    "lbl-question-premiale-option-code": "ID",
+    "lbl-question-premiale-option-value": "Descrizione / Classifica",
+    "lbl-question-premiale-request-validity-end": "Richiesta data termine validità?",
+    "lbl-question-premiale-validity-chip": "Richiesta data termine validità",
+    "lbl-question-premiale-not-owned": "Non posseduto"
   },
   "controlTypes": {
     "text-title": "Risposta breve",
@@ -151,7 +159,11 @@
     "printpdf-description": "Genera riepilogo in PDF e carica versione firmata",
     "mdgue-title": "DGUE con M-DGUE",
     "mdgue-description": "Genera DGUE mediante M-DGUE* e allega XML firmato.",
-    "mdgue-description2": "*Modulo opzionale"
+    "mdgue-description2": "*Modulo opzionale",
+    "premyesno-title": "Elemento premiale \"Si/No\"",
+    "premyesno-description": "Quesito relativo a un elemento premiale con risposta Si o No",
+    "premrating-title": "Elemento premiale \"Rating o Classifica progressiva\"",
+    "premrating-description": "Quesito relativo a un elemento premiale con lista valori progressiva (es. 3 stelle include anche 1 e 2 stelle)."
   },
   "primeng": {
     "startsWith": "Inizia con",
@@ -313,6 +325,7 @@
     "bid-weight": "Peso",
     "wd-type": "Sconto pesato",
     "import_err_group_base_value": "Il gruppo richiesta sconto pesato deve avere un valore a base di gara maggiore di 0.",
-    "import_err_weight_value": "Il peso deve avere un valore compreso tra 0 e 1."
+    "import_err_weight_value": "Il peso deve avere un valore compreso tra 0 e 1.",
+    "premialeRequestValidityEndDate": "Richiesta data termine validità Y/N"
   }
 }

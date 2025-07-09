@@ -10,20 +10,11 @@
  */
 package it.eldasoft.gene.commons.web.struts;
 
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.gene.web.struts.attivazione.AttivaApplicazioneAction;
-import it.eldasoft.utils.properties.ConfigManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -37,6 +28,24 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.tiles.TilesRequestProcessor;
+
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.web.struts.GetCSRFTokenAction;
+import it.eldasoft.gene.web.struts.attivazione.AttivaApplicazioneAction;
+import it.eldasoft.utils.properties.ConfigManager;
+import org.owasp.csrfguard.CsrfGuard;
+import org.owasp.csrfguard.CsrfGuardException;
+import org.owasp.csrfguard.CsrfValidator;
+import org.owasp.csrfguard.action.IAction;
+import org.owasp.csrfguard.action.Redirect;
+import org.owasp.csrfguard.http.InterceptRedirectResponse;
+import org.owasp.csrfguard.session.LogicalSession;
+import org.owasp.csrfguard.token.storage.LogicalSessionExtractor;
+import org.owasp.csrfguard.token.transferobject.TokenTO;
+import org.owasp.csrfguard.util.CsrfGuardUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Estensione del Request Processor Tiles di Struts; verifica che l'applicazione
@@ -70,6 +79,39 @@ public class GeneRequestProcessor extends TilesRequestProcessor {
     String appBloccata = (String) context.getAttribute(CostantiGenerali.SENTINELLA_BLOCCO_ATTIVAZIONE);
     String actionName = mapping.getType();
 
+      // si introduce il seguente blocco di codice, dipendente da CSRF Guard, per gestire i form multipart in quanto
+      // queste richieste prevedono una richiesta in formato InputStream, la quale puo' essere letta una volta sola, e
+      // non si riesce a processarla a livello di Filter http. Pertanto come soluzione tampone si bypassa, a livello di
+      // Filter, la gestione del controllo, la quale viene introdotta qui ripetendo il codice come reperito dalla libreria
+      // utilizzata.
+
+      // public CsrfGuardFilter.doFilter
+      CsrfGuard csrfGuard = CsrfGuard.getInstance();
+      if (csrfGuard.isEnabled()) {
+          // si testa se e' una multipart in modo da cercare il token nella classe MultipartServletRequestWrapper di Struts 1, ora che risulta valorizzata
+          if (request.getContentType() != null && request.getContentType().startsWith("multipart/form-data")) {
+              if (CsrfGuardUtils.isPermittedUserAgent(request, response, csrfGuard)) {
+                  // private CsrfGuardFilter.doFilter
+                  InterceptRedirectResponse interceptRedirectResponse = new InterceptRedirectResponse(response, request, csrfGuard);
+                  LogicalSessionExtractor sessionKeyExtractor = csrfGuard.getLogicalSessionExtractor();
+                  LogicalSession logicalSession = sessionKeyExtractor.extract(request);
+                  if (logicalSession != null) {
+                      // private CsrfGuardFilter.handleSession
+                      String logicalSessionKey = logicalSession.getKey();
+                      if ((new CsrfValidator()).isValid(request, interceptRedirectResponse)) {
+                          // in caso affermativo, si ripetono le operazioni previste nel filtro http in caso di richieste NON multipart
+                          String requestURI = request.getRequestURI();
+                          String generatedToken = csrfGuard.getTokenService().generateTokensIfAbsent(logicalSessionKey, request.getMethod(), requestURI);
+                          CsrfGuardUtils.addResponseTokenHeader(csrfGuard, request, interceptRedirectResponse, new TokenTO(Collections.singletonMap(requestURI, generatedToken)));
+                      } else {
+                          // in caso negativo, si va direttamente alla pagina di errore
+                          return null;
+                      }
+                  }
+              }
+          }
+      }
+
     if (appDisponibile == null || !"1".equals(appDisponibile)) {
       String messageKey = "errors.appNotLoaded";
       ActionMessages errors = new ActionMessages();
@@ -83,7 +125,11 @@ public class GeneRequestProcessor extends TilesRequestProcessor {
       // qui di seguito non e' in relazione con l'analogo metodo della classe stessa
       if (!errors.isEmpty()) this.saveMessages(request, errors);
       return mapping.findForward(CostantiGeneraliStruts.FORWARD_APPLICAZIONE_NON_DISPONIBILE);
-    } else if(appBloccata != null && "1".equals(appBloccata) && !actionName.equals((AttivaApplicazioneAction.class).toString().substring(6))){
+    } else if(appBloccata != null && "1".equals(appBloccata) && !actionName.equals((AttivaApplicazioneAction.class).toString().substring(6))) {
+        if (actionName.equals((GetCSRFTokenAction.class).toString().substring(6))) {
+          return super.processActionPerform(request, response, action, form, mapping);
+        }
+
 
         // Primo avvio dell'applicativo: si effettua il forward alla pagina di
         // attivazione dell'applicativo passando, eventualmente, i valori gia' presenti in W_ATT

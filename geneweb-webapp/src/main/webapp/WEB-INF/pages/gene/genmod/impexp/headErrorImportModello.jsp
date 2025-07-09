@@ -17,7 +17,7 @@
 
 	function annulla(){
 		bloccaRichiesteServer();
-		document.location.href='AnnullaImportExportModelli.do?'+csrfToken;		
+		document.location.href='AnnullaImportExportModelli.do';		
 	}
 	
 -->

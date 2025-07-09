@@ -29,6 +29,8 @@ public class Profilo implements Serializable {
   private boolean profiloInterno;
   private String  discriminante;
   private String  codiceCliente;
+  private String  sezione;
+  private Long    ord;
   
   public Profilo(){
     this.codiceProfilo  = null;
@@ -38,6 +40,8 @@ public class Profilo implements Serializable {
     this.profiloInterno = false;
     this.discriminante  = null;
     this.codiceCliente  = null;
+    this.sezione        = null;
+    this.ord            = null;
   }
   
   /**
@@ -144,5 +148,29 @@ public class Profilo implements Serializable {
   public void setProfiloInterno(boolean profiloInterno) {
     this.profiloInterno = profiloInterno;
   }
+
+  /**
+   * @param sezione ritorna la sezione
+   */
+  public String getSezione() {
+	return sezione;
+  }
+
+  public void setSezione(String sezione) {
+	this.sezione = sezione;
+  }
+
+  /**
+   * @param ord ritorna ord che indica l'ordinamento dopo la sezione
+   */
+  public Long getOrd() {
+	return ord;
+  }
+
+  public void setOrd(Long ord) {
+	this.ord = ord;
+  }
+  
+  
  
 }

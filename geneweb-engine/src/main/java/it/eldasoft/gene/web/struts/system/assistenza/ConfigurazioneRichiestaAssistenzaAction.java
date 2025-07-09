@@ -149,6 +149,7 @@ public class ConfigurazioneRichiestaAssistenzaAction extends DispatchActionBase 
 			configForm.setServizioUsr(null);
 			configForm.setServizioPwd(null);
 			configForm.setServizioFileSize(null);
+			configForm.setUrlSupportoEsterno(null);
 			configForm.setCodapp(codapp);
 		}
 		String modo = (String) request.getAttribute("modo");

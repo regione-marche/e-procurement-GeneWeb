@@ -17,6 +17,9 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
+<%-- test per consentire utilizzo della pagina solo agli amministratori di sistema --%>
+<c:set var="nonusato" value='${gene:callFunction2("it.eldasoft.gene.tags.functions.CheckOpzioniUtenteFunction", pageContext, "ou89")}' />
+
 <gene:template file="scheda-template.jsp">
 
 	<gene:redefineInsert name="head" >

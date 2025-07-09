@@ -51,10 +51,8 @@ public class EsisteControlloObbligatorietaCodFiscPivaFunction extends AbstractFu
     String campo = (String) params[2];
     String ret = "false";
     String valoreTabellato="";
-    
-    if("IMPR".equals(entita))
-      valoreTabellato ="2";
-    else if("TECNI".equals(entita))
+
+    if("TECNI".equals(entita))
       valoreTabellato ="3";
     else if("TEIM".equals(entita))
       valoreTabellato ="4";
@@ -63,7 +61,10 @@ public class EsisteControlloObbligatorietaCodFiscPivaFunction extends AbstractFu
     else if("UTENT".equals(entita))
       valoreTabellato ="6";
     
-    String descTabellato = tabellatiManager.getDescrTabellato(codiceTabellato, valoreTabellato);
+    String descTabellato = "3";
+    if(!"IMPR".equals(entita)) {
+      descTabellato = tabellatiManager.getDescrTabellato(codiceTabellato, valoreTabellato);
+    }
       
     if (descTabellato != null && descTabellato.length()>1)
       descTabellato = descTabellato.substring(0, 1);

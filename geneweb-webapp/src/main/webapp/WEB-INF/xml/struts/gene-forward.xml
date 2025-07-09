@@ -29,4 +29,11 @@
 		<forward name="SpidLogin" path="/SpidLogin.do"
 			redirect="true" module="/" />
 			
+		<forward name="SpidBusinessLogin" path="/SpidLogin.do"
+		redirect="true" module="/" />
+			
+		<forward name="pairingSSOResult" 
+			path="/WEB-INF/pages/gene/login/pairingSSOresult.jsp"
+			module="/" />
+			
 	</global-forwards>

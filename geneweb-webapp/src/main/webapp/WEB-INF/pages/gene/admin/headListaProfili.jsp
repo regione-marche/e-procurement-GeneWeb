@@ -41,7 +41,7 @@
 		}
 
   function visualizza(id){
-		document.location.href='DettaglioProfilo.do?'+csrfToken+'&codPro=' + id;
+		document.location.href='DettaglioProfilo.do?codPro=' + id;
   }
 
 -->

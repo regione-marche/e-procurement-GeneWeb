@@ -59,7 +59,7 @@
 	function annulla(){
 		if (confirm('<fmt:message key="info.schedRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioSchedRic.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href='DettaglioSchedRic.do?metodo=annullaCrea';
 		}
 	}
 

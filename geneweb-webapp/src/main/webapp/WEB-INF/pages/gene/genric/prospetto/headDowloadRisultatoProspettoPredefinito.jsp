@@ -31,7 +31,7 @@
   }
 
 	function parametriRicerca(){
-		document.location.href='CheckParametriProspetto.do?'+csrfToken+'&idProspetto=${idProspetto}&fromPage=listaPredefinite';
+		document.location.href='CheckParametriProspetto.do?idProspetto=${idProspetto}&fromPage=listaPredefinite';
 	}
 
   -->

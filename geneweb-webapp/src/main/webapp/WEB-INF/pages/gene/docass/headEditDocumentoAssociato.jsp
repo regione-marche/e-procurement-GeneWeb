@@ -39,12 +39,14 @@
 		}
 	</c:if>
 		
-		if(continua)
+		if(continua) {
+			bloccaRichiesteServer();
 			document.documentoAssociatoForm.submit();
+		}
 	}
 
 	function download(id){
-		document.location.href='DocumentoAssociato.do?'+csrfToken+'&metodo=download&id=${documento.id}';
+		document.location.href='DocumentoAssociato.do?metodo=download&id=${documento.id}';
 	}
 	
 	function annulla(){
@@ -54,7 +56,7 @@
 	
 	function annullaModifiche(id){
 		document.documentoAssociatoForm.metodo.value = "annullaModifiche";
-		document.documentoAssociatoForm.submit();
+        document.documentoAssociatoForm.submit();
 	}
 	
 	function controllaInputData(unCampoDiInput){

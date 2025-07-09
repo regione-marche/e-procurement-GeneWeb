@@ -40,17 +40,17 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaETrovaRicerche();
 		//else
 		//</c:if>
-		document.location.href='InitTrovaRicerche.do?'+csrfToken;
+		document.location.href='InitTrovaRicerche.do';
 	}
 	
 	function salvaRicercaETrovaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaETrova&tab=FIL';
+		document.location.href='DettaglioRicerca.do?metodo=salvaETrova&tab=FIL';
 	}
 	
 	function filtroSuIdUtente() {
 		bloccaRichiesteServer();
-		document.location.href = "ListaFiltriRicerca.do?'+csrfToken+'&metodo=filtroPerIdUtente";
+		document.location.href = "ListaFiltriRicerca.do?metodo=filtroPerIdUtente";
 	}
 	
 	function listaRicerche(){
@@ -58,12 +58,12 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaEListaRicerche();
 		//else
 		//</c:if>
-		document.location.href='TrovaRicerche.do?'+csrfToken+'&metodo=trovaRicerche';
+		document.location.href='TrovaRicerche.do?metodo=trovaRicerche';
 	}
 	
 	function salvaRicercaEListaRicerche() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaELista&tab=FIL';
+		document.location.href='DettaglioRicerca.do?metodo=salvaELista&tab=FIL';
 	}
 	
 	function creaNuovaRicerca(){
@@ -71,25 +71,25 @@
 		//if (confirm('<fmt:message key="info.genRic.salvaDati.confirm"/>')) salvaRicercaECreaRicerca();
 		//else
 		//</c:if>
-		document.location.href='CreaNuovaRicerca.do?'+csrfToken;
+		document.location.href='CreaNuovaRicerca.do';
 	}
 	
 	function salvaRicercaECreaRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaECrea&tab=FIL';
+		document.location.href='DettaglioRicerca.do?metodo=salvaECrea&tab=FIL';
 	}
 
 	// Azioni invocate dal tab menu
 
 	function cambiaTab(codiceTab) {
-		document.location.href = 'CambiaTabRicerca.do?'+csrfToken+'&tab=' + codiceTab;
+		document.location.href = 'CambiaTabRicerca.do?tab=' + codiceTab;
 	}
 
 	// Azioni di pagina
 	
 	function modifica(id){
 		var metodo = "modifica";
-		document.location.href = 'ListaFiltriRicerca.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaFiltriRicerca.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function elimina(id) {
@@ -108,7 +108,7 @@
 
 	function inviaRichiesta(id, metodo){
 		bloccaRichiesteServer();
-		document.location.href = 'ListaFiltriRicerca.do?'+csrfToken+'&metodo=' + metodo + '&id=' + id;
+		document.location.href = 'ListaFiltriRicerca.do?metodo=' + metodo + '&id=' + id;
 	}
 
 	function spostaInPosizioneMarcata(id){
@@ -133,7 +133,7 @@
 				alert("Selezionare una posizione diversa dall'elemento da spostare");
 			else {
 				bloccaRichiesteServer();
-				document.location.href = 'ListaFiltriRicerca.do?'+csrfToken+'&metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
+				document.location.href = 'ListaFiltriRicerca.do?metodo=spostaInPosizioneMarcata&id=' + id + '&idNew=' + posizioneSelezionata;
 			}
 		}
 	}
@@ -141,27 +141,27 @@
 	// Azioni di pagina
 		
 	function aggiungiFiltro(){
-		document.location.href='AddFiltroRicerca.do?'+csrfToken;
+		document.location.href='AddFiltroRicerca.do';
 	}
 	
 	// azioni generali in sola visualizzazione
 
 	function salvaRicerca(){
 		bloccaRichiesteServer();
-		document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=salva&tab=FIL';
+		document.location.href = 'DettaglioRicerca.do?metodo=salva&tab=FIL';
 	}
 	
 	function ripristinaRicercaSalvata(){
 		if (confirm('<fmt:message key="info.genRic.ripristinaRicerca"/>')){
 			bloccaRichiesteServer();
-		  document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
+		  document.location.href='DettaglioRicerca.do?metodo=visualizza&idRicerca=${sessionScope.recordDettRicerca.testata.id}';
 		}
 	}
 	
 	function annullaCreazioneRicerca(){
 		if (confirm('<fmt:message key="info.genRic.annullaCreazione"/>')){
 			bloccaRichiesteServer();
-		  document.location.href = 'DettaglioRicerca.do?'+csrfToken+'&metodo=annullaCrea';
+		  document.location.href = 'DettaglioRicerca.do?metodo=annullaCrea';
 		}
 	}
 
@@ -171,16 +171,16 @@
 		//else
 		//</c:if>
 		bloccaRichiesteServer();
-		document.location.href='ControllaDatiRicerca.do?'+csrfToken+'&tab=FIL'
+		document.location.href='ControllaDatiRicerca.do?tab=FIL'
 	}
 	
 	function salvaRicercaEEseguiRicerca() {
 		bloccaRichiesteServer();
-		document.location.href='DettaglioRicerca.do?'+csrfToken+'&metodo=salvaEEsegui&tab=FIL';
+		document.location.href='DettaglioRicerca.do?metodo=salvaEEsegui&tab=FIL';
 	}
 
 	function esportaRicerca(){
-		document.location.href='EsportaRicerca.do?'+csrfToken;
+		document.location.href='EsportaRicerca.do';
 	}
 	
 	function gestisciSubmit(azione){
@@ -198,7 +198,7 @@
 	
 	function filtroPerUfficioIntestatario() {
 		bloccaRichiesteServer();
-		document.location.href = "ListaFiltriRicerca.do?"+csrfToken+"&metodo=filtroPerUfficioIntestatario";
+		document.location.href = "ListaFiltriRicerca.do?metodo=filtroPerUfficioIntestatario";
 	}
 	
 -->

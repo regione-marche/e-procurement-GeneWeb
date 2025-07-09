@@ -9,6 +9,8 @@ import it.eldasoft.gene.commons.web.struts.ActionInterface;
 import it.eldasoft.gene.commons.web.struts.UploadFileForm;
 import it.eldasoft.gene.db.datautils.DataColumn;
 import it.eldasoft.gene.db.datautils.DataColumnContainer;
+import it.eldasoft.gene.db.sql.sqlparser.JdbcWhere;
+import it.eldasoft.gene.tags.decorators.scheda.FormSchedaTag;
 import it.eldasoft.gene.tags.utils.UtilityTags;
 import it.eldasoft.gene.web.struts.tags.UtilityStruts;
 import it.eldasoft.utils.profiles.OpzioniUtente;
@@ -22,7 +24,10 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -139,6 +144,7 @@ public abstract class AbstractGestoreEntita extends AbstractGestoreBase {
 
     OpzioniUtente opzioniUtente = new OpzioniUtente( profiloUtente.getFunzioniUtenteAbilitate());
 
+    // si verifica se l'entita' risulta eliminabile
     if(opzioniUtente.isOpzionePresente(
         CostantiGeneraliAccount.OPZIONI_BLOCCO_ELIMINAZIONE_ENTITA_PRINCIPALE) &&
         ConfigManager.getValore(CostantiGenerali.PROP_ENTITA_BLOCCATE_ELIMINAZIONE)!=null){
@@ -168,6 +174,9 @@ public abstract class AbstractGestoreEntita extends AbstractGestoreBase {
           + this.getEntita()
           + ":"
           + "chiavi non definite !", "elimina.nokey");
+
+    checkVisibilitaRecord(impl, profiloUtente);
+
     boolean transazioneNonInizializzata = aStatus == null;
     TransactionStatus status = null;
     try {
@@ -214,6 +223,69 @@ public abstract class AbstractGestoreEntita extends AbstractGestoreBase {
           + this.getEntita(), "elimina", t);
     }
 
+  }
+
+  /**
+   * Testa la visibilit&agrave; del record in modo da consentire l'operazione CRUD solo se l'utente possiede le necessarie
+   * autorizzazioni per operare sul record stesso.
+   * @param impl contenitore dei dati presenti nella richiesta
+   * @param profiloUtente profilo dell'utente loggato
+   * @throws GestoreException eccezione emessa in caso di errore
+   */
+  private void checkVisibilitaRecord(DataColumnContainer impl, ProfiloUtente profiloUtente) throws GestoreException {
+    // si verificano i diritti ad accedere al record (gestione controllo solo per utenti loggati)
+    if (profiloUtente != null) {
+      StringBuilder key = new StringBuilder("");
+      String entita = this.getEntita();
+      DataColumn[] campiChiave = impl.getColumns(entita, 1);
+      if (campiChiave.length == 0) {
+        // nel qual caso, raro, il gestore entita non consenta di recuperare la chiave, si prova ad estrarre
+        // l'entita direttamente dal parameter "key" (vedi LFS profilo DEC, eliminazione commessa, entita APPA
+        // con chiave di PERI, la cancellazione deve partire da PERI)
+        String chiaveTabella = this.getRequest().getParameter(UtilityTags.DEFAULT_HIDDEN_KEY_TABELLA);
+        if  (StringUtils.isNotEmpty(chiaveTabella)) {
+          // prendo entita dal primo campo della chiave  (formato ENTITA.CAMPO1)
+          entita = StringUtils.substringBefore(chiaveTabella, ".");
+          if (StringUtils.isNotEmpty(entita)) {
+            campiChiave = impl.getColumns(entita, 1);
+          }
+        }
+      }
+      for (int i = 0; i < campiChiave.length; i++) {
+        if   (i > 0) {
+          key.append(";");
+        }
+        key.append(campiChiave[i].getNomeFisico()).append("=").append(campiChiave[i].getTipoCampo()).append(":").append(campiChiave[i].getValue().getStringValue());
+      }
+      try {
+        // trattasi di utente loggato, quindi eseguo i controlli sulla visibilita' dei dati
+        String chiaveEntitaControllataConPermessi = FormSchedaTag.trovaChiaveEntitaControllataConPermessi(key.toString(), profiloUtente, sqlManager, geneManager);
+        // se il campo di collegamento con UFFINT e' stato trovato, allora eseguo una query sull'entita' che la contiene filtrando per il campo key
+        if (chiaveEntitaControllataConPermessi != null) {
+          String[] datiDaElaborare = chiaveEntitaControllataConPermessi.split("#");
+          JdbcWhere where = new JdbcWhere();
+          UtilityTags.jdbcAddKeyWhere(where, datiDaElaborare[2]);
+          String query = "SELECT COUNT(*) FROM "
+                  + datiDaElaborare[0]
+                  + where.toString()
+                  + " AND "
+                  + datiDaElaborare[1];
+
+          long numOccorrenze = (Long) sqlManager.getObject(query, SqlManager.getObjectFromPram(where.getParametri()));
+          // si sta tentando di forzare l'accesso ad un record non visibile all'utente
+          if (numOccorrenze == 0) {
+            logger.error("Bloccato accesso all'entita' " + this.getEntita() + " con chiave " + key + " perche' non e' visibile all'utente " + profiloUtente.getId());
+            throw new GestoreException("Bloccato accesso all'entita' "
+                    + this.getEntita()
+                    + " con chiave " + key + " perche' non e' visibile all'utente " + profiloUtente.getId(), "entitaBloccata", new String[]{this.getEntita()}, null);
+          }
+        }
+
+      } catch (JspException | SQLException e) {
+        throw new GestoreException("Errore durante la verifica visibilita' di un record,  key " + key + ": "
+                + e.getMessage(), "entitaBloccata", e);
+      }
+    }
   }
 
   /**
@@ -519,11 +591,15 @@ public abstract class AbstractGestoreEntita extends AbstractGestoreBase {
           + campoChiave
           + "'): inizio metodo");
 
-    String valoreChiave = impl.getString(this.getEntita() + "." + campoChiave);
+    DataColumn chiave = impl.getColumn(this.getEntita() + "." + campoChiave);
+    String valoreChiave = chiave.getValue().getStringValue();
 
     ProfiloUtente profilo = (ProfiloUtente) this.getRequest().getSession().getAttribute(
         CostantiGenerali.PROFILO_UTENTE_SESSIONE);
 
+    String uffint = (String) this.getRequest().getSession().getAttribute("uffint");
+    uffint = StringUtils.stripToEmpty(uffint);
+    
     // INSERIMENTO UTENTE PROPRIETARIO
     this.insertPermesso(new Long(profilo.getId()), campoChiave, valoreChiave,
         new Integer(1), "1", null, null);
@@ -533,14 +609,38 @@ public abstract class AbstractGestoreEntita extends AbstractGestoreBase {
     String sql = null;
     Object[] paramSql = null;
     if (predefinita != null) {
-      sql = "select syscon, autori, propri "
-          + "from g_permessi "
-          + "where sysrif = ? "
-          + "and predef = ? "
-          + "and "
-          + campoChiave
-          + " is null";
-      paramSql = new Object[] { new Integer(profilo.getId()), predefinita };
+      
+      if(!"".equals(uffint)){
+        sql = "select g.syscon, g.autori, g.propri "
+            + "from g_permessi g inner join usr_ein u on g.syscon = u.syscon and g.codein = u.codein "
+            + "where g.sysrif = ? "
+            + "and g.predef = ? "
+            + "and "
+            + campoChiave
+            + " is null "
+            + "and g.codein = ? "
+            + "union "
+            + "select g.syscon, g.autori, g.propri "
+            + "from g_permessi g "
+            + "inner join usrsys us on g.syscon = us.syscon and us.syspwbou like '%ou89%' "
+            + "where g.sysrif = ? "
+            + "and g.predef = ? "
+            + "and "
+            + campoChiave
+            + " is null "
+            + "and g.codein = ?";
+        paramSql = new Object[] { new Integer(profilo.getId()), predefinita, uffint, new Integer(profilo.getId()), predefinita, uffint };
+      } else {
+        sql = "select syscon, autori, propri "
+            + "from g_permessi "
+            + "where sysrif = ? "
+            + "and predef = ? "
+            + "and "
+            + campoChiave
+            + " is null "
+            + "and codein is null";
+        paramSql = new Object[] { new Integer(profilo.getId()), predefinita };
+      }
     } else {
       sql = "select syscon, autori, propri "
           + "from g_permessi "

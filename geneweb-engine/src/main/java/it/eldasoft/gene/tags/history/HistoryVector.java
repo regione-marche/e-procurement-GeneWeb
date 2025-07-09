@@ -27,12 +27,10 @@ public class HistoryVector implements Serializable {
   private static final long serialVersionUID = -637658293654068008L;
   
   // Campi
-  private HttpSession session;
   private List<HistoryItem> items;
 
   // Costruttori
-  public HistoryVector(final HttpSession session) {
-	this.session = session;
+  public HistoryVector() {
     items = new ArrayList<HistoryItem>();
   }
   
@@ -45,7 +43,7 @@ public class HistoryVector implements Serializable {
 	  items.add(item);
   }
   
-  public HistoryItem pop() {
+  public HistoryItem pop(HttpSession session) {
 	  HistoryItem item = items.remove(items.size() - 1); //pop();
 	  item.clearDeftrova(session);
 	  
@@ -64,19 +62,19 @@ public class HistoryVector implements Serializable {
 	  return items.isEmpty();
   }
   
-  public List<HistoryItem> popMultiple(final int amount) {
+  public List<HistoryItem> popMultiple(final int amount, HttpSession session) {
 	  final List<HistoryItem> poppedItems = new ArrayList<HistoryItem>();
 	  
 	  for (int i = 0; i < amount; i++) {
-		  poppedItems.add(pop());
+		  poppedItems.add(pop(session));
 	  }
 	  
 	  return poppedItems;
   }
   
-  public void clear() {
+  public void clear(HttpSession session) {
 	  while(!items.isEmpty()) {
-		  pop();
+		  pop(session);
 	  }
   }
   

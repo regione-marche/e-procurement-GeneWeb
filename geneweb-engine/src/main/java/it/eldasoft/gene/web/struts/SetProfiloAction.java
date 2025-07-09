@@ -10,20 +10,6 @@
  */
 package it.eldasoft.gene.web.struts;
 
-import it.eldasoft.gene.bl.admin.AccountManager;
-import it.eldasoft.gene.bl.admin.ProfiliManager;
-import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
-import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
-import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
-import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
-import it.eldasoft.gene.db.domain.LogEvento;
-import it.eldasoft.gene.db.domain.admin.Profilo;
-import it.eldasoft.gene.tags.history.UtilityHistory;
-import it.eldasoft.gene.tags.utils.UtilityTags;
-import it.eldasoft.gene.utils.LogEventiUtils;
-import it.eldasoft.gene.web.struts.tags.UtilityStruts;
-import it.eldasoft.utils.utility.UtilityStringhe;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -35,6 +21,19 @@ import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import it.eldasoft.gene.bl.admin.AccountManager;
+import it.eldasoft.gene.bl.admin.ProfiliManager;
+import it.eldasoft.gene.commons.web.domain.CostantiGenerali;
+import it.eldasoft.gene.commons.web.domain.ProfiloUtente;
+import it.eldasoft.gene.commons.web.struts.ActionBaseNoOpzioni;
+import it.eldasoft.gene.commons.web.struts.CostantiGeneraliStruts;
+import it.eldasoft.gene.db.domain.LogEvento;
+import it.eldasoft.gene.db.domain.admin.Profilo;
+import it.eldasoft.gene.tags.utils.UtilityTags;
+import it.eldasoft.gene.utils.LogEventiUtils;
+import it.eldasoft.gene.web.struts.tags.UtilityStruts;
+import it.eldasoft.utils.utility.UtilityStringhe;
 
 /**
  * Azione per settare in sessione il profilo attivo scelto al momento della
@@ -176,7 +175,7 @@ public class SetProfiloAction extends ActionBaseNoOpzioni {
     
     if(CostantiGeneraliStruts.FORWARD_OK.equals(target)){
       UtilityTags.getUtilityHistory(request.getSession()).clear(
-          UtilityStruts.getNumeroPopUp(request));
+          UtilityStruts.getNumeroPopUp(request), request.getSession());
     }
     
     if (logger.isDebugEnabled()) logger.debug("runAction: fine metodo");

@@ -45,7 +45,7 @@
 		</c:choose>
 	</c:if>
 
-	<gene:setString name="titoloMaschera" value="Art.80 - aggiornamento verifica per l'operatore economico" />
+	<gene:setString name="titoloMaschera" value="Verifica requisiti - aggiornamento verifica per l'operatore economico" />
 
 	<gene:redefineInsert name="corpo">
 		<form action="${contextPath}/Art80SetServiceOE.do" method="post" name="formArt80SetServiceOE" >
@@ -55,7 +55,7 @@
 					<td colspan="2" style="padding: 0 5 0 5;">
 						<br>
 						<br>
-						Richiesta di aggiornamento delle verifiche Art. 80 per la tipologia di controllo "One shot".
+						Richiesta di aggiornamento della verifica requisiti per la tipologia di controllo "One shot".
 						<br>
 						<br>
 						E' possibile modificare anche la tipologia di controllo da "One shot" a "Monitoraggio".
